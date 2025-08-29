@@ -1,4 +1,6 @@
-﻿namespace HOTEL_MINI.Forms
+﻿using System.Windows.Forms;
+
+namespace HOTEL_MINI.Forms
 {
     partial class frmRoom
     {
@@ -28,7 +30,54 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.flpAllRooms = new System.Windows.Forms.FlowLayoutPanel();
+            this.cbxRoomStatus = new System.Windows.Forms.ComboBox();
+            this.pnlRight = new System.Windows.Forms.Panel();
+            this.pnlMain = new System.Windows.Forms.Panel();
+            this.pnlRight.SuspendLayout();
+            this.pnlMain.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // flpAllRooms
+            // 
+            this.flpAllRooms.AutoScroll = true;
+            this.flpAllRooms.AutoSize = true;
+            this.flpAllRooms.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.flpAllRooms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpAllRooms.Location = new System.Drawing.Point(0, 0);
+            this.flpAllRooms.Name = "flpAllRooms";
+            this.flpAllRooms.Size = new System.Drawing.Size(670, 450);
+            this.flpAllRooms.TabIndex = 0;
+            // 
+            // cbxRoomStatus
+            // 
+            this.cbxRoomStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxRoomStatus.FormattingEnabled = true;
+            this.cbxRoomStatus.Location = new System.Drawing.Point(6, 12);
+            this.cbxRoomStatus.Name = "cbxRoomStatus";
+            this.cbxRoomStatus.Size = new System.Drawing.Size(113, 37);
+            this.cbxRoomStatus.TabIndex = 1;
+            this.cbxRoomStatus.SelectedIndexChanged += new System.EventHandler(this.cbxRoomStatus_SelectedIndexChanged);
+            // 
+            // pnlRight
+            // 
+            this.pnlRight.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.pnlRight.Controls.Add(this.cbxRoomStatus);
+            this.pnlRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlRight.Location = new System.Drawing.Point(670, 0);
+            this.pnlRight.Name = "pnlRight";
+            this.pnlRight.Size = new System.Drawing.Size(130, 450);
+            this.pnlRight.TabIndex = 2;
+            // 
+            // pnlMain
+            // 
+            this.pnlMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.pnlMain.Controls.Add(this.flpAllRooms);
+            this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMain.Location = new System.Drawing.Point(0, 0);
+            this.pnlMain.Name = "pnlMain";
+            this.pnlMain.Size = new System.Drawing.Size(670, 450);
+            this.pnlMain.TabIndex = 3;
             // 
             // frmRoom
             // 
@@ -36,12 +85,22 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.pnlMain);
+            this.Controls.Add(this.pnlRight);
             this.Name = "frmRoom";
             this.Text = "Quản Lý Phòng";
+            this.pnlRight.ResumeLayout(false);
+            this.pnlMain.ResumeLayout(false);
+            this.pnlMain.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.FlowLayoutPanel flpAllRooms;
+        private System.Windows.Forms.ComboBox cbxRoomStatus;
+        private System.Windows.Forms.Panel pnlRight;
+        private System.Windows.Forms.Panel pnlMain;
     }
 }

@@ -168,7 +168,7 @@ namespace HOTEL_MINI
 
         private void btnRoom_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new Forms.frmRoom(), sender);
+            OpenChildForm(new Forms.frmRoom(this), sender);
         }
 
         private void btnService_Click(object sender, EventArgs e)
