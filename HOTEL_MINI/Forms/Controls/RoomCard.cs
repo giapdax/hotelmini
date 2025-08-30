@@ -14,7 +14,7 @@ namespace HOTEL_MINI.Forms.Controls
     public partial class RoomCard : UserControl
     {
         private readonly Room _room;
-        private readonly Form1 _form1;
+        private readonly frmApplication _form1;
         public RoomCard(Room room)//au tạo constructor thì thêm Form1 form1,
         {
             InitializeComponent();

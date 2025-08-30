@@ -15,9 +15,9 @@ namespace HOTEL_MINI.Forms
 {
     public partial class frmRoom : Form
     {
-        private readonly Form1 _form1;
+        private readonly frmApplication _form1;
         private readonly RoomService _roomService;
-        public frmRoom(Form1 form1)
+        public frmRoom(frmApplication form1)
         {
             InitializeComponent();
             _form1 = form1;

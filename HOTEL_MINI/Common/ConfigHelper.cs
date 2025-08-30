@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HOTEL_MINI.Common
@@ -12,13 +8,26 @@ namespace HOTEL_MINI.Common
     {
         public static string GetConnectionString(string name = "HotelMiniContext")
         {
-            var conn = ConfigurationManager.ConnectionStrings[name];
-            if(conn == null)
+            try
             {
-                MessageBox.Show("Khong ket noi duoc toi database");
-                throw new Exception($"Connection string {name} is not found in App.config");
+                var connectionString = ConfigurationManager.ConnectionStrings[name];
+
+                if (connectionString == null || string.IsNullOrEmpty(connectionString.ConnectionString))
+                {
+                    MessageBox.Show("Không thể kết nối đến cơ sở dữ liệu. Vui lòng kiểm tra cấu hình.",
+                                  "Lỗi kết nối",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Error);
+                    throw new ConfigurationErrorsException($"Connection string '{name}' không tồn tại hoặc trống trong file cấu hình.");
+                }
+
+                return connectionString.ConnectionString;
             }
-            return conn.ConnectionString;
+            catch (ConfigurationErrorsException ex)
+            {
+                MessageBox.Show($"Lỗi cấu hình: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
         }
     }
 }

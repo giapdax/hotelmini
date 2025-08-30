@@ -1,32 +1,100 @@
 ﻿using HOTEL_MINI.DAL;
+using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HOTEL_MINI.BLL
 {
-    public class AuthService
+    public class AuthService : IDisposable
     {
         private readonly UserRepository _userRepository;
+        private bool _disposed = false;
+
         public AuthService()
         {
             _userRepository = new UserRepository();
         }
-        public LoginResult login(string username, string password)
+
+        public LoginResult Login(string username, string password)
         {
-            var user = _userRepository.getUserbyUsername(username);
-            if (user == null)
+            try
             {
-                return new LoginResult { Success = false, Message = "Username không tồn tại" };
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                {
+                    return new LoginResult
+                    {
+                        Success = false,
+                        Message = "Tên đăng nhập và mật khẩu không được để trống"
+                    };
+                }
+
+                var user = _userRepository.GetUserByUsername(username);
+
+                if (user == null)
+                {
+                    return new LoginResult
+                    {
+                        Success = false,
+                        Message = "Tên đăng nhập không tồn tại"
+                    };
+                }
+
+                if (user.Status != "Active")
+                {
+                    return new LoginResult
+                    {
+                        Success = false,
+                        Message = "Tài khoản đã bị khóa"
+                    };
+                }
+
+                if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                {
+                    return new LoginResult
+                    {
+                        Success = false,
+                        Message = "Mật khẩu không đúng"
+                    };
+                }
+
+                return new LoginResult
+                {
+                    Success = true,
+                    Message = "Đăng nhập thành công",
+                    User = user
+                };
             }
-            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            catch (Exception ex)
             {
-                return new LoginResult { Success = false, Message = "Password không đúng" };
+                return new LoginResult
+                {
+                    Success = false,
+                    Message = $"Lỗi hệ thống: {ex.Message}"
+                };
             }
-            return new LoginResult { Success = true, Message = "Đăng nhập thành công", User = user };
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _userRepository?.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+        ~AuthService()
+        {
+            Dispose(false);
         }
     }
 }

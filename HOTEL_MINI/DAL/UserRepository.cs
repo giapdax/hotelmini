@@ -1,44 +1,99 @@
-﻿using HOTEL_MINI.Common;
-using HOTEL_MINI.Model.Entity;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
+using HOTEL_MINI.Common;
+using HOTEL_MINI.Model.Entity;
+using BCrypt.Net;
 
 namespace HOTEL_MINI.DAL
 {
-    public class UserRepository
+    public class UserRepository : IDisposable
     {
-        private readonly string _connectionString;
+        private readonly SqlConnection _connection;
+        private bool _disposed = false;
+
         public UserRepository()
         {
-            _connectionString = ConfigHelper.GetConnectionString();
+            _connection = new SqlConnection(ConfigHelper.GetConnectionString());
         }
-        public User getUserbyUsername(string username)
+
+        public User GetUserByUsername(string username)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            try
             {
-                conn.Open();
-                string sql = @"SELECT UserID, Username, PasswordHash, RoleID, Fullname
-                        FROM Users
-                        Where Username = @Username";
-                SqlCommand sqlCommand = new SqlCommand(sql, conn);
-                sqlCommand.Parameters.AddWithValue("@Username", username);
-                using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                if (_connection.State != ConnectionState.Open)
+                    _connection.Open();
+
+                const string sql = @"SELECT UserID, Username, PasswordHash, RoleID, Fullname, Phone, Email, Status
+                                     FROM Users 
+                                     WHERE Username = @Username";
+
+                using (var command = new SqlCommand(sql, _connection))
                 {
-                    if (!reader.Read()) { return null; }
-                    return new User()
+                    command.Parameters.Add("@Username", SqlDbType.NVarChar, 50).Value = username;
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        UserID = reader.GetInt32(0),
-                        Username = reader.GetString(1),
-                        FullName = reader.GetString(4),
-                        PasswordHash = reader.GetString(2),
-                        Role = reader.GetInt32(3)
-                    };
+                        if (reader.Read())
+                        {
+                            return new User
+                            {
+                                UserID = reader.GetInt32(reader.GetOrdinal("UserID")),
+                                Username = reader.GetString(reader.GetOrdinal("Username")),
+                                FullName = reader.IsDBNull(reader.GetOrdinal("Fullname")) ? string.Empty : reader.GetString(reader.GetOrdinal("Fullname")),
+                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                Role = reader.GetInt32(reader.GetOrdinal("RoleID")),
+                                Phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? string.Empty : reader.GetString(reader.GetOrdinal("Phone")),
+                                Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? string.Empty : reader.GetString(reader.GetOrdinal("Email")),
+                                Status = reader.GetString(reader.GetOrdinal("Status"))
+                            };
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi truy vấn cơ sở dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_connection != null)
+                    {
+                        if (_connection.State == ConnectionState.Open)
+                            _connection.Close();
+                        _connection.Dispose();
+                    }
+                }
+                _disposed = true;
+            }
+        }
+
+        ~UserRepository()
+        {
+            Dispose(false);
         }
     }
 }

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace HOTEL_MINI
 {
-    public partial class Form1 : Form
+    public partial class frmApplication : Form
     {
         private Form activeForm = null;   // Form con đang hiển thị
         private Size originalSize;        // Kích thước gốc của form
@@ -18,7 +18,7 @@ namespace HOTEL_MINI
         private Panel panelIndicator;
         private Button currentButton = null;
 
-        public Form1()
+        public frmApplication()
         {
             InitializeComponent();
 
