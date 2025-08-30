@@ -38,6 +38,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "frmDashboard";
             this.Text = "Thống Kê";
+            this.Load += new System.EventHandler(this.frmDashboard_Load);
             this.ResumeLayout(false);
 
         }

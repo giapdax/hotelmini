@@ -1,20 +1,16 @@
-﻿using System;
+﻿using HOTEL_MINI.Forms;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HOTEL_MINI
 {
     public partial class frmApplication : Form
     {
-        private Form activeForm = null;   // Form con đang hiển thị
-        private Size originalSize;        // Kích thước gốc của form
-        private Dictionary<Control, Rectangle> controlsOriginalBounds; // Lưu kích thước gốc của controls
+        private Form activeForm = null;
+        private Size originalSize;
+        private Dictionary<Control, Rectangle> controlsOriginalBounds;
         private Panel panelIndicator;
         private Button currentButton = null;
 
@@ -25,7 +21,6 @@ namespace HOTEL_MINI
             this.MaximizeBox = true;
             this.FormBorderStyle = FormBorderStyle.Sizable;
 
-
             // Lưu size gốc
             originalSize = this.Size;
             controlsOriginalBounds = new Dictionary<Control, Rectangle>();
@@ -35,18 +30,19 @@ namespace HOTEL_MINI
 
             // Tạo thanh indicator
             panelIndicator = new Panel();
-            panelIndicator.Size = new Size(3, 0); // rộng 3px, cao tùy theo button
-            panelIndicator.BackColor = Color.White; // màu nổi bật
+            panelIndicator.Size = new Size(3, 0);
+            panelIndicator.BackColor = Color.White;
             panelIndicator.Visible = false;
             panelMenu.Controls.Add(panelIndicator);
+
+            // Mở form frmDashboard ngay khi khởi động
+            OpenChildForm(new Forms.frmDashboard(), btnDashboard);
         }
 
-        // Lưu bounds gốc của control và con của nó
         private void SaveControlBounds(Control parent)
         {
             foreach (Control ctrl in parent.Controls)
             {
-                // Bỏ qua panelIndicator để nó không bị scale
                 if (ctrl == panelIndicator) continue;
 
                 controlsOriginalBounds[ctrl] = ctrl.Bounds;
@@ -57,8 +53,6 @@ namespace HOTEL_MINI
             }
         }
 
-
-        // Khi resize form → scale toàn bộ controls
         private void Form1_Resize(object sender, EventArgs e)
         {
             float scaleX = (float)this.Width / originalSize.Width;
@@ -66,14 +60,12 @@ namespace HOTEL_MINI
 
             ResizeControls(scaleX, scaleY, this);
 
-            // cập nhật lại indicator nếu đang có button được chọn
             if (currentButton != null)
             {
                 HighlightButton(currentButton);
             }
         }
 
-        // Hàm scale tất cả control dựa trên tỉ lệ
         private void ResizeControls(float scaleX, float scaleY, Control parent)
         {
             foreach (Control ctrl in parent.Controls)
@@ -96,32 +88,28 @@ namespace HOTEL_MINI
             }
         }
 
-        // Reset tất cả button về màu mặc định
         private void ResetButtonColors()
         {
             foreach (Control ctrl in panelMenu.Controls)
             {
                 if (ctrl is Button btn)
                 {
-                    btn.BackColor = Color.FromArgb(43, 47, 55); // màu gốc
+                    btn.BackColor = Color.FromArgb(43, 47, 55);
                     btn.ForeColor = Color.Gainsboro;
                 }
             }
         }
 
-        // Đổi màu button đang được chọn
         private void HighlightButton(object sender)
         {
             if (sender is Button btn)
             {
-                ResetButtonColors(); // reset lại toàn bộ trước
-                currentButton = btn; // lưu lại button hiện tại
+                ResetButtonColors();
+                currentButton = btn;
 
-                // đổi màu cho button được chọn
                 btn.BackColor = Color.FromArgb(14, 26, 28);
                 btn.ForeColor = Color.Gainsboro;
 
-                // panelIndicator bám sát bên phải
                 panelIndicator.Dock = DockStyle.None;
                 panelIndicator.Width = 4;
                 panelIndicator.Height = btn.Height;
@@ -135,12 +123,10 @@ namespace HOTEL_MINI
             }
         }
 
-
-        // Hàm mở form con vào panelDesktop
         private void OpenChildForm(Form childForm, object btnSender)
         {
             if (activeForm != null)
-                activeForm.Close();   // đóng form cũ nếu có
+                activeForm.Close();
 
             HighlightButton(btnSender);
 
@@ -158,8 +144,6 @@ namespace HOTEL_MINI
 
             lblTitle.Text = childForm.Text;
         }
-
-
 
         private void btnDashboard_Click(object sender, EventArgs e)
         {
@@ -183,17 +167,34 @@ namespace HOTEL_MINI
 
         private void btnSetting_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new Forms.frmSetting(), sender);  
+            OpenChildForm(new Forms.frmSetting(), sender);
         }
 
         private void lblTitle_Click(object sender, EventArgs e)
         {
-
+            // Do nothing
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             contextMenuProfile.Show(pictureBox1, new Point(0, pictureBox1.Height));
+        }
+
+        private void frmApplication_Load(object sender, EventArgs e)
+        {
+            // Do nothing
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                this.Close();
+                frmLogin loginForm = new frmLogin();
+                loginForm.Show();
+            }
         }
     }
 }
