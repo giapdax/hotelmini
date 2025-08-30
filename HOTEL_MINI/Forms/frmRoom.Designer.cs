@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace HOTEL_MINI.Forms
 {
@@ -33,7 +34,9 @@ namespace HOTEL_MINI.Forms
             this.flpAllRooms = new System.Windows.Forms.FlowLayoutPanel();
             this.cbxRoomStatus = new System.Windows.Forms.ComboBox();
             this.pnlRight = new System.Windows.Forms.Panel();
+            this.txtSearchRoomNumber = new System.Windows.Forms.TextBox();
             this.pnlMain = new System.Windows.Forms.Panel();
+            this.btnResetFilter = new System.Windows.Forms.Button();
             this.pnlRight.SuspendLayout();
             this.pnlMain.SuspendLayout();
             this.SuspendLayout();
@@ -62,12 +65,23 @@ namespace HOTEL_MINI.Forms
             // pnlRight
             // 
             this.pnlRight.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.pnlRight.Controls.Add(this.btnResetFilter);
+            this.pnlRight.Controls.Add(this.txtSearchRoomNumber);
             this.pnlRight.Controls.Add(this.cbxRoomStatus);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnlRight.Location = new System.Drawing.Point(670, 0);
             this.pnlRight.Name = "pnlRight";
             this.pnlRight.Size = new System.Drawing.Size(130, 450);
             this.pnlRight.TabIndex = 2;
+            // 
+            // txtSearchRoomNumber
+            // 
+            this.txtSearchRoomNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearchRoomNumber.Location = new System.Drawing.Point(6, 55);
+            this.txtSearchRoomNumber.Name = "txtSearchRoomNumber";
+            this.txtSearchRoomNumber.Size = new System.Drawing.Size(113, 35);
+            this.txtSearchRoomNumber.TabIndex = 2;
+            this.txtSearchRoomNumber.TextChanged += new System.EventHandler(this.txtSearchRoomNumber_TextChanged);
             // 
             // pnlMain
             // 
@@ -78,6 +92,16 @@ namespace HOTEL_MINI.Forms
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Size = new System.Drawing.Size(670, 450);
             this.pnlMain.TabIndex = 3;
+            // 
+            // btnResetFilter
+            // 
+            this.btnResetFilter.Location = new System.Drawing.Point(28, 115);
+            this.btnResetFilter.Name = "btnResetFilter";
+            this.btnResetFilter.Size = new System.Drawing.Size(75, 45);
+            this.btnResetFilter.TabIndex = 3;
+            this.btnResetFilter.Text = "reset";
+            this.btnResetFilter.UseVisualStyleBackColor = true;
+            this.btnResetFilter.Click += new System.EventHandler(this.btnResetFilter_Click);
             // 
             // frmRoom
             // 
@@ -90,6 +114,7 @@ namespace HOTEL_MINI.Forms
             this.Name = "frmRoom";
             this.Text = "Quản Lý Phòng";
             this.pnlRight.ResumeLayout(false);
+            this.pnlRight.PerformLayout();
             this.pnlMain.ResumeLayout(false);
             this.pnlMain.PerformLayout();
             this.ResumeLayout(false);
@@ -102,5 +127,7 @@ namespace HOTEL_MINI.Forms
         private System.Windows.Forms.ComboBox cbxRoomStatus;
         private System.Windows.Forms.Panel pnlRight;
         private System.Windows.Forms.Panel pnlMain;
+        private TextBox txtSearchRoomNumber;
+        private Button btnResetFilter;
     }
 }

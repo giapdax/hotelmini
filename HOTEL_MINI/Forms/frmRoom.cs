@@ -17,29 +17,37 @@ namespace HOTEL_MINI.Forms
     {
         private readonly Form1 _form1;
         private readonly RoomService _roomService;
+
         public frmRoom(Form1 form1)
         {
             InitializeComponent();
             _form1 = form1;
             _roomService = new RoomService();
-            LoadRoom("All");
+            LoadRoom("All","");
             LoadRoomByStatus();
+            
             //pnlRight.Dock = DockStyle.Right;   // Gắn vào bên phải
             //pnlRight.Width = 200;              // Chiều rộng cố định
 
             //// Panel còn lại
             //pnlMain.Dock = DockStyle.Fill;
         }
-        public void LoadRoom(string status)
+        public void LoadRoom(string status, string searchText)
         {
             flpAllRooms.Controls.Clear();
 
             var listRoom = _roomService.getAllRoom();
 
-            // Nếu chọn khác "All" thì lọc theo status
+            // lọc theo status
             if (status != "All")
             {
                 listRoom = listRoom.Where(r => r.RoomStatus == status).ToList();
+            }
+
+            // lọc theo searchText
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                listRoom = listRoom.Where(r => r.RoomNumber.Contains(searchText)).ToList();
             }
 
             foreach (var room in listRoom)
@@ -48,23 +56,38 @@ namespace HOTEL_MINI.Forms
                 flpAllRooms.Controls.Add(card);
             }
         }
+
         public void LoadRoomByStatus()
-        {            
+        {
             var listStatus = _roomService.getAllRoomStatus();
             cbxRoomStatus.Items.Add("All");
             foreach (var status in listStatus)
             {
-                
                 cbxRoomStatus.Items.Add(status);
             }
-            
+
             cbxRoomStatus.SelectedIndex = 0;
         }
 
         private void cbxRoomStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedStatus = cbxRoomStatus.SelectedItem.ToString();
-            LoadRoom(selectedStatus);
+            string keyword = txtSearchRoomNumber.Text;
+            LoadRoom(selectedStatus, keyword);
+        }
+
+        private void txtSearchRoomNumber_TextChanged(object sender, EventArgs e)
+        {
+            string selectedStatus = cbxRoomStatus.SelectedItem.ToString();
+            string keyword = txtSearchRoomNumber.Text;
+            LoadRoom(selectedStatus, keyword);
+        }
+
+        private void btnResetFilter_Click(object sender, EventArgs e)
+        {
+            cbxRoomStatus.SelectedIndex = 0;
+            txtSearchRoomNumber.Clear();
+            LoadRoom("All", "");
         }
     }
 }

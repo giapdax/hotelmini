@@ -26,21 +26,27 @@ namespace HOTEL_MINI.Forms.Controls
         {
             lblRoomNumber.Text = $"{_room.RoomNumber}";
             var roomStatus = _room.RoomStatus;
-            if(roomStatus == "Available")
+            lblRoomStatus.Text = roomStatus;
+            if (roomStatus == "Available")
             {
                 this.BackColor = Color.LightGreen;
+                btnDetail.Visible = false;
             }
             else if(roomStatus == "Booked") 
             {
                 this.BackColor = Color.Yellow;
+                btnDetail.Visible = true;
             }
             else if(roomStatus == "Occupied") 
             {
                 this.BackColor = Color.Blue;
+                btnBook.Visible = false;
             }
             else 
             {
                 this.BackColor = Color.Gray;
+                btnBook.Visible = false;
+                btnDetail.Visible = false;
             }
         }
     }
