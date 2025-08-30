@@ -1,4 +1,5 @@
 ﻿using HOTEL_MINI.Forms;
+using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,10 +14,12 @@ namespace HOTEL_MINI
         private Dictionary<Control, Rectangle> controlsOriginalBounds;
         private Panel panelIndicator;
         private Button currentButton = null;
+        private User _currentUser;
 
-        public frmApplication()
+        public frmApplication(User user)
         {
             InitializeComponent();
+            _currentUser = user;
 
             this.MaximizeBox = true;
             this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -34,6 +37,7 @@ namespace HOTEL_MINI
             panelIndicator.BackColor = Color.White;
             panelIndicator.Visible = false;
             panelMenu.Controls.Add(panelIndicator);
+            label1.Text = $"Xin chào, {_currentUser.FullName}";
 
             // Mở form frmDashboard ngay khi khởi động
             OpenChildForm(new Forms.frmDashboard(), btnDashboard);

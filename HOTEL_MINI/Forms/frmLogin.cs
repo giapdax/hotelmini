@@ -43,7 +43,7 @@ namespace HOTEL_MINI.Forms
                 this.Hide();
 
                 // 🌟 MỞ FORM CHÍNH CỦA ỨNG DỤNG
-                frmApplication mainForm = new frmApplication();
+                frmApplication mainForm = new frmApplication(result.User);
                 mainForm.Show();
             }
             else

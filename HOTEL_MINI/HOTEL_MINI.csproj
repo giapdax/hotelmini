@@ -102,6 +102,18 @@
     <Compile Include="Forms\Controls\RoomCard.Designer.cs">
       <DependentUpon>RoomCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmBookingDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmBookingDetail.Designer.cs">
+      <DependentUpon>frmBookingDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmBookingPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmBookingPopup.Designer.cs">
+      <DependentUpon>frmBookingPopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,7 +150,13 @@
     <Compile Include="Forms\frmUser.Designer.cs">
       <DependentUpon>frmUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Entity\Booking.cs" />
+    <Compile Include="Model\Entity\BookingServiceDetail.cs" />
+    <Compile Include="Model\Entity\Customer.cs" />
     <Compile Include="Model\Entity\Room.cs" />
+    <Compile Include="Model\Entity\RoomPricing.cs" />
+    <Compile Include="Model\Entity\RoomTypes.cs" />
+    <Compile Include="Model\Entity\Service.cs" />
     <Compile Include="Model\Entity\User.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Program.cs" />
@@ -148,6 +166,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\RoomCard.resx">
       <DependentUpon>RoomCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBookingDetail.resx">
+      <DependentUpon>frmBookingDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBookingPopup.resx">
+      <DependentUpon>frmBookingPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmDashboard.resx">
       <DependentUpon>frmDashboard.cs</DependentUpon>
