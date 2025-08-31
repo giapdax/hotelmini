@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MiniHotel.Models
+{
+    public class RoomTypes
+    {
+        public int RoomTypesID { get; set;}
+        public string TypeName {get; set;}
+        public string Description { get; set;}
+    }
+}

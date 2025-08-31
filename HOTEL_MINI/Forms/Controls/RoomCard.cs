@@ -15,10 +15,10 @@ namespace HOTEL_MINI.Forms.Controls
     {
         private readonly Room _room;
         private readonly frmApplication _form1;
-        public RoomCard(Room room)//au tạo constructor thì thêm Form1 form1,
+        public RoomCard(frmApplication frmApplication,Room room)//au tạo constructor thì thêm Form1 form1,
         {
             InitializeComponent();
-            //_form1 = form1;
+            _form1 = frmApplication;
             _room = room;
             LoadUiRoomCard();
         }
@@ -41,6 +41,19 @@ namespace HOTEL_MINI.Forms.Controls
             else 
             {
                 this.BackColor = Color.Gray;
+            }
+        }
+
+        private void btnBook_Click(object sender, EventArgs e)
+        {
+            if(_room.RoomStatus == "Available")
+            {
+                frmBookingPopup bookingPopup = new frmBookingPopup(_form1, _room);
+                bookingPopup.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Room is not available for booking.");
             }
         }
     }
