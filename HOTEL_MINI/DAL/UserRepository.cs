@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using BCrypt.Net;
+using HOTEL_MINI.BLL;
 
 namespace HOTEL_MINI.DAL
 {
@@ -187,6 +188,46 @@ namespace HOTEL_MINI.DAL
             }
         }
 
+        public void AddUser(User user)
+        {
+            string query = "INSERT INTO Users( Username, PasswordHash, ";
+            try
+            {
+                if (_connection.State != ConnectionState.Open)
+                {
+
+                    _connection.Open();
+                }
+
+                using (var command = new SqlCommand(query, _connection))
+                {
+                    command.Parameters.AddWithValue("@Username", user.Username);
+                    command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    command.Parameters.AddWithValue("@RoleID", user.Role);
+                    command.Parameters.AddWithValue("@FullName", user.FullName);
+                    command.Parameters.AddWithValue("@Phone", user.Phone);
+                    command.Parameters.AddWithValue("@Email", user.Email);
+                    command.Parameters.AddWithValue("@Status", user.Status);
+                    int result = command.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        MessageBox.Show("Thêm người dùng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Thêm người dùng thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Lỗi SQL: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thêm người dùng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         ~UserRepository()
         {
             Dispose(false);
