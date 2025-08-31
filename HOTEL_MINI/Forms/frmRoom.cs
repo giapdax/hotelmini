@@ -52,7 +52,7 @@ namespace HOTEL_MINI.Forms
 
             foreach (var room in listRoom)
             {
-                var card = new RoomCard(room);
+                var card = new RoomCard(_form1, room);
                 flpAllRooms.Controls.Add(card);
             }
             

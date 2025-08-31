@@ -42,6 +42,10 @@ namespace HOTEL_MINI
             // Mở form frmDashboard ngay khi khởi động
             OpenChildForm(new Forms.frmDashboard(), btnDashboard);
         }
+        public User GetCurrentUser()
+        {
+            return _currentUser;
+        }
 
         private void SaveControlBounds(Control parent)
         {

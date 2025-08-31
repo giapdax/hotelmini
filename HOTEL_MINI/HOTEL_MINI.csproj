@@ -85,10 +85,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\AuthService.cs" />
+    <Compile Include="BLL\BookingService.cs" />
+    <Compile Include="BLL\CustomerService.cs" />
     <Compile Include="BLL\RoomService.cs" />
+    <Compile Include="BLL\ServicesService.cs" />
     <Compile Include="BLL\UserService.cs" />
     <Compile Include="Common\ConfigHelper.cs" />
+    <Compile Include="DAL\BookingRepository.cs" />
+    <Compile Include="DAL\CustomerRepository.cs" />
     <Compile Include="DAL\RoomRepository.cs" />
+    <Compile Include="DAL\ServicesRepository.cs" />
     <Compile Include="DAL\UserRepository.cs" />
     <Compile Include="Forms\frmApplication.cs">
       <SubType>Form</SubType>
