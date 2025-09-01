@@ -39,7 +39,7 @@ namespace HOTEL_MINI.BLL
                     };
                 }
 
-                if (user.Status != "Active")
+                if (user.Status.ToString() != "Active")
                 {
                     return new LoginResult
                     {

@@ -159,6 +159,7 @@
     <Compile Include="Model\Entity\Booking.cs" />
     <Compile Include="Model\Entity\BookingServiceDetail.cs" />
     <Compile Include="Model\Entity\Customer.cs" />
+    <Compile Include="Model\Entity\Role.cs" />
     <Compile Include="Model\Entity\Room.cs" />
     <Compile Include="Model\Entity\RoomPricing.cs" />
     <Compile Include="Model\Entity\RoomTypes.cs" />
