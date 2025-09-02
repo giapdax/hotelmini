@@ -68,25 +68,27 @@ namespace HOTEL_MINI.DAL
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Customers WHERE IDNumber = @IDNumber", conn);
                 cmd.Parameters.AddWithValue("@IDNumber", idNumber);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-                reader.Read();
-                if (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    return new Customer
+                    if (reader.Read())   // chỉ cần gọi 1 lần
                     {
-                        CustomerID = (int)reader["CustomerID"],
-                        FullName = reader["FullName"].ToString(),
-                        Gender = reader["Gender"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        Phone = reader["Phone"].ToString(),
-                        Address = reader["Address"].ToString(),
-                        IDNumber = reader["IDNumber"].ToString(),
-                        CreatedAt = (DateTime)reader["CreatedAt"]
-                    };
+                        return new Customer
+                        {
+                            CustomerID = (int)reader["CustomerID"],
+                            FullName = reader["FullName"].ToString(),
+                            Gender = reader["Gender"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Phone = reader["Phone"].ToString(),
+                            Address = reader["Address"].ToString(),
+                            IDNumber = reader["IDNumber"].ToString(),
+                            CreatedAt = (DateTime)reader["CreatedAt"]
+                        };
+                    }
                 }
                 return null;
             }
         }
+
         public bool checkExistNumberID(string idNumber)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))

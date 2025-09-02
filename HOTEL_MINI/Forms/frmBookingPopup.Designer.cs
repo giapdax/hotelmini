@@ -146,18 +146,18 @@
             this.rbtnDatTruoc.TabStop = true;
             this.rbtnDatTruoc.Text = "Đặt Trước";
             this.rbtnDatTruoc.UseVisualStyleBackColor = true;
-            this.rbtnDatTruoc.CheckedChanged += new System.EventHandler(this.rbtDatTruoc_CheckedChanged);
+            this.rbtnDatTruoc.CheckedChanged += new System.EventHandler(this.rbtnDattruoc_CheckedChanged);
             // 
             // rbtnNhanngay
             // 
-            this.rbtnNhanngay.Location = new System.Drawing.Point(373, 498);
             this.rbtnNhanngay.AutoSize = true;
+            this.rbtnNhanngay.Location = new System.Drawing.Point(373, 498);
             this.rbtnNhanngay.Name = "rbtnNhanngay";
+            this.rbtnNhanngay.Size = new System.Drawing.Size(207, 41);
+            this.rbtnNhanngay.TabIndex = 25;
             this.rbtnNhanngay.TabStop = true;
             this.rbtnNhanngay.Text = "Nhận ngay";
-            this.rbtnNhanngay.Size = new System.Drawing.Size(193, 41);
             this.rbtnNhanngay.UseVisualStyleBackColor = true;
-            this.rbtnNhanngay.TabIndex = 25;
             this.rbtnNhanngay.CheckedChanged += new System.EventHandler(this.rbtnNhanngay_CheckedChanged);
             // 
             // txtGender

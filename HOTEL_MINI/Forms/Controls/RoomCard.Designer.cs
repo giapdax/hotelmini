@@ -31,6 +31,7 @@
             this.lblRoomNumber = new System.Windows.Forms.Label();
             this.btnBook = new System.Windows.Forms.Button();
             this.btnDetails = new System.Windows.Forms.Button();
+            this.lblRoomStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblRoomNumber
@@ -64,12 +65,25 @@
             this.btnDetails.Text = "Chi tiết";
             this.btnDetails.UseVisualStyleBackColor = true;
             // 
+            // lblRoomStatus
+            // 
+            this.lblRoomStatus.AutoSize = true;
+            this.lblRoomStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblRoomStatus.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblRoomStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRoomStatus.Location = new System.Drawing.Point(0, 31);
+            this.lblRoomStatus.Name = "lblRoomStatus";
+            this.lblRoomStatus.Size = new System.Drawing.Size(90, 31);
+            this.lblRoomStatus.TabIndex = 3;
+            this.lblRoomStatus.Text = "Phòng";
+            // 
             // RoomCard
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.lblRoomStatus);
             this.Controls.Add(this.btnDetails);
             this.Controls.Add(this.btnBook);
             this.Controls.Add(this.lblRoomNumber);
@@ -86,6 +100,6 @@
         private System.Windows.Forms.Button btnBook;
         private System.Windows.Forms.Button btnDetails;
         private System.Windows.Forms.Label lblRoomStatus;
-
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -100,6 +100,7 @@
             this.btnExit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnExit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // btnSetting
             // 
@@ -282,7 +283,7 @@
             this.btnLogout,
             this.btnProfile});
             this.contextMenuProfile.Name = "contextMenuStrip1";
-            this.contextMenuProfile.Size = new System.Drawing.Size(249, 101);
+            this.contextMenuProfile.Size = new System.Drawing.Size(150, 68);
             // 
             // btnLogout
             // 
@@ -290,7 +291,7 @@
             this.btnLogout.ForeColor = System.Drawing.Color.White;
             this.btnLogout.Image = global::HOTEL_MINI.Properties.Resources.power_off__1_;
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(248, 32);
+            this.btnLogout.Size = new System.Drawing.Size(149, 32);
             this.btnLogout.Text = "Logout";
             this.btnLogout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);

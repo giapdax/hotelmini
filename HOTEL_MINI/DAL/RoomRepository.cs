@@ -56,5 +56,34 @@ namespace HOTEL_MINI.DAL
             }
             return listStatus;
         }
+        public List<string> getAllPricingType()
+        {
+            var listPricingType = new List<string>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT Value FROM PricingTypeEnum";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                while (sqlDataReader.Read())
+                {
+                    listPricingType.Add(sqlDataReader.GetString(0));
+                }
+            }
+            return listPricingType;
+        }
+        public bool UpdateRoomStatus(int roomID, string status)
+        {
+            using(SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "UPDATE Rooms SET Status = @Status WHERE RoomID = @RoomID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@RoomID", roomID);
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
+        }
     }
 }

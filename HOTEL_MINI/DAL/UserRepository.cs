@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using BCrypt.Net;
+using HOTEL_MINI.BLL;
 
 namespace HOTEL_MINI.DAL
 {
@@ -50,7 +51,7 @@ namespace HOTEL_MINI.DAL
                                 Role = reader.GetInt32(reader.GetOrdinal("RoleID")),
                                 Phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? string.Empty : reader.GetString(reader.GetOrdinal("Phone")),
                                 Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? string.Empty : reader.GetString(reader.GetOrdinal("Email")),
-                                Status = reader.GetString(reader.GetOrdinal("Status"))
+                                Status = (UserStatus)Enum.Parse(typeof(UserStatus), reader.GetString(reader.GetOrdinal("Status")))
                             };
                         }
                     }
@@ -89,6 +90,11 @@ namespace HOTEL_MINI.DAL
                     {
                         while (reader.Read())
                         {
+                            string statusString = reader.GetString(reader.GetOrdinal("Status"));
+                            // Chuyển đổi chuỗi thành enum
+                            UserStatus userStatus;
+                            Enum.TryParse(statusString, out userStatus);
+
                             userList.Add(new User
                             {
                                 UserID = reader.GetInt32(reader.GetOrdinal("UserID")),
@@ -97,7 +103,7 @@ namespace HOTEL_MINI.DAL
                                 Phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? string.Empty : reader.GetString(reader.GetOrdinal("Phone")),
                                 Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? string.Empty : reader.GetString(reader.GetOrdinal("Email")),
                                 Role = reader.GetInt32(reader.GetOrdinal("RoleID")),
-                                Status = reader.GetString(reader.GetOrdinal("Status"))
+                                Status = userStatus
                             });
                         }
                     }
@@ -187,6 +193,160 @@ namespace HOTEL_MINI.DAL
             }
         }
 
+        public bool AddUser(User user)
+        {
+            // Hoàn chỉnh câu lệnh SQL, liệt kê đầy đủ các cột và các tham số
+            string query = @"INSERT INTO Users (
+                        Username, 
+                        PasswordHash, 
+                        RoleID, 
+                        FullName, 
+                        Phone, 
+                        Email, 
+                        Status
+                    )
+                    VALUES (
+                        @Username, 
+                        @PasswordHash, 
+                        @RoleID, 
+                        @FullName, 
+                        @Phone, 
+                        @Email, 
+                        @Status
+                    )";
+
+            // Sử dụng try-catch-finally để đảm bảo tài nguyên được giải phóng
+            try
+            {
+                // Kiểm tra kết nối và mở nếu cần
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
+
+                using (var command = new SqlCommand(query, _connection))
+                {
+                    // Thêm các tham số từ đối tượng User
+                    command.Parameters.AddWithValue("@Username", user.Username);
+                    command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    command.Parameters.AddWithValue("@RoleID", user.Role);
+
+                    // Sử dụng DBNull.Value cho các trường có thể null để tránh lỗi
+                    command.Parameters.AddWithValue("@FullName", (object)user.FullName ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Phone", (object)user.Phone ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Email", (object)user.Email ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Status", user.Status.ToString());
+
+                    // ExecuteNonQuery trả về số hàng bị ảnh hưởng
+                    int result = command.ExecuteNonQuery();
+
+                    // Trả về true nếu có ít nhất 1 hàng được thêm thành công
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi để debug thay vì hiển thị MessageBox
+                // MessageBox.Show() không thuộc về tầng DAL.
+                Console.WriteLine($"Lỗi khi thêm người dùng: {ex.Message}");
+
+                // Trả về false khi có bất kỳ lỗi nào xảy ra
+                return false;
+            }
+            finally
+            {
+                // Đảm bảo kết nối luôn được đóng
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
+            }
+        }
+        public bool DeleteUser(int UserId)
+        {
+            string query = "DELETE FROM Users WHERE UserID = @UserID ";
+            try
+            {
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
+                using (var command = new SqlCommand(query, _connection))
+                {
+                    command.Parameters.AddWithValue("@UserID", UserId);
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi xóa người dùng: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
+            }
+        }
+        public bool UpdateUser(User user)
+        {
+            string query = @"UPDATE Users SET
+                      Username = @Username,
+                      FullName = @FullName,
+                      Phone = @Phone,
+                      Email = @Email,
+                      RoleID = @RoleID,
+                      Status = @Status";
+
+            // Thêm PasswordHash vào câu lệnh chỉ khi có giá trị
+            if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+            {
+                query += ", PasswordHash = @PasswordHash";
+            }
+
+            query += " WHERE UserID = @UserID";
+            try
+            {
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
+                using (var command = new SqlCommand(query, _connection))
+                {
+                    command.Parameters.AddWithValue("@UserID", user.UserID);
+                    command.Parameters.AddWithValue("@Username", user.Username);
+                    command.Parameters.AddWithValue("@RoleID", user.Role);
+                    command.Parameters.AddWithValue("@FullName", (object)user.FullName ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Phone", (object)user.Phone ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Email", (object)user.Email ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Status", user.Status.ToString());
+
+                    // 🌟 Chỉ thêm tham số PasswordHash nếu nó có giá trị
+                    if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+                    {
+                        command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    }
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi cập nhật người dùng: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
+            }
+        }
         ~UserRepository()
         {
             Dispose(false);
