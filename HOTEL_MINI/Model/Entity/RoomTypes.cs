@@ -11,5 +11,10 @@ namespace MiniHotel.Models
         public int RoomTypesID { get; set;}
         public string TypeName {get; set;}
         public string Description { get; set;}
+        public override string ToString()
+        {
+            return TypeName; // hiển thị tên trong ComboBox
+        }
     }
 }
+

@@ -33,7 +33,7 @@
             this.btnCheckExistCCCD = new System.Windows.Forms.Button();
             this.btnBookConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.rbtnDatTruoc = new System.Windows.Forms.RadioButton();
+            this.rbtnDattruoc = new System.Windows.Forms.RadioButton();
             this.rbtnNhanngay = new System.Windows.Forms.RadioButton();
             this.txtGender = new System.Windows.Forms.TextBox();
             this.txtCCCD = new System.Windows.Forms.TextBox();
@@ -55,17 +55,21 @@
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblDiachi = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
+            this.lblRoomType = new System.Windows.Forms.Label();
+            this.cbxRoomType = new System.Windows.Forms.ComboBox();
             this.gbxRoomInfor.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbxRoomInfor
             // 
             this.gbxRoomInfor.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.gbxRoomInfor.Controls.Add(this.lblRoomType);
+            this.gbxRoomInfor.Controls.Add(this.cbxRoomType);
             this.gbxRoomInfor.Controls.Add(this.lblRoomNumber);
             this.gbxRoomInfor.Controls.Add(this.btnCheckExistCCCD);
             this.gbxRoomInfor.Controls.Add(this.btnBookConfirm);
             this.gbxRoomInfor.Controls.Add(this.btnCancel);
-            this.gbxRoomInfor.Controls.Add(this.rbtnDatTruoc);
+            this.gbxRoomInfor.Controls.Add(this.rbtnDattruoc);
             this.gbxRoomInfor.Controls.Add(this.rbtnNhanngay);
             this.gbxRoomInfor.Controls.Add(this.txtGender);
             this.gbxRoomInfor.Controls.Add(this.txtCCCD);
@@ -119,7 +123,7 @@
             // 
             // btnBookConfirm
             // 
-            this.btnBookConfirm.Location = new System.Drawing.Point(517, 876);
+            this.btnBookConfirm.Location = new System.Drawing.Point(529, 931);
             this.btnBookConfirm.Name = "btnBookConfirm";
             this.btnBookConfirm.Size = new System.Drawing.Size(155, 116);
             this.btnBookConfirm.TabIndex = 21;
@@ -129,24 +133,24 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(134, 904);
+            this.btnCancel.Location = new System.Drawing.Point(146, 959);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(179, 88);
             this.btnCancel.TabIndex = 20;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // rbtnDatTruoc
+            // rbtnDattruoc
             // 
-            this.rbtnDatTruoc.AutoSize = true;
-            this.rbtnDatTruoc.Location = new System.Drawing.Point(373, 451);
-            this.rbtnDatTruoc.Name = "rbtnDatTruoc";
-            this.rbtnDatTruoc.Size = new System.Drawing.Size(193, 41);
-            this.rbtnDatTruoc.TabIndex = 21;
-            this.rbtnDatTruoc.TabStop = true;
-            this.rbtnDatTruoc.Text = "Đặt Trước";
-            this.rbtnDatTruoc.UseVisualStyleBackColor = true;
-            this.rbtnDatTruoc.CheckedChanged += new System.EventHandler(this.rbtnDattruoc_CheckedChanged);
+            this.rbtnDattruoc.AutoSize = true;
+            this.rbtnDattruoc.Location = new System.Drawing.Point(373, 451);
+            this.rbtnDattruoc.Name = "rbtnDattruoc";
+            this.rbtnDattruoc.Size = new System.Drawing.Size(193, 41);
+            this.rbtnDattruoc.TabIndex = 21;
+            this.rbtnDattruoc.TabStop = true;
+            this.rbtnDattruoc.Text = "Đặt Trước";
+            this.rbtnDattruoc.UseVisualStyleBackColor = true;
+            this.rbtnDattruoc.CheckedChanged += new System.EventHandler(this.rbtnDattruoc_CheckedChanged);
             // 
             // rbtnNhanngay
             // 
@@ -212,7 +216,7 @@
             // 
             this.lblNote.AutoSize = true;
             this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(50, 682);
+            this.lblNote.Location = new System.Drawing.Point(62, 737);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(61, 22);
             this.lblNote.TabIndex = 13;
@@ -220,7 +224,7 @@
             // 
             // txtNote
             // 
-            this.txtNote.Location = new System.Drawing.Point(131, 682);
+            this.txtNote.Location = new System.Drawing.Point(143, 737);
             this.txtNote.Multiline = true;
             this.txtNote.Name = "txtNote";
             this.txtNote.Size = new System.Drawing.Size(479, 133);
@@ -229,7 +233,7 @@
             // dtpCheckoutTime
             // 
             this.dtpCheckoutTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpCheckoutTime.Location = new System.Drawing.Point(211, 617);
+            this.dtpCheckoutTime.Location = new System.Drawing.Point(223, 672);
             this.dtpCheckoutTime.Name = "dtpCheckoutTime";
             this.dtpCheckoutTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckoutTime.TabIndex = 11;
@@ -237,7 +241,7 @@
             // dtpCheckinTime
             // 
             this.dtpCheckinTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpCheckinTime.Location = new System.Drawing.Point(211, 569);
+            this.dtpCheckinTime.Location = new System.Drawing.Point(223, 624);
             this.dtpCheckinTime.Name = "dtpCheckinTime";
             this.dtpCheckinTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckinTime.TabIndex = 10;
@@ -246,7 +250,7 @@
             // 
             this.lblCHECKOUT.AutoSize = true;
             this.lblCHECKOUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKOUT.Location = new System.Drawing.Point(50, 625);
+            this.lblCHECKOUT.Location = new System.Drawing.Point(62, 680);
             this.lblCHECKOUT.Name = "lblCHECKOUT";
             this.lblCHECKOUT.Size = new System.Drawing.Size(137, 22);
             this.lblCHECKOUT.TabIndex = 9;
@@ -256,7 +260,7 @@
             // 
             this.lblCHECKIN.AutoSize = true;
             this.lblCHECKIN.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKIN.Location = new System.Drawing.Point(54, 577);
+            this.lblCHECKIN.Location = new System.Drawing.Point(66, 632);
             this.lblCHECKIN.Name = "lblCHECKIN";
             this.lblCHECKIN.Size = new System.Drawing.Size(126, 22);
             this.lblCHECKIN.TabIndex = 8;
@@ -340,6 +344,24 @@
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
             // 
+            // lblRoomType
+            // 
+            this.lblRoomType.AutoSize = true;
+            this.lblRoomType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRoomType.Location = new System.Drawing.Point(47, 587);
+            this.lblRoomType.Name = "lblRoomType";
+            this.lblRoomType.Size = new System.Drawing.Size(101, 22);
+            this.lblRoomType.TabIndex = 27;
+            this.lblRoomType.Text = "Loại Phòng";
+            // 
+            // cbxRoomType
+            // 
+            this.cbxRoomType.FormattingEnabled = true;
+            this.cbxRoomType.Location = new System.Drawing.Point(161, 573);
+            this.cbxRoomType.Name = "cbxRoomType";
+            this.cbxRoomType.Size = new System.Drawing.Size(121, 45);
+            this.cbxRoomType.TabIndex = 26;
+            // 
             // frmBookingPopup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -360,7 +382,7 @@
         private System.Windows.Forms.Button btnCheckExistCCCD;
         private System.Windows.Forms.Button btnBookConfirm;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.RadioButton rbtnDatTruoc;
+        private System.Windows.Forms.RadioButton rbtnDattruoc;
         private System.Windows.Forms.RadioButton rbtnNhanngay;
         private System.Windows.Forms.TextBox txtGender;
         private System.Windows.Forms.TextBox txtCCCD;
@@ -383,5 +405,7 @@
         private System.Windows.Forms.Label lblDiachi;
         private System.Windows.Forms.Label lblTen;
         private System.Windows.Forms.Label lblRoomNumber;
+        private System.Windows.Forms.Label lblRoomType;
+        private System.Windows.Forms.ComboBox cbxRoomType;
     }
 }

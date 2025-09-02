@@ -1,5 +1,6 @@
 ﻿using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
+using MiniHotel.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,10 @@ namespace HOTEL_MINI.BLL
         public List<string> getAllPricingType()
         {
             return roomRepository.getAllPricingType();
+        }
+        public List<RoomTypes> GetRoomTypes() 
+        { 
+            return roomRepository.getRoomTypeList();
         }
     }
 }
