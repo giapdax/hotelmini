@@ -100,7 +100,7 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        private void rdbDattruoc_CheckedChanged(object sender, EventArgs e)
+        private void rbtDatTruoc_CheckedChanged(object sender, EventArgs e)
         {
             dtpCheckinTime.Enabled = false;
             dtpCheckoutTime.Enabled = false;
@@ -138,6 +138,11 @@ namespace HOTEL_MINI.Forms
             }
 
             //var user = _form1.GetCurrentUser();
+        }
+
+        private void rbtnNhanngay_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

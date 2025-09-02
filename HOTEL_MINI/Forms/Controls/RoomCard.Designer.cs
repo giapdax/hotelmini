@@ -85,5 +85,7 @@
         private System.Windows.Forms.Label lblRoomNumber;
         private System.Windows.Forms.Button btnBook;
         private System.Windows.Forms.Button btnDetails;
+        private System.Windows.Forms.Label lblRoomStatus;
+
     }
 }
