@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.gbxRoomInfor = new System.Windows.Forms.GroupBox();
+            this.lblRoomType = new System.Windows.Forms.Label();
+            this.cbxRoomType = new System.Windows.Forms.ComboBox();
             this.lblRoomNumber = new System.Windows.Forms.Label();
             this.btnCheckExistCCCD = new System.Windows.Forms.Button();
             this.btnBookConfirm = new System.Windows.Forms.Button();
@@ -55,8 +57,6 @@
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblDiachi = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
-            this.lblRoomType = new System.Windows.Forms.Label();
-            this.cbxRoomType = new System.Windows.Forms.ComboBox();
             this.gbxRoomInfor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,10 +95,28 @@
             this.gbxRoomInfor.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbxRoomInfor.Location = new System.Drawing.Point(0, 0);
             this.gbxRoomInfor.Name = "gbxRoomInfor";
-            this.gbxRoomInfor.Size = new System.Drawing.Size(793, 1072);
+            this.gbxRoomInfor.Size = new System.Drawing.Size(793, 1050);
             this.gbxRoomInfor.TabIndex = 2;
             this.gbxRoomInfor.TabStop = false;
             this.gbxRoomInfor.Text = "Thông tin ";
+            // 
+            // lblRoomType
+            // 
+            this.lblRoomType.AutoSize = true;
+            this.lblRoomType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRoomType.Location = new System.Drawing.Point(47, 587);
+            this.lblRoomType.Name = "lblRoomType";
+            this.lblRoomType.Size = new System.Drawing.Size(101, 22);
+            this.lblRoomType.TabIndex = 27;
+            this.lblRoomType.Text = "Loại Phòng";
+            // 
+            // cbxRoomType
+            // 
+            this.cbxRoomType.FormattingEnabled = true;
+            this.cbxRoomType.Location = new System.Drawing.Point(161, 573);
+            this.cbxRoomType.Name = "cbxRoomType";
+            this.cbxRoomType.Size = new System.Drawing.Size(121, 45);
+            this.cbxRoomType.TabIndex = 26;
             // 
             // lblRoomNumber
             // 
@@ -344,29 +362,11 @@
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
             // 
-            // lblRoomType
-            // 
-            this.lblRoomType.AutoSize = true;
-            this.lblRoomType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoomType.Location = new System.Drawing.Point(47, 587);
-            this.lblRoomType.Name = "lblRoomType";
-            this.lblRoomType.Size = new System.Drawing.Size(101, 22);
-            this.lblRoomType.TabIndex = 27;
-            this.lblRoomType.Text = "Loại Phòng";
-            // 
-            // cbxRoomType
-            // 
-            this.cbxRoomType.FormattingEnabled = true;
-            this.cbxRoomType.Location = new System.Drawing.Point(161, 573);
-            this.cbxRoomType.Name = "cbxRoomType";
-            this.cbxRoomType.Size = new System.Drawing.Size(121, 45);
-            this.cbxRoomType.TabIndex = 26;
-            // 
             // frmBookingPopup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(793, 1072);
+            this.ClientSize = new System.Drawing.Size(793, 1050);
             this.Controls.Add(this.gbxRoomInfor);
             this.Name = "frmBookingPopup";
             this.Text = "frmBookingPopup";

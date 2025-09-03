@@ -83,7 +83,6 @@ namespace HOTEL_MINI.Forms
             this.txtSearchRoomNumber.Name = "txtSearchRoomNumber";
             this.txtSearchRoomNumber.Size = new System.Drawing.Size(113, 35);
             this.txtSearchRoomNumber.TabIndex = 2;
-            this.txtSearchRoomNumber.TextChanged += new System.EventHandler(this.txtSearchRoomNumber_TextChanged);
             // 
             // pnlMain
             // 
@@ -101,7 +100,6 @@ namespace HOTEL_MINI.Forms
             this.txtSearchRoomNumber.Name = "txtSearchRoomNumber";
             this.txtSearchRoomNumber.Size = new System.Drawing.Size(100, 26);
             this.txtSearchRoomNumber.TabIndex = 2;
-            this.txtSearchRoomNumber.TextChanged += new System.EventHandler(this.txtSearchRoomNumber_TextChanged);
             
             // btnResetFilter
             // 

@@ -424,7 +424,7 @@ namespace HOTEL_MINI.Forms
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(138, 44);
             this.btnClear.TabIndex = 3;
-            this.btnClear.Text = "Clear";
+            this.btnClear.Text = "Làm mới";
             this.btnClear.UseVisualStyleBackColor = false;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 

@@ -15,7 +15,6 @@ namespace HOTEL_MINI.Model.Entity
     }
     public enum UserStatus
     {
-        All = -1,
         Active,
         Inactive,
         Blocked

@@ -39,12 +39,13 @@ namespace HOTEL_MINI.BLL
                     };
                 }
 
-                if (user.Status.ToString() != "Active")
+                // Cập nhật lại điều kiện kiểm tra trạng thái
+                if (user.Status == UserStatus.Inactive || user.Status == UserStatus.Blocked)
                 {
                     return new LoginResult
                     {
                         Success = false,
-                        Message = "Tài khoản đã bị khóa"
+                        Message = "Tài khoản của bạn đã bị vô hiệu hóa hoặc bị khóa."
                     };
                 }
 

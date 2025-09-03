@@ -25,9 +25,6 @@ namespace HOTEL_MINI.Forms
             this.Load += frmUser_Load;
             this.dataGridView1.CellClick += dataGridView1_CellClick;
             this.dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-
-            // Gán sự kiện TextChanged cho ô tìm kiếm
-            // Giả sử tên TextBox là 'txtSearch'
             this.txtSearch.TextChanged += txtSearch_TextChanged;
         }
 
@@ -231,12 +228,10 @@ namespace HOTEL_MINI.Forms
 
             if (string.IsNullOrWhiteSpace(searchText))
             {
-                // Nếu ô tìm kiếm trống, hiển thị lại toàn bộ danh sách
                 dataGridView1.DataSource = _allUsers;
             }
             else
             {
-                // Lọc danh sách người dùng gốc
                 List<User> filteredUsers = _allUsers.Where(user =>
                     user.Username.ToLower().Contains(searchText) ||
                     user.FullName.ToLower().Contains(searchText) ||
@@ -246,11 +241,10 @@ namespace HOTEL_MINI.Forms
 
                 dataGridView1.DataSource = filteredUsers;
             }
-            // Gọi SetupDataGridView để đảm bảo các cột hiển thị đúng
+
             SetupDataGridView();
         }
 
-        // Unused methods
         private void button1_Click(object sender, EventArgs e) { }
         private void lblThongTinChiTiet_Click(object sender, EventArgs e) { }
         private void panelUserManager_Paint(object sender, EventArgs e) { }
