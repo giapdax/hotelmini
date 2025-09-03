@@ -26,28 +26,26 @@ namespace HOTEL_MINI.Forms
             this.panelUserTitle = new System.Windows.Forms.Panel();
             this.groupBoxSearch = new System.Windows.Forms.GroupBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.btnSearch = new System.Windows.Forms.Button();
-            this.btnClearSearch = new System.Windows.Forms.Button();
             this.panelUser = new System.Windows.Forms.Panel();
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tableLayoutRight = new System.Windows.Forms.TableLayoutPanel();
             this.groupBoxDetail = new System.Windows.Forms.GroupBox();
             this.tableLayoutUserInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblPassword = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblFullName = new System.Windows.Forms.Label();
             this.txtFullName = new System.Windows.Forms.TextBox();
-            this.lblEmail = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
-            this.lblRole = new System.Windows.Forms.Label();
-            this.cmbRole = new System.Windows.Forms.ComboBox();
-            this.lblStatus = new System.Windows.Forms.Label();
-            this.cmbStatus = new System.Windows.Forms.ComboBox();
+            this.lblEmail = new System.Windows.Forms.Label();
+            this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cmbStatus = new System.Windows.Forms.ComboBox();
             this.txtPhone = new System.Windows.Forms.TextBox();
+            this.cmbRole = new System.Windows.Forms.ComboBox();
+            this.lblRole = new System.Windows.Forms.Label();
             this.panelButtons = new System.Windows.Forms.Panel();
             this.tableLayoutButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -83,8 +81,6 @@ namespace HOTEL_MINI.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.groupBoxSearch.Controls.Add(this.txtSearch);
-            this.groupBoxSearch.Controls.Add(this.btnSearch);
-            this.groupBoxSearch.Controls.Add(this.btnClearSearch);
             this.groupBoxSearch.ForeColor = System.Drawing.Color.White;
             this.groupBoxSearch.Location = new System.Drawing.Point(6, 3);
             this.groupBoxSearch.Name = "groupBoxSearch";
@@ -98,26 +94,8 @@ namespace HOTEL_MINI.Forms
             // 
             this.txtSearch.Location = new System.Drawing.Point(13, 25);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(200, 26);
+            this.txtSearch.Size = new System.Drawing.Size(235, 26);
             this.txtSearch.TabIndex = 0;
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.Location = new System.Drawing.Point(223, 23);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 30);
-            this.btnSearch.TabIndex = 1;
-            this.btnSearch.Text = "Tìm";
-            this.btnSearch.UseVisualStyleBackColor = true;
-            // 
-            // btnClearSearch
-            // 
-            this.btnClearSearch.Location = new System.Drawing.Point(303, 23);
-            this.btnClearSearch.Name = "btnClearSearch";
-            this.btnClearSearch.Size = new System.Drawing.Size(75, 30);
-            this.btnClearSearch.TabIndex = 2;
-            this.btnClearSearch.Text = "Clear";
-            this.btnClearSearch.UseVisualStyleBackColor = true;
             // 
             // panelUser
             // 
@@ -141,6 +119,8 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
             this.tableLayoutPanelMain.RowCount = 1;
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelMain.Size = new System.Drawing.Size(900, 430);
             this.tableLayoutPanelMain.TabIndex = 0;
             // 
@@ -169,8 +149,8 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutRight.Location = new System.Drawing.Point(603, 3);
             this.tableLayoutRight.Name = "tableLayoutRight";
             this.tableLayoutRight.RowCount = 2;
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75.23585F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24.76415F));
             this.tableLayoutRight.Size = new System.Drawing.Size(294, 424);
             this.tableLayoutRight.TabIndex = 1;
             // 
@@ -182,7 +162,7 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetail.ForeColor = System.Drawing.Color.White;
             this.groupBoxDetail.Location = new System.Drawing.Point(3, 3);
             this.groupBoxDetail.Name = "groupBoxDetail";
-            this.groupBoxDetail.Size = new System.Drawing.Size(288, 290);
+            this.groupBoxDetail.Size = new System.Drawing.Size(288, 313);
             this.groupBoxDetail.TabIndex = 0;
             this.groupBoxDetail.TabStop = false;
             this.groupBoxDetail.Text = "Thông tin User";
@@ -192,56 +172,34 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutUserInfo.ColumnCount = 2;
             this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            this.tableLayoutUserInfo.Controls.Add(this.label1, 0, 6);
-            this.tableLayoutUserInfo.Controls.Add(this.lblPassword, 0, 5);
             this.tableLayoutUserInfo.Controls.Add(this.lblUsername, 0, 0);
             this.tableLayoutUserInfo.Controls.Add(this.txtUsername, 1, 0);
             this.tableLayoutUserInfo.Controls.Add(this.lblFullName, 0, 1);
             this.tableLayoutUserInfo.Controls.Add(this.txtFullName, 1, 1);
-            this.tableLayoutUserInfo.Controls.Add(this.lblEmail, 0, 2);
-            this.tableLayoutUserInfo.Controls.Add(this.txtEmail, 1, 2);
-            this.tableLayoutUserInfo.Controls.Add(this.lblRole, 0, 3);
-            this.tableLayoutUserInfo.Controls.Add(this.cmbRole, 1, 3);
-            this.tableLayoutUserInfo.Controls.Add(this.lblStatus, 0, 4);
-            this.tableLayoutUserInfo.Controls.Add(this.cmbStatus, 1, 4);
-            this.tableLayoutUserInfo.Controls.Add(this.txtPassword, 1, 5);
-            this.tableLayoutUserInfo.Controls.Add(this.txtPhone, 1, 6);
+            this.tableLayoutUserInfo.Controls.Add(this.txtEmail, 1, 4);
+            this.tableLayoutUserInfo.Controls.Add(this.lblEmail, 0, 4);
+            this.tableLayoutUserInfo.Controls.Add(this.lblPassword, 0, 2);
+            this.tableLayoutUserInfo.Controls.Add(this.txtPassword, 1, 2);
+            this.tableLayoutUserInfo.Controls.Add(this.lblStatus, 0, 6);
+            this.tableLayoutUserInfo.Controls.Add(this.label1, 0, 3);
+            this.tableLayoutUserInfo.Controls.Add(this.cmbStatus, 1, 6);
+            this.tableLayoutUserInfo.Controls.Add(this.txtPhone, 1, 3);
+            this.tableLayoutUserInfo.Controls.Add(this.cmbRole, 1, 5);
+            this.tableLayoutUserInfo.Controls.Add(this.lblRole, 0, 5);
             this.tableLayoutUserInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutUserInfo.Location = new System.Drawing.Point(3, 22);
             this.tableLayoutUserInfo.Name = "tableLayoutUserInfo";
             this.tableLayoutUserInfo.RowCount = 8;
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutUserInfo.Size = new System.Drawing.Size(282, 265);
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutUserInfo.Size = new System.Drawing.Size(282, 288);
             this.tableLayoutUserInfo.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(3, 205);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(92, 29);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "Phone:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblPassword
-            // 
-            this.lblPassword.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblPassword.ForeColor = System.Drawing.Color.White;
-            this.lblPassword.Location = new System.Drawing.Point(3, 176);
-            this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(92, 29);
-            this.lblPassword.TabIndex = 11;
-            this.lblPassword.Text = "Password:";
-            this.lblPassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblUsername
             // 
@@ -249,7 +207,7 @@ namespace HOTEL_MINI.Forms
             this.lblUsername.ForeColor = System.Drawing.Color.White;
             this.lblUsername.Location = new System.Drawing.Point(3, 0);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(92, 36);
+            this.lblUsername.Size = new System.Drawing.Size(92, 30);
             this.lblUsername.TabIndex = 0;
             this.lblUsername.Text = "Username:";
             this.lblUsername.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -266,9 +224,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblFullName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblFullName.ForeColor = System.Drawing.Color.White;
-            this.lblFullName.Location = new System.Drawing.Point(3, 36);
+            this.lblFullName.Location = new System.Drawing.Point(3, 30);
             this.lblFullName.Name = "lblFullName";
-            this.lblFullName.Size = new System.Drawing.Size(92, 34);
+            this.lblFullName.Size = new System.Drawing.Size(92, 28);
             this.lblFullName.TabIndex = 2;
             this.lblFullName.Text = "Full Name:";
             this.lblFullName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -276,40 +234,93 @@ namespace HOTEL_MINI.Forms
             // txtFullName
             // 
             this.txtFullName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFullName.Location = new System.Drawing.Point(101, 39);
+            this.txtFullName.Location = new System.Drawing.Point(101, 33);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(178, 26);
             this.txtFullName.TabIndex = 3;
+            // 
+            // txtEmail
+            // 
+            this.txtEmail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtEmail.Location = new System.Drawing.Point(101, 122);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(178, 26);
+            this.txtEmail.TabIndex = 17;
             // 
             // lblEmail
             // 
             this.lblEmail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblEmail.ForeColor = System.Drawing.Color.White;
-            this.lblEmail.Location = new System.Drawing.Point(3, 70);
+            this.lblEmail.Location = new System.Drawing.Point(3, 119);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(92, 35);
-            this.lblEmail.TabIndex = 4;
+            this.lblEmail.Size = new System.Drawing.Size(92, 30);
+            this.lblEmail.TabIndex = 16;
             this.lblEmail.Text = "Email:";
             this.lblEmail.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtEmail
+            // lblPassword
             // 
-            this.txtEmail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtEmail.Location = new System.Drawing.Point(101, 73);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(178, 26);
-            this.txtEmail.TabIndex = 5;
+            this.lblPassword.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblPassword.ForeColor = System.Drawing.Color.White;
+            this.lblPassword.Location = new System.Drawing.Point(3, 58);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(92, 31);
+            this.lblPassword.TabIndex = 11;
+            this.lblPassword.Text = "Password:";
+            this.lblPassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblRole
+            // txtPassword
             // 
-            this.lblRole.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblRole.ForeColor = System.Drawing.Color.White;
-            this.lblRole.Location = new System.Drawing.Point(3, 105);
-            this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(92, 35);
-            this.lblRole.TabIndex = 6;
-            this.lblRole.Text = "Role:";
-            this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.txtPassword.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtPassword.Location = new System.Drawing.Point(101, 61);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(178, 26);
+            this.txtPassword.TabIndex = 10;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblStatus.ForeColor = System.Drawing.Color.White;
+            this.lblStatus.Location = new System.Drawing.Point(3, 184);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(92, 38);
+            this.lblStatus.TabIndex = 8;
+            this.lblStatus.Text = "Status:";
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label1
+            // 
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(3, 89);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(92, 30);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Phone:";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbStatus
+            // 
+            this.cmbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatus.FormattingEnabled = true;
+            this.cmbStatus.Items.AddRange(new object[] {
+            "Active",
+            "Inactive"});
+            this.cmbStatus.Location = new System.Drawing.Point(101, 187);
+            this.cmbStatus.Name = "cmbStatus";
+            this.cmbStatus.Size = new System.Drawing.Size(178, 28);
+            this.cmbStatus.TabIndex = 9;
+            this.cmbStatus.SelectedIndexChanged += new System.EventHandler(this.cmbStatus_SelectedIndexChanged);
+            // 
+            // txtPhone
+            // 
+            this.txtPhone.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtPhone.Location = new System.Drawing.Point(101, 92);
+            this.txtPhone.Name = "txtPhone";
+            this.txtPhone.Size = new System.Drawing.Size(178, 26);
+            this.txtPhone.TabIndex = 12;
             // 
             // cmbRole
             // 
@@ -320,57 +331,31 @@ namespace HOTEL_MINI.Forms
             "Admin",
             "Staff",
             "User"});
-            this.cmbRole.Location = new System.Drawing.Point(101, 108);
+            this.cmbRole.Location = new System.Drawing.Point(101, 152);
             this.cmbRole.Name = "cmbRole";
             this.cmbRole.Size = new System.Drawing.Size(178, 28);
             this.cmbRole.TabIndex = 7;
+            this.cmbRole.SelectedIndexChanged += new System.EventHandler(this.cmbRole_SelectedIndexChanged);
             // 
-            // lblStatus
+            // lblRole
             // 
-            this.lblStatus.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblStatus.ForeColor = System.Drawing.Color.White;
-            this.lblStatus.Location = new System.Drawing.Point(3, 140);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(92, 35);
-            this.lblStatus.TabIndex = 8;
-            this.lblStatus.Text = "Status:";
-            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbStatus
-            // 
-            this.cmbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbStatus.FormattingEnabled = true;
-            this.cmbStatus.Items.AddRange(new object[] {
-            "Active",
-            "Inactive"});
-            this.cmbStatus.Location = new System.Drawing.Point(101, 143);
-            this.cmbStatus.Name = "cmbStatus";
-            this.cmbStatus.Size = new System.Drawing.Size(178, 28);
-            this.cmbStatus.TabIndex = 9;
-            // 
-            // txtPassword
-            // 
-            this.txtPassword.Location = new System.Drawing.Point(101, 179);
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(178, 26);
-            this.txtPassword.TabIndex = 10;
-            // 
-            // txtPhone
-            // 
-            this.txtPhone.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPhone.Location = new System.Drawing.Point(101, 208);
-            this.txtPhone.Name = "txtPhone";
-            this.txtPhone.Size = new System.Drawing.Size(178, 26);
-            this.txtPhone.TabIndex = 12;
+            this.lblRole.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblRole.ForeColor = System.Drawing.Color.White;
+            this.lblRole.Location = new System.Drawing.Point(3, 149);
+            this.lblRole.Name = "lblRole";
+            this.lblRole.Size = new System.Drawing.Size(92, 35);
+            this.lblRole.TabIndex = 6;
+            this.lblRole.Text = "Role:";
+            this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblRole.Click += new System.EventHandler(this.lblRole_Click);
             // 
             // panelButtons
             // 
             this.panelButtons.Controls.Add(this.tableLayoutButtons);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelButtons.Location = new System.Drawing.Point(3, 299);
+            this.panelButtons.Location = new System.Drawing.Point(3, 322);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(288, 122);
+            this.panelButtons.Size = new System.Drawing.Size(288, 99);
             this.panelButtons.TabIndex = 1;
             // 
             // tableLayoutButtons
@@ -388,7 +373,7 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutButtons.RowCount = 2;
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutButtons.Size = new System.Drawing.Size(288, 122);
+            this.tableLayoutButtons.Size = new System.Drawing.Size(288, 99);
             this.tableLayoutButtons.TabIndex = 0;
             // 
             // btnAdd
@@ -398,7 +383,7 @@ namespace HOTEL_MINI.Forms
             this.btnAdd.ForeColor = System.Drawing.Color.White;
             this.btnAdd.Location = new System.Drawing.Point(3, 3);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(138, 55);
+            this.btnAdd.Size = new System.Drawing.Size(138, 43);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Thêm";
             this.btnAdd.UseVisualStyleBackColor = false;
@@ -411,7 +396,7 @@ namespace HOTEL_MINI.Forms
             this.btnEdit.ForeColor = System.Drawing.Color.White;
             this.btnEdit.Location = new System.Drawing.Point(147, 3);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(138, 55);
+            this.btnEdit.Size = new System.Drawing.Size(138, 43);
             this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "Sửa";
             this.btnEdit.UseVisualStyleBackColor = false;
@@ -422,9 +407,9 @@ namespace HOTEL_MINI.Forms
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(3, 64);
+            this.btnDelete.Location = new System.Drawing.Point(3, 52);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(138, 55);
+            this.btnDelete.Size = new System.Drawing.Size(138, 44);
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Xóa";
             this.btnDelete.UseVisualStyleBackColor = false;
@@ -435,9 +420,9 @@ namespace HOTEL_MINI.Forms
             this.btnClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnClear.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnClear.ForeColor = System.Drawing.Color.White;
-            this.btnClear.Location = new System.Drawing.Point(147, 64);
+            this.btnClear.Location = new System.Drawing.Point(147, 52);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(138, 55);
+            this.btnClear.Size = new System.Drawing.Size(138, 44);
             this.btnClear.TabIndex = 3;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = false;
@@ -473,8 +458,6 @@ namespace HOTEL_MINI.Forms
         private Panel panelUserTitle;
         private GroupBox groupBoxSearch;
         private TextBox txtSearch;
-        private Button btnSearch;
-        private Button btnClearSearch;
 
         private Panel panelUser;
         private TableLayoutPanel tableLayoutPanelMain;
@@ -486,8 +469,6 @@ namespace HOTEL_MINI.Forms
         private Label lblUsername;
         private Label lblFullName;
         private TextBox txtFullName;
-        private Label lblEmail;
-        private TextBox txtEmail;
         private Label lblRole;
         private ComboBox cmbRole;
         private Label lblStatus;
@@ -500,9 +481,11 @@ namespace HOTEL_MINI.Forms
         private Button btnDelete;
         private Button btnClear;
         private TextBox txtUsername;
-        private TextBox txtPassword;
-        private Label lblPassword;
+        private Label lblEmail;
+        private TextBox txtEmail;
         private Label label1;
+        private Label lblPassword;
         private TextBox txtPhone;
+        private TextBox txtPassword;
     }
 }
