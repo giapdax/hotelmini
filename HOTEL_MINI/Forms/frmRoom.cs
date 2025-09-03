@@ -17,13 +17,15 @@ namespace HOTEL_MINI.Forms
     {
         private readonly frmApplication _form1;
         private readonly RoomService _roomService;
+
         public frmRoom(frmApplication form1)
         {
             InitializeComponent();
             _form1 = form1;
             _roomService = new RoomService();
-            LoadRoom("All", "");
+            LoadRoom("All","");
             LoadRoomByStatus();
+            
             //pnlRight.Dock = DockStyle.Right;   // Gắn vào bên phải
             //pnlRight.Width = 200;              // Chiều rộng cố định
 
@@ -59,17 +61,15 @@ namespace HOTEL_MINI.Forms
             
         }
 
-
         public void LoadRoomByStatus()
-        {            
+        {
             var listStatus = _roomService.getAllRoomStatus();
             cbxRoomStatus.Items.Add("All");
             foreach (var status in listStatus)
             {
-                
                 cbxRoomStatus.Items.Add(status);
             }
-            
+
             cbxRoomStatus.SelectedIndex = 0;
         }
 
@@ -80,20 +80,24 @@ namespace HOTEL_MINI.Forms
             LoadRoom(selectedStatus, searchText);
         }
 
-
         private void txtSearchRoomNumber_TextChanged(object sender, EventArgs e)
         {
-            string selectedStatus = cbxRoomStatus.SelectedItem?.ToString() ?? "All";
-            string searchText = txtSearchRoomNumber.Text.Trim();
-            LoadRoom(selectedStatus, searchText);
+            string selectedStatus = cbxRoomStatus.SelectedItem.ToString();
+            string keyword = txtSearchRoomNumber.Text;
+            LoadRoom(selectedStatus, keyword);
         }
 
         private void btnResetFilter_Click(object sender, EventArgs e)
         {
-            cbxRoomStatus.SelectedIndex = 0; // reset về "All"
+            cbxRoomStatus.SelectedIndex = 0;
             txtSearchRoomNumber.Clear();
-            LoadRoom("All", ""); // load full list
+            LoadRoom("All", "");
         }
+
+
+        
+
+
 
     }
 }

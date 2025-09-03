@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,6 +20,7 @@ namespace HOTEL_MINI.Forms
         private readonly CustomerService _customerService;
         private readonly BookingService _bookingService;
         private readonly RoomService _roomService;
+        private Customer _customer = null;
         public frmBookingPopup(frmApplication frmApplication, Room room)
         {
             InitializeComponent();
@@ -30,9 +32,92 @@ namespace HOTEL_MINI.Forms
             lblRoomNumber.Text = $"Room: {_room.RoomNumber}";
             dtpCheckinTime.Enabled = false;
             dtpCheckoutTime.Enabled = false;
+            LoadRoomStatusAndType();
+            inAccessible();
         }
         
 
+        
+        private void addNewBooking(int CustomerID, int currentUserID)
+        {
+            Booking booking = new Booking
+            {
+                CustomerID = CustomerID,
+                RoomID = _room.RoomID,
+                PricingID = 16, //SAu này sửa đoạn này
+                CreatedBy = currentUserID,
+                BookingDate = DateTime.Now,
+                CheckInDate = rbtnNhanngay.Checked ? DateTime.Now : dtpCheckinTime.Value,
+                CheckOutDate = rbtnNhanngay.Checked
+                ? (DateTime?)null   // nhận ngay thì để null, sau này khi checkout mới cập nhật
+                : dtpCheckoutTime.Value,
+                Status = rbtnNhanngay.Checked ? "CheckedIn" : "Booked",
+                Notes = txtNote.Text
+            };
+            //dtpCheckoutTime.IsAccessible = false;
+
+            var bookingResult = _bookingService.AddBooking(booking); // gọi service/repo lưu DB
+            if (bookingResult == null)
+            {
+                // Lưu booking thất bại
+                MessageBox.Show("Đặt phòng thất bại. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+
+                MessageBox.Show("Đặt phòng thành công! BookingID: " + bookingResult.BookingID);
+                var changeStatus = _roomService.updateRoomStatus(_room.RoomID, rbtnNhanngay.Checked ? "Occupied" : "Booked");
+                if (changeStatus)
+                {
+                    MessageBox.Show("Cap nhat trang thai phong thanh cong");
+                    return;// reload UI phòng
+
+                }
+                else
+                {
+                    MessageBox.Show("Không thể cập nhật trạng thái phòng. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+        }
+
+        private void btnBookConfirm_Click(object sender, EventArgs e)
+        {
+            if (!ValidateCustomerInputs())
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin khách hàng");
+
+                return;
+            }
+            else
+            {
+                if (_customer != null)
+                {
+                    addNewBooking(_customer.CustomerID, _form1.GetCurrentUser().UserID);
+                }
+                else
+                {
+                    //IDNumberNotExistUI();
+                    Customer newCustomer = new Customer
+                    {
+                        FullName = txtTen.Text,
+                        Address = txtDiachi.Text,
+                        Email = txtEmail.Text,
+                        Gender = txtGender.Text,
+                        IDNumber = txtCCCD.Text,
+                        Phone = txtSDT.Text
+                    };
+                    addNewCustomer(newCustomer);
+                    if (_customer == null)
+                    {
+                        MessageBox.Show("Không thể tạo khách hàng mới. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    addNewBooking(_customer.CustomerID, _form1.GetCurrentUser().UserID);
+                }
+            }
+        }
         private void btnCheckExistCCCD_Click(object sender, EventArgs e)
         {
             string ccccd = txtCCCD.Text;
@@ -41,103 +126,133 @@ namespace HOTEL_MINI.Forms
                 MessageBox.Show("Please enter a valid ID number.");
                 return;
             }
-            var exists = _customerService.checkExistNumberID(ccccd);
-            if (exists)
+            var customer = _customerService.getCustomerByIDNumber(ccccd);
+            if (customer != null)
             {
-                MessageBox.Show("Customer found. Please proceed with booking.");
-                // Optionally, you can populate customer details here if needed.
+                MessageBox.Show($"Khach tồn tại và tự đọng động fill {customer.FullName} {customer.Email}  {customer.Email}");
+                _customer = customer;
+                Accessible();
+                IDNumberExistUI(customer);
+                return;
             }
             else
             {
-                MessageBox.Show("Customer not found. Please enter new customer details.");
-                txtDiachi.Clear();
-                txtTen.Clear();
-                txtEmail.Clear();
-                txtSDT.Clear();
-                txtGender.Clear();
+                MessageBox.Show("Không thấy khách, hãy điền các thông tin của khách");
+                Accessible();
                 return;
             }
-            //var customer = _customerService.getCustomerByIDNumber(ccccd);
-            //if (customer != null)
-            //{
-            //    MessageBox.Show("Customer found and details populated.");
-            //    txtCCCD.Text = customer.IDNumber;
-            //    txtTen.Text = customer.FullName;
-            //    txtDiachi.Text = customer.Address;
-            //    txtEmail.Text = customer.Email;
-            //    txtSDT.Text = customer.Phone;
-            //    txtGender.Text = customer.Gender;
-            //    txtCCCD.ReadOnly = true;
-            //    txtSDT.ReadOnly = true;
-            //    txtTen.ReadOnly = true;
-            //    txtDiachi.ReadOnly = true;
-            //    txtEmail.ReadOnly = true;
-            //    txtGender.ReadOnly = true;    
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Customer not found. Please enter new customer details.");
-            //    txtDiachi.Clear();
-            //    txtTen.Clear();
-            //    txtEmail.Clear();
-            //    txtSDT.Clear();
-            //    txtGender.Clear();
-            //    return;
-            //}
         }
-        private Customer addNewCustomer(Customer customer)
+        private void addNewCustomer(Customer customer)
         {
             var customerResult = _customerService.addNewCustomer(customer);
             if (customerResult != null)
             {
                 MessageBox.Show("User added successfully.");
-                return customerResult;
+                _customer = customerResult;
+                return;
             }
             else
             {
                 MessageBox.Show("Failed to add user.");
-                return null;
+                return;
             }
         }
 
-        private void rdbDattruoc_CheckedChanged(object sender, EventArgs e)
-        {
-            dtpCheckinTime.Enabled = false;
-            dtpCheckoutTime.Enabled = false;
-        }
-
-        private void rdbCheckinNow_CheckedChanged(object sender, EventArgs e)
+        private void rbtnNhanngay_CheckedChanged(object sender, EventArgs e)
         {
             dtpCheckinTime.Enabled = true;
             dtpCheckoutTime.Enabled = true;
         }
-
-        private void btnBookConfirm_Click(object sender, EventArgs e)
+        private void rbtnDattruoc_CheckedChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtTen.Text) || !string.IsNullOrWhiteSpace(txtDiachi.Text) || !string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                    !string.IsNullOrWhiteSpace(txtSDT.Text) || !string.IsNullOrWhiteSpace(txtGender.Text))
+            dtpCheckinTime.Enabled = false;
+            dtpCheckoutTime.Enabled = false;
+        }
+        private void IDNumberExistUI(Customer customer)
+        {
+            txtCCCD.Text = customer.IDNumber;
+            txtTen.Text = customer.FullName;
+            txtDiachi.Text = customer.Address;
+            txtEmail.Text = customer.Email;
+            txtSDT.Text = customer.Phone;
+            txtGender.Text = customer.Gender;
+            txtCCCD.ReadOnly = true;
+            txtSDT.ReadOnly = true;
+            txtTen.ReadOnly = true;
+            txtDiachi.ReadOnly = true;
+            txtEmail.ReadOnly = true;
+            txtGender.ReadOnly = true;
+        }
+        private void IDNumberNotExistUI()
+        {
+            txtCCCD.ReadOnly = false;
+            txtSDT.ReadOnly = false;
+            txtTen.ReadOnly = false;
+            txtDiachi.ReadOnly = false;
+            txtEmail.ReadOnly = false;
+            txtGender.ReadOnly = false;
+            txtDiachi.Clear();
+            txtTen.Clear();
+            txtEmail.Clear();
+            txtSDT.Clear();
+            txtGender.Clear();
+        }
+        private void LoadRoomStatusAndType()
+        {
+
+            var pricingType = _roomService.getAllPricingType();
+            foreach (var status in pricingType)
             {
-                string ten = txtTen.Text;
-                string diachi = txtDiachi.Text;
-                string sdt = txtSDT.Text;
-                string email = txtEmail.Text;
-                string gender = txtGender.Text;
-                string idNumber = txtCCCD.Text;
-
-                Customer newCustomer = new Customer
-                {
-                    FullName = ten,
-                    Address = diachi,
-                    Email = email,
-                    Gender = gender,
-                    IDNumber = idNumber,
-                    Phone = sdt
-                };
-                var addedCustomer = addNewCustomer(newCustomer);
-                Close();
+                cbxPricingType.Items.Add(status);
             }
-
-            //var user = _form1.GetCurrentUser();
+            var roomTypes = _roomService.GetRoomTypes();
+            foreach (var type in roomTypes)
+            {
+                cbxRoomType.Items.Add(type);
+            }
+        }
+        private void inAccessible()
+        {
+            dtpCheckinTime.Enabled = false;
+            dtpCheckoutTime.Enabled = false;
+            //txtCCCD.ReadOnly = true;
+            txtSDT.ReadOnly = true;
+            txtTen.ReadOnly = true;
+            txtDiachi.ReadOnly = true;
+            txtEmail.ReadOnly = true;
+            txtGender.ReadOnly = true;
+            txtNote.ReadOnly = true;
+            cbxPricingType.Enabled = false;
+            cbxRoomType.Enabled = false;
+            rbtnDattruoc.Enabled = false;
+            rbtnNhanngay.Enabled = false;
+            btnBookConfirm.Enabled = false;
+        }
+            private void Accessible()
+        {
+            dtpCheckinTime.Enabled = true;
+            dtpCheckoutTime.Enabled = true;
+            //txtCCCD.ReadOnly = true;
+            txtSDT.ReadOnly = false;
+            txtTen.ReadOnly = false;
+            txtDiachi.ReadOnly = false;
+            txtEmail.ReadOnly = false;
+            txtGender.ReadOnly = false;
+            txtNote.ReadOnly = false;
+            cbxPricingType.Enabled = true;
+            cbxRoomType.Enabled = true;
+            rbtnDattruoc.Enabled = true;
+            rbtnNhanngay.Enabled = true;
+            btnBookConfirm.Enabled = true;
+        }
+        private bool ValidateCustomerInputs()
+        {
+            return !string.IsNullOrWhiteSpace(txtTen.Text) &&
+                   !string.IsNullOrWhiteSpace(txtDiachi.Text) &&
+                   !string.IsNullOrWhiteSpace(txtEmail.Text) &&
+                   !string.IsNullOrWhiteSpace(txtSDT.Text) &&
+                   !string.IsNullOrWhiteSpace(txtGender.Text) &&
+                   !string.IsNullOrWhiteSpace(txtCCCD.Text);
         }
     }
 }

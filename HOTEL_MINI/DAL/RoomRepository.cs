@@ -1,5 +1,6 @@
 ﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
+using MiniHotel.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -15,6 +16,27 @@ namespace HOTEL_MINI.DAL
         public RoomRepository()
         {
             _stringConnection = ConfigHelper.GetConnectionString();
+        }
+        public List<RoomTypes> getRoomTypeList()
+        {
+            var listRoomType = new List<RoomTypes>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT RoomTypeID, TypeName, Description FROM RoomTypes";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                while (sqlDataReader.Read())
+                {
+                    listRoomType.Add(new RoomTypes
+                    {
+                        RoomTypesID = sqlDataReader.GetInt32(0),
+                        TypeName = sqlDataReader.GetString(1),
+                        Description = sqlDataReader.GetString(2),
+                    });
+                }
+            }
+            return listRoomType;
         }
         public List<Room> getRoomList()
         {
@@ -55,6 +77,35 @@ namespace HOTEL_MINI.DAL
                 }
             }
             return listStatus;
+        }
+        public List<string> getAllPricingType()
+        {
+            var listPricingType = new List<string>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT Value FROM PricingTypeEnum";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                while (sqlDataReader.Read())
+                {
+                    listPricingType.Add(sqlDataReader.GetString(0));
+                }
+            }
+            return listPricingType;
+        }
+        public bool UpdateRoomStatus(int roomID, string status)
+        {
+            using(SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "UPDATE Rooms SET Status = @Status WHERE RoomID = @RoomID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@RoomID", roomID);
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
         }
     }
 }
