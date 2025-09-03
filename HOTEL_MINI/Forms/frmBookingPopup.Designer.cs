@@ -1,4 +1,6 @@
-﻿namespace HOTEL_MINI.Forms
+﻿using System.Windows.Forms;
+
+namespace HOTEL_MINI.Forms
 {
     partial class frmBookingPopup
     {
@@ -55,16 +57,14 @@
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblDiachi = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
-            this.lblRoomType = new System.Windows.Forms.Label();
-            this.cbxRoomType = new System.Windows.Forms.ComboBox();
+
             this.gbxRoomInfor.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbxRoomInfor
             // 
             this.gbxRoomInfor.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.gbxRoomInfor.Controls.Add(this.lblRoomType);
-            this.gbxRoomInfor.Controls.Add(this.cbxRoomType);
+
             this.gbxRoomInfor.Controls.Add(this.lblRoomNumber);
             this.gbxRoomInfor.Controls.Add(this.btnCheckExistCCCD);
             this.gbxRoomInfor.Controls.Add(this.btnBookConfirm);
@@ -237,6 +237,10 @@
             this.dtpCheckoutTime.Name = "dtpCheckoutTime";
             this.dtpCheckoutTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckoutTime.TabIndex = 11;
+            this.dtpCheckoutTime.Format = DateTimePickerFormat.Custom;
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm:ss";
+            //this.dtpCheckoutTime.CustomFormat = "MM/dd/yyyy hh:mm tt"; // với AM/PM
+            this.dtpCheckoutTime.ShowUpDown = true; // với AM/PM
             // 
             // dtpCheckinTime
             // 
@@ -245,6 +249,10 @@
             this.dtpCheckinTime.Name = "dtpCheckinTime";
             this.dtpCheckinTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckinTime.TabIndex = 10;
+            this.dtpCheckinTime.Format = DateTimePickerFormat.Custom;
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm:ss";
+            //this.dtpCheckoutTime.CustomFormat = "MM/dd/yyyy hh:mm tt"; // với AM/PM
+            this.dtpCheckinTime.ShowUpDown = true; // với AM/PM
             // 
             // lblCHECKOUT
             // 
@@ -343,24 +351,7 @@
             this.lblTen.Size = new System.Drawing.Size(47, 22);
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
-            // 
-            // lblRoomType
-            // 
-            this.lblRoomType.AutoSize = true;
-            this.lblRoomType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoomType.Location = new System.Drawing.Point(47, 587);
-            this.lblRoomType.Name = "lblRoomType";
-            this.lblRoomType.Size = new System.Drawing.Size(101, 22);
-            this.lblRoomType.TabIndex = 27;
-            this.lblRoomType.Text = "Loại Phòng";
-            // 
-            // cbxRoomType
-            // 
-            this.cbxRoomType.FormattingEnabled = true;
-            this.cbxRoomType.Location = new System.Drawing.Point(161, 573);
-            this.cbxRoomType.Name = "cbxRoomType";
-            this.cbxRoomType.Size = new System.Drawing.Size(121, 45);
-            this.cbxRoomType.TabIndex = 26;
+            
             // 
             // frmBookingPopup
             // 

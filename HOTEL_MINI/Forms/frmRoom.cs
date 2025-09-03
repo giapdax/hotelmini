@@ -93,11 +93,5 @@ namespace HOTEL_MINI.Forms
             txtSearchRoomNumber.Clear();
             LoadRoom("All", "");
         }
-
-
-        
-
-
-
     }
 }

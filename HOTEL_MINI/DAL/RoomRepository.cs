@@ -107,5 +107,30 @@ namespace HOTEL_MINI.DAL
                 return rowsAffected > 0;
             }
         }
+        public RoomPricing getPricingID(string pricingType, int roomType)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT PricingID, DurationValues, Price FROM RoomPricing WHERE PricingType = @PricingType AND RoomTypeID = @RoomTypeID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@PricingType", pricingType);
+                cmd.Parameters.AddWithValue("@RoomTypeID", roomType);
+                SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                if (sqlDataReader.Read())
+                {
+                    return new RoomPricing
+                    {
+                        PricingID = sqlDataReader.GetInt32(0),
+                        RoomTypeID = roomType,
+                        PricingType = pricingType,
+                        DurationValues = sqlDataReader.GetInt32(1),
+                        Price = sqlDataReader.GetDecimal(2)
+                    };
+                    //pricingID = sqlDataReader.GetInt32(0);
+                }
+            }
+            return null;
+        }
     }
 }

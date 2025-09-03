@@ -37,7 +37,7 @@ namespace HOTEL_MINI.Forms
             this.txtSearchRoomNumber = new System.Windows.Forms.TextBox();
             this.pnlMain = new System.Windows.Forms.Panel();
 
-            this.txtSearchRoomNumber = new System.Windows.Forms.TextBox();
+
             this.btnResetFilter = new System.Windows.Forms.Button();
             this.pnlRight.SuspendLayout();
             this.pnlMain.SuspendLayout();
@@ -94,14 +94,14 @@ namespace HOTEL_MINI.Forms
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Size = new System.Drawing.Size(670, 450);
             this.pnlMain.TabIndex = 3;
-            // 
-            // txtSearchRoomNumber
-            // 
-            this.txtSearchRoomNumber.Location = new System.Drawing.Point(6, 75);
-            this.txtSearchRoomNumber.Name = "txtSearchRoomNumber";
-            this.txtSearchRoomNumber.Size = new System.Drawing.Size(100, 26);
-            this.txtSearchRoomNumber.TabIndex = 2;
-            this.txtSearchRoomNumber.TextChanged += new System.EventHandler(this.txtSearchRoomNumber_TextChanged);
+            //// 
+            //// txtSearchRoomNumber
+            //// 
+            //this.txtSearchRoomNumber.Location = new System.Drawing.Point(6, 75);
+            //this.txtSearchRoomNumber.Name = "txtSearchRoomNumber";
+            //this.txtSearchRoomNumber.Size = new System.Drawing.Size(100, 26);
+            //this.txtSearchRoomNumber.TabIndex = 2;
+            //this.txtSearchRoomNumber.TextChanged += new System.EventHandler(this.txtSearchRoomNumber_TextChanged);
             
             // btnResetFilter
             // 
