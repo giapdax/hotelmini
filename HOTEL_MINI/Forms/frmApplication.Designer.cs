@@ -283,7 +283,7 @@
             this.btnLogout,
             this.btnProfile});
             this.contextMenuProfile.Name = "contextMenuStrip1";
-            this.contextMenuProfile.Size = new System.Drawing.Size(150, 68);
+            this.contextMenuProfile.Size = new System.Drawing.Size(249, 101);
             // 
             // btnLogout
             // 
@@ -291,7 +291,7 @@
             this.btnLogout.ForeColor = System.Drawing.Color.White;
             this.btnLogout.Image = global::HOTEL_MINI.Properties.Resources.power_off__1_;
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(149, 32);
+            this.btnLogout.Size = new System.Drawing.Size(248, 32);
             this.btnLogout.Text = "Logout";
             this.btnLogout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
@@ -302,8 +302,9 @@
             this.btnProfile.ForeColor = System.Drawing.Color.White;
             this.btnProfile.Image = global::HOTEL_MINI.Properties.Resources.user__2_;
             this.btnProfile.Name = "btnProfile";
-            this.btnProfile.Size = new System.Drawing.Size(149, 32);
+            this.btnProfile.Size = new System.Drawing.Size(248, 32);
             this.btnProfile.Text = "Profile";
+            this.btnProfile.Click += new System.EventHandler(this.btnProfile_Click);
             // 
             // frmApplication
             // 
