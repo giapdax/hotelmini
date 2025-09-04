@@ -238,7 +238,7 @@ namespace HOTEL_MINI.Forms
             this.dtpCheckoutTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckoutTime.TabIndex = 11;
             this.dtpCheckoutTime.Format = DateTimePickerFormat.Custom;
-            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm:ss";
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH";
             //this.dtpCheckoutTime.CustomFormat = "MM/dd/yyyy hh:mm tt"; // với AM/PM
             this.dtpCheckoutTime.ShowUpDown = true; // với AM/PM
             // 
@@ -250,9 +250,9 @@ namespace HOTEL_MINI.Forms
             this.dtpCheckinTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckinTime.TabIndex = 10;
             this.dtpCheckinTime.Format = DateTimePickerFormat.Custom;
-            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm:ss";
-            //this.dtpCheckoutTime.CustomFormat = "MM/dd/yyyy hh:mm tt"; // với AM/PM
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH";
             this.dtpCheckinTime.ShowUpDown = true; // với AM/PM
+            //this.dtpCheckoutTime.CustomFormat = "MM/dd/yyyy hh:mm tt"; // với AM/PM
             // 
             // lblCHECKOUT
             // 

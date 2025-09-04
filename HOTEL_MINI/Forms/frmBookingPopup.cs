@@ -21,7 +21,9 @@ namespace HOTEL_MINI.Forms
         private readonly BookingService _bookingService;
         private readonly RoomService _roomService;
         private Customer _customer = null;
-        public frmBookingPopup(frmApplication frmApplication, Room room)
+        private int countClickCheckExistCCCD = 0;
+        private readonly frmRoom _frmRoom;
+        public frmBookingPopup(frmApplication frmApplication, Room room, frmRoom frmRoom)
         {
             InitializeComponent();
             _form1 = frmApplication;
@@ -35,103 +37,108 @@ namespace HOTEL_MINI.Forms
             LoadRoomStatus();
             inAccessible();
             cbxPricingType.SelectedIndexChanged += cbxPricingType_SelectedIndexChanged;
+            dtpCheckinTime.ValueChanged += dtpCheckinTime_ValueChanged;
+            _frmRoom = frmRoom;
         }
-        private void cbxPricingType_SelectedIndexChanged(object sender, EventArgs e)
+        private void ApplyPricing()
         {
             if (cbxPricingType.SelectedItem == null) return;
 
             string pricingType = cbxPricingType.SelectedItem.ToString();
+            bool isNhanNgay = rbtnNhanngay.Checked;
+
+            // chuẩn bị DateTime mặc định
+            DateTime now = DateTime.Now;
+            DateTime checkin, checkout;
 
             switch (pricingType)
             {
                 case "Hourly":
-                    SetupHourlyPricing();
+                    dtpCheckinTime.Enabled = true;
+                    dtpCheckoutTime.Enabled = false;
+                    checkin = dtpCheckinTime.Value; // cho chọn ngày + giờ
+                    dtpCheckoutTime.Value = now;   // giữ chỗ thôi, ko dùng
                     break;
-                case "Nightly":
-                    SetupNightlyPricing();
-                    break;
+
                 case "Weekly":
-                    SetupWeeklyPricing();
+                    dtpCheckinTime.Enabled = true;
+                    dtpCheckoutTime.Enabled = false;
+                    checkin = dtpCheckinTime.Value;
+                    dtpCheckoutTime.Value = checkin.AddDays(7); // auto +7 ngày
                     break;
+
+                case "Nightly":
+                    dtpCheckoutTime.Enabled = false;
+                    if (isNhanNgay)
+                    {
+                        // Nhận ngay: hôm nay 21h
+                        checkin = DateTime.Today.AddHours(21);
+                    }
+                    else
+                    {
+                        // Đặt trước: user chọn ngày, fix giờ = 21h
+                        checkin = dtpCheckinTime.Value.Date.AddHours(21);
+                    }
+                    dtpCheckinTime.Value = checkin;
+                    dtpCheckinTime.Enabled = true;
+                    dtpCheckoutTime.Value = checkin.Date.AddDays(1).AddHours(7);
+                    break;
+
+                case "Daily":
+                    dtpCheckoutTime.Enabled = false;
+                    if (isNhanNgay)
+                    {
+                        // Nhận ngay: hôm nay 14h
+                        checkin = DateTime.Today.AddHours(14);
+                    }
+                    else
+                    {
+                        // Đặt trước: user chọn ngày, fix giờ = 14h
+                        checkin = dtpCheckinTime.Value.Date.AddHours(14);
+                    }
+                    dtpCheckinTime.Value = checkin;
+                    dtpCheckinTime.Enabled = true;
+                    dtpCheckoutTime.Value = checkin.Date.AddDays(1).AddHours(12);
+                    break;
+
+                default:
+                    throw new ArgumentException("Loại pricing không hợp lệ");
             }
+
+            // đảm bảo hiển thị dd/MM/yyyy HH
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH";
+            this.dtpCheckinTime.ShowUpDown = true;
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH";
+            this.dtpCheckoutTime.ShowUpDown = true;
         }
 
-        private void SetupHourlyPricing()
+        private void dtpCheckinTime_ValueChanged(object sender, EventArgs e)
         {
-            // Checkin ngay lập tức, checkout để null (chọn sau)
-            dtpCheckinTime.Value = DateTime.Now;
-            dtpCheckinTime.Enabled = false; // Không cho chỉnh sửa vì là giờ hiện tại
-
-            // Để checkout time disabled hoặc null
-            dtpCheckoutTime.Enabled = false;
-            dtpCheckoutTime.Value = DateTime.Now; // Có thể set thành min value hoặc now
+            if (rbtnDattruoc.Checked) // chỉ áp dụng khi đặt trước
+                ApplyPricing();
         }
-
-        private void SetupNightlyPricing()
+        private void cbxPricingType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Checkin: 9h tối hôm nay (dù hiện tại là mấy giờ)
-            DateTime todayEvening = DateTime.Today.AddHours(21); // 9h tối
-            dtpCheckinTime.Value = todayEvening;
-            dtpCheckinTime.Enabled = false; // Không cho chỉnh sửa
-
-            // Checkout: 7h sáng hôm sau
-            DateTime tomorrowMorning = DateTime.Today.AddDays(1).AddHours(7);
-            dtpCheckoutTime.Value = tomorrowMorning;
-            dtpCheckoutTime.Enabled = false; // Không cho chỉnh sửa
+            ApplyPricing();
         }
-
-        private void SetupWeeklyPricing()
-        {
-            // Checkin: giờ hiện tại
-            dtpCheckinTime.Value = DateTime.Now;
-            dtpCheckinTime.Enabled = false;
-
-            // Checkout: 7 ngày sau
-            dtpCheckoutTime.Value = DateTime.Now.AddDays(7);
-            dtpCheckoutTime.Enabled = false;
-        }
+       
         private void addNewBooking(int CustomerID, int currentUserID)
         {
-            //int pricingID = getPricingID(cbxPricingType.SelectedItem.ToString(), _room.RoomTypeID);
-            //if (pricingID == -1)
-            //{
-            //    MessageBox.Show("Không thể tìm thấy PricingID. Vui lòng chọn lại kiểu giá.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
-
-            //Booking booking = new Booking
-            //{
-            //    CustomerID = CustomerID,
-            //    RoomID = _room.RoomID,
-            //    PricingID = pricingID,  
-            //    CreatedBy = currentUserID,
-            //    BookingDate = DateTime.Now,
-            //    CheckInDate = rbtnNhanngay.Checked ? DateTime.Now : dtpCheckinTime.Value,
-            //    CheckOutDate = rbtnNhanngay.Checked
-            //    ? (DateTime?)null
-            //    : dtpCheckoutTime.Value,
-            //    Status = rbtnNhanngay.Checked ? "CheckedIn" : "Booked",
-            //    Notes = txtNote.Text
-            //};
             int pricingID = getPricingID(cbxPricingType.SelectedItem.ToString(), _room.RoomTypeID);
             if (pricingID == -1)
             {
                 MessageBox.Show("Không thể tìm thấy PricingID. Vui lòng chọn lại kiểu giá.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            // Xác định thời gian checkin/checkout dựa vào loại giá
             DateTime? checkOutDate = null;
             string pricingType = cbxPricingType.SelectedItem.ToString();
 
             if (pricingType == "Hourly")
             {
-                // Hourly: checkout time sẽ null, set sau
                 checkOutDate = null;
             }
             else
             {
-                // Nightly và Weekly: lấy giá trị từ datetimepicker
                 checkOutDate = dtpCheckoutTime.Value;
             }
 
@@ -143,38 +150,34 @@ namespace HOTEL_MINI.Forms
                 CreatedBy = currentUserID,
                 BookingDate = DateTime.Now,
                 CheckInDate = dtpCheckinTime.Value,
-                CheckOutDate = checkOutDate,  // Có thể null cho Hourly
-                Status = "Booked", // Luôn là "Booked" ban đầu
+                CheckOutDate = checkOutDate, 
+                Status = rbtnNhanngay.Checked ? "CheckedIn" : "Booked",
                 Notes = txtNote.Text
             };
-
-
-            var bookingResult = _bookingService.AddBooking(booking);  
+            var bookingResult = _bookingService.AddBooking(booking);
             if (bookingResult == null)
             {
- 
+
                 MessageBox.Show("Đặt phòng thất bại. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                this.Close();
             }
             else
             {
-
                 MessageBox.Show("Đặt phòng thành công! BookingID: " + bookingResult.BookingID);
                 var changeStatus = _roomService.updateRoomStatus(_room.RoomID, rbtnNhanngay.Checked ? "Occupied" : "Booked");
                 if (changeStatus)
                 {
                     MessageBox.Show("Cap nhat trang thai phong thanh cong");
-                    return; 
-
+                    _frmRoom.RefreshRoomList();
+                    this.Close();
                 }
                 else
                 {
                     MessageBox.Show("Không thể cập nhật trạng thái phòng. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    this.Close();
                 }
             }
         }
-
         private void btnBookConfirm_Click(object sender, EventArgs e)
         {
             if (!ValidateCustomerInputs())
@@ -212,6 +215,13 @@ namespace HOTEL_MINI.Forms
         }
         private void btnCheckExistCCCD_Click(object sender, EventArgs e)
         {
+            countClickCheckExistCCCD++;
+            if (countClickCheckExistCCCD > 1)
+            {
+                clickBtnCheckExistCCCDAgain();
+                countClickCheckExistCCCD = 0;
+                return;
+            }
             string ccccd = txtCCCD.Text;
             if (string.IsNullOrWhiteSpace(ccccd))
             {
@@ -233,6 +243,15 @@ namespace HOTEL_MINI.Forms
                 Accessible();
                 return;
             }
+        }
+        private void clickBtnCheckExistCCCDAgain()
+        {
+            _customer = null;
+            txtTen.Clear();
+            txtDiachi.Clear();
+            txtEmail.Clear();
+            txtSDT.Clear();
+            txtGender.Clear();
         }
         private void addNewCustomer(Customer customer)
         {
@@ -262,41 +281,13 @@ namespace HOTEL_MINI.Forms
                 return -1;
             }
         }
-        //private void rbtnNhanngay_CheckedChanged(object sender, EventArgs e)
-        //{
-        //    dtpCheckinTime.Enabled = true;
-        //    dtpCheckoutTime.Enabled = true;
-        //}
-        //private void rbtnDattruoc_CheckedChanged(object sender, EventArgs e)
-        //{
-        //    dtpCheckinTime.Enabled = false;
-        //    dtpCheckoutTime.Enabled = false;
-        //}
         private void rbtnNhanngay_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbtnNhanngay.Checked)
-            {
-                // Nếu là nhận ngay, checkin time luôn là giờ hiện tại
-                dtpCheckinTime.Value = DateTime.Now;
-                dtpCheckinTime.Enabled = false;
-
-                // Cho phép chọn checkout time nếu không phải Hourly
-                if (cbxPricingType.SelectedItem != null &&
-                    cbxPricingType.SelectedItem.ToString() != "Hourly")
-                {
-                    dtpCheckoutTime.Enabled = true;
-                }
-            }
+            ApplyPricing();
         }
-
         private void rbtnDattruoc_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbtnDattruoc.Checked)
-            {
-                // Đặt trước: cho phép chọn cả checkin và checkout time
-                dtpCheckinTime.Enabled = true;
-                dtpCheckoutTime.Enabled = true;
-            }
+            ApplyPricing();
         }
         private void IDNumberExistUI(Customer customer)
         {
@@ -325,7 +316,6 @@ namespace HOTEL_MINI.Forms
         {
             dtpCheckinTime.Enabled = false;
             dtpCheckoutTime.Enabled = false;
-            //txtCCCD.ReadOnly = true;
             txtSDT.ReadOnly = true;
             txtTen.ReadOnly = true;
             txtDiachi.ReadOnly = true;
@@ -341,7 +331,6 @@ namespace HOTEL_MINI.Forms
         {
             dtpCheckinTime.Enabled = true;
             dtpCheckoutTime.Enabled = true;
-            //txtCCCD.ReadOnly = true;
             txtSDT.ReadOnly = false;
             txtTen.ReadOnly = false;
             txtDiachi.ReadOnly = false;
@@ -360,22 +349,8 @@ namespace HOTEL_MINI.Forms
                    !string.IsNullOrWhiteSpace(txtEmail.Text) &&
                    !string.IsNullOrWhiteSpace(txtSDT.Text) &&
                    !string.IsNullOrWhiteSpace(txtGender.Text) &&
-                   !string.IsNullOrWhiteSpace(txtCCCD.Text)&&
-                   cbxPricingType.SelectedItem != null; // Thêm validation cho pricing type;
-        }
-        private void IDNumberNotExistUI()
-        {
-            txtCCCD.ReadOnly = false;
-            txtSDT.ReadOnly = false;
-            txtTen.ReadOnly = false;
-            txtDiachi.ReadOnly = false;
-            txtEmail.ReadOnly = false;
-            txtGender.ReadOnly = false;
-            txtDiachi.Clear();
-            txtTen.Clear();
-            txtEmail.Clear();
-            txtSDT.Clear();
-            txtGender.Clear();
+                   !string.IsNullOrWhiteSpace(txtCCCD.Text) &&
+                   cbxPricingType.SelectedItem != null;
         }
     }
 }
