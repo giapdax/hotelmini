@@ -15,7 +15,6 @@ namespace HOTEL_MINI
         private Panel panelIndicator;
         private Button currentButton = null;
         private User _currentUser;
-        private User _loggedInUser;
 
         public frmApplication(User user)
         {
@@ -214,14 +213,14 @@ namespace HOTEL_MINI
         private void btnProfile_Click(object sender, EventArgs e)
         {
             // Lấy thông tin người dùng hiện tại (cần được lưu khi đăng nhập)
-            if (_loggedInUser == null)
+            if (_currentUser == null)
             {
                 MessageBox.Show("Không tìm thấy thông tin người dùng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Tạo một thể hiện của form Profile và truyền thông tin người dùng
-            using (frmProfile profileForm = new frmProfile(_loggedInUser))
+            using (frmProfile profileForm = new frmProfile(_currentUser))
             {
                 // Hiển thị form dưới dạng hộp thoại
                 DialogResult result = profileForm.ShowDialog();
@@ -233,6 +232,11 @@ namespace HOTEL_MINI
                     // Ví dụ: lblFullName.Text = _loggedInUser.FullName;
                 }
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

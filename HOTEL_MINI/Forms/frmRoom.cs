@@ -25,12 +25,15 @@ namespace HOTEL_MINI.Forms
             _roomService = new RoomService();
             LoadRoom("All","");
             LoadRoomByStatus();
-            
             //pnlRight.Dock = DockStyle.Right;   // Gắn vào bên phải
             //pnlRight.Width = 200;              // Chiều rộng cố định
 
             //// Panel còn lại
             //pnlMain.Dock = DockStyle.Fill;
+        }
+        public void RefreshRoomList()
+        {
+            btnResetFilter.PerformClick();
         }
         public void LoadRoom(string status, string searchText)
         {
@@ -54,7 +57,7 @@ namespace HOTEL_MINI.Forms
 
             foreach (var room in listRoom)
             {
-                var card = new RoomCard(_form1, room);
+                var card = new RoomCard(_form1, room,this);
                 flpAllRooms.Controls.Add(card);
             }
             
@@ -93,11 +96,5 @@ namespace HOTEL_MINI.Forms
             txtSearchRoomNumber.Clear();
             LoadRoom("All", "");
         }
-
-
-        
-
-
-
     }
 }

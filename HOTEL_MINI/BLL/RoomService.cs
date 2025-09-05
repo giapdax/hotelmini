@@ -36,5 +36,9 @@ namespace HOTEL_MINI.BLL
         { 
             return roomRepository.getRoomTypeList();
         }
+        public RoomPricing getPricingID(string pricingType, int roomType)
+        {
+            return roomRepository.getPricingID(pricingType, roomType);
+        }
     }
 }

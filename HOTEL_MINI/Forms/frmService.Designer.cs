@@ -36,7 +36,6 @@ namespace HOTEL_MINI.Forms
             this.btnAddService = new System.Windows.Forms.Button();
             this.btnEditService = new System.Windows.Forms.Button();
             this.btnDeleteService = new System.Windows.Forms.Button();
-            this.btnClearService = new System.Windows.Forms.Button();
             this.lblPrice = new System.Windows.Forms.Label();
             this.txtPrice = new System.Windows.Forms.TextBox();
             this.lblNameService = new System.Windows.Forms.Label();
@@ -51,6 +50,8 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetailService = new System.Windows.Forms.GroupBox();
             this.tableLayoutServiceInfo = new System.Windows.Forms.TableLayoutPanel();
             this.chkIsActive = new System.Windows.Forms.CheckBox();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.panelButtons.SuspendLayout();
             this.tableLayoutButtons.SuspendLayout();
             this.panelUser.SuspendLayout();
@@ -66,9 +67,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.panelButtons.Controls.Add(this.tableLayoutButtons);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelButtons.Location = new System.Drawing.Point(3, 317);
+            this.panelButtons.Location = new System.Drawing.Point(3, 335);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(255, 124);
+            this.panelButtons.Size = new System.Drawing.Size(255, 106);
             this.panelButtons.TabIndex = 1;
             // 
             // tableLayoutButtons
@@ -79,14 +80,14 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutButtons.Controls.Add(this.btnAddService, 0, 0);
             this.tableLayoutButtons.Controls.Add(this.btnEditService, 1, 0);
             this.tableLayoutButtons.Controls.Add(this.btnDeleteService, 0, 1);
-            this.tableLayoutButtons.Controls.Add(this.btnClearService, 1, 1);
             this.tableLayoutButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutButtons.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutButtons.Name = "tableLayoutButtons";
             this.tableLayoutButtons.RowCount = 2;
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutButtons.Size = new System.Drawing.Size(255, 124);
+            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutButtons.Size = new System.Drawing.Size(255, 106);
             this.tableLayoutButtons.TabIndex = 1;
             // 
             // btnAddService
@@ -96,7 +97,7 @@ namespace HOTEL_MINI.Forms
             this.btnAddService.ForeColor = System.Drawing.Color.White;
             this.btnAddService.Location = new System.Drawing.Point(3, 3);
             this.btnAddService.Name = "btnAddService";
-            this.btnAddService.Size = new System.Drawing.Size(121, 56);
+            this.btnAddService.Size = new System.Drawing.Size(121, 47);
             this.btnAddService.TabIndex = 0;
             this.btnAddService.Text = "Thêm";
             this.btnAddService.UseVisualStyleBackColor = false;
@@ -109,7 +110,7 @@ namespace HOTEL_MINI.Forms
             this.btnEditService.ForeColor = System.Drawing.Color.White;
             this.btnEditService.Location = new System.Drawing.Point(130, 3);
             this.btnEditService.Name = "btnEditService";
-            this.btnEditService.Size = new System.Drawing.Size(122, 56);
+            this.btnEditService.Size = new System.Drawing.Size(122, 47);
             this.btnEditService.TabIndex = 1;
             this.btnEditService.Text = "Sửa";
             this.btnEditService.UseVisualStyleBackColor = false;
@@ -120,26 +121,13 @@ namespace HOTEL_MINI.Forms
             this.btnDeleteService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnDeleteService.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnDeleteService.ForeColor = System.Drawing.Color.White;
-            this.btnDeleteService.Location = new System.Drawing.Point(3, 65);
+            this.btnDeleteService.Location = new System.Drawing.Point(3, 56);
             this.btnDeleteService.Name = "btnDeleteService";
-            this.btnDeleteService.Size = new System.Drawing.Size(121, 56);
+            this.btnDeleteService.Size = new System.Drawing.Size(121, 47);
             this.btnDeleteService.TabIndex = 2;
             this.btnDeleteService.Text = "Xóa";
             this.btnDeleteService.UseVisualStyleBackColor = false;
             this.btnDeleteService.Click += new System.EventHandler(this.btnDeleteService_Click);
-            // 
-            // btnClearService
-            // 
-            this.btnClearService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
-            this.btnClearService.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnClearService.ForeColor = System.Drawing.Color.White;
-            this.btnClearService.Location = new System.Drawing.Point(130, 65);
-            this.btnClearService.Name = "btnClearService";
-            this.btnClearService.Size = new System.Drawing.Size(122, 56);
-            this.btnClearService.TabIndex = 3;
-            this.btnClearService.Text = "Làm Mới";
-            this.btnClearService.UseVisualStyleBackColor = false;
-            this.btnClearService.Click += new System.EventHandler(this.btnClearService_Click);
             // 
             // lblPrice
             // 
@@ -251,7 +239,7 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutRight.RowCount = 3;
             this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 26.53061F));
             this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 73.46939F));
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 129F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 111F));
             this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutRight.Size = new System.Drawing.Size(261, 444);
             this.tableLayoutRight.TabIndex = 1;
@@ -262,7 +250,7 @@ namespace HOTEL_MINI.Forms
             this.groupBoxSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.groupBoxSearch.Controls.Add(this.txtSearchService);
             this.groupBoxSearch.ForeColor = System.Drawing.Color.White;
-            this.groupBoxSearch.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxSearch.Location = new System.Drawing.Point(3, 5);
             this.groupBoxSearch.Name = "groupBoxSearch";
             this.groupBoxSearch.Padding = new System.Windows.Forms.Padding(10);
             this.groupBoxSearch.Size = new System.Drawing.Size(255, 77);
@@ -286,9 +274,9 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetailService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.groupBoxDetailService.Controls.Add(this.tableLayoutServiceInfo);
             this.groupBoxDetailService.ForeColor = System.Drawing.Color.White;
-            this.groupBoxDetailService.Location = new System.Drawing.Point(3, 86);
+            this.groupBoxDetailService.Location = new System.Drawing.Point(3, 91);
             this.groupBoxDetailService.Name = "groupBoxDetailService";
-            this.groupBoxDetailService.Size = new System.Drawing.Size(255, 225);
+            this.groupBoxDetailService.Size = new System.Drawing.Size(255, 238);
             this.groupBoxDetailService.TabIndex = 0;
             this.groupBoxDetailService.TabStop = false;
             this.groupBoxDetailService.Text = "Thông tin dịch vụ";
@@ -304,6 +292,8 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutServiceInfo.Controls.Add(this.txtPrice, 1, 2);
             this.tableLayoutServiceInfo.Controls.Add(this.txtServiceName, 1, 1);
             this.tableLayoutServiceInfo.Controls.Add(this.chkIsActive, 1, 3);
+            this.tableLayoutServiceInfo.Controls.Add(this.btnCancel, 0, 4);
+            this.tableLayoutServiceInfo.Controls.Add(this.btnSave, 1, 4);
             this.tableLayoutServiceInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutServiceInfo.Location = new System.Drawing.Point(3, 22);
             this.tableLayoutServiceInfo.Name = "tableLayoutServiceInfo";
@@ -316,7 +306,7 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutServiceInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutServiceInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             this.tableLayoutServiceInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutServiceInfo.Size = new System.Drawing.Size(249, 200);
+            this.tableLayoutServiceInfo.Size = new System.Drawing.Size(249, 213);
             this.tableLayoutServiceInfo.TabIndex = 0;
             // 
             // chkIsActive
@@ -328,6 +318,30 @@ namespace HOTEL_MINI.Forms
             this.chkIsActive.TabIndex = 12;
             this.chkIsActive.Text = "IsActive";
             this.chkIsActive.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnCancel.ForeColor = System.Drawing.Color.White;
+            this.btnCancel.Location = new System.Drawing.Point(3, 136);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(81, 56);
+            this.btnCancel.TabIndex = 13;
+            this.btnCancel.Text = "Hủy";
+            this.btnCancel.UseVisualStyleBackColor = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnSave.ForeColor = System.Drawing.Color.White;
+            this.btnSave.Location = new System.Drawing.Point(90, 136);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(142, 56);
+            this.btnSave.TabIndex = 14;
+            this.btnSave.Text = "Lưu";
+            this.btnSave.UseVisualStyleBackColor = false;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // frmService
             // 
@@ -378,7 +392,8 @@ namespace HOTEL_MINI.Forms
         private System.Windows.Forms.Button btnAddService;
         private System.Windows.Forms.Button btnEditService;
         private System.Windows.Forms.Button btnDeleteService;
-        private System.Windows.Forms.Button btnClearService;
         private System.Windows.Forms.CheckBox chkIsActive;
+        private Button btnCancel;
+        private Button btnSave;
     }
 }

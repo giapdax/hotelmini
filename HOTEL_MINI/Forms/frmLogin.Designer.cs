@@ -18,6 +18,7 @@
         private void InitializeComponent()
         {
             this.pnlRight = new System.Windows.Forms.Panel();
+            this.btnTogglePassword = new System.Windows.Forms.PictureBox();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLogin = new System.Windows.Forms.Button();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -29,12 +30,14 @@
             this.lblWelcome = new System.Windows.Forms.Label();
             this.pblLogo = new System.Windows.Forms.Panel();
             this.pnlRight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.btnTogglePassword)).BeginInit();
             this.pnlLeft.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlRight
             // 
             this.pnlRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(52)))), ((int)(((byte)(58)))));
+            this.pnlRight.Controls.Add(this.btnTogglePassword);
             this.pnlRight.Controls.Add(this.btnExit);
             this.pnlRight.Controls.Add(this.btnLogin);
             this.pnlRight.Controls.Add(this.txtPassword);
@@ -47,6 +50,19 @@
             this.pnlRight.Size = new System.Drawing.Size(460, 480);
             this.pnlRight.TabIndex = 0;
             this.pnlRight.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlRight_Paint);
+            // 
+            // btnTogglePassword
+            // 
+            this.btnTogglePassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnTogglePassword.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTogglePassword.Image = global::HOTEL_MINI.Properties.Resources.eye;
+            this.btnTogglePassword.Location = new System.Drawing.Point(373, 258);
+            this.btnTogglePassword.Name = "btnTogglePassword";
+            this.btnTogglePassword.Size = new System.Drawing.Size(30, 30);
+            this.btnTogglePassword.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.btnTogglePassword.TabIndex = 6;
+            this.btnTogglePassword.TabStop = false;
+            this.btnTogglePassword.Click += new System.EventHandler(this.btnTogglePassword_Click);
             // 
             // btnExit
             // 
@@ -80,12 +96,12 @@
             // 
             this.txtPassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtPassword.ForeColor = System.Drawing.Color.White;
             this.txtPassword.Location = new System.Drawing.Point(193, 260);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '●';
-            this.txtPassword.Size = new System.Drawing.Size(220, 27);
+            this.txtPassword.Size = new System.Drawing.Size(180, 27);
             this.txtPassword.TabIndex = 3;
             // 
             // txtUsername
@@ -157,6 +173,7 @@
             // 
             // pblLogo
             // 
+            this.pblLogo.BackgroundImage = global::HOTEL_MINI.Properties.Resources.hotel;
             this.pblLogo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pblLogo.Location = new System.Drawing.Point(60, 90);
             this.pblLogo.Name = "pblLogo";
@@ -178,6 +195,7 @@
             this.Load += new System.EventHandler(this.frmLogin_Load_1);
             this.pnlRight.ResumeLayout(false);
             this.pnlRight.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.btnTogglePassword)).EndInit();
             this.pnlLeft.ResumeLayout(false);
             this.pnlLeft.PerformLayout();
             this.ResumeLayout(false);
@@ -197,5 +215,7 @@
         private System.Windows.Forms.Panel pblLogo;
 
         #endregion
+
+        private System.Windows.Forms.PictureBox btnTogglePassword;
     }
 }

@@ -36,6 +36,7 @@ namespace HOTEL_MINI.Forms
             this.btnAdd.Click += btnAdd_Click;
             this.btnEdit.Click += btnEdit_Click;
             this.btnDelete.Click += btnDelete_Click;
+            this.btnSave.Click += btnSave_Click;
             this.btnCancel.Click += btnCancel_Click;
         }
 
@@ -55,6 +56,8 @@ namespace HOTEL_MINI.Forms
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = _allUsers;
             ClearFields();
+            // Cập nhật lại trạng thái nút sau khi tải xong
+            SetFormState(_currentState);
         }
 
         private void LoadRolesAndStatusToComboBox()
@@ -77,22 +80,41 @@ namespace HOTEL_MINI.Forms
         {
             _currentState = state;
 
-            btnAdd.Enabled = (_currentState == FormState.View);
-            btnEdit.Enabled = (_currentState == FormState.View && dataGridView1.SelectedRows.Count > 0);
-            btnDelete.Enabled = (_currentState == FormState.View && dataGridView1.SelectedRows.Count > 0);
-
+            // Kiểm soát trạng thái của các nút
+            btnAdd.Visible = (_currentState == FormState.View);
+            btnEdit.Visible = (_currentState == FormState.View);
+            btnDelete.Visible = (_currentState == FormState.View);
             btnSave.Visible = (_currentState == FormState.Add || _currentState == FormState.Edit);
             btnCancel.Visible = (_currentState == FormState.Add || _currentState == FormState.Edit);
 
-            bool isViewing = _currentState == FormState.View;
-            txtUsername.ReadOnly = isViewing || _currentState == FormState.Edit; // Username chỉ nhập khi thêm mới
-            txtFullName.ReadOnly = isViewing;
-            txtEmail.ReadOnly = isViewing;
-            txtPhone.ReadOnly = isViewing;
-            txtPassword.ReadOnly = isViewing;
+            // Kiểm soát trạng thái của DataGridView
+            dataGridView1.Enabled = (_currentState == FormState.View);
 
-            cmbRole.Enabled = !isViewing;
-            cmbStatus.Enabled = !isViewing;
+            // Cập nhật trạng thái ReadOnly/Enabled của các trường nhập liệu
+            txtUsername.ReadOnly = (_currentState != FormState.Add);
+            txtFullName.ReadOnly = (_currentState == FormState.View);
+            txtEmail.ReadOnly = (_currentState == FormState.View);
+            txtPhone.ReadOnly = (_currentState == FormState.View);
+
+            // Password chỉ có thể nhập khi thêm mới, hoặc khi đang sửa
+            txtPassword.ReadOnly = (_currentState == FormState.View);
+            if (_currentState == FormState.Edit)
+            {
+                txtPassword.Text = "********";
+                txtPassword.PasswordChar = '*';
+            }
+            else
+            {
+                txtPassword.PasswordChar = (char)0; // Hiển thị rõ ràng
+            }
+
+            cmbRole.Enabled = (_currentState != FormState.View);
+            cmbStatus.Enabled = (_currentState != FormState.View);
+
+            if (_currentState == FormState.View)
+            {
+                ClearFields();
+            }
         }
 
         #endregion
@@ -101,23 +123,32 @@ namespace HOTEL_MINI.Forms
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && _currentState != FormState.Add)
+            if (e.RowIndex >= 0 && _currentState == FormState.View)
             {
                 DisplaySelectedRowInfo();
+                // Sau khi click, ta có thể enable các nút Edit/Delete
+                btnEdit.Enabled = true;
+                btnDelete.Enabled = true;
             }
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
+            // Chỉ xử lý khi ở chế độ View để tránh xung đột
             if (_currentState == FormState.View)
             {
-                btnEdit.Enabled = dataGridView1.SelectedRows.Count > 0;
-                btnDelete.Enabled = dataGridView1.SelectedRows.Count > 0;
-
                 if (dataGridView1.SelectedRows.Count > 0)
+                {
+                    btnEdit.Enabled = true;
+                    btnDelete.Enabled = true;
                     DisplaySelectedRowInfo();
+                }
                 else
+                {
+                    btnEdit.Enabled = false;
+                    btnDelete.Enabled = false;
                     ClearFields();
+                }
             }
         }
 
@@ -132,6 +163,7 @@ namespace HOTEL_MINI.Forms
             txtEmail.Text = row.Cells["Email"].Value?.ToString() ?? "";
             txtPhone.Text = row.Cells["Phone"].Value?.ToString() ?? "";
 
+            // Không hiển thị password thật, chỉ placeholder
             txtPassword.Text = "********";
             txtPassword.PasswordChar = '*';
 
@@ -163,8 +195,6 @@ namespace HOTEL_MINI.Forms
             if (dataGridView1.SelectedRows.Count > 0)
             {
                 SetFormState(FormState.Edit);
-                txtPassword.Text = "********";
-                txtPassword.PasswordChar = '*';
                 txtFullName.Focus();
             }
             else
@@ -175,8 +205,14 @@ namespace HOTEL_MINI.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (_currentState == FormState.Add) HandleAddUser();
-            else if (_currentState == FormState.Edit) HandleUpdateUser();
+            if (_currentState == FormState.Add)
+            {
+                HandleAddUser();
+            }
+            else if (_currentState == FormState.Edit)
+            {
+                HandleUpdateUser();
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -187,13 +223,14 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            int userId = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["UserID"].Value);
-            string username = dataGridView1.SelectedRows[0].Cells["Username"].Value.ToString();
-            DialogResult result = MessageBox.Show($"Bạn có chắc chắn muốn xóa người dùng '{username}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var selectedUser = dataGridView1.SelectedRows[0].DataBoundItem as User;
+            if (selectedUser == null) return;
+
+            DialogResult result = MessageBox.Show($"Bạn có chắc chắn muốn xóa người dùng '{selectedUser.Username}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                bool isDeleted = _userService.DeleteUser(userId);
+                bool isDeleted = _userService.DeleteUser(selectedUser.UserID);
                 if (isDeleted)
                 {
                     MessageBox.Show("Xóa người dùng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -208,11 +245,7 @@ namespace HOTEL_MINI.Forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
-                DisplaySelectedRowInfo();
-            else
-                ClearFields();
-
+            LoadAllUsers();
             SetFormState(FormState.View);
         }
 
@@ -254,23 +287,22 @@ namespace HOTEL_MINI.Forms
             if (dataGridView1.SelectedRows.Count == 0) return;
             if (!ValidateInputs(isNew: false)) return;
 
-            int userId = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["UserID"].Value);
-            var updatedUser = new User()
-            {
-                UserID = userId,
-                Username = txtUsername.Text.Trim(),
-                FullName = txtFullName.Text.Trim(),
-                Phone = txtPhone.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
-                Role = (int)cmbRole.SelectedValue,
-                Status = (UserStatus)cmbStatus.SelectedItem
-            };
+            var selectedUser = dataGridView1.SelectedRows[0].DataBoundItem as User;
+            if (selectedUser == null) return;
+
+            selectedUser.FullName = txtFullName.Text.Trim();
+            selectedUser.Phone = txtPhone.Text.Trim();
+            selectedUser.Email = txtEmail.Text.Trim();
+            selectedUser.Role = (int)cmbRole.SelectedValue;
+            selectedUser.Status = (UserStatus)cmbStatus.SelectedItem;
 
             string newPassword = null;
             if (!string.IsNullOrWhiteSpace(txtPassword.Text) && txtPassword.Text != "********")
+            {
                 newPassword = txtPassword.Text.Trim();
+            }
 
-            bool isUpdated = _userService.UpdateUser(updatedUser, newPassword);
+            bool isUpdated = _userService.UpdateUser(selectedUser, newPassword);
             if (isUpdated)
             {
                 MessageBox.Show("Cập nhật người dùng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -321,7 +353,7 @@ namespace HOTEL_MINI.Forms
 
         #endregion
 
-        #region Tiện ích
+        #region Tiện ích và Cấu hình
 
         private void ClearFields()
         {
@@ -330,9 +362,10 @@ namespace HOTEL_MINI.Forms
             txtEmail.Text = "";
             txtPhone.Text = "";
             txtPassword.Text = "";
-            txtPassword.PasswordChar = '*';
+            txtPassword.PasswordChar = (char)0; // Reset password char
             cmbRole.SelectedIndex = -1;
             cmbStatus.SelectedIndex = -1;
+            dataGridView1.ClearSelection();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -355,17 +388,22 @@ namespace HOTEL_MINI.Forms
 
         private void SetupDataGridView()
         {
-            if (dataGridView1.Columns.Contains("UserID"))
-                dataGridView1.Columns["UserID"].Visible = false;
-            if (dataGridView1.Columns.Contains("PasswordHash"))
-                dataGridView1.Columns["PasswordHash"].Visible = false;
+            dataGridView1.AutoGenerateColumns = true; // Tự động tạo cột
+            // Tùy chỉnh HeaderText và ẩn cột không cần thiết
+            dataGridView1.DataBindingComplete += (sender, e) =>
+            {
+                if (dataGridView1.Columns.Contains("UserID"))
+                    dataGridView1.Columns["UserID"].Visible = false;
+                if (dataGridView1.Columns.Contains("PasswordHash"))
+                    dataGridView1.Columns["PasswordHash"].Visible = false;
 
-            if (dataGridView1.Columns.Contains("FullName")) dataGridView1.Columns["FullName"].HeaderText = "Họ và Tên";
-            if (dataGridView1.Columns.Contains("Username")) dataGridView1.Columns["Username"].HeaderText = "Tên đăng nhập";
-            if (dataGridView1.Columns.Contains("Email")) dataGridView1.Columns["Email"].HeaderText = "Email";
-            if (dataGridView1.Columns.Contains("Phone")) dataGridView1.Columns["Phone"].HeaderText = "Điện thoại";
-            if (dataGridView1.Columns.Contains("Role")) dataGridView1.Columns["Role"].HeaderText = "Vai trò";
-            if (dataGridView1.Columns.Contains("Status")) dataGridView1.Columns["Status"].HeaderText = "Trạng thái";
+                if (dataGridView1.Columns.Contains("FullName")) dataGridView1.Columns["FullName"].HeaderText = "Họ và Tên";
+                if (dataGridView1.Columns.Contains("Username")) dataGridView1.Columns["Username"].HeaderText = "Tên đăng nhập";
+                if (dataGridView1.Columns.Contains("Email")) dataGridView1.Columns["Email"].HeaderText = "Email";
+                if (dataGridView1.Columns.Contains("Phone")) dataGridView1.Columns["Phone"].HeaderText = "Điện thoại";
+                if (dataGridView1.Columns.Contains("Role")) dataGridView1.Columns["Role"].HeaderText = "Vai trò";
+                if (dataGridView1.Columns.Contains("Status")) dataGridView1.Columns["Status"].HeaderText = "Trạng thái";
+            };
         }
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -386,7 +424,7 @@ namespace HOTEL_MINI.Forms
         #endregion
 
         #region Sự kiện không dùng
-
+        // Các sự kiện này được giữ lại nhưng sẽ không có logic
         private void button1_Click(object sender, EventArgs e) { }
         private void lblThongTinChiTiet_Click(object sender, EventArgs e) { }
         private void panelUserManager_Paint(object sender, PaintEventArgs e) { }
@@ -399,6 +437,5 @@ namespace HOTEL_MINI.Forms
         private void cmbSearchStatus_SelectedIndexChanged(object sender, EventArgs e) { }
 
         #endregion
-
     }
 }

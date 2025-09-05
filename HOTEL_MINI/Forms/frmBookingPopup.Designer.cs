@@ -1,4 +1,6 @@
-﻿namespace HOTEL_MINI.Forms
+﻿using System.Windows.Forms;
+
+namespace HOTEL_MINI.Forms
 {
     partial class frmBookingPopup
     {
@@ -29,8 +31,6 @@
         private void InitializeComponent()
         {
             this.gbxRoomInfor = new System.Windows.Forms.GroupBox();
-            this.lblRoomType = new System.Windows.Forms.Label();
-            this.cbxRoomType = new System.Windows.Forms.ComboBox();
             this.lblRoomNumber = new System.Windows.Forms.Label();
             this.btnCheckExistCCCD = new System.Windows.Forms.Button();
             this.btnBookConfirm = new System.Windows.Forms.Button();
@@ -63,8 +63,6 @@
             // gbxRoomInfor
             // 
             this.gbxRoomInfor.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.gbxRoomInfor.Controls.Add(this.lblRoomType);
-            this.gbxRoomInfor.Controls.Add(this.cbxRoomType);
             this.gbxRoomInfor.Controls.Add(this.lblRoomNumber);
             this.gbxRoomInfor.Controls.Add(this.btnCheckExistCCCD);
             this.gbxRoomInfor.Controls.Add(this.btnBookConfirm);
@@ -99,24 +97,6 @@
             this.gbxRoomInfor.TabIndex = 2;
             this.gbxRoomInfor.TabStop = false;
             this.gbxRoomInfor.Text = "Thông tin ";
-            // 
-            // lblRoomType
-            // 
-            this.lblRoomType.AutoSize = true;
-            this.lblRoomType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoomType.Location = new System.Drawing.Point(47, 587);
-            this.lblRoomType.Name = "lblRoomType";
-            this.lblRoomType.Size = new System.Drawing.Size(101, 22);
-            this.lblRoomType.TabIndex = 27;
-            this.lblRoomType.Text = "Loại Phòng";
-            // 
-            // cbxRoomType
-            // 
-            this.cbxRoomType.FormattingEnabled = true;
-            this.cbxRoomType.Location = new System.Drawing.Point(161, 573);
-            this.cbxRoomType.Name = "cbxRoomType";
-            this.cbxRoomType.Size = new System.Drawing.Size(121, 45);
-            this.cbxRoomType.TabIndex = 26;
             // 
             // lblRoomNumber
             // 
@@ -250,17 +230,23 @@
             // 
             // dtpCheckoutTime
             // 
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH";
             this.dtpCheckoutTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpCheckoutTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpCheckoutTime.Location = new System.Drawing.Point(223, 672);
             this.dtpCheckoutTime.Name = "dtpCheckoutTime";
+            this.dtpCheckoutTime.ShowUpDown = true;
             this.dtpCheckoutTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckoutTime.TabIndex = 11;
             // 
             // dtpCheckinTime
             // 
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH";
             this.dtpCheckinTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpCheckinTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpCheckinTime.Location = new System.Drawing.Point(223, 624);
             this.dtpCheckinTime.Name = "dtpCheckinTime";
+            this.dtpCheckinTime.ShowUpDown = true;
             this.dtpCheckinTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckinTime.TabIndex = 10;
             // 

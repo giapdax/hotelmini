@@ -150,8 +150,8 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutRight.Location = new System.Drawing.Point(603, 3);
             this.tableLayoutRight.Name = "tableLayoutRight";
             this.tableLayoutRight.RowCount = 2;
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75.23585F));
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24.76415F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 76.8868F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 23.11321F));
             this.tableLayoutRight.Size = new System.Drawing.Size(294, 424);
             this.tableLayoutRight.TabIndex = 1;
             // 
@@ -163,7 +163,7 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetail.ForeColor = System.Drawing.Color.White;
             this.groupBoxDetail.Location = new System.Drawing.Point(3, 3);
             this.groupBoxDetail.Name = "groupBoxDetail";
-            this.groupBoxDetail.Size = new System.Drawing.Size(288, 313);
+            this.groupBoxDetail.Size = new System.Drawing.Size(288, 320);
             this.groupBoxDetail.TabIndex = 0;
             this.groupBoxDetail.TabStop = false;
             this.groupBoxDetail.Text = "Thông tin User";
@@ -200,20 +200,22 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tableLayoutUserInfo.Size = new System.Drawing.Size(282, 288);
+            this.tableLayoutUserInfo.Size = new System.Drawing.Size(282, 295);
             this.tableLayoutUserInfo.TabIndex = 0;
             // 
             // btnSave
             // 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
-            this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSave.ForeColor = System.Drawing.Color.White;
             this.btnSave.Location = new System.Drawing.Point(104, 188);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(175, 27);
+            this.btnSave.Size = new System.Drawing.Size(175, 36);
             this.btnSave.TabIndex = 20;
             this.btnSave.Text = "Lưu";
             this.btnSave.UseVisualStyleBackColor = false;
@@ -372,9 +374,9 @@ namespace HOTEL_MINI.Forms
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnCancel.ForeColor = System.Drawing.Color.White;
-            this.btnCancel.Location = new System.Drawing.Point(7, 188);
+            this.btnCancel.Location = new System.Drawing.Point(7, 190);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(87, 27);
+            this.btnCancel.Size = new System.Drawing.Size(87, 31);
             this.btnCancel.TabIndex = 19;
             this.btnCancel.Text = "Hủy";
             this.btnCancel.UseVisualStyleBackColor = false;
@@ -383,9 +385,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.panelButtons.Controls.Add(this.tableLayoutButtons);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelButtons.Location = new System.Drawing.Point(3, 322);
+            this.panelButtons.Location = new System.Drawing.Point(3, 329);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(288, 99);
+            this.panelButtons.Size = new System.Drawing.Size(288, 92);
             this.panelButtons.TabIndex = 1;
             // 
             // tableLayoutButtons
@@ -403,7 +405,7 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutButtons.Size = new System.Drawing.Size(288, 99);
+            this.tableLayoutButtons.Size = new System.Drawing.Size(288, 92);
             this.tableLayoutButtons.TabIndex = 0;
             // 
             // btnAdd
@@ -413,7 +415,7 @@ namespace HOTEL_MINI.Forms
             this.btnAdd.ForeColor = System.Drawing.Color.White;
             this.btnAdd.Location = new System.Drawing.Point(3, 3);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(138, 43);
+            this.btnAdd.Size = new System.Drawing.Size(138, 40);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Thêm";
             this.btnAdd.UseVisualStyleBackColor = false;
@@ -426,7 +428,7 @@ namespace HOTEL_MINI.Forms
             this.btnEdit.ForeColor = System.Drawing.Color.White;
             this.btnEdit.Location = new System.Drawing.Point(147, 3);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(138, 43);
+            this.btnEdit.Size = new System.Drawing.Size(138, 40);
             this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "Sửa";
             this.btnEdit.UseVisualStyleBackColor = false;
@@ -437,9 +439,9 @@ namespace HOTEL_MINI.Forms
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(3, 52);
+            this.btnDelete.Location = new System.Drawing.Point(3, 49);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(138, 44);
+            this.btnDelete.Size = new System.Drawing.Size(138, 40);
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Xóa";
             this.btnDelete.UseVisualStyleBackColor = false;

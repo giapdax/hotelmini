@@ -10,6 +10,8 @@ namespace HOTEL_MINI.Forms
     {
         private User _currentUser;
         private readonly UserService _userService;
+        private bool isPasswordVisible = false;   // trạng thái ẩn/hiện mật khẩu
+        private bool isEditMode = false;          // trạng thái edit/view
 
         public frmProfile(User user)
         {
@@ -21,6 +23,7 @@ namespace HOTEL_MINI.Forms
         private void frmProfile_Load(object sender, EventArgs e)
         {
             LoadUserData();
+            SetEditMode(false); // mặc định chỉ xem
         }
 
         private void LoadUserData()
@@ -29,42 +32,79 @@ namespace HOTEL_MINI.Forms
             txtFullName.Text = _currentUser.FullName;
             txtEmail.Text = _currentUser.Email;
             txtPhone.Text = _currentUser.Phone;
+
             txtPassword.Text = "";
+            txtPassword.UseSystemPasswordChar = true; // luôn mặc định dạng chấm
+            isPasswordVisible = false; // reset trạng thái
+            btnTogglePassword.Image = Properties.Resources.eye_slash; // icon mắt đóng
+
             txtUsername.ReadOnly = true;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+
+        private void SetEditMode(bool editable)
         {
-            if (!ValidateInputs()) return;
+            isEditMode = editable;
 
-            _currentUser.FullName = txtFullName.Text.Trim();
-            _currentUser.Email = txtEmail.Text.Trim();
-            _currentUser.Phone = txtPhone.Text.Trim();
+            // Username luôn readonly
+            txtUsername.ReadOnly = true;
+            txtFullName.ReadOnly = !editable;
+            txtEmail.ReadOnly = !editable;
+            txtPhone.ReadOnly = !editable;
+            txtPassword.ReadOnly = !editable;
 
-            string newPassword = null;
-            if (!string.IsNullOrWhiteSpace(txtPassword.Text))
+            btnEditSave.Text = editable ? "Lưu" : "Chỉnh sửa";
+        }
+
+        private void btnEditSave_Click(object sender, EventArgs e)
+        {
+            if (!isEditMode)
             {
-                newPassword = txtPassword.Text.Trim();
-            }
-
-            bool isUpdated = _userService.UpdateUser(_currentUser, newPassword);
-            if (isUpdated)
-            {
-                MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                // bật chế độ chỉnh sửa
+                SetEditMode(true);
             }
             else
             {
-                MessageBox.Show("Cập nhật thông tin thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.DialogResult = DialogResult.Cancel;
+                // lưu dữ liệu
+                if (!ValidateInputs()) return;
+
+                _currentUser.FullName = txtFullName.Text.Trim();
+                _currentUser.Email = txtEmail.Text.Trim();
+                _currentUser.Phone = txtPhone.Text.Trim();
+
+                string newPassword = null;
+                if (!string.IsNullOrWhiteSpace(txtPassword.Text))
+                {
+                    newPassword = txtPassword.Text.Trim();
+                }
+
+                bool isUpdated = _userService.UpdateUser(_currentUser, newPassword);
+                if (isUpdated)
+                {
+                    MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    SetEditMode(false);
+                    LoadUserData();
+                }
+                else
+                {
+                    MessageBox.Show("Cập nhật thông tin thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            if (isEditMode)
+            {
+                // thoát chế độ edit, load lại dữ liệu cũ
+                SetEditMode(false);
+                LoadUserData();
+            }
+            else
+            {
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
+            }
         }
 
         private bool ValidateInputs()
@@ -85,6 +125,17 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
             return true;
+        }
+
+        // Nút bật/tắt hiển thị mật khẩu
+        private void btnTogglePassword_Click(object sender, EventArgs e)
+        {
+            isPasswordVisible = !isPasswordVisible;
+            txtPassword.UseSystemPasswordChar = !isPasswordVisible;
+
+            btnTogglePassword.Image = isPasswordVisible
+                ? Properties.Resources.eye        // đang hiện mật khẩu
+                : Properties.Resources.eye_slash; // đang ẩn mật khẩu
         }
     }
 }
