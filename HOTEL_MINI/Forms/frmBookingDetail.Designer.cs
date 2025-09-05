@@ -61,6 +61,7 @@
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblDiachi = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
+            this.txtPricingType = new System.Windows.Forms.TextBox();
             this.gbxServicesMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numIncrease)).BeginInit();
             this.gbxUsedServices.SuspendLayout();
@@ -197,6 +198,7 @@
             // gbxRoomInfor
             // 
             this.gbxRoomInfor.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.gbxRoomInfor.Controls.Add(this.txtPricingType);
             this.gbxRoomInfor.Controls.Add(this.txtGender);
             this.gbxRoomInfor.Controls.Add(this.txtCCCD);
             this.gbxRoomInfor.Controls.Add(this.txtEmail);
@@ -298,6 +300,9 @@
             this.dtpCheckoutTime.Name = "dtpCheckoutTime";
             this.dtpCheckoutTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckoutTime.TabIndex = 11;
+            this.dtpCheckoutTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm";
+
             // 
             // dtpCheckinTime
             // 
@@ -306,6 +311,8 @@
             this.dtpCheckinTime.Name = "dtpCheckinTime";
             this.dtpCheckinTime.Size = new System.Drawing.Size(399, 30);
             this.dtpCheckinTime.TabIndex = 10;
+            this.dtpCheckinTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm";
             // 
             // lblCHECKOUT
             // 
@@ -340,7 +347,7 @@
             // cbxPricingType
             // 
             this.cbxPricingType.FormattingEnabled = true;
-            this.cbxPricingType.Location = new System.Drawing.Point(112, 346);
+            this.cbxPricingType.Location = new System.Drawing.Point(404, 336);
             this.cbxPricingType.Name = "cbxPricingType";
             this.cbxPricingType.Size = new System.Drawing.Size(121, 45);
             this.cbxPricingType.TabIndex = 6;
@@ -405,6 +412,14 @@
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
             // 
+            // txtPricingType
+            // 
+            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPricingType.Location = new System.Drawing.Point(107, 352);
+            this.txtPricingType.Name = "txtPricingType";
+            this.txtPricingType.Size = new System.Drawing.Size(128, 35);
+            this.txtPricingType.TabIndex = 20;
+            // 
             // frmBookingDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -464,5 +479,6 @@
         private System.Windows.Forms.Label lblSDT;
         private System.Windows.Forms.Label lblDiachi;
         private System.Windows.Forms.Label lblTen;
+        private System.Windows.Forms.TextBox txtPricingType;
     }
 }

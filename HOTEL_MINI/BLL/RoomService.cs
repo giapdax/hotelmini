@@ -40,5 +40,14 @@ namespace HOTEL_MINI.BLL
         {
             return roomRepository.getPricingID(pricingType, roomType);
         }
+
+        public bool UpdateRoomStatus(int roomID, string v)
+        {
+            return roomRepository.UpdateRoomStatus(roomID, v);
+        }
+        public string getPricingTypeByID(int pricingID)
+        {
+            return roomRepository.getPricingTypeByID(pricingID);
+        }
     }
 }

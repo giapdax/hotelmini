@@ -50,5 +50,72 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
+        public Booking GetLatestBookingByRoomId(int roomId)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"SELECT TOP 1 * FROM Bookings 
+                           WHERE RoomID = @RoomID 
+                           ORDER BY BookingDate DESC";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", roomId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Booking
+                            {
+                                BookingID = (int)reader["BookingID"],
+                                RoomID = (int)reader["RoomID"],
+                                CustomerID = (int)reader["CustomerID"],
+                                PricingID = (int)reader["PricingID"],
+                                CreatedBy = (int)reader["CreatedBy"],
+                                BookingDate = (DateTime)reader["BookingDate"],
+                                CheckInDate = (DateTime)reader["CheckInDate"],
+                                CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
+                                Status = reader["Status"].ToString(),
+                                Notes = reader["Notes"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool Update(Booking booking)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"UPDATE Bookings 
+                       SET Status = @Status,
+                           CheckOutDate = @CheckOutDate,
+                           Notes = @Notes
+                       WHERE BookingID = @BookingID";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@BookingID", booking.BookingID);
+                    cmd.Parameters.AddWithValue("@Status", booking.Status);
+
+                    if (booking.CheckOutDate.HasValue)
+                        cmd.Parameters.AddWithValue("@CheckOutDate", booking.CheckOutDate.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@CheckOutDate", DBNull.Value);
+
+                    if (string.IsNullOrEmpty(booking.Notes))
+                        cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@Notes", booking.Notes);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
     }
 }

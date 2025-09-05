@@ -31,5 +31,9 @@ namespace HOTEL_MINI.BLL
         {
             return _customerRepository.checkExistNumberID(idNumber);
         }
+        public Customer getCustomerByCustomerID(int customerID)
+        {
+            return _customerRepository.GetCustomerByCustomerID(customerID);
+        }
     }
 }

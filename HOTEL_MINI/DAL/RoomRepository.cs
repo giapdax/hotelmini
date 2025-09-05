@@ -94,6 +94,23 @@ namespace HOTEL_MINI.DAL
             }
             return listPricingType;
         }
+        public string getPricingTypeByID(int pricingID)
+        {
+            string pricingType = string.Empty;
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT PricingType FROM RoomPricing WHERE PricingID = @PricingID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@PricingID", pricingID);
+                SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                if (sqlDataReader.Read())
+                {
+                    pricingType = sqlDataReader.GetString(0);
+                }
+            }
+            return pricingType;
+        }
         public bool UpdateRoomStatus(int roomID, string status)
         {
             using(SqlConnection conn = new SqlConnection(_stringConnection))

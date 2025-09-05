@@ -19,5 +19,7 @@ namespace HOTEL_MINI.BLL
         {
             return _bookingRepository.AddBooking(booking);
         }
+        public Booking GetLatestBookingByRoomId(int roomId) => _bookingRepository.GetLatestBookingByRoomId(roomId);
+        public bool UpdateBooking(Booking b) => _bookingRepository.Update(b);
     }
 }
