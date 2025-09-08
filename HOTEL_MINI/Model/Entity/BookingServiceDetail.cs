@@ -11,6 +11,7 @@ namespace HOTEL_MINI.Model.Entity
         public int BookingServiceID { get; set; }
         public int BookingID { get; set; }
         public int ServiceID { get; set; }
-        public Service Service { get; set; }
+        public int Quantity { get; set; }
+        //public Service Service { get; set; }
     }
 }

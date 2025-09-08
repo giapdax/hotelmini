@@ -43,5 +43,13 @@ namespace HOTEL_MINI.BLL
         {
             return _serviceRepository.DeleteService(serviceId);
         }
+        public void UpdateServiceQuantity(int serviceId, int quantity)
+        {
+            _serviceRepository.UpdateQuantity(serviceId, quantity);
+        }
+        public int GetQuantity(int serviceId)
+        {
+            return _serviceRepository.GetQuantity(serviceId);
+        }
     }
 }

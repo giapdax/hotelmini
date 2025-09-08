@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HOTEL_MINI", "HOTEL_MINI\HOTEL_MINI.csproj", "{67EBB2FF-4454-48AF-8E11-7B9FE0403E93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connec_Database", "..\CT07N0153_TranTrongThinh_4th9\Connec_Database\Connec_Database.csproj", "{C3B918F0-55B5-4FB6-94C1-926D858FD913}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{67EBB2FF-4454-48AF-8E11-7B9FE0403E93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67EBB2FF-4454-48AF-8E11-7B9FE0403E93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67EBB2FF-4454-48AF-8E11-7B9FE0403E93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3B918F0-55B5-4FB6-94C1-926D858FD913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3B918F0-55B5-4FB6-94C1-926D858FD913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3B918F0-55B5-4FB6-94C1-926D858FD913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3B918F0-55B5-4FB6-94C1-926D858FD913}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

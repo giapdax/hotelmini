@@ -44,12 +44,14 @@ namespace HOTEL_MINI.Forms.Controls
             if (roomStatus == "Available")
             {
                 this.BackColor = Color.LightGreen;
+                btnBook.Text = "Đặt Phòng";
                 btnDetails.Visible = false;
                 btnBook.Visible = true;
             }
             else if (roomStatus == "Booked")
             {
                 this.BackColor = Color.Yellow;
+                btnBook.Text = "Nhận phòng";
                 btnDetails.Visible = true;
                 btnBook.Visible = true;
 
@@ -76,7 +78,7 @@ namespace HOTEL_MINI.Forms.Controls
                 if (booking != null && booking.CheckOutDate.HasValue)
                 {
                     var timeToCheckout = booking.CheckOutDate.Value - DateTime.Now;
-                    if (timeToCheckout.TotalHours <= 25 && timeToCheckout.TotalHours >= 0)
+                    if (timeToCheckout.TotalHours <= 1 && timeToCheckout.TotalHours >= 0)
                     {
                         this.BackColor = Color.Orange; // sắp đến giờ checkout
                     }
@@ -98,7 +100,8 @@ namespace HOTEL_MINI.Forms.Controls
                 bookingPopup.ShowDialog();
             }
             else
-            {
+            {   
+                
                 updateStatus();
             }
         }
@@ -141,9 +144,10 @@ namespace HOTEL_MINI.Forms.Controls
                 var latestBooking = _bookingService.GetLatestBookingByRoomId(_room.RoomID);
                 if (latestBooking != null)
                 {
-                    frmBookingDetail bookingDetails = new frmBookingDetail(latestBooking, _room); //_form1, latestBooking, _frmRoom
+                    _form1.OpenChildForm(new frmBookingDetail(latestBooking, _room, _form1), btnDetails); //_form1, latestBooking, _frmRoom
+                    //frmBookingDetail bookingDetails = new frmBookingDetail(latestBooking, _room); //_form1, latestBooking, _frmRoom
                     
-                    bookingDetails.ShowDialog();
+                    //bookingDetails.ShowDialog();
                 }
                 else
                 {

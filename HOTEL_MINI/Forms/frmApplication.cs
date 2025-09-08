@@ -131,7 +131,7 @@ namespace HOTEL_MINI
             }
         }
 
-        private void OpenChildForm(Form childForm, object btnSender)
+        public void OpenChildForm(Form childForm, object btnSender)
         {
             if (activeForm != null)
                 activeForm.Close();
@@ -152,7 +152,10 @@ namespace HOTEL_MINI
 
             lblTitle.Text = childForm.Text;
         }
-
+        //public void BookingDetailRoom(int roomId)
+        //{
+        //    OpenChildForm(new Forms.frmBookingDetail(roomId, this), btnDashboard);
+        //}
         private void btnDashboard_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.frmDashboard(), sender);

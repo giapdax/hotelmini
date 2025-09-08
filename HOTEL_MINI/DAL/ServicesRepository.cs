@@ -24,7 +24,7 @@ namespace HOTEL_MINI.DAL
         public List<Service> GetAllServices()
         {
             var services = new List<Service>();
-            const string query = "SELECT ServiceID, ServiceName, Price, IsActive FROM Services";
+            const string query = "SELECT ServiceID, ServiceName, Price, IsActive, Quantity FROM Services";
 
             // "using" đảm bảo kết nối được tạo, mở, và đóng/giải phóng một cách an toàn
             using (var connection = CreateConnection())
@@ -42,7 +42,8 @@ namespace HOTEL_MINI.DAL
                                 ServiceID = reader.GetInt32(0),
                                 ServiceName = reader.GetString(1),
                                 Price = reader.GetDecimal(2),
-                                IsActive = reader.GetBoolean(3)
+                                IsActive = reader.GetBoolean(3),
+                                Quantity = reader.GetInt32(4)
                             });
                         }
                     }
@@ -59,7 +60,7 @@ namespace HOTEL_MINI.DAL
 
         public bool AddService(Service service)
         {
-            const string query = "INSERT INTO Services (ServiceName, Price, IsActive) VALUES (@ServiceName, @Price, @IsActive)";
+            const string query = "INSERT INTO Services (ServiceName, Price, IsActive,Quantity) VALUES (@ServiceName, @Price, @IsActive, @Quantity)";
 
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
@@ -67,7 +68,7 @@ namespace HOTEL_MINI.DAL
                 command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
                 command.Parameters.AddWithValue("@Price", service.Price);
                 command.Parameters.AddWithValue("@IsActive", service.IsActive);
-
+                command.Parameters.AddWithValue("@Quantity", service.Quantity);
                 try
                 {
                     connection.Open();
@@ -129,6 +130,28 @@ namespace HOTEL_MINI.DAL
                     Console.WriteLine($"Error in DeleteService: {ex.Message}");
                     return false;
                 }
+            }
+        }
+        public void UpdateQuantity(int serviceId, int quantity)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(
+                    "UPDATE Services SET Quantity = @Quantity WHERE ServiceID = @ServiceID", conn);
+                cmd.Parameters.AddWithValue("@Quantity", quantity);
+                cmd.Parameters.AddWithValue("@ServiceID", serviceId);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public int GetQuantity(int serviceId)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("SELECT Quantity FROM Services WHERE ServiceID = @id", conn))
+            {
+                cmd.Parameters.AddWithValue("@id", serviceId);
+                conn.Open();
+                return (int)cmd.ExecuteScalar();
             }
         }
     }

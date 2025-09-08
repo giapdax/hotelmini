@@ -1,5 +1,6 @@
 ﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
+using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -116,6 +117,101 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
+        public List<UsedServiceDto> GetUsedServicesByBookingID(int bookingID)
+        {
+            var list = new List<UsedServiceDto>();
 
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+
+                string sql = @"
+            SELECT bs.BookingServiceID, bs.BookingID, s.ServiceID, 
+                   s.ServiceName, s.Price, bs.Quantity
+            FROM BookingServices bs
+            INNER JOIN Services s ON bs.ServiceID = s.ServiceID
+            WHERE bs.BookingID = @BookingID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@BookingID", bookingID);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new UsedServiceDto
+                        {
+                            BookingServiceID = (int)reader["BookingServiceID"],
+                            BookingID = (int)reader["BookingID"],
+                            ServiceID = (int)reader["ServiceID"],
+                            ServiceName = reader["ServiceName"].ToString(),
+                            Price = (decimal)reader["Price"],
+                            Quantity = (int)reader["Quantity"]
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+        public bool AddOrUpdateServiceForBooking(int bookingID, int serviceID, int quantity)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+
+                // Kiểm tra xem Service đã tồn tại trong Booking chưa
+                string checkSql = "SELECT Quantity FROM BookingServices WHERE BookingID = @BookingID AND ServiceID = @ServiceID";
+                SqlCommand checkCmd = new SqlCommand(checkSql, conn);
+                checkCmd.Parameters.AddWithValue("@BookingID", bookingID);
+                checkCmd.Parameters.AddWithValue("@ServiceID", serviceID);
+
+                object result = checkCmd.ExecuteScalar();
+
+                if (result != null) // đã tồn tại → UPDATE
+                {
+                    int currentQuantity = Convert.ToInt32(result);
+                    int newQuantity = currentQuantity + quantity;
+
+                    string updateSql = "UPDATE BookingServices SET Quantity = @Quantity WHERE BookingID = @BookingID AND ServiceID = @ServiceID";
+                    SqlCommand updateCmd = new SqlCommand(updateSql, conn);
+                    updateCmd.Parameters.AddWithValue("@Quantity", newQuantity);
+                    updateCmd.Parameters.AddWithValue("@BookingID", bookingID);
+                    updateCmd.Parameters.AddWithValue("@ServiceID", serviceID);
+
+                    return updateCmd.ExecuteNonQuery() > 0;
+                }
+                else // chưa tồn tại → INSERT
+                {
+                    string insertSql = @"INSERT INTO BookingServices (BookingID, ServiceID, Quantity)
+                                 VALUES (@BookingID, @ServiceID, @Quantity)";
+                    SqlCommand insertCmd = new SqlCommand(insertSql, conn);
+                    insertCmd.Parameters.AddWithValue("@BookingID", bookingID);
+                    insertCmd.Parameters.AddWithValue("@ServiceID", serviceID);
+                    insertCmd.Parameters.AddWithValue("@Quantity", quantity);
+
+                    return insertCmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+        public void RemoveServiceFromBooking(int bookingServiceId)
+        {
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand("DELETE FROM BookingServices WHERE BookingServiceID = @id", conn))
+            {
+                cmd.Parameters.AddWithValue("@id", bookingServiceId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public void UpdateServiceQuantity(int bookingServiceId, int newQuantity)
+        {
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand("UPDATE BookingServices SET Quantity = @qty WHERE BookingServiceID = @id", conn))
+            {
+                cmd.Parameters.AddWithValue("@qty", newQuantity);
+                cmd.Parameters.AddWithValue("@id", bookingServiceId);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

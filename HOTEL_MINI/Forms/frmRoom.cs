@@ -59,9 +59,7 @@ namespace HOTEL_MINI.Forms
             {
                 var card = new RoomCard(_form1, room,this);
                 flpAllRooms.Controls.Add(card);
-            }
-            
-            
+            }    
         }
 
         public void LoadRoomByStatus()
