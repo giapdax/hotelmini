@@ -64,6 +64,7 @@
             this.btnDetails.TabIndex = 2;
             this.btnDetails.Text = "Chi tiết";
             this.btnDetails.UseVisualStyleBackColor = true;
+            this.btnDetails.Click += new System.EventHandler(this.btnDetails_Click);
             // 
             // lblRoomStatus
             // 

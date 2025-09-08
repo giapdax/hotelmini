@@ -88,6 +88,34 @@ namespace HOTEL_MINI.DAL
                 return null;
             }
         }
+        public Customer GetCustomerByCustomerID(int CustomerID)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Customers WHERE CustomerID = @CustomerID", conn);
+                cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())   // chỉ cần gọi 1 lần
+                    {
+                        return new Customer
+                        {
+                            CustomerID = CustomerID,
+                            FullName = reader["FullName"].ToString(),
+                            Gender = reader["Gender"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Phone = reader["Phone"].ToString(),
+                            Address = reader["Address"].ToString(),
+                            IDNumber = reader["IDNumber"].ToString(),
+                            CreatedAt = (DateTime)reader["CreatedAt"]
+                        };
+                    }
+                }
+                return null;
+            }
+        }
 
         public bool checkExistNumberID(string idNumber)
         {

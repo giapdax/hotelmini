@@ -149,7 +149,10 @@ namespace HOTEL_MINI
 
             lblTitle.Text = childForm.Text;
         }
-
+        //public void BookingDetailRoom(int roomId)
+        //{
+        //    OpenChildForm(new Forms.frmBookingDetail(roomId, this), btnDashboard);
+        //}
         private void btnDashboard_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.frmDashboard(), sender);

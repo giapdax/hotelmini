@@ -76,16 +76,18 @@
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
+            this.cboPricingType = new System.Windows.Forms.ComboBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
-            this.lblRoomPrice = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.textBox6 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.lblRoomPrice = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cboRoomType = new System.Windows.Forms.ComboBox();
             this.grpRoomType = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
             this.btnSaveRoomType = new System.Windows.Forms.Button();
@@ -96,8 +98,6 @@
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.tblTenLoaiPhong = new System.Windows.Forms.Label();
             this.txtRoomTypeName = new System.Windows.Forms.TextBox();
-            this.cboRoomType = new System.Windows.Forms.ComboBox();
-            this.cboPricingType = new System.Windows.Forms.ComboBox();
             this.tabRoom.SuspendLayout();
             this.tplRoom.SuspendLayout();
             this.tblRoom1.SuspendLayout();
@@ -128,6 +128,7 @@
             // 
             this.tabRoom.BackColor = System.Drawing.Color.Thistle;
             this.tabRoom.Controls.Add(this.tplRoom);
+            this.tabRoom.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabRoom.Location = new System.Drawing.Point(4, 29);
             this.tabRoom.Name = "tabRoom";
             this.tabRoom.Padding = new System.Windows.Forms.Padding(3);
@@ -761,6 +762,15 @@
             this.tableLayoutPanel11.Size = new System.Drawing.Size(421, 269);
             this.tableLayoutPanel11.TabIndex = 0;
             // 
+            // cboPricingType
+            // 
+            this.cboPricingType.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboPricingType.FormattingEnabled = true;
+            this.cboPricingType.Location = new System.Drawing.Point(213, 47);
+            this.cboPricingType.Name = "cboPricingType";
+            this.cboPricingType.Size = new System.Drawing.Size(205, 28);
+            this.cboPricingType.TabIndex = 16;
+            // 
             // button5
             // 
             this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
@@ -809,40 +819,6 @@
             this.button8.Text = "Thêm";
             this.button8.UseVisualStyleBackColor = false;
             // 
-            // lblRoomPrice
-            // 
-            this.lblRoomPrice.AutoSize = true;
-            this.lblRoomPrice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblRoomPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoomPrice.ForeColor = System.Drawing.Color.Firebrick;
-            this.lblRoomPrice.Location = new System.Drawing.Point(3, 88);
-            this.lblRoomPrice.Name = "lblRoomPrice";
-            this.lblRoomPrice.Size = new System.Drawing.Size(204, 44);
-            this.lblRoomPrice.TabIndex = 8;
-            this.lblRoomPrice.Text = "Giá cả:";
-            this.lblRoomPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox6.Location = new System.Drawing.Point(213, 91);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(205, 26);
-            this.textBox6.TabIndex = 9;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.Color.Firebrick;
-            this.label8.Location = new System.Drawing.Point(3, 132);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(204, 44);
-            this.label8.TabIndex = 6;
-            this.label8.Text = "Trạng thái";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -869,6 +845,14 @@
             this.label4.Text = "Tên loại phòng:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // textBox6
+            // 
+            this.textBox6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox6.Location = new System.Drawing.Point(213, 91);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(205, 26);
+            this.textBox6.TabIndex = 9;
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -879,6 +863,41 @@
             this.checkBox1.TabIndex = 14;
             this.checkBox1.Text = "Đang hoạt động";
             this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // lblRoomPrice
+            // 
+            this.lblRoomPrice.AutoSize = true;
+            this.lblRoomPrice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblRoomPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRoomPrice.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblRoomPrice.Location = new System.Drawing.Point(3, 88);
+            this.lblRoomPrice.Name = "lblRoomPrice";
+            this.lblRoomPrice.Size = new System.Drawing.Size(204, 44);
+            this.lblRoomPrice.TabIndex = 8;
+            this.lblRoomPrice.Text = "Giá cả:";
+            this.lblRoomPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Firebrick;
+            this.label8.Location = new System.Drawing.Point(3, 132);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(204, 44);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "Trạng thái";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cboRoomType
+            // 
+            this.cboRoomType.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboRoomType.FormattingEnabled = true;
+            this.cboRoomType.Location = new System.Drawing.Point(213, 3);
+            this.cboRoomType.Name = "cboRoomType";
+            this.cboRoomType.Size = new System.Drawing.Size(205, 28);
+            this.cboRoomType.TabIndex = 15;
             // 
             // grpRoomType
             // 
@@ -1005,28 +1024,11 @@
             this.txtRoomTypeName.Size = new System.Drawing.Size(205, 26);
             this.txtRoomTypeName.TabIndex = 5;
             // 
-            // cboRoomType
-            // 
-            this.cboRoomType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboRoomType.FormattingEnabled = true;
-            this.cboRoomType.Location = new System.Drawing.Point(213, 3);
-            this.cboRoomType.Name = "cboRoomType";
-            this.cboRoomType.Size = new System.Drawing.Size(205, 28);
-            this.cboRoomType.TabIndex = 15;
-            // 
-            // cboPricingType
-            // 
-            this.cboPricingType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboPricingType.FormattingEnabled = true;
-            this.cboPricingType.Location = new System.Drawing.Point(213, 47);
-            this.cboPricingType.Name = "cboPricingType";
-            this.cboPricingType.Size = new System.Drawing.Size(205, 28);
-            this.cboPricingType.TabIndex = 16;
-            // 
             // frmRoomManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.tabControlRoom);
             this.Name = "frmRoomManager";
