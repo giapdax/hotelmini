@@ -147,7 +147,6 @@
             this.lblTitle.Size = new System.Drawing.Size(393, 45);
             this.lblTitle.TabIndex = 1;
             this.lblTitle.Text = "ĐĂNG NHẬP HỆ THỐNG";
-            this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
             // pnlLeft
             // 

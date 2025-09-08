@@ -23,15 +23,12 @@ namespace HOTEL_MINI
 
             this.MaximizeBox = true;
             this.FormBorderStyle = FormBorderStyle.Sizable;
-
-            // Lưu size gốc
             originalSize = this.Size;
             controlsOriginalBounds = new Dictionary<Control, Rectangle>();
             SaveControlBounds(this);
 
             this.Resize += Form1_Resize;
 
-            // Tạo thanh indicator
             panelIndicator = new Panel();
             panelIndicator.Size = new Size(3, 0);
             panelIndicator.BackColor = Color.White;
@@ -130,8 +127,8 @@ namespace HOTEL_MINI
                 panelIndicator.BringToFront();
             }
         }
-
-        private void OpenChildForm(Form childForm, object btnSender)
+        // Hàm mở form con trong panelDesktop   
+        public void OpenChildForm(Form childForm, object btnSender)
         {
             if (activeForm != null)
                 activeForm.Close();
@@ -178,20 +175,12 @@ namespace HOTEL_MINI
             OpenChildForm(new Forms.frmSetting(), sender);
         }
 
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-            // Do nothing
-        }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             contextMenuProfile.Show(pictureBox1, new Point(0, pictureBox1.Height));
         }
 
-        private void frmApplication_Load(object sender, EventArgs e)
-        {
-            // Do nothing
-        }
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
@@ -212,31 +201,24 @@ namespace HOTEL_MINI
 
         private void btnProfile_Click(object sender, EventArgs e)
         {
-            // Lấy thông tin người dùng hiện tại (cần được lưu khi đăng nhập)
             if (_currentUser == null)
             {
                 MessageBox.Show("Không tìm thấy thông tin người dùng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            // Tạo một thể hiện của form Profile và truyền thông tin người dùng
             using (frmProfile profileForm = new frmProfile(_currentUser))
             {
-                // Hiển thị form dưới dạng hộp thoại
                 DialogResult result = profileForm.ShowDialog();
 
-                // Kiểm tra kết quả
                 if (result == DialogResult.OK)
                 {
-                    // Tải lại thông tin người dùng hoặc cập nhật giao diện nếu cần
-                    // Ví dụ: lblFullName.Text = _loggedInUser.FullName;
                 }
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void btnRoomManager_Click(object sender, EventArgs e)
         {
-
+            OpenChildForm(new Forms.frmRoomManager(), sender);
         }
     }
 }

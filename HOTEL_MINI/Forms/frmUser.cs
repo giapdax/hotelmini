@@ -1,5 +1,4 @@
-﻿// File: frmUser.cs
-using HOTEL_MINI.BLL;
+﻿using HOTEL_MINI.BLL;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
@@ -24,20 +23,6 @@ namespace HOTEL_MINI.Forms
             InitializeComponent();
             _userService = new UserService();
             _roleService = new RoleService();
-
-            // Đăng ký các sự kiện
-            this.Load += frmUser_Load;
-            this.dataGridView1.CellClick += dataGridView1_CellClick;
-            this.dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
-            this.dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-            this.txtSearch.TextChanged += txtSearch_TextChanged;
-
-            // Sự kiện cho các nút
-            this.btnAdd.Click += btnAdd_Click;
-            this.btnEdit.Click += btnEdit_Click;
-            this.btnDelete.Click += btnDelete_Click;
-            this.btnSave.Click += btnSave_Click;
-            this.btnCancel.Click += btnCancel_Click;
         }
 
         #region Load dữ liệu
@@ -321,35 +306,78 @@ namespace HOTEL_MINI.Forms
 
         private bool ValidateInputs(bool isNew)
         {
-            if (string.IsNullOrWhiteSpace(txtUsername.Text))
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text; // giữ nguyên để còn check "********"
+            string email = txtEmail.Text.Trim();
+            string phone = txtPhone.Text.Trim();
+
+            // 1) Username: chỉ chữ & số, không khoảng trắng, không ký tự đặc biệt
+            if (string.IsNullOrWhiteSpace(username))
             {
                 MessageBox.Show("Username không được để trống.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUsername.Focus();
                 return false;
             }
-            if (isNew && string.IsNullOrWhiteSpace(txtPassword.Text))
+            if (!Regex.IsMatch(username, @"^[A-Za-z0-9]+$"))
             {
-                MessageBox.Show("Password không được để trống.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Username chỉ được chứa chữ và số, không có khoảng trắng hoặc ký tự đặc biệt.",
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUsername.Focus();
+                txtUsername.SelectAll();
                 return false;
             }
+
+            // 2) Password: thêm mới bắt buộc >= 8 ký tự; khi sửa thì chỉ check nếu người dùng đổi (khác ********)
+            if (isNew)
+            {
+                if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+                {
+                    MessageBox.Show("Password phải có ít nhất 8 ký tự.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtPassword.Focus();
+                    return false;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(password) && password != "********" && password.Length < 8)
+                {
+                    MessageBox.Show("Password phải có ít nhất 8 ký tự.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtPassword.Focus();
+                    return false;
+                }
+            }
+
+            // 3) Role/Status bắt buộc
             if (cmbRole.SelectedValue == null || cmbStatus.SelectedItem == null)
             {
                 MessageBox.Show("Vai trò và Trạng thái không được để trống.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(txtEmail.Text) &&
-                !Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+
+            // 4) Email (nếu có) phải hợp lệ
+            if (!string.IsNullOrWhiteSpace(email) &&
+                !Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
                 MessageBox.Show("Email không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtEmail.Focus();
+                txtEmail.SelectAll();
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(txtPhone.Text) &&
-                !Regex.IsMatch(txtPhone.Text, @"^[0-9]+$"))
+
+            // 5) SĐT (nếu có) phải đúng 10 số
+            if (!string.IsNullOrWhiteSpace(phone) &&
+                !Regex.IsMatch(phone, @"^\d{10}$"))
             {
-                MessageBox.Show("Số điện thoại chỉ được chứa chữ số.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Số điện thoại không đúng định dạng (phải gồm đúng 10 số).",
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtPhone.Focus();
+                txtPhone.SelectAll();
                 return false;
             }
+
             return true;
         }
+
 
         #endregion
 
@@ -423,19 +451,5 @@ namespace HOTEL_MINI.Forms
 
         #endregion
 
-        #region Sự kiện không dùng
-        // Các sự kiện này được giữ lại nhưng sẽ không có logic
-        private void button1_Click(object sender, EventArgs e) { }
-        private void lblThongTinChiTiet_Click(object sender, EventArgs e) { }
-        private void panelUserManager_Paint(object sender, PaintEventArgs e) { }
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
-        private void cmbRole_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void cmbStatus_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void txtPassword_TextChanged(object sender, EventArgs e) { }
-        private void lblRole_Click(object sender, EventArgs e) { }
-        private void btnSearch_Click(object sender, EventArgs e) { }
-        private void cmbSearchStatus_SelectedIndexChanged(object sender, EventArgs e) { }
-
-        #endregion
     }
 }

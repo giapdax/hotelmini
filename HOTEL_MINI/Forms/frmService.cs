@@ -1,7 +1,9 @@
 ﻿using HOTEL_MINI.BLL;
 using HOTEL_MINI.Model.Entity;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HOTEL_MINI.Forms
@@ -23,27 +25,20 @@ namespace HOTEL_MINI.Forms
             _servicesService = new ServicesService();
             _bindingSource = new BindingSource();
 
-            // Gán sự kiện
-            this.Load += frmService_Load;
+            // Chỉ gán những event mà Designer KHÔNG gán
             this.datagridViewService.CellClick += datagridViewService_CellClick;
-            this.txtSearchService.TextChanged += txtSearchService_TextChanged;
             this.datagridViewService.CellFormatting += datagridViewService_CellFormatting;
 
-            // Gán sự kiện cho các nút chức năng mới
-            this.btnAddService.Click += btnAddService_Click;
-            this.btnEditService.Click += btnEditService_Click;
-            this.btnSave.Click += btnSave_Click; // Xử lý Lưu
-            this.btnCancel.Click += btnCancel_Click; // Xử lý Hủy
-            this.btnDeleteService.Click += btnDeleteService_Click; // Giữ nguyên
-
-            // Thiết lập trạng thái ban đầu
+            // Không gán Load, Click, TextChanged… ở đây nữa vì Designer đã gán
             SetFormState(FormState.Viewing);
         }
+
 
         private void frmService_Load(object sender, EventArgs e)
         {
             SetupDataGridView();
             LoadAllServices();
+            PopulateComboBox();
         }
 
         // Hàm này thiết lập trạng thái của form và điều chỉnh hiển thị/enable của controls
@@ -51,11 +46,9 @@ namespace HOTEL_MINI.Forms
         {
             _currentState = newState;
 
-            // Mặc định: Tắt chỉnh sửa trên các control nhập liệu
             bool enableInput = false;
             bool enableGridAndSearch = false;
 
-            // Hiển thị/Ẩn các nút
             btnAddService.Visible = _currentState == FormState.Viewing;
             btnEditService.Visible = _currentState == FormState.Viewing;
             btnDeleteService.Visible = _currentState == FormState.Viewing;
@@ -63,28 +56,23 @@ namespace HOTEL_MINI.Forms
             btnSave.Visible = _currentState == FormState.Adding || _currentState == FormState.Editing;
             btnCancel.Visible = _currentState == FormState.Adding || _currentState == FormState.Editing;
 
-            // Bật/Tắt Grid và Search
             datagridViewService.Enabled = _currentState == FormState.Viewing;
             txtSearchService.Enabled = _currentState == FormState.Viewing;
 
-
+            // Bật/Tắt các control của phần nhập liệu chính
             switch (newState)
             {
                 case FormState.Viewing:
-                    // Ở chế độ xem, các TextBox bị tắt, Grid và Search được bật
                     enableInput = false;
                     enableGridAndSearch = true;
-                    // Đảm bảo không có dòng nào được chọn khi chuyển về Viewing
                     datagridViewService.ClearSelection();
                     break;
                 case FormState.Adding:
-                    // Ở chế độ thêm, các TextBox được bật, xóa dữ liệu cũ
                     enableInput = true;
                     enableGridAndSearch = false;
                     ClearFields();
                     break;
                 case FormState.Editing:
-                    // Ở chế độ sửa, các TextBox được bật
                     enableInput = true;
                     enableGridAndSearch = false;
                     break;
@@ -94,9 +82,9 @@ namespace HOTEL_MINI.Forms
             txtServiceName.Enabled = enableInput;
             txtPrice.Enabled = enableInput;
             chkIsActive.Enabled = enableInput;
+            txtQuantity.Enabled = enableInput;
         }
 
-        // Giữ nguyên các hàm Load, SetupDataGridView, CellFormatting
         private void SetupDataGridView()
         {
             datagridViewService.AutoGenerateColumns = false;
@@ -105,22 +93,51 @@ namespace HOTEL_MINI.Forms
             datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServiceID", Visible = false });
             datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServiceName", HeaderText = "Tên Dịch Vụ", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
             datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Price", HeaderText = "Giá", DefaultCellStyle = { Format = "N0" } });
+            // Thêm cột Quantity để hiển thị số lượng tồn kho
+            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quantity", HeaderText = "Số Lượng Tồn", AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader });
             datagridViewService.Columns.Add(new DataGridViewCheckBoxColumn { DataPropertyName = "IsActive", HeaderText = "Hoạt Động" });
         }
 
         private void LoadAllServices()
         {
-            try
+            var services = _servicesService.GetAllServices();
+
+            if (_bindingListServices == null)
             {
-                var allServices = _servicesService.GetAllServices();
-                _bindingListServices = new BindingList<Service>(allServices);
-                _bindingSource.DataSource = _bindingListServices;
+                _bindingListServices = new BindingList<Service>(services.ToList());
+                _bindingSource = new BindingSource(_bindingListServices, null);
+                datagridViewService.DataSource = _bindingSource;
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Lỗi khi tải dữ liệu dịch vụ: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // ✅ Cập nhật lại list thay vì tạo mới
+                _bindingListServices.Clear();
+                foreach (var s in services)
+                {
+                    _bindingListServices.Add(s);
+                }
             }
         }
+
+
+        private void PopulateComboBox()
+        {
+            var services = _servicesService.GetAllServices();
+
+            cboServiceName.DataSource = services;
+            cboServiceName.DisplayMember = "ServiceName";
+            cboServiceName.ValueMember = "ServiceID";
+            cboServiceName.SelectedIndex = -1;
+
+            // Tạo danh sách autocomplete
+            AutoCompleteStringCollection autoCompleteData = new AutoCompleteStringCollection();
+            foreach (var s in services)
+            {
+                autoCompleteData.Add(s.ServiceName);
+            }
+            cboServiceName.AutoCompleteCustomSource = autoCompleteData;
+        }
+
 
         private void datagridViewService_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -134,12 +151,11 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // Khi click vào Cell, chỉ cho phép hiển thị dữ liệu nếu đang ở chế độ Xem (Viewing)
         private void datagridViewService_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (_currentState != FormState.Viewing)
             {
-                return; // Không làm gì nếu không ở chế độ Xem
+                return;
             }
 
             if (e.RowIndex < 0 || datagridViewService.Rows[e.RowIndex].IsNewRow)
@@ -150,13 +166,12 @@ namespace HOTEL_MINI.Forms
             if (datagridViewService.Rows[e.RowIndex].DataBoundItem is Service selectedService)
             {
                 txtServiceName.Text = selectedService.ServiceName;
-                // Hiển thị giá tiền gốc (chưa định dạng) để dễ sửa chữa
                 txtPrice.Text = selectedService.Price.ToString();
+                txtQuantity.Text = selectedService.Quantity.ToString(); // Thêm dòng này để hiển thị số lượng
                 chkIsActive.Checked = selectedService.IsActive;
             }
         }
 
-        // Hàm kiểm tra và parse dữ liệu đầu vào (Cần thiết cho cả Thêm và Sửa)
         private bool ValidateInput()
         {
             if (string.IsNullOrWhiteSpace(txtServiceName.Text))
@@ -173,17 +188,40 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
 
+            if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity < 0)
+            {
+                MessageBox.Show("Số lượng phải là một số nguyên không âm hợp lệ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtQuantity.Focus();
+                return false;
+            }
+
             return true;
         }
 
-        // Xử lý khi ấn nút THÊM
+        private bool ValidateInventoryInput()
+        {
+            if (cboServiceName.SelectedIndex == -1)
+            {
+                MessageBox.Show("Vui lòng chọn một dịch vụ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboServiceName.Focus();
+                return false;
+            }
+
+            if (!int.TryParse(txtQuantityAdd.Text, out int quantity) || quantity <= 0)
+            {
+                MessageBox.Show("Số lượng thêm phải là một số nguyên dương hợp lệ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtQuantityAdd.Focus();
+                return false;
+            }
+            return true;
+        }
+
         private void btnAddService_Click(object sender, EventArgs e)
         {
             SetFormState(FormState.Adding);
             txtServiceName.Focus();
         }
 
-        // Xử lý khi ấn nút SỬA
         private void btnEditService_Click(object sender, EventArgs e)
         {
             if (!(_bindingSource.Current is Service selectedService))
@@ -195,7 +233,6 @@ namespace HOTEL_MINI.Forms
             txtServiceName.Focus();
         }
 
-        // Xử lý khi ấn nút LƯU (Chung cho Thêm và Sửa)
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateInput())
@@ -213,22 +250,27 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // Xử lý logic Thêm
         private void HandleAddService()
         {
+            if (!int.TryParse(txtQuantity.Text, out int quantity))
+            {
+                quantity = 0; // Gán mặc định nếu không hợp lệ
+            }
+
             var newService = new Service
             {
                 ServiceName = txtServiceName.Text,
                 Price = price,
-                IsActive = chkIsActive.Checked
+                IsActive = chkIsActive.Checked,
+                Quantity = quantity // Thêm Quantity
             };
 
             if (_servicesService.AddService(newService))
             {
-                // Tải lại để lấy ServiceID mới nhất
                 LoadAllServices();
+                PopulateComboBox(); // Cập nhật ComboBox
                 MessageBox.Show("Thêm dịch vụ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                SetFormState(FormState.Viewing); // Trở về chế độ Xem
+                SetFormState(FormState.Viewing);
             }
             else
             {
@@ -236,7 +278,6 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // Xử lý logic Sửa
         private void HandleEditService()
         {
             if (!(_bindingSource.Current is Service selectedService))
@@ -244,17 +285,21 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            // Cập nhật đối tượng đã chọn
+            if (!int.TryParse(txtQuantity.Text, out int quantity))
+            {
+                quantity = selectedService.Quantity; // Giữ lại giá trị cũ nếu không hợp lệ
+            }
+
             selectedService.ServiceName = txtServiceName.Text;
             selectedService.Price = price;
             selectedService.IsActive = chkIsActive.Checked;
+            selectedService.Quantity = quantity; // Cập nhật Quantity
 
             if (_servicesService.UpdateService(selectedService))
             {
                 MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // BindingSource.ResetBindings(false) giúp DataGridView cập nhật ngay lập tức
                 _bindingSource.ResetBindings(false);
-                SetFormState(FormState.Viewing); // Trở về chế độ Xem
+                SetFormState(FormState.Viewing);
             }
             else
             {
@@ -262,69 +307,183 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // Xử lý khi ấn nút HỦY
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // Tải lại dữ liệu (tương đương với việc hủy bỏ mọi thay đổi chưa lưu)
             LoadAllServices();
-            SetFormState(FormState.Viewing); // Trở về chế độ Xem
-            ClearFields(); // Xóa dữ liệu trên các control nhập liệu
+            SetFormState(FormState.Viewing);
+            ClearFields();
         }
 
-        // Xử lý khi ấn nút XÓA (Giữ nguyên)
         private void btnDeleteService_Click(object sender, EventArgs e)
         {
             if (!(_bindingSource.Current is Service selectedService))
             {
-                MessageBox.Show("Vui lòng chọn một dịch vụ để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn một dịch vụ để xóa.",
+                                "Thông báo",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 return;
             }
 
-            if (MessageBox.Show("Bạn có chắc muốn xóa dịch vụ này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            var confirm = MessageBox.Show("Bạn có chắc muốn xóa dịch vụ này?",
+                                          "Xác nhận",
+                                          MessageBoxButtons.YesNo,
+                                          MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
             {
-                if (_servicesService.DeleteService(selectedService.ServiceID))
+                bool isDeleted = _servicesService.DeleteService(selectedService.ServiceID);
+
+                if (isDeleted)
                 {
-                    _bindingSource.RemoveCurrent();
-                    MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    ClearFields();
+                    // ✅ Không RemoveCurrent nữa, thay bằng reload từ DB
+                    LoadAllServices();
+                    PopulateComboBox();
+
+                    MessageBox.Show("Xóa thành công!",
+                                    "Thông báo",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+
+                    ClearFields(); // reset form
                 }
                 else
                 {
-                    MessageBox.Show("Xóa thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Xóa thất bại. Vui lòng thử lại.",
+                                    "Lỗi",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                 }
             }
         }
 
-        // Xử lý tìm kiếm (Giữ nguyên)
+
+
         private void txtSearchService_TextChanged(object sender, EventArgs e)
         {
-            string searchText = txtSearchService.Text.Trim();
+            // Lấy chuỗi tìm kiếm và chuyển về chữ thường để tìm kiếm không phân biệt chữ hoa, chữ thường
+            string searchText = txtSearchService.Text.Trim().ToLower();
+
             if (string.IsNullOrEmpty(searchText))
             {
-                _bindingSource.RemoveFilter();
+                // Nếu ô tìm kiếm trống, hiển thị lại toàn bộ danh sách dịch vụ
+                _bindingSource.DataSource = _bindingListServices;
             }
             else
             {
-                string escapedSearchText = searchText.Replace("'", "''");
-                // Lọc theo Tên Dịch Vụ hoặc Giá
-                _bindingSource.Filter = $"ServiceName LIKE '%{escapedSearchText}%' OR CONVERT(Price, 'System.String') LIKE '%{escapedSearchText}%'";
+                // Lọc danh sách dịch vụ bằng LINQ
+                var filteredServices = _bindingListServices
+                    .Where(s => s.ServiceName.ToLower().Contains(searchText) ||
+                                s.Price.ToString().Contains(searchText) ||
+                                s.Quantity.ToString().Contains(searchText))
+                    .ToList();
+
+                // Cập nhật DataSource của BindingSource bằng danh sách đã lọc
+                _bindingSource.DataSource = new BindingList<Service>(filteredServices);
             }
         }
 
-        // Hàm xóa dữ liệu trên các control nhập liệu (Giữ nguyên)
         private void ClearFields()
         {
             txtServiceName.Clear();
             txtPrice.Clear();
+            txtQuantity.Clear();
             chkIsActive.Checked = false;
             datagridViewService.ClearSelection();
             txtServiceName.Focus();
         }
 
-        // Xử lý khi ấn nút Xóa dữ liệu (Giữ nguyên)
         private void btnClearService_Click(object sender, EventArgs e)
         {
             ClearFields();
+        }
+
+        private void chkIsActive_CheckedChanged(object sender, EventArgs e)
+        {
+            // Không có logic nào cần thêm ở đây
+        }
+
+        // Cập nhật số lượng tồn kho
+        private void btnSaveInventory_Click_1(object sender, EventArgs e)
+        {
+            if (!ValidateInventoryInput())
+            {
+                return;
+            }
+
+            // Lấy ServiceID của dịch vụ được chọn từ ComboBox
+            var selectedService = cboServiceName.SelectedItem as Service;
+            if (selectedService == null)
+            {
+                MessageBox.Show("Vui lòng chọn một dịch vụ hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            int serviceId = selectedService.ServiceID;
+
+            // Lấy số lượng cần thêm
+            if (!int.TryParse(txtQuantityAdd.Text, out int quantityToAdd) || quantityToAdd <= 0)
+            {
+                MessageBox.Show("Số lượng thêm phải là một số nguyên dương.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtQuantityAdd.Focus();
+                return;
+            }
+
+            // Lấy số lượng hiện tại
+            int currentQuantity = selectedService.Quantity;
+            int newQuantity = currentQuantity + quantityToAdd;
+
+            try
+            {
+                if (_servicesService.UpdateServiceQuantity(serviceId, newQuantity))
+                {
+                    MessageBox.Show($"Đã cập nhật số lượng tồn kho cho dịch vụ '{selectedService.ServiceName}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Cập nhật lại giao diện
+                    LoadAllServices();
+                    PopulateComboBox();
+                    txtQuantityAdd.Clear();
+                    cboServiceName.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Cập nhật số lượng tồn kho thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Khi chọn một dịch vụ trong ComboBox, xóa số lượng đã nhập
+        private void cboServiceName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtQuantityAdd.Clear();
+        }
+        private void cboServiceName_TextChanged_Filter(object sender, EventArgs e)
+        {
+            string searchText = cboServiceName.Text.Trim().ToLower();
+
+            if (string.IsNullOrEmpty(searchText))
+            {
+                // Load lại toàn bộ danh sách khi ô trống
+                cboServiceName.DataSource = _servicesService.GetAllServices();
+            }
+            else
+            {
+                var filteredServices = _servicesService.GetAllServices()
+                                        .FindAll(s => s.ServiceName.ToLower().Contains(searchText));
+
+                cboServiceName.DataSource = filteredServices;
+                cboServiceName.DisplayMember = "ServiceName";
+                cboServiceName.ValueMember = "ServiceID";
+
+                // Giữ con trỏ nhập
+                cboServiceName.DroppedDown = true;
+                cboServiceName.IntegralHeight = true;
+                cboServiceName.SelectedIndex = -1;
+                cboServiceName.Text = searchText;
+                cboServiceName.SelectionStart = cboServiceName.Text.Length;
+            }
         }
 
     }

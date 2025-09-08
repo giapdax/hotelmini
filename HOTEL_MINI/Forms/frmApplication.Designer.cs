@@ -31,9 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmApplication));
             this.panelMenu = new System.Windows.Forms.Panel();
+            this.btnSetting = new System.Windows.Forms.Button();
+            this.btnRoomManager = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnExit = new System.Windows.Forms.Button();
-            this.btnSetting = new System.Windows.Forms.Button();
             this.btnUser = new System.Windows.Forms.Button();
             this.btnService = new System.Windows.Forms.Button();
             this.btnRoom = new System.Windows.Forms.Button();
@@ -60,8 +61,9 @@
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
-            this.panelMenu.Controls.Add(this.panel1);
             this.panelMenu.Controls.Add(this.btnSetting);
+            this.panelMenu.Controls.Add(this.btnRoomManager);
+            this.panelMenu.Controls.Add(this.panel1);
             this.panelMenu.Controls.Add(this.btnUser);
             this.panelMenu.Controls.Add(this.btnService);
             this.panelMenu.Controls.Add(this.btnRoom);
@@ -73,6 +75,43 @@
             this.panelMenu.Name = "panelMenu";
             this.panelMenu.Size = new System.Drawing.Size(220, 666);
             this.panelMenu.TabIndex = 0;
+            // 
+            // btnSetting
+            // 
+            this.btnSetting.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnSetting.FlatAppearance.BorderSize = 0;
+            this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetting.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSetting.ForeColor = System.Drawing.Color.Transparent;
+            this.btnSetting.Image = global::HOTEL_MINI.Properties.Resources.setting;
+            this.btnSetting.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSetting.Location = new System.Drawing.Point(0, 442);
+            this.btnSetting.Name = "btnSetting";
+            this.btnSetting.Size = new System.Drawing.Size(220, 60);
+            this.btnSetting.TabIndex = 9;
+            this.btnSetting.Text = "   Setting";
+            this.btnSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSetting.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnSetting.UseVisualStyleBackColor = true;
+            // 
+            // btnRoomManager
+            // 
+            this.btnRoomManager.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnRoomManager.FlatAppearance.BorderSize = 0;
+            this.btnRoomManager.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRoomManager.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRoomManager.ForeColor = System.Drawing.Color.Transparent;
+            this.btnRoomManager.Image = global::HOTEL_MINI.Properties.Resources.about__1_;
+            this.btnRoomManager.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRoomManager.Location = new System.Drawing.Point(0, 382);
+            this.btnRoomManager.Name = "btnRoomManager";
+            this.btnRoomManager.Size = new System.Drawing.Size(220, 60);
+            this.btnRoomManager.TabIndex = 8;
+            this.btnRoomManager.Text = "   Quản Lý Phòng";
+            this.btnRoomManager.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRoomManager.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnRoomManager.UseVisualStyleBackColor = true;
+            this.btnRoomManager.Click += new System.EventHandler(this.btnRoomManager_Click);
             // 
             // panel1
             // 
@@ -101,25 +140,6 @@
             this.btnExit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnSetting
-            // 
-            this.btnSetting.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSetting.FlatAppearance.BorderSize = 0;
-            this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSetting.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSetting.ForeColor = System.Drawing.Color.Transparent;
-            this.btnSetting.Image = global::HOTEL_MINI.Properties.Resources.setting;
-            this.btnSetting.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSetting.Location = new System.Drawing.Point(0, 382);
-            this.btnSetting.Name = "btnSetting";
-            this.btnSetting.Size = new System.Drawing.Size(220, 60);
-            this.btnSetting.TabIndex = 5;
-            this.btnSetting.Text = "   Setting";
-            this.btnSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSetting.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSetting.UseVisualStyleBackColor = true;
-            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
             // btnUser
             // 
@@ -172,7 +192,7 @@
             this.btnRoom.Name = "btnRoom";
             this.btnRoom.Size = new System.Drawing.Size(220, 60);
             this.btnRoom.TabIndex = 2;
-            this.btnRoom.Text = "   Quản Lý Phòng";
+            this.btnRoom.Text = "   Quản Lý Đặt Phòng";
             this.btnRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRoom.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRoom.UseVisualStyleBackColor = true;
@@ -219,7 +239,6 @@
             this.label1.Size = new System.Drawing.Size(155, 21);
             this.label1.TabIndex = 1;
             this.label1.Text = "Xin Chào, Đình Giáp!";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // picLogo
             // 
@@ -266,7 +285,6 @@
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "TITLE";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
             // panelDesktop
             // 
@@ -323,7 +341,6 @@
             this.Name = "frmApplication";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ỨNG DỤNG QUẢN LÝ HOTEL MINI";
-            this.Load += new System.EventHandler(this.frmApplication_Load);
             this.panelMenu.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panelLogo.ResumeLayout(false);
@@ -343,7 +360,6 @@
         private System.Windows.Forms.Panel panelTitleBar;
         private System.Windows.Forms.Panel panelDesktop;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.Button btnUser;
         private System.Windows.Forms.Button btnService;
         private System.Windows.Forms.Button btnRoom;
@@ -357,6 +373,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuProfile;
         private System.Windows.Forms.ToolStripMenuItem btnLogout;
         private System.Windows.Forms.ToolStripMenuItem btnProfile;
+        private System.Windows.Forms.Button btnSetting;
+        private System.Windows.Forms.Button btnRoomManager;
     }
 }
 

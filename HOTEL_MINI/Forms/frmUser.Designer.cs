@@ -23,9 +23,6 @@ namespace HOTEL_MINI.Forms
 
         private void InitializeComponent()
         {
-            this.panelUserTitle = new System.Windows.Forms.Panel();
-            this.groupBoxSearch = new System.Windows.Forms.GroupBox();
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.panelUser = new System.Windows.Forms.Panel();
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -48,64 +45,37 @@ namespace HOTEL_MINI.Forms
             this.cmbRole = new System.Windows.Forms.ComboBox();
             this.lblRole = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.panelButtons = new System.Windows.Forms.Panel();
-            this.tableLayoutButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.panelUserTitle.SuspendLayout();
-            this.groupBoxSearch.SuspendLayout();
+            this.groupBoxSearch = new System.Windows.Forms.GroupBox();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.panelButtons = new System.Windows.Forms.Panel();
+            this.tableLayoutButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.panelUser.SuspendLayout();
             this.tableLayoutPanelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tableLayoutRight.SuspendLayout();
             this.groupBoxDetail.SuspendLayout();
             this.tableLayoutUserInfo.SuspendLayout();
+            this.groupBoxSearch.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.panelButtons.SuspendLayout();
             this.tableLayoutButtons.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelUserTitle
-            // 
-            this.panelUserTitle.BackColor = System.Drawing.Color.Transparent;
-            this.panelUserTitle.Controls.Add(this.groupBoxSearch);
-            this.panelUserTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelUserTitle.Location = new System.Drawing.Point(0, 0);
-            this.panelUserTitle.Name = "panelUserTitle";
-            this.panelUserTitle.Size = new System.Drawing.Size(900, 70);
-            this.panelUserTitle.TabIndex = 1;
-            // 
-            // groupBoxSearch
-            // 
-            this.groupBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
-            this.groupBoxSearch.Controls.Add(this.txtSearch);
-            this.groupBoxSearch.ForeColor = System.Drawing.Color.White;
-            this.groupBoxSearch.Location = new System.Drawing.Point(6, 3);
-            this.groupBoxSearch.Name = "groupBoxSearch";
-            this.groupBoxSearch.Padding = new System.Windows.Forms.Padding(10);
-            this.groupBoxSearch.Size = new System.Drawing.Size(891, 64);
-            this.groupBoxSearch.TabIndex = 0;
-            this.groupBoxSearch.TabStop = false;
-            this.groupBoxSearch.Text = "Tìm Kiếm";
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Location = new System.Drawing.Point(13, 25);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(235, 26);
-            this.txtSearch.TabIndex = 0;
             // 
             // panelUser
             // 
-            this.panelUser.Controls.Add(this.tableLayoutPanelMain);
-            this.panelUser.Controls.Add(this.panelUserTitle);
+            this.panelUser.Controls.Add(this.tableLayoutPanel1);
             this.panelUser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelUser.Location = new System.Drawing.Point(0, 0);
             this.panelUser.Name = "panelUser";
-            this.panelUser.Size = new System.Drawing.Size(900, 500);
+            this.panelUser.Size = new System.Drawing.Size(1048, 546);
             this.panelUser.TabIndex = 0;
             // 
             // tableLayoutPanelMain
@@ -116,13 +86,13 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutPanelMain.Controls.Add(this.dataGridView1, 0, 0);
             this.tableLayoutPanelMain.Controls.Add(this.tableLayoutRight, 1, 0);
             this.tableLayoutPanelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 70);
+            this.tableLayoutPanelMain.Location = new System.Drawing.Point(3, 73);
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
             this.tableLayoutPanelMain.RowCount = 1;
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanelMain.Size = new System.Drawing.Size(900, 430);
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(1042, 470);
             this.tableLayoutPanelMain.TabIndex = 0;
             // 
             // dataGridView1
@@ -136,23 +106,28 @@ namespace HOTEL_MINI.Forms
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(594, 424);
+            this.dataGridView1.Size = new System.Drawing.Size(688, 464);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
             // tableLayoutRight
             // 
             this.tableLayoutRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.tableLayoutRight.ColumnCount = 1;
             this.tableLayoutRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutRight.Controls.Add(this.tableLayoutButtons, 0, 2);
             this.tableLayoutRight.Controls.Add(this.groupBoxDetail, 0, 0);
             this.tableLayoutRight.Controls.Add(this.panelButtons, 0, 1);
             this.tableLayoutRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutRight.Location = new System.Drawing.Point(603, 3);
+            this.tableLayoutRight.Location = new System.Drawing.Point(697, 3);
             this.tableLayoutRight.Name = "tableLayoutRight";
-            this.tableLayoutRight.RowCount = 2;
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 76.8868F));
-            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 23.11321F));
-            this.tableLayoutRight.Size = new System.Drawing.Size(294, 424);
+            this.tableLayoutRight.RowCount = 3;
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tableLayoutRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutRight.Size = new System.Drawing.Size(342, 464);
             this.tableLayoutRight.TabIndex = 1;
             // 
             // groupBoxDetail
@@ -163,7 +138,7 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetail.ForeColor = System.Drawing.Color.White;
             this.groupBoxDetail.Location = new System.Drawing.Point(3, 3);
             this.groupBoxDetail.Name = "groupBoxDetail";
-            this.groupBoxDetail.Size = new System.Drawing.Size(288, 320);
+            this.groupBoxDetail.Size = new System.Drawing.Size(336, 318);
             this.groupBoxDetail.TabIndex = 0;
             this.groupBoxDetail.TabStop = false;
             this.groupBoxDetail.Text = "Thông tin User";
@@ -171,9 +146,8 @@ namespace HOTEL_MINI.Forms
             // tableLayoutUserInfo
             // 
             this.tableLayoutUserInfo.ColumnCount = 2;
-            this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.8156F));
-            this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.18439F));
-            this.tableLayoutUserInfo.Controls.Add(this.btnSave, 1, 7);
+            this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tableLayoutUserInfo.Controls.Add(this.lblUsername, 0, 0);
             this.tableLayoutUserInfo.Controls.Add(this.txtUsername, 1, 0);
             this.tableLayoutUserInfo.Controls.Add(this.lblFullName, 0, 1);
@@ -188,22 +162,18 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutUserInfo.Controls.Add(this.txtPhone, 1, 3);
             this.tableLayoutUserInfo.Controls.Add(this.cmbRole, 1, 5);
             this.tableLayoutUserInfo.Controls.Add(this.lblRole, 0, 5);
-            this.tableLayoutUserInfo.Controls.Add(this.btnCancel, 0, 7);
             this.tableLayoutUserInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutUserInfo.Location = new System.Drawing.Point(3, 22);
             this.tableLayoutUserInfo.Name = "tableLayoutUserInfo";
-            this.tableLayoutUserInfo.RowCount = 10;
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tableLayoutUserInfo.Size = new System.Drawing.Size(282, 295);
+            this.tableLayoutUserInfo.RowCount = 7;
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutUserInfo.Size = new System.Drawing.Size(330, 293);
             this.tableLayoutUserInfo.TabIndex = 0;
             // 
             // btnSave
@@ -213,9 +183,9 @@ namespace HOTEL_MINI.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnSave.ForeColor = System.Drawing.Color.White;
-            this.btnSave.Location = new System.Drawing.Point(104, 188);
+            this.btnSave.Location = new System.Drawing.Point(204, 3);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(175, 36);
+            this.btnSave.Size = new System.Drawing.Size(129, 34);
             this.btnSave.TabIndex = 20;
             this.btnSave.Text = "Lưu";
             this.btnSave.UseVisualStyleBackColor = false;
@@ -227,7 +197,7 @@ namespace HOTEL_MINI.Forms
             this.lblUsername.ForeColor = System.Drawing.Color.White;
             this.lblUsername.Location = new System.Drawing.Point(3, 0);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(95, 24);
+            this.lblUsername.Size = new System.Drawing.Size(109, 41);
             this.lblUsername.TabIndex = 0;
             this.lblUsername.Text = "Username:";
             this.lblUsername.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -235,18 +205,18 @@ namespace HOTEL_MINI.Forms
             // txtUsername
             // 
             this.txtUsername.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUsername.Location = new System.Drawing.Point(104, 3);
+            this.txtUsername.Location = new System.Drawing.Point(118, 3);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(175, 26);
+            this.txtUsername.Size = new System.Drawing.Size(209, 26);
             this.txtUsername.TabIndex = 1;
             // 
             // lblFullName
             // 
             this.lblFullName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblFullName.ForeColor = System.Drawing.Color.White;
-            this.lblFullName.Location = new System.Drawing.Point(3, 24);
+            this.lblFullName.Location = new System.Drawing.Point(3, 41);
             this.lblFullName.Name = "lblFullName";
-            this.lblFullName.Size = new System.Drawing.Size(95, 25);
+            this.lblFullName.Size = new System.Drawing.Size(109, 41);
             this.lblFullName.TabIndex = 2;
             this.lblFullName.Text = "Full Name:";
             this.lblFullName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -254,26 +224,26 @@ namespace HOTEL_MINI.Forms
             // txtFullName
             // 
             this.txtFullName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFullName.Location = new System.Drawing.Point(104, 27);
+            this.txtFullName.Location = new System.Drawing.Point(118, 44);
             this.txtFullName.Name = "txtFullName";
-            this.txtFullName.Size = new System.Drawing.Size(175, 26);
+            this.txtFullName.Size = new System.Drawing.Size(209, 26);
             this.txtFullName.TabIndex = 3;
             // 
             // txtEmail
             // 
             this.txtEmail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtEmail.Location = new System.Drawing.Point(104, 102);
+            this.txtEmail.Location = new System.Drawing.Point(118, 167);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(175, 26);
+            this.txtEmail.Size = new System.Drawing.Size(209, 26);
             this.txtEmail.TabIndex = 17;
             // 
             // lblEmail
             // 
             this.lblEmail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblEmail.ForeColor = System.Drawing.Color.White;
-            this.lblEmail.Location = new System.Drawing.Point(3, 99);
+            this.lblEmail.Location = new System.Drawing.Point(3, 164);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(95, 25);
+            this.lblEmail.Size = new System.Drawing.Size(109, 41);
             this.lblEmail.TabIndex = 16;
             this.lblEmail.Text = "Email:";
             this.lblEmail.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -282,9 +252,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblPassword.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblPassword.ForeColor = System.Drawing.Color.White;
-            this.lblPassword.Location = new System.Drawing.Point(3, 49);
+            this.lblPassword.Location = new System.Drawing.Point(3, 82);
             this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(95, 25);
+            this.lblPassword.Size = new System.Drawing.Size(109, 41);
             this.lblPassword.TabIndex = 11;
             this.lblPassword.Text = "Password:";
             this.lblPassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -292,19 +262,18 @@ namespace HOTEL_MINI.Forms
             // txtPassword
             // 
             this.txtPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPassword.Location = new System.Drawing.Point(104, 52);
+            this.txtPassword.Location = new System.Drawing.Point(118, 85);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(175, 26);
+            this.txtPassword.Size = new System.Drawing.Size(209, 26);
             this.txtPassword.TabIndex = 10;
-            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             // 
             // lblStatus
             // 
             this.lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblStatus.ForeColor = System.Drawing.Color.White;
-            this.lblStatus.Location = new System.Drawing.Point(3, 153);
+            this.lblStatus.Location = new System.Drawing.Point(3, 246);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(95, 32);
+            this.lblStatus.Size = new System.Drawing.Size(109, 47);
             this.lblStatus.TabIndex = 8;
             this.lblStatus.Text = "Status:";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -313,9 +282,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(3, 74);
+            this.label1.Location = new System.Drawing.Point(3, 123);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 25);
+            this.label1.Size = new System.Drawing.Size(109, 41);
             this.label1.TabIndex = 13;
             this.label1.Text = "Phone:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -328,18 +297,17 @@ namespace HOTEL_MINI.Forms
             this.cmbStatus.Items.AddRange(new object[] {
             "Active",
             "Inactive"});
-            this.cmbStatus.Location = new System.Drawing.Point(104, 156);
+            this.cmbStatus.Location = new System.Drawing.Point(118, 249);
             this.cmbStatus.Name = "cmbStatus";
-            this.cmbStatus.Size = new System.Drawing.Size(175, 28);
+            this.cmbStatus.Size = new System.Drawing.Size(209, 28);
             this.cmbStatus.TabIndex = 9;
-            this.cmbStatus.SelectedIndexChanged += new System.EventHandler(this.cmbStatus_SelectedIndexChanged);
             // 
             // txtPhone
             // 
             this.txtPhone.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPhone.Location = new System.Drawing.Point(104, 77);
+            this.txtPhone.Location = new System.Drawing.Point(118, 126);
             this.txtPhone.Name = "txtPhone";
-            this.txtPhone.Size = new System.Drawing.Size(175, 26);
+            this.txtPhone.Size = new System.Drawing.Size(209, 26);
             this.txtPhone.TabIndex = 12;
             // 
             // cmbRole
@@ -351,62 +319,34 @@ namespace HOTEL_MINI.Forms
             "Admin",
             "Staff",
             "User"});
-            this.cmbRole.Location = new System.Drawing.Point(104, 127);
+            this.cmbRole.Location = new System.Drawing.Point(118, 208);
             this.cmbRole.Name = "cmbRole";
-            this.cmbRole.Size = new System.Drawing.Size(175, 28);
+            this.cmbRole.Size = new System.Drawing.Size(209, 28);
             this.cmbRole.TabIndex = 7;
-            this.cmbRole.SelectedIndexChanged += new System.EventHandler(this.cmbRole_SelectedIndexChanged);
             // 
             // lblRole
             // 
             this.lblRole.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblRole.ForeColor = System.Drawing.Color.White;
-            this.lblRole.Location = new System.Drawing.Point(3, 124);
+            this.lblRole.Location = new System.Drawing.Point(3, 205);
             this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(95, 29);
+            this.lblRole.Size = new System.Drawing.Size(109, 41);
             this.lblRole.TabIndex = 6;
             this.lblRole.Text = "Role:";
             this.lblRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblRole.Click += new System.EventHandler(this.lblRole_Click);
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnCancel.ForeColor = System.Drawing.Color.White;
-            this.btnCancel.Location = new System.Drawing.Point(7, 190);
+            this.btnCancel.Location = new System.Drawing.Point(120, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(87, 31);
+            this.btnCancel.Size = new System.Drawing.Size(78, 31);
             this.btnCancel.TabIndex = 19;
             this.btnCancel.Text = "Hủy";
             this.btnCancel.UseVisualStyleBackColor = false;
-            // 
-            // panelButtons
-            // 
-            this.panelButtons.Controls.Add(this.tableLayoutButtons);
-            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelButtons.Location = new System.Drawing.Point(3, 329);
-            this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(288, 92);
-            this.panelButtons.TabIndex = 1;
-            // 
-            // tableLayoutButtons
-            // 
-            this.tableLayoutButtons.ColumnCount = 2;
-            this.tableLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutButtons.Controls.Add(this.btnAdd, 0, 0);
-            this.tableLayoutButtons.Controls.Add(this.btnEdit, 1, 0);
-            this.tableLayoutButtons.Controls.Add(this.btnDelete, 0, 1);
-            this.tableLayoutButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutButtons.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutButtons.Name = "tableLayoutButtons";
-            this.tableLayoutButtons.RowCount = 2;
-            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutButtons.Size = new System.Drawing.Size(288, 92);
-            this.tableLayoutButtons.TabIndex = 0;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnAdd
             // 
@@ -415,7 +355,7 @@ namespace HOTEL_MINI.Forms
             this.btnAdd.ForeColor = System.Drawing.Color.White;
             this.btnAdd.Location = new System.Drawing.Point(3, 3);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(138, 40);
+            this.btnAdd.Size = new System.Drawing.Size(162, 38);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Thêm";
             this.btnAdd.UseVisualStyleBackColor = false;
@@ -426,9 +366,9 @@ namespace HOTEL_MINI.Forms
             this.btnEdit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnEdit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnEdit.ForeColor = System.Drawing.Color.White;
-            this.btnEdit.Location = new System.Drawing.Point(147, 3);
+            this.btnEdit.Location = new System.Drawing.Point(3, 47);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(138, 40);
+            this.btnEdit.Size = new System.Drawing.Size(162, 38);
             this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "Sửa";
             this.btnEdit.UseVisualStyleBackColor = false;
@@ -439,25 +379,120 @@ namespace HOTEL_MINI.Forms
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(3, 49);
+            this.btnDelete.Location = new System.Drawing.Point(171, 3);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(138, 40);
+            this.btnDelete.Size = new System.Drawing.Size(162, 38);
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Xóa";
             this.btnDelete.UseVisualStyleBackColor = false;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // groupBoxSearch
+            // 
+            this.groupBoxSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.groupBoxSearch.Controls.Add(this.tableLayoutPanel3);
+            this.groupBoxSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxSearch.ForeColor = System.Drawing.Color.White;
+            this.groupBoxSearch.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxSearch.Name = "groupBoxSearch";
+            this.groupBoxSearch.Padding = new System.Windows.Forms.Padding(10);
+            this.groupBoxSearch.Size = new System.Drawing.Size(1042, 64);
+            this.groupBoxSearch.TabIndex = 0;
+            this.groupBoxSearch.TabStop = false;
+            this.groupBoxSearch.Text = "Tìm Kiếm";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSearch.Location = new System.Drawing.Point(3, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(300, 26);
+            this.txtSearch.TabIndex = 0;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.groupBoxSearch, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanelMain, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 13F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 87F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1048, 546);
+            this.tableLayoutPanel1.TabIndex = 1;
+            // 
+            // panelButtons
+            // 
+            this.panelButtons.Controls.Add(this.tableLayoutPanel2);
+            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelButtons.Location = new System.Drawing.Point(3, 327);
+            this.panelButtons.Name = "panelButtons";
+            this.panelButtons.Size = new System.Drawing.Size(336, 40);
+            this.panelButtons.TabIndex = 1;
+            // 
+            // tableLayoutButtons
+            // 
+            this.tableLayoutButtons.ColumnCount = 2;
+            this.tableLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutButtons.Controls.Add(this.btnAdd, 0, 0);
+            this.tableLayoutButtons.Controls.Add(this.btnEdit, 0, 1);
+            this.tableLayoutButtons.Controls.Add(this.btnDelete, 1, 0);
+            this.tableLayoutButtons.Location = new System.Drawing.Point(3, 373);
+            this.tableLayoutButtons.Name = "tableLayoutButtons";
+            this.tableLayoutButtons.RowCount = 2;
+            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutButtons.Size = new System.Drawing.Size(336, 88);
+            this.tableLayoutButtons.TabIndex = 0;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel2.Controls.Add(this.btnSave, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnCancel, 1, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(336, 40);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 5;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.5F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.5F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.5F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.5F));
+            this.tableLayoutPanel3.Controls.Add(this.txtSearch, 0, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(10, 29);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(1022, 25);
+            this.tableLayoutPanel3.TabIndex = 1;
+            // 
             // frmUser
             // 
             this.BackColor = System.Drawing.Color.GhostWhite;
-            this.ClientSize = new System.Drawing.Size(900, 500);
+            this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.panelUser);
             this.Name = "frmUser";
             this.Text = "Quản Lý User";
             this.Load += new System.EventHandler(this.frmUser_Load);
-            this.panelUserTitle.ResumeLayout(false);
-            this.groupBoxSearch.ResumeLayout(false);
-            this.groupBoxSearch.PerformLayout();
             this.panelUser.ResumeLayout(false);
             this.tableLayoutPanelMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -465,18 +500,18 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetail.ResumeLayout(false);
             this.tableLayoutUserInfo.ResumeLayout(false);
             this.tableLayoutUserInfo.PerformLayout();
+            this.groupBoxSearch.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.panelButtons.ResumeLayout(false);
             this.tableLayoutButtons.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        // Fields (all controls)
-        private Panel panelUserTitle;
-        private GroupBox groupBoxSearch;
-        private TextBox txtSearch;
 
         private Panel panelUser;
         private TableLayoutPanel tableLayoutPanelMain;
@@ -492,9 +527,6 @@ namespace HOTEL_MINI.Forms
         private ComboBox cmbRole;
         private Label lblStatus;
         private ComboBox cmbStatus;
-
-        private Panel panelButtons;
-        private TableLayoutPanel tableLayoutButtons;
         private Button btnAdd;
         private Button btnEdit;
         private Button btnDelete;
@@ -507,5 +539,12 @@ namespace HOTEL_MINI.Forms
         private TextBox txtPassword;
         private Button btnCancel;
         private Button btnSave;
+        private TableLayoutPanel tableLayoutPanel1;
+        private GroupBox groupBoxSearch;
+        private TextBox txtSearch;
+        private Panel panelButtons;
+        private TableLayoutPanel tableLayoutButtons;
+        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel tableLayoutPanel3;
     }
 }

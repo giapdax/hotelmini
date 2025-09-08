@@ -146,6 +146,12 @@
     <Compile Include="Forms\frmRoom.Designer.cs">
       <DependentUpon>frmRoom.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmRoomManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmRoomManager.Designer.cs">
+      <DependentUpon>frmRoomManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,6 +205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmRoom.resx">
       <DependentUpon>frmRoom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmRoomManager.resx">
+      <DependentUpon>frmRoomManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmService.resx">
       <DependentUpon>frmService.cs</DependentUpon>

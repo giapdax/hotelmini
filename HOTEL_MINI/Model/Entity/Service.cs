@@ -1,4 +1,5 @@
-﻿using System;
+﻿// File: Service.cs
+using System;
 
 namespace HOTEL_MINI.Model.Entity
 {
@@ -7,7 +8,8 @@ namespace HOTEL_MINI.Model.Entity
         public int ServiceID { get; set; }
         public string ServiceName { get; set; }
         public Decimal Price { get; set; }
-        public bool IsActive { get; set; } 
+        public bool IsActive { get; set; }
+        public int Quantity { get; set; }
 
         public string PriceFormatted => string.Format("{0:N0}đ", Price);
     }

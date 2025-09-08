@@ -20,11 +20,9 @@ namespace HOTEL_MINI.DAL
         {
             _connection = new SqlConnection(ConfigHelper.GetConnectionString());
         }
-
-        // Phương thức Lấy thông tin một người dùng theo Username (cần có cho chức năng đăng nhập)
         public User GetUserByUsername(string username)
         {
-            // Code phương thức này không thay đổi, vẫn truy vấn PasswordHash để xác thực
+
             try
             {
                 if (_connection.State != ConnectionState.Open)
@@ -72,7 +70,6 @@ namespace HOTEL_MINI.DAL
             }
         }
 
-        // 🌟 Phương thức Lấy tất cả người dùng (không lấy PasswordHash)
         public List<User> GetAllUsers()
         {
             List<User> userList = new List<User>();
@@ -81,7 +78,6 @@ namespace HOTEL_MINI.DAL
                 if (_connection.State != ConnectionState.Open)
                     _connection.Open();
 
-                // Lấy tất cả cột ngoại trừ PasswordHash
                 const string sql = @"SELECT UserID, Username, FullName, Phone, Email, RoleID, Status FROM Users";
 
                 using (var command = new SqlCommand(sql, _connection))
@@ -91,7 +87,7 @@ namespace HOTEL_MINI.DAL
                         while (reader.Read())
                         {
                             string statusString = reader.GetString(reader.GetOrdinal("Status"));
-                            // Chuyển đổi chuỗi thành enum
+
                             UserStatus userStatus;
                             Enum.TryParse(statusString, out userStatus);
 
@@ -122,8 +118,6 @@ namespace HOTEL_MINI.DAL
             }
             return userList;
         }
-
-        // Phương thức tạo người dùng admin (giữ nguyên)
         public void CreateAdminUserIfNotExist()
         {
             try
@@ -169,7 +163,6 @@ namespace HOTEL_MINI.DAL
             }
         }
 
-        // Cần giữ lại các phương thức này để tránh lỗi
         public void Dispose()
         {
             Dispose(true);
@@ -195,30 +188,10 @@ namespace HOTEL_MINI.DAL
 
         public bool AddUser(User user)
         {
-            // Hoàn chỉnh câu lệnh SQL, liệt kê đầy đủ các cột và các tham số
-            string query = @"INSERT INTO Users (
-                        Username, 
-                        PasswordHash, 
-                        RoleID, 
-                        FullName, 
-                        Phone, 
-                        Email, 
-                        Status
-                    )
-                    VALUES (
-                        @Username, 
-                        @PasswordHash, 
-                        @RoleID, 
-                        @FullName, 
-                        @Phone, 
-                        @Email, 
-                        @Status
-                    )";
+            string query = @"INSERT INTO Users (Username, PasswordHash, RoleID, FullName, Phone, Email, Status) VALUES (@Username, @PasswordHash, @RoleID, @FullName, @Phone, @Email, @Status)";
 
-            // Sử dụng try-catch-finally để đảm bảo tài nguyên được giải phóng
             try
             {
-                // Kiểm tra kết nối và mở nếu cần
                 if (_connection.State != ConnectionState.Open)
                 {
                     _connection.Open();
@@ -226,36 +199,24 @@ namespace HOTEL_MINI.DAL
 
                 using (var command = new SqlCommand(query, _connection))
                 {
-                    // Thêm các tham số từ đối tượng User
                     command.Parameters.AddWithValue("@Username", user.Username);
                     command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
                     command.Parameters.AddWithValue("@RoleID", user.Role);
-
-                    // Sử dụng DBNull.Value cho các trường có thể null để tránh lỗi
                     command.Parameters.AddWithValue("@FullName", (object)user.FullName ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Phone", (object)user.Phone ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Email", (object)user.Email ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Status", user.Status.ToString());
-
-                    // ExecuteNonQuery trả về số hàng bị ảnh hưởng
                     int result = command.ExecuteNonQuery();
-
-                    // Trả về true nếu có ít nhất 1 hàng được thêm thành công
                     return result > 0;
                 }
             }
             catch (Exception ex)
             {
-                // Ghi log lỗi để debug thay vì hiển thị MessageBox
-                // MessageBox.Show() không thuộc về tầng DAL.
                 Console.WriteLine($"Lỗi khi thêm người dùng: {ex.Message}");
-
-                // Trả về false khi có bất kỳ lỗi nào xảy ra
                 return false;
             }
             finally
             {
-                // Đảm bảo kết nối luôn được đóng
                 if (_connection.State == ConnectionState.Open)
                 {
                     _connection.Close();
@@ -301,7 +262,6 @@ namespace HOTEL_MINI.DAL
                       RoleID = @RoleID,
                       Status = @Status";
 
-            // Thêm PasswordHash vào câu lệnh chỉ khi có giá trị
             if (!string.IsNullOrWhiteSpace(user.PasswordHash))
             {
                 query += ", PasswordHash = @PasswordHash";
@@ -324,7 +284,6 @@ namespace HOTEL_MINI.DAL
                     command.Parameters.AddWithValue("@Email", (object)user.Email ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Status", user.Status.ToString());
 
-                    // 🌟 Chỉ thêm tham số PasswordHash nếu nó có giá trị
                     if (!string.IsNullOrWhiteSpace(user.PasswordHash))
                     {
                         command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);

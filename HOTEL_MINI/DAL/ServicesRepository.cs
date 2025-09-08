@@ -1,5 +1,4 @@
-﻿// using ...
-
+﻿// File: ServicesRepository.cs
 using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using System;
@@ -8,7 +7,6 @@ using System.Data.SqlClient;
 
 namespace HOTEL_MINI.DAL
 {
-    // Không cần IDisposable nữa vì chúng ta không giữ tài nguyên nào ở cấp độ class
     internal class ServicesRepository
     {
         private readonly string _connectionString;
@@ -18,15 +16,14 @@ namespace HOTEL_MINI.DAL
             _connectionString = ConfigHelper.GetConnectionString();
         }
 
-        // Helper để tạo kết nối, giúp code gọn hơn
         private SqlConnection CreateConnection() => new SqlConnection(_connectionString);
 
         public List<Service> GetAllServices()
         {
             var services = new List<Service>();
-            const string query = "SELECT ServiceID, ServiceName, Price, IsActive FROM Services";
+            // Thêm Quantity vào câu truy vấn SELECT
+            const string query = "SELECT ServiceID, ServiceName, Price, IsActive, Quantity FROM Services";
 
-            // "using" đảm bảo kết nối được tạo, mở, và đóng/giải phóng một cách an toàn
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
             {
@@ -42,14 +39,15 @@ namespace HOTEL_MINI.DAL
                                 ServiceID = reader.GetInt32(0),
                                 ServiceName = reader.GetString(1),
                                 Price = reader.GetDecimal(2),
-                                IsActive = reader.GetBoolean(3)
+                                IsActive = reader.GetBoolean(3),
+                                // Đọc giá trị Quantity
+                                Quantity = reader.GetInt32(4)
                             });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Ghi log và ném lại exception để lớp BLL/UI có thể xử lý
                     Console.WriteLine($"Error in GetAllServices: {ex.Message}");
                     throw;
                 }
@@ -59,7 +57,8 @@ namespace HOTEL_MINI.DAL
 
         public bool AddService(Service service)
         {
-            const string query = "INSERT INTO Services (ServiceName, Price, IsActive) VALUES (@ServiceName, @Price, @IsActive)";
+            // Thêm Quantity vào câu truy vấn INSERT
+            const string query = "INSERT INTO Services (ServiceName, Price, IsActive, Quantity) VALUES (@ServiceName, @Price, @IsActive, @Quantity)";
 
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
@@ -67,6 +66,8 @@ namespace HOTEL_MINI.DAL
                 command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
                 command.Parameters.AddWithValue("@Price", service.Price);
                 command.Parameters.AddWithValue("@IsActive", service.IsActive);
+                // Thêm tham số Quantity
+                command.Parameters.AddWithValue("@Quantity", service.Quantity);
 
                 try
                 {
@@ -77,7 +78,6 @@ namespace HOTEL_MINI.DAL
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error in AddService: {ex.Message}");
-                    // Ném lại lỗi hoặc trả về false tùy theo logic bạn muốn
                     return false;
                 }
             }
@@ -85,7 +85,8 @@ namespace HOTEL_MINI.DAL
 
         public bool UpdateService(Service service)
         {
-            const string query = "UPDATE Services SET ServiceName = @ServiceName, Price = @Price, IsActive = @IsActive WHERE ServiceID = @ServiceID";
+            // Thêm Quantity vào câu truy vấn UPDATE
+            const string query = "UPDATE Services SET ServiceName = @ServiceName, Price = @Price, IsActive = @IsActive, Quantity = @Quantity WHERE ServiceID = @ServiceID";
 
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
@@ -94,6 +95,8 @@ namespace HOTEL_MINI.DAL
                 command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
                 command.Parameters.AddWithValue("@Price", service.Price);
                 command.Parameters.AddWithValue("@IsActive", service.IsActive);
+                // Thêm tham số Quantity
+                command.Parameters.AddWithValue("@Quantity", service.Quantity);
 
                 try
                 {
@@ -104,6 +107,31 @@ namespace HOTEL_MINI.DAL
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error in UpdateService: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+
+        // Hàm mới để cập nhật số lượng
+        public bool UpdateServiceQuantity(int serviceId, int quantity)
+        {
+            const string query = "UPDATE Services SET Quantity = @Quantity WHERE ServiceID = @ServiceID";
+
+            using (var connection = CreateConnection())
+            using (var command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@ServiceID", serviceId);
+                command.Parameters.AddWithValue("@Quantity", quantity);
+
+                try
+                {
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in UpdateServiceQuantity: {ex.Message}");
                     return false;
                 }
             }

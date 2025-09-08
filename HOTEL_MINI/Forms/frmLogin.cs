@@ -71,7 +71,6 @@ namespace HOTEL_MINI.Forms
 
         // Các sự kiện không dùng đến, giữ lại để code biên dịch
         private void frmLogin_Load_1(object sender, EventArgs e) { }
-        private void lblTitle_Click(object sender, EventArgs e) { }
         private void pnlRight_Paint(object sender, PaintEventArgs e) { }
     }
 }
