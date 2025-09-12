@@ -125,30 +125,50 @@ namespace HOTEL_MINI.DAL
                 if (_connection.State != ConnectionState.Open)
                     _connection.Open();
 
-                const string checkSql = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
-                using (var checkCommand = new SqlCommand(checkSql, _connection))
+                using (var tran = _connection.BeginTransaction(IsolationLevel.Serializable))
                 {
-                    checkCommand.Parameters.AddWithValue("@Username", "admin");
-                    int userCount = (int)checkCommand.ExecuteScalar();
+                    // 1) Lấy (hoặc tạo) RoleID cho role 'admin' theo tên, KHÔNG hard-code =1
+                    const string sql = @"DECLARE @RoleId INT;
 
-                    if (userCount == 0)
+                                        SELECT @RoleId = RoleID FROM Roles WHERE RoleName = N'admin';
+                                        IF @RoleId IS NULL
+                                        BEGIN
+                                            INSERT INTO Roles(RoleName, Description)
+                                            VALUES (N'admin', N'Quyền quản trị');
+                                            SET @RoleId = SCOPE_IDENTITY();
+                                        END
+
+                                        -- 2) Tạo user 'admin' nếu chưa có
+                                        IF NOT EXISTS (SELECT 1 FROM Users WHERE Username = @Username)
+                                        BEGIN
+                                            INSERT INTO Users (Username, PasswordHash, RoleID, FullName, Status)
+                                            VALUES (@Username, @PasswordHash, @RoleId, @FullName, @Status);
+                                            SELECT CAST(1 AS INT) AS CreatedFlag;
+                                        END
+                                        ELSE
+                                        BEGIN
+                                            SELECT CAST(0 AS INT) AS CreatedFlag;
+                                        END
+                                        ";
+                    using (var cmd = new SqlCommand(sql, _connection, tran))
                     {
-                        const string insertSql = @"INSERT INTO Users (Username, PasswordHash, RoleID, FullName, Status) 
-                                                   VALUES (@Username, @PasswordHash, @RoleID, @FullName, @Status)";
+                        // LƯU Ý: Users.Username là VARCHAR(50) → dùng VarChar cho khớp
+                        string passwordHash = BCrypt.Net.BCrypt.HashPassword("12345678", workFactor: 12);
 
-                        using (var insertCommand = new SqlCommand(insertSql, _connection))
-                        {
-                            string passwordHash = BCrypt.Net.BCrypt.HashPassword("123456");
+                        cmd.Parameters.Add("@Username", SqlDbType.VarChar, 50).Value = "admin";
+                        cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, 255).Value = passwordHash;
+                        // FullName là NVARCHAR(100) → dùng NVarChar
+                        cmd.Parameters.Add("@FullName", SqlDbType.NVarChar, 100).Value = "Administrator";
+                        cmd.Parameters.Add("@Status", SqlDbType.VarChar, 20).Value = "Active";
 
-                            insertCommand.Parameters.AddWithValue("@Username", "admin");
-                            insertCommand.Parameters.AddWithValue("@PasswordHash", passwordHash);
-                            insertCommand.Parameters.AddWithValue("@RoleID", 1);
-                            insertCommand.Parameters.AddWithValue("@FullName", "Administrator");
-                            insertCommand.Parameters.AddWithValue("@Status", "Active");
+                        object result = cmd.ExecuteScalar();
+                        tran.Commit();
 
-                            insertCommand.ExecuteNonQuery();
-                            MessageBox.Show("Người dùng 'admin' đã được tạo thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        int created = (result is int i) ? i : Convert.ToInt32(result);
+                        if (created == 1)
+                            MessageBox.Show("Đã tạo user 'admin'!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        else
+                            MessageBox.Show("User 'admin' đã tồn tại.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
@@ -162,6 +182,7 @@ namespace HOTEL_MINI.DAL
                     _connection.Close();
             }
         }
+
 
         public void Dispose()
         {

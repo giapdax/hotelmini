@@ -10,8 +10,7 @@ namespace HOTEL_MINI.Model.Entity
     {
         public int PricingID { get; set; }
         public int RoomTypeID { get; set; }
-        public string PricingType { get; set; }   // Hourly, Nightly, Weekly
-        public int DurationValues { get; set; } // chỉ có nếu Hourly
+        public string PricingType { get; set; } 
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
     }

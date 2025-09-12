@@ -49,5 +49,29 @@ namespace HOTEL_MINI.BLL
         {
             return roomRepository.getPricingTypeByID(pricingID);
         }
+        public bool AddRoom(Room room)
+        {
+            if (room == null) throw new ArgumentNullException(nameof(room));
+            if (string.IsNullOrWhiteSpace(room.RoomNumber))
+                throw new ArgumentException("Tên phòng không được để trống.");
+            if (room.RoomTypeID <= 0)
+                throw new ArgumentException("Loại phòng không hợp lệ.");
+            if (string.IsNullOrWhiteSpace(room.RoomStatus))
+                throw new ArgumentException("Trạng thái phòng không được để trống.");
+            return roomRepository.AddRoom(room);
+        }
+        public bool  UpdateRoom(Room room)
+        {
+            if (room == null) throw new ArgumentNullException(nameof(room));
+            if (room.RoomID <= 0)
+                throw new ArgumentException("ID phòng không hợp lệ.");
+            if (string.IsNullOrWhiteSpace(room.RoomNumber))
+                throw new ArgumentException("Tên phòng không được để trống.");
+            if (room.RoomTypeID <= 0)
+                throw new ArgumentException("Loại phòng không hợp lệ.");
+            if (string.IsNullOrWhiteSpace(room.RoomStatus))
+                throw new ArgumentException("Trạng thái phòng không được để trống.");
+            return roomRepository.UpdateRoom(room);
+        }
     }
 }

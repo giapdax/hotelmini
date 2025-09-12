@@ -14,8 +14,22 @@ namespace HOTEL_MINI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // (Tuỳ chọn) Bắt lỗi UI thread chung
+            Application.ThreadException += (s, e) =>
+            {
+                MessageBox.Show($"Lỗi không xử lý: {e.Exception.Message}",
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            };
+
             try
             {
+                // Seed tài khoản admin nếu chưa có
+                using (var repo = new UserRepository())
+                {
+                    repo.CreateAdminUserIfNotExist();
+                }
+
+                // Mở form đăng nhập
                 Application.Run(new frmLogin());
             }
             catch (Exception ex)
@@ -24,7 +38,6 @@ namespace HOTEL_MINI
                                 "Lỗi",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
-                Application.Exit();
             }
         }
     }

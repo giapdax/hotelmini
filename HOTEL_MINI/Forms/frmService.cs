@@ -486,5 +486,24 @@ namespace HOTEL_MINI.Forms
             }
         }
 
+        private void groupBoxUpdateInvetory_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void groupBoxDetailService_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutButtons_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

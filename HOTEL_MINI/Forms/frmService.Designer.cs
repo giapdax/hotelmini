@@ -112,12 +112,13 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutButtons.Size = new System.Drawing.Size(338, 102);
             this.tableLayoutButtons.TabIndex = 1;
+            this.tableLayoutButtons.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutButtons_Paint);
             // 
             // btnAddService
             // 
             this.btnAddService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnAddService.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnAddService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddService.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddService.ForeColor = System.Drawing.Color.White;
             this.btnAddService.Location = new System.Drawing.Point(3, 3);
             this.btnAddService.Name = "btnAddService";
@@ -131,7 +132,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.btnEditService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnEditService.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnEditService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditService.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEditService.ForeColor = System.Drawing.Color.White;
             this.btnEditService.Location = new System.Drawing.Point(172, 3);
             this.btnEditService.Name = "btnEditService";
@@ -145,7 +146,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.btnDeleteService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnDeleteService.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnDeleteService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDeleteService.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDeleteService.ForeColor = System.Drawing.Color.White;
             this.btnDeleteService.Location = new System.Drawing.Point(3, 54);
             this.btnDeleteService.Name = "btnDeleteService";
@@ -158,8 +159,8 @@ namespace HOTEL_MINI.Forms
             // lblPrice
             // 
             this.lblPrice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPrice.ForeColor = System.Drawing.Color.White;
+            this.lblPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPrice.ForeColor = System.Drawing.Color.Firebrick;
             this.lblPrice.Location = new System.Drawing.Point(3, 92);
             this.lblPrice.Name = "lblPrice";
             this.lblPrice.Size = new System.Drawing.Size(124, 46);
@@ -179,8 +180,8 @@ namespace HOTEL_MINI.Forms
             // lblNameService
             // 
             this.lblNameService.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblNameService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNameService.ForeColor = System.Drawing.Color.White;
+            this.lblNameService.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNameService.ForeColor = System.Drawing.Color.Firebrick;
             this.lblNameService.Location = new System.Drawing.Point(3, 0);
             this.lblNameService.Name = "lblNameService";
             this.lblNameService.Size = new System.Drawing.Size(124, 46);
@@ -200,8 +201,8 @@ namespace HOTEL_MINI.Forms
             // lblStatus
             // 
             this.lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatus.ForeColor = System.Drawing.Color.White;
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.ForeColor = System.Drawing.Color.Firebrick;
             this.lblStatus.Location = new System.Drawing.Point(3, 138);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(124, 47);
@@ -237,7 +238,7 @@ namespace HOTEL_MINI.Forms
             // 
             // tableLayoutRight
             // 
-            this.tableLayoutRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.tableLayoutRight.BackColor = System.Drawing.Color.NavajoWhite;
             this.tableLayoutRight.ColumnCount = 1;
             this.tableLayoutRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutRight.Controls.Add(this.panelButtons, 0, 2);
@@ -255,17 +256,18 @@ namespace HOTEL_MINI.Forms
             // 
             // groupBoxDetailService
             // 
-            this.groupBoxDetailService.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.groupBoxDetailService.BackColor = System.Drawing.Color.NavajoWhite;
             this.groupBoxDetailService.Controls.Add(this.tableLayoutPanel4);
             this.groupBoxDetailService.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxDetailService.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxDetailService.ForeColor = System.Drawing.Color.White;
+            this.groupBoxDetailService.ForeColor = System.Drawing.Color.Black;
             this.groupBoxDetailService.Location = new System.Drawing.Point(3, 165);
             this.groupBoxDetailService.Name = "groupBoxDetailService";
             this.groupBoxDetailService.Size = new System.Drawing.Size(338, 264);
             this.groupBoxDetailService.TabIndex = 0;
             this.groupBoxDetailService.TabStop = false;
             this.groupBoxDetailService.Text = "Thông tin dịch vụ";
+            this.groupBoxDetailService.Enter += new System.EventHandler(this.groupBoxDetailService_Enter);
             // 
             // tableLayoutPanel4
             // 
@@ -302,7 +304,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSave.ForeColor = System.Drawing.Color.White;
             this.btnSave.Location = new System.Drawing.Point(214, 3);
             this.btnSave.Name = "btnSave";
@@ -316,7 +318,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.ForeColor = System.Drawing.Color.White;
             this.btnCancel.Location = new System.Drawing.Point(133, 3);
             this.btnCancel.Name = "btnCancel";
@@ -354,12 +356,13 @@ namespace HOTEL_MINI.Forms
             // 
             this.chkIsActive.AutoSize = true;
             this.chkIsActive.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkIsActive.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkIsActive.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkIsActive.ForeColor = System.Drawing.Color.Black;
             this.chkIsActive.Location = new System.Drawing.Point(133, 141);
             this.chkIsActive.Name = "chkIsActive";
             this.chkIsActive.Size = new System.Drawing.Size(190, 41);
             this.chkIsActive.TabIndex = 12;
-            this.chkIsActive.Text = "IsActive";
+            this.chkIsActive.Text = "Đang hoạt động";
             this.chkIsActive.UseVisualStyleBackColor = true;
             this.chkIsActive.CheckedChanged += new System.EventHandler(this.chkIsActive_CheckedChanged);
             // 
@@ -375,27 +378,29 @@ namespace HOTEL_MINI.Forms
             // lblQuantity
             // 
             this.lblQuantity.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblQuantity.ForeColor = System.Drawing.Color.White;
+            this.lblQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQuantity.ForeColor = System.Drawing.Color.Firebrick;
             this.lblQuantity.Location = new System.Drawing.Point(3, 46);
             this.lblQuantity.Name = "lblQuantity";
             this.lblQuantity.Size = new System.Drawing.Size(124, 46);
             this.lblQuantity.TabIndex = 15;
-            this.lblQuantity.Text = "Số Lượng";
+            this.lblQuantity.Text = "Số Lượng:";
             this.lblQuantity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBoxUpdateInvetory
             // 
+            this.groupBoxUpdateInvetory.BackColor = System.Drawing.Color.NavajoWhite;
             this.groupBoxUpdateInvetory.Controls.Add(this.tableLayoutPanel5);
             this.groupBoxUpdateInvetory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxUpdateInvetory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxUpdateInvetory.ForeColor = System.Drawing.Color.White;
+            this.groupBoxUpdateInvetory.ForeColor = System.Drawing.Color.Black;
             this.groupBoxUpdateInvetory.Location = new System.Drawing.Point(3, 3);
             this.groupBoxUpdateInvetory.Name = "groupBoxUpdateInvetory";
             this.groupBoxUpdateInvetory.Size = new System.Drawing.Size(338, 156);
             this.groupBoxUpdateInvetory.TabIndex = 2;
             this.groupBoxUpdateInvetory.TabStop = false;
             this.groupBoxUpdateInvetory.Text = "Cập Nhật  Kho";
+            this.groupBoxUpdateInvetory.Enter += new System.EventHandler(this.groupBoxUpdateInvetory_Enter);
             // 
             // tableLayoutPanel5
             // 
@@ -443,7 +448,8 @@ namespace HOTEL_MINI.Forms
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Firebrick;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(124, 39);
@@ -454,7 +460,8 @@ namespace HOTEL_MINI.Forms
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.Firebrick;
             this.label2.Location = new System.Drawing.Point(3, 39);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(124, 40);
@@ -491,7 +498,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.btnSaveInventory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnSaveInventory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSaveInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSaveInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSaveInventory.ForeColor = System.Drawing.Color.White;
             this.btnSaveInventory.Location = new System.Drawing.Point(231, 3);
             this.btnSaveInventory.Name = "btnSaveInventory";
@@ -515,14 +522,15 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 86F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(692, 540);
             this.tableLayoutPanel1.TabIndex = 2;
+            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // groupBoxSearch
             // 
-            this.groupBoxSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.groupBoxSearch.BackColor = System.Drawing.Color.NavajoWhite;
             this.groupBoxSearch.Controls.Add(this.tableLayoutPanel7);
             this.groupBoxSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxSearch.ForeColor = System.Drawing.Color.White;
+            this.groupBoxSearch.ForeColor = System.Drawing.Color.Black;
             this.groupBoxSearch.Location = new System.Drawing.Point(3, 3);
             this.groupBoxSearch.Name = "groupBoxSearch";
             this.groupBoxSearch.Padding = new System.Windows.Forms.Padding(10);
@@ -562,7 +570,7 @@ namespace HOTEL_MINI.Forms
             // 
             // datagridViewService
             // 
-            this.datagridViewService.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.datagridViewService.BackgroundColor = System.Drawing.Color.White;
             this.datagridViewService.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.datagridViewService.Dock = System.Windows.Forms.DockStyle.Fill;
             this.datagridViewService.Location = new System.Drawing.Point(3, 78);
@@ -578,7 +586,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(26)))), ((int)(((byte)(28)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.panelUser);
             this.Name = "frmService";
