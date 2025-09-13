@@ -352,5 +352,10 @@ namespace HOTEL_MINI.Forms
                    !string.IsNullOrWhiteSpace(txtCCCD.Text) &&
                    cbxPricingType.SelectedItem != null;
         }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

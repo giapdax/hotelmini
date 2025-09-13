@@ -59,6 +59,7 @@
             this.lblTen = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnTraphong = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.gbxServicesMenu = new System.Windows.Forms.GroupBox();
             this.dgvHotelServices = new System.Windows.Forms.DataGridView();
@@ -66,7 +67,6 @@
             this.lblAddQuantity = new System.Windows.Forms.Label();
             this.nbrIncrease = new System.Windows.Forms.NumericUpDown();
             this.btnIncrease = new System.Windows.Forms.Button();
-            this.btnTraphong = new System.Windows.Forms.Button();
             this.gbxUsedServices.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsedServices)).BeginInit();
             this.panel4.SuspendLayout();
@@ -406,6 +406,16 @@
             this.panel2.Size = new System.Drawing.Size(1504, 113);
             this.panel2.TabIndex = 11;
             // 
+            // btnTraphong
+            // 
+            this.btnTraphong.Location = new System.Drawing.Point(685, 42);
+            this.btnTraphong.Name = "btnTraphong";
+            this.btnTraphong.Size = new System.Drawing.Size(123, 59);
+            this.btnTraphong.TabIndex = 0;
+            this.btnTraphong.Text = "Trả Phòng";
+            this.btnTraphong.UseVisualStyleBackColor = true;
+            this.btnTraphong.Click += new System.EventHandler(this.btnTraphong_Click);
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 3;
@@ -492,15 +502,6 @@
             this.btnIncrease.Text = "Thêm";
             this.btnIncrease.UseVisualStyleBackColor = true;
             this.btnIncrease.Click += new System.EventHandler(this.btnIncrease_Click);
-            // 
-            // btnTraphong
-            // 
-            this.btnTraphong.Location = new System.Drawing.Point(685, 42);
-            this.btnTraphong.Name = "btnTraphong";
-            this.btnTraphong.Size = new System.Drawing.Size(123, 59);
-            this.btnTraphong.TabIndex = 0;
-            this.btnTraphong.Text = "Trả Phòng";
-            this.btnTraphong.UseVisualStyleBackColor = true;
             // 
             // frmBookingDetail
             // 

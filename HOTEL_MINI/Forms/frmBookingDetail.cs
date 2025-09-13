@@ -41,6 +41,7 @@ namespace HOTEL_MINI.Forms
 
         private void LoadInforBooking()
         {
+            lblRoomNumber.Text = _room.RoomNumber;
             var customer = _customerService.getCustomerByCustomerID(_booking.CustomerID);
             if (customer != null)
             {
@@ -74,7 +75,7 @@ namespace HOTEL_MINI.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             var user = _form1.GetCurrentUser();
-            _form1.OpenChildForm(new frmRoom(new frmApplication(user)), btnClose);
+            _form1.OpenChildForm(new frmRoom(_form1), btnClose);
         }
         private void LoadServicesToGrid()
         {
@@ -291,5 +292,88 @@ namespace HOTEL_MINI.Forms
             LoadServicesToGrid();
         }
 
+        private void btnTraphong_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_booking == null || _room == null)
+                {
+                    MessageBox.Show("Dữ liệu phòng hoặc booking bị thiếu!");
+                    return;
+                }
+
+                if (_booking.CheckOutDate != null)
+                {
+                    // Đã có giờ checkout, mở thẳng form thanh toán
+                    OpenCheckoutForm();
+                }
+                else
+                {
+                    MessageBox.Show($"Mở phòng {_room.RoomNumber}!");
+                    // Chưa có giờ checkout, mở form chọn giờ trước
+                    OpenCheckoutTimeForm();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thực hiện trả phòng: {ex.Message}",
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OpenCheckoutForm()
+        {
+            using (var frmCheckout = new frmCheckout(_room, _booking, _form1))
+            {
+                    var result=frmCheckout.ShowDialog();
+                if (result == DialogResult.Cancel)
+                {
+                    _booking.CheckOutDate = null;
+                }
+                else if (result == DialogResult.OK)
+                {
+                    // Checkout thành công - cập nhật UI
+                    MessageBox.Show("Trả phòng thành công!", "Thành công",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Gọi method refresh lại danh sách phòng ở form chính
+                    //_form1.RefreshRoomList();
+
+                    _form1.OpenChildForm(new frmRoom(_form1), btnClose);
+                    this.Close();
+                }
+            }
+        }
+
+        private void OpenCheckoutTimeForm()
+        {
+            using (var frmTime = new frmSelectCheckoutTime(_room, _booking, _form1))
+            {
+                if (frmTime.ShowDialog() == DialogResult.OK)
+                {
+                    using (var frmCheckout = new frmCheckout(_room, _booking, _form1))
+                    {
+                        var result = frmCheckout.ShowDialog();
+
+                        if (result == DialogResult.Cancel)
+                        {
+                            _booking.CheckOutDate = null;
+                        }
+                        else if (result == DialogResult.OK)
+                        {
+                            // Checkout thành công - cập nhật UI
+                            MessageBox.Show("Trả phòng thành công!", "Thành công",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            // Gọi method refresh lại danh sách phòng ở form chính
+                            //_form1.RefreshRoomList();
+
+                            _form1.OpenChildForm(new frmRoom(_form1), btnClose);
+                            this.Close();
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -38,6 +38,35 @@ namespace HOTEL_MINI.DAL
             }
             return listRoomType;
         }
+        public bool UpdateRoomStatusAfterCheckout(int roomID, string status)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"UPDATE Rooms 
+                          SET Status = @Status 
+                          WHERE RoomID = @RoomID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@RoomID", roomID);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+        public bool UpdateRoomStatus(int roomID, string status)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "UPDATE Rooms SET Status = @Status WHERE RoomID = @RoomID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@RoomID", roomID);
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
+        }
         public List<Room> getRoomList()
         {
             var listRoom = new List<Room>();
@@ -111,19 +140,7 @@ namespace HOTEL_MINI.DAL
             }
             return pricingType;
         }
-        public bool UpdateRoomStatus(int roomID, string status)
-        {
-            using(SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                string sql = "UPDATE Rooms SET Status = @Status WHERE RoomID = @RoomID";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@RoomID", roomID);
-                int rowsAffected = cmd.ExecuteNonQuery();
-                return rowsAffected > 0;
-            }
-        }
+        
         public RoomPricing getPricingID(string pricingType, int roomType)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))

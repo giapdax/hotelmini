@@ -139,24 +139,34 @@ namespace HOTEL_MINI.Forms.Controls
 
         private void btnDetails_Click(object sender, EventArgs e)
         {
-            if(_room.RoomStatus == "Occupied")
+            // Luôn lấy booking mới nhất theo room ID
+            var latestBooking = _bookingService.GetLatestBookingByRoomId(_room.RoomID);
+
+            if (_room.RoomStatus == "Occupied" || _room.RoomStatus == "Booked")
             {
-                var latestBooking = _bookingService.GetLatestBookingByRoomId(_room.RoomID);
                 if (latestBooking != null)
                 {
-                    _form1.OpenChildForm(new frmBookingDetail(latestBooking, _room, _form1), btnDetails); //_form1, latestBooking, _frmRoom
-                    //frmBookingDetail bookingDetails = new frmBookingDetail(latestBooking, _room); //_form1, latestBooking, _frmRoom
-                    
-                    //bookingDetails.ShowDialog();
+                    if (_room.RoomStatus == "Occupied")
+                    {
+                        _form1.OpenChildForm(new frmBookingDetail(latestBooking, _room, _form1), btnDetails);
+                    }
+                    else if (_room.RoomStatus == "Booked")
+                    {
+                        using (var frmBookedRoomInfor = new frmBookedRoomInfor(latestBooking, _room, _form1))
+                        {
+                            var result = frmBookedRoomInfor.ShowDialog();
+                            if (result == DialogResult.OK)
+                            {
+                                _frmRoom.RefreshRoomList();
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Không tìm thấy booking nào cho phòng này!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Không tìm thấy booking nào cho phòng này!", "Lỗi",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            else
-            {
-
             }
         }
     }
