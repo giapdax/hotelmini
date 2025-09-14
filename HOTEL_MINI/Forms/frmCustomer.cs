@@ -11,11 +11,31 @@ namespace HOTEL_MINI.Forms
     public partial class frmCustomer : Form
     {
         private readonly CustomerService _svc = new CustomerService();
+
+        // Danh sách gốc (Customer thuần)
         private List<Customer> _all = new List<Customer>();
+
+        // Danh sách bind lên grid (có thêm số lần booking)
+        private List<CustomerRow> _rows = new List<CustomerRow>();
+
         private int _currentCustomerId = 0;
 
         private enum FormMode { View, Edit }
         private FormMode _mode = FormMode.View;
+
+        // Lớp hiển thị cho grid (thêm BookingsCount)
+        private class CustomerRow
+        {
+            public int CustomerID { get; set; }
+            public string FullName { get; set; }
+            public string Gender { get; set; }
+            public string Phone { get; set; }
+            public string Email { get; set; }
+            public string Address { get; set; }
+            public string IDNumber { get; set; }
+            public DateTime CreatedAt { get; set; }
+            public int BookingsCount { get; set; } // Số lần đặt phòng
+        }
 
         public frmCustomer()
         {
@@ -24,28 +44,64 @@ namespace HOTEL_MINI.Forms
             // wire events ngoài các event đã có sẵn trong Designer
             this.Load += FrmCustomer_Load;
             dgvCustomer.SelectionChanged += dgvCustomer_SelectionChanged;
-            textBox2.TextChanged += textBox2_TextChanged; // ô search trong group Tìm kiếm
+            textBox2.TextChanged += textBox2_TextChanged; // ô search
+            btnSave.Click += btnSave_Click;
+            btnCancel.Click += btnCancel_Click;
         }
 
         #region Load + Binding
 
         private void FrmCustomer_Load(object sender, EventArgs e)
         {
-            // cột ngày tạo chỉ xem
             txtCreatedAt.ReadOnly = true;
 
+            LoadGendersToCombo();
             LoadCustomers();
+
             SetupGrid();
             SetMode(FormMode.View);
+        }
+
+        private void LoadGendersToCombo()
+        {
+            try
+            {
+                var genders = _svc.getAllGender() ?? new List<string>();
+                if (cboGender != null)
+                {
+                    cboGender.DataSource = genders;
+                    // Khuyên dùng DropDownList để đồng bộ enum
+                    // cboGender.DropDownStyle = ComboBoxStyle.DropDownList;
+                }
+            }
+            catch
+            {
+                // ignore
+            }
         }
 
         private void LoadCustomers()
         {
             _all = _svc.getAllCustomers() ?? new List<Customer>();
-            dgvCustomer.AutoGenerateColumns = true;
-            dgvCustomer.DataSource = _all;
+            var counts = _svc.getBookingCounts() ?? new Dictionary<int, int>();
 
-            if (_all.Count > 0)
+            _rows = _all.Select(c => new CustomerRow
+            {
+                CustomerID = c.CustomerID,
+                FullName = c.FullName,
+                Gender = c.Gender,
+                Phone = c.Phone,
+                Email = c.Email,
+                Address = c.Address,
+                IDNumber = c.IDNumber,
+                CreatedAt = c.CreatedAt,
+                BookingsCount = counts.TryGetValue(c.CustomerID, out var n) ? n : 0
+            }).ToList();
+
+            dgvCustomer.AutoGenerateColumns = true;
+            dgvCustomer.DataSource = _rows;
+
+            if (_rows.Count > 0)
             {
                 dgvCustomer.ClearSelection();
                 dgvCustomer.Rows[0].Selected = true;
@@ -90,6 +146,9 @@ namespace HOTEL_MINI.Forms
 
                 if (dgvCustomer.Columns.Contains("CreatedAt"))
                     dgvCustomer.Columns["CreatedAt"].HeaderText = "Ngày tạo";
+
+                if (dgvCustomer.Columns.Contains("BookingsCount"))
+                    dgvCustomer.Columns["BookingsCount"].HeaderText = "Số lần đặt";
             };
         }
 
@@ -100,17 +159,16 @@ namespace HOTEL_MINI.Forms
         private void SetMode(FormMode mode)
         {
             _mode = mode;
-
             bool editable = (_mode == FormMode.Edit);
 
-            // chỉ cho sửa khi Edit; CreatedAt luôn readonly
             txtFullname.ReadOnly = !editable;
-            txtGender.ReadOnly = !editable;
             txtPhone.ReadOnly = !editable;
-            textBox4.ReadOnly = !editable; // Email textbox
+            textBox4.ReadOnly = !editable; // Email
             txtAddress.ReadOnly = !editable;
             txtIDNumber.ReadOnly = !editable;
             txtCreatedAt.ReadOnly = true;
+
+            if (cboGender != null) cboGender.Enabled = editable;
 
             btnSave.Text = editable ? "Save" : "Edit";
             btnCancel.Text = editable ? "Hủy" : "Hủy";
@@ -119,7 +177,6 @@ namespace HOTEL_MINI.Forms
 
             if (!editable)
             {
-                // thoát edit -> hiển thị lại dữ liệu đang chọn
                 ShowSelectedToForm();
             }
         }
@@ -132,12 +189,17 @@ namespace HOTEL_MINI.Forms
         {
             _currentCustomerId = 0;
             txtFullname.Text = "";
-            txtGender.Text = "";
             txtPhone.Text = "";
             textBox4.Text = ""; // email
             txtAddress.Text = "";
             txtIDNumber.Text = "";
             txtCreatedAt.Text = "";
+
+            if (cboGender != null)
+            {
+                if (cboGender.Items.Count > 0) cboGender.SelectedIndex = 0;
+                else cboGender.Text = "";
+            }
         }
 
         private void ShowSelectedToForm()
@@ -148,17 +210,38 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            var c = dgvCustomer.SelectedRows[0].DataBoundItem as Customer;
-            if (c == null) { ClearFields(); return; }
+            var rowObj = dgvCustomer.SelectedRows[0].DataBoundItem as CustomerRow;
+            if (rowObj == null) { ClearFields(); return; }
 
-            _currentCustomerId = c.CustomerID;
-            txtFullname.Text = c.FullName ?? "";
-            txtGender.Text = c.Gender ?? "";
-            txtPhone.Text = c.Phone ?? "";
-            textBox4.Text = c.Email ?? "";
-            txtAddress.Text = c.Address ?? "";
-            txtIDNumber.Text = c.IDNumber ?? "";
-            txtCreatedAt.Text = c.CreatedAt.ToString("yyyy-MM-dd HH:mm");
+            _currentCustomerId = rowObj.CustomerID;
+            txtFullname.Text = rowObj.FullName ?? "";
+
+            if (cboGender != null)
+            {
+                if (cboGender.Items.Count > 0 && rowObj.Gender != null)
+                {
+                    int idx = -1;
+                    for (int i = 0; i < cboGender.Items.Count; i++)
+                    {
+                        if (string.Equals(cboGender.Items[i]?.ToString(), rowObj.Gender, StringComparison.OrdinalIgnoreCase))
+                        {
+                            idx = i; break;
+                        }
+                    }
+                    if (idx >= 0) cboGender.SelectedIndex = idx;
+                    else cboGender.Text = rowObj.Gender; // fallback nếu enum chưa có
+                }
+                else
+                {
+                    cboGender.Text = rowObj.Gender ?? "";
+                }
+            }
+
+            txtPhone.Text = rowObj.Phone ?? "";
+            textBox4.Text = rowObj.Email ?? "";
+            txtAddress.Text = rowObj.Address ?? "";
+            txtIDNumber.Text = rowObj.IDNumber ?? "";
+            txtCreatedAt.Text = rowObj.CreatedAt.ToString("yyyy-MM-dd HH:mm");
         }
 
         private bool ValidateInputs()
@@ -167,6 +250,11 @@ namespace HOTEL_MINI.Forms
             var phone = txtPhone.Text.Trim();
             var email = textBox4.Text.Trim();
             var idn = txtIDNumber.Text.Trim();
+
+            string gender = cboGender != null
+                ? (cboGender.SelectedItem?.ToString() ?? cboGender.Text ?? "")
+                : "";
+            gender = gender.Trim();
 
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -187,7 +275,6 @@ namespace HOTEL_MINI.Forms
                 textBox4.Focus(); return false;
             }
 
-            // CCCD unique (nếu thay đổi)
             if (!string.IsNullOrWhiteSpace(idn))
             {
                 var exist = _all.Any(x => x.IDNumber != null &&
@@ -200,21 +287,32 @@ namespace HOTEL_MINI.Forms
                 }
             }
 
+            //Nếu bắt buộc chọn Gender từ enum thì bật đoạn dưới:
+             if (cboGender != null && cboGender.DropDownStyle == ComboBoxStyle.DropDownList && string.IsNullOrWhiteSpace(gender))
+             {
+                 MessageBox.Show("Vui lòng chọn giới tính.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                 cboGender.Focus(); return false;
+             }
+
             return true;
         }
 
         private Customer CollectForm()
         {
+            string gender = cboGender != null
+                ? (cboGender.SelectedItem?.ToString() ?? cboGender.Text ?? "")
+                : "";
+            gender = gender.Trim();
+
             return new Customer
             {
                 CustomerID = _currentCustomerId,
                 FullName = txtFullname.Text.Trim(),
-                Gender = txtGender.Text.Trim(),
+                Gender = string.IsNullOrWhiteSpace(gender) ? null : gender,
                 Phone = txtPhone.Text.Trim(),
                 Email = textBox4.Text.Trim(),
                 Address = txtAddress.Text.Trim(),
                 IDNumber = txtIDNumber.Text.Trim(),
-                // CreatedAt không update
             };
         }
 
@@ -234,16 +332,18 @@ namespace HOTEL_MINI.Forms
 
             if (string.IsNullOrWhiteSpace(q))
             {
-                dgvCustomer.DataSource = _all;
+                dgvCustomer.DataSource = _rows;
                 return;
             }
 
-            var filtered = _all.Where(c =>
+            var filtered = _rows.Where(c =>
                     (!string.IsNullOrEmpty(c.FullName) && c.FullName.ToLower().Contains(q)) ||
                     (!string.IsNullOrEmpty(c.Phone) && c.Phone.ToLower().Contains(q)) ||
                     (!string.IsNullOrEmpty(c.Email) && c.Email.ToLower().Contains(q)) ||
                     (!string.IsNullOrEmpty(c.Address) && c.Address.ToLower().Contains(q)) ||
-                    (!string.IsNullOrEmpty(c.IDNumber) && c.IDNumber.ToLower().Contains(q))
+                    (!string.IsNullOrEmpty(c.IDNumber) && c.IDNumber.ToLower().Contains(q)) ||
+                    (!string.IsNullOrEmpty(c.Gender) && c.Gender.ToLower().Contains(q)) ||
+                    (c.BookingsCount.ToString().Contains(q))
                 ).ToList();
 
             dgvCustomer.DataSource = filtered;
@@ -253,7 +353,6 @@ namespace HOTEL_MINI.Forms
         {
             if (_mode == FormMode.View)
             {
-                // Chỉ cho Edit khi có dòng chọn
                 if (dgvCustomer.SelectedRows.Count == 0)
                 {
                     MessageBox.Show("Vui lòng chọn khách hàng để chỉnh sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -263,7 +362,6 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            // _mode == Edit -> Save
             if (!ValidateInputs()) return;
 
             var dto = CollectForm();
@@ -273,17 +371,16 @@ namespace HOTEL_MINI.Forms
             {
                 MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // reload + giữ lại selection
                 int keepId = dto.CustomerID;
                 LoadCustomers();
-                // chọn lại dòng cũ nếu còn
+
                 var row = dgvCustomer.Rows.Cast<DataGridViewRow>()
-                    .FirstOrDefault(r => (r.DataBoundItem as Customer)?.CustomerID == keepId);
+                    .FirstOrDefault(r => (r.DataBoundItem as CustomerRow)?.CustomerID == keepId);
                 if (row != null)
                 {
                     dgvCustomer.ClearSelection();
                     row.Selected = true;
-                    dgvCustomer.FirstDisplayedScrollingRowIndex = row.Index;
+                    try { dgvCustomer.FirstDisplayedScrollingRowIndex = row.Index; } catch { }
                 }
 
                 SetMode(FormMode.View);
@@ -298,14 +395,10 @@ namespace HOTEL_MINI.Forms
         {
             if (_mode == FormMode.Edit)
             {
-                // hủy chỉnh sửa, revert lại
                 SetMode(FormMode.View);
             }
             else
             {
-                // đang View: đóng form (hoặc để nguyên nếu cậu muốn)
-                // this.Close();
-                // tạm thời chỉ revert hiển thị
                 ShowSelectedToForm();
             }
         }

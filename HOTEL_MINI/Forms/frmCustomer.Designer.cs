@@ -43,7 +43,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txtPhone = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtGender = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtFullname = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
@@ -51,6 +50,7 @@
             this.grpSearch = new System.Windows.Forms.GroupBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.dgvCustomer = new System.Windows.Forms.DataGridView();
+            this.cboGender = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -118,11 +118,11 @@
             this.tableLayoutPanel3.Controls.Add(this.label3, 0, 2);
             this.tableLayoutPanel3.Controls.Add(this.txtPhone, 1, 2);
             this.tableLayoutPanel3.Controls.Add(this.label2, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.txtGender, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.txtFullname, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.btnSave, 1, 7);
             this.tableLayoutPanel3.Controls.Add(this.btnCancel, 0, 7);
+            this.tableLayoutPanel3.Controls.Add(this.cboGender, 1, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 22);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -245,14 +245,6 @@
             this.label2.Text = "Giới tính:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // txtGender
-            // 
-            this.txtGender.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtGender.Location = new System.Drawing.Point(198, 56);
-            this.txtGender.Name = "txtGender";
-            this.txtGender.Size = new System.Drawing.Size(190, 26);
-            this.txtGender.TabIndex = 3;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -330,6 +322,14 @@
             this.dgvCustomer.Size = new System.Drawing.Size(633, 540);
             this.dgvCustomer.TabIndex = 1;
             // 
+            // cboGender
+            // 
+            this.cboGender.FormattingEnabled = true;
+            this.cboGender.Location = new System.Drawing.Point(198, 56);
+            this.cboGender.Name = "cboGender";
+            this.cboGender.Size = new System.Drawing.Size(121, 28);
+            this.cboGender.TabIndex = 23;
+            // 
             // frmCustomer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -369,11 +369,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtPhone;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtGender;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtFullname;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.ComboBox cboGender;
     }
 }

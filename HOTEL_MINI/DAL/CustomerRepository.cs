@@ -207,5 +207,29 @@ WHERE CustomerID = @CustomerID";
             }
             return listGender;
         }
+        public Dictionary<int, int> GetBookingCounts()
+        {
+            var dict = new Dictionary<int, int>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                // Nếu muốn chỉ đếm booking hợp lệ thì thêm WHERE Status <> 'Cancelled' tùy schema của bạn
+                string sql = @"SELECT CustomerID, COUNT(*) AS Cnt 
+                       FROM Bookings 
+                       GROUP BY CustomerID";
+                using (var cmd = new SqlCommand(sql, conn))
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        int customerId = rd.GetInt32(0);
+                        int cnt = rd.GetInt32(1);
+                        dict[customerId] = cnt;
+                    }
+                }
+            }
+            return dict;
+        }
+
     }
 }

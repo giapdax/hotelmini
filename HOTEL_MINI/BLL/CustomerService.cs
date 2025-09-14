@@ -49,5 +49,10 @@ namespace HOTEL_MINI.BLL
         {
             return _customerRepository.getAllGender();
         }
+        public Dictionary<int, int> getBookingCounts()
+        {
+            return _customerRepository.GetBookingCounts();
+        }
+
     }
 }
