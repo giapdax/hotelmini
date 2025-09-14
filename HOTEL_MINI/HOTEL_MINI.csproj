@@ -75,6 +75,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -90,6 +91,7 @@
   <ItemGroup>
     <Compile Include="BLL\AuthService.cs" />
     <Compile Include="BLL\BookingService.cs" />
+    <Compile Include="BLL\CheckoutService.cs" />
     <Compile Include="BLL\CustomerService.cs" />
     <Compile Include="BLL\RoleService.cs" />
     <Compile Include="BLL\RoomPricingService.cs" />
@@ -100,6 +102,8 @@
     <Compile Include="Common\ConfigHelper.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
     <Compile Include="DAL\CustomerRepository.cs" />
+    <Compile Include="DAL\InvoiceRepository.cs" />
+    <Compile Include="DAL\PaymentRepository.cs" />
     <Compile Include="DAL\RoleRepository.cs" />
     <Compile Include="DAL\RoomPricingRepository.cs" />
     <Compile Include="DAL\RoomRepository.cs" />
@@ -130,6 +134,12 @@
     <Compile Include="Forms\Controls\RoomCard.Designer.cs">
       <DependentUpon>RoomCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmBookedRoomInfor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmBookedRoomInfor.Designer.cs">
+      <DependentUpon>frmBookedRoomInfor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmBookingDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +151,12 @@
     </Compile>
     <Compile Include="Forms\frmBookingPopup.Designer.cs">
       <DependentUpon>frmBookingPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmCheckout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmCheckout.Designer.cs">
+      <DependentUpon>frmCheckout.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmCustomer.cs">
       <SubType>Form</SubType>
@@ -178,6 +194,12 @@
     <Compile Include="Forms\frmRoomManager.Designer.cs">
       <DependentUpon>frmRoomManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmSelectCheckoutTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSelectCheckoutTime.Designer.cs">
+      <DependentUpon>frmSelectCheckoutTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -193,12 +215,15 @@
     <Compile Include="Model\Entity\Booking.cs" />
     <Compile Include="Model\Entity\BookingServiceDetail.cs" />
     <Compile Include="Model\Entity\Customer.cs" />
+    <Compile Include="Model\Entity\Invoice.cs" />
+    <Compile Include="Model\Entity\Payment.cs" />
     <Compile Include="Model\Entity\Role.cs" />
     <Compile Include="Model\Entity\Room.cs" />
     <Compile Include="Model\Entity\RoomPricing.cs" />
     <Compile Include="Model\Entity\RoomTypes.cs" />
     <Compile Include="Model\Entity\Service.cs" />
     <Compile Include="Model\Entity\User.cs" />
+    <Compile Include="Model\Response\CheckoutDto.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Model\Response\UsedServiceDto.cs" />
     <Compile Include="Program.cs" />
@@ -215,11 +240,17 @@
     <EmbeddedResource Include="Forms\Controls\RoomCard.resx">
       <DependentUpon>RoomCard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBookedRoomInfor.resx">
+      <DependentUpon>frmBookedRoomInfor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmBookingDetail.resx">
       <DependentUpon>frmBookingDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmBookingPopup.resx">
       <DependentUpon>frmBookingPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmCheckout.resx">
+      <DependentUpon>frmCheckout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmCustomer.resx">
       <DependentUpon>frmCustomer.cs</DependentUpon>
@@ -238,6 +269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmRoomManager.resx">
       <DependentUpon>frmRoomManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSelectCheckoutTime.resx">
+      <DependentUpon>frmSelectCheckoutTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmService.resx">
       <DependentUpon>frmService.cs</DependentUpon>

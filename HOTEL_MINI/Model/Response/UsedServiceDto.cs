@@ -14,6 +14,7 @@ namespace HOTEL_MINI.Model.Response
         public string ServiceName { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public decimal Total => Price * Quantity;
 
         // Property hiển thị định dạng
         public string PriceFormatted => Price.ToString("N0") + " đ";

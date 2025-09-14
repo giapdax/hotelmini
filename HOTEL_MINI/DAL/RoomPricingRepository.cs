@@ -4,10 +4,13 @@ using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace HOTEL_MINI.DAL
 {
-    internal class RoomPricingRepository
+    public class RoomPricingRepository
     {
         private readonly string _connectionString;
         public RoomPricingRepository()
@@ -17,6 +20,7 @@ namespace HOTEL_MINI.DAL
         private SqlConnection CreateConnection() => new SqlConnection(_connectionString);
 
         public List<RoomPricing> GetAll()
+        public RoomPricing GetPricingTypeById(int pricingId)
         {
             var list = new List<RoomPricing>();
             const string sql = @"SELECT PricingID, RoomTypeID, PricingType, Price, IsActive FROM RoomPricing";
@@ -41,6 +45,8 @@ namespace HOTEL_MINI.DAL
             }
             return list;
         }
+            const string query = "SELECT PricingID, RoomTypeID, PricingType, DurationValues, Price, IsActive " +
+                                 "FROM RoomPricing WHERE PricingID = @PricingID";
 
         public RoomPricing GetById(int pricingId)
         {
@@ -54,7 +60,9 @@ namespace HOTEL_MINI.DAL
                 {
                     if (!rd.Read()) return null;
                     return new RoomPricing
-                    {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(query, connection))
+            {
                         PricingID = rd.GetInt32(0),
                         RoomTypeID = rd.GetInt32(1),
                         PricingType = rd.GetString(2),
@@ -64,6 +72,7 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
+                command.Parameters.AddWithValue("@PricingID", pricingId);
 
         public RoomPricing GetByRoomTypeAndType(int roomTypeId, string pricingType)
         {
@@ -73,24 +82,33 @@ FROM RoomPricing
 WHERE RoomTypeID=@rtId AND PricingType=@ptype";
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
-            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
                 cmd.Parameters.AddWithValue("@rtId", roomTypeId);
                 cmd.Parameters.AddWithValue("@ptype", pricingType);
                 conn.Open();
                 using (var rd = cmd.ExecuteReader())
-                {
-                    if (!rd.Read()) return null;
-                    return new RoomPricing
+                    if (reader.Read())
                     {
+                    if (!rd.Read()) return null;
+                        return new RoomPricing
+                        {
                         PricingID = rd.GetInt32(0),
                         RoomTypeID = rd.GetInt32(1),
                         PricingType = rd.GetString(2),
                         Price = rd.GetDecimal(3),
                         IsActive = rd.GetBoolean(4)
-                    };
+                            PricingID = (int)reader["PricingID"],
+                            RoomTypeID = (int)reader["RoomTypeID"],
+                            PricingType = reader["PricingType"].ToString(),
+                            DurationValues = reader["DurationValues"] != DBNull.Value ? (int)reader["DurationValues"] : 0,
+                            Price = (decimal)reader["Price"],
+                            IsActive = (bool)reader["IsActive"]
+                        };
+                    }
                 }
             }
-        }
 
         public bool Add(RoomPricing p)
         {
@@ -152,6 +170,7 @@ WHERE PricingID=@PricingID";
                     while (rd.Read()) list.Add(rd.GetString(0));
             }
             return list;
+            return null; // không tìm thấy thì trả null
         }
     }
 }

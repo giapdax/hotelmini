@@ -1,8 +1,6 @@
-﻿using System.Windows.Forms;
-
-namespace HOTEL_MINI.Forms
+﻿namespace HOTEL_MINI.Forms
 {
-    partial class frmBookingPopup
+    partial class frmBookedRoomInfor
     {
         /// <summary>
         /// Required designer variable.
@@ -31,12 +29,7 @@ namespace HOTEL_MINI.Forms
         private void InitializeComponent()
         {
             this.gbxRoomInfor = new System.Windows.Forms.GroupBox();
-            this.lblRoomNumber = new System.Windows.Forms.Label();
-            this.btnCheckExistCCCD = new System.Windows.Forms.Button();
-            this.btnBookConfirm = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.rbtnDattruoc = new System.Windows.Forms.RadioButton();
-            this.rbtnNhanngay = new System.Windows.Forms.RadioButton();
+            this.txtPricingType = new System.Windows.Forms.TextBox();
             this.txtGender = new System.Windows.Forms.TextBox();
             this.txtCCCD = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
@@ -50,13 +43,15 @@ namespace HOTEL_MINI.Forms
             this.lblCHECKOUT = new System.Windows.Forms.Label();
             this.lblCHECKIN = new System.Windows.Forms.Label();
             this.lblKieuThue = new System.Windows.Forms.Label();
-            this.cbxPricingType = new System.Windows.Forms.ComboBox();
             this.lblSex = new System.Windows.Forms.Label();
             this.lblCCCD = new System.Windows.Forms.Label();
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblDiachi = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
+            this.btnBack = new System.Windows.Forms.Button();
+            this.btnHuy = new System.Windows.Forms.Button();
+            this.lblRoomNumber = new System.Windows.Forms.Label();
             this.gbxRoomInfor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -64,11 +59,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.gbxRoomInfor.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.gbxRoomInfor.Controls.Add(this.lblRoomNumber);
-            this.gbxRoomInfor.Controls.Add(this.btnCheckExistCCCD);
-            this.gbxRoomInfor.Controls.Add(this.btnBookConfirm);
-            this.gbxRoomInfor.Controls.Add(this.btnCancel);
-            this.gbxRoomInfor.Controls.Add(this.rbtnDattruoc);
-            this.gbxRoomInfor.Controls.Add(this.rbtnNhanngay);
+            this.gbxRoomInfor.Controls.Add(this.btnHuy);
+            this.gbxRoomInfor.Controls.Add(this.btnBack);
+            this.gbxRoomInfor.Controls.Add(this.txtPricingType);
             this.gbxRoomInfor.Controls.Add(this.txtGender);
             this.gbxRoomInfor.Controls.Add(this.txtCCCD);
             this.gbxRoomInfor.Controls.Add(this.txtEmail);
@@ -82,7 +75,6 @@ namespace HOTEL_MINI.Forms
             this.gbxRoomInfor.Controls.Add(this.lblCHECKOUT);
             this.gbxRoomInfor.Controls.Add(this.lblCHECKIN);
             this.gbxRoomInfor.Controls.Add(this.lblKieuThue);
-            this.gbxRoomInfor.Controls.Add(this.cbxPricingType);
             this.gbxRoomInfor.Controls.Add(this.lblSex);
             this.gbxRoomInfor.Controls.Add(this.lblCCCD);
             this.gbxRoomInfor.Controls.Add(this.lblEmail);
@@ -93,129 +85,72 @@ namespace HOTEL_MINI.Forms
             this.gbxRoomInfor.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbxRoomInfor.Location = new System.Drawing.Point(0, 0);
             this.gbxRoomInfor.Name = "gbxRoomInfor";
-            this.gbxRoomInfor.Size = new System.Drawing.Size(793, 1050);
-            this.gbxRoomInfor.TabIndex = 2;
+            this.gbxRoomInfor.Size = new System.Drawing.Size(500, 842);
+            this.gbxRoomInfor.TabIndex = 6;
             this.gbxRoomInfor.TabStop = false;
             this.gbxRoomInfor.Text = "Thông tin ";
             // 
-            // lblRoomNumber
+            // txtPricingType
             // 
-            this.lblRoomNumber.AutoSize = true;
-            this.lblRoomNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoomNumber.ForeColor = System.Drawing.Color.Magenta;
-            this.lblRoomNumber.Location = new System.Drawing.Point(316, 49);
-            this.lblRoomNumber.Name = "lblRoomNumber";
-            this.lblRoomNumber.Size = new System.Drawing.Size(93, 40);
-            this.lblRoomNumber.TabIndex = 23;
-            this.lblRoomNumber.Text = "Tên:";
-            // 
-            // btnCheckExistCCCD
-            // 
-            this.btnCheckExistCCCD.Location = new System.Drawing.Point(514, 185);
-            this.btnCheckExistCCCD.Name = "btnCheckExistCCCD";
-            this.btnCheckExistCCCD.Size = new System.Drawing.Size(170, 53);
-            this.btnCheckExistCCCD.TabIndex = 24;
-            this.btnCheckExistCCCD.Text = "Check";
-            this.btnCheckExistCCCD.UseVisualStyleBackColor = true;
-            this.btnCheckExistCCCD.Click += new System.EventHandler(this.btnCheckExistCCCD_Click);
-            // 
-            // btnBookConfirm
-            // 
-            this.btnBookConfirm.Location = new System.Drawing.Point(529, 931);
-            this.btnBookConfirm.Name = "btnBookConfirm";
-            this.btnBookConfirm.Size = new System.Drawing.Size(155, 116);
-            this.btnBookConfirm.TabIndex = 21;
-            this.btnBookConfirm.Text = " Confirm";
-            this.btnBookConfirm.UseVisualStyleBackColor = true;
-            this.btnBookConfirm.Click += new System.EventHandler(this.btnBookConfirm_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(146, 959);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(179, 88);
-            this.btnCancel.TabIndex = 20;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // rbtnDattruoc
-            // 
-            this.rbtnDattruoc.AutoSize = true;
-            this.rbtnDattruoc.Location = new System.Drawing.Point(373, 451);
-            this.rbtnDattruoc.Name = "rbtnDattruoc";
-            this.rbtnDattruoc.Size = new System.Drawing.Size(193, 41);
-            this.rbtnDattruoc.TabIndex = 21;
-            this.rbtnDattruoc.TabStop = true;
-            this.rbtnDattruoc.Text = "Đặt Trước";
-            this.rbtnDattruoc.UseVisualStyleBackColor = true;
-            this.rbtnDattruoc.CheckedChanged += new System.EventHandler(this.rbtnDattruoc_CheckedChanged);
-            // 
-            // rbtnNhanngay
-            // 
-            this.rbtnNhanngay.AutoSize = true;
-            this.rbtnNhanngay.Location = new System.Drawing.Point(373, 498);
-            this.rbtnNhanngay.Name = "rbtnNhanngay";
-            this.rbtnNhanngay.Size = new System.Drawing.Size(207, 41);
-            this.rbtnNhanngay.TabIndex = 25;
-            this.rbtnNhanngay.TabStop = true;
-            this.rbtnNhanngay.Text = "Nhận ngay";
-            this.rbtnNhanngay.UseVisualStyleBackColor = true;
-            this.rbtnNhanngay.CheckedChanged += new System.EventHandler(this.rbtnNhanngay_CheckedChanged);
+            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPricingType.Location = new System.Drawing.Point(107, 419);
+            this.txtPricingType.Name = "txtPricingType";
+            this.txtPricingType.Size = new System.Drawing.Size(128, 35);
+            this.txtPricingType.TabIndex = 20;
             // 
             // txtGender
             // 
             this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGender.Location = new System.Drawing.Point(131, 443);
+            this.txtGender.Location = new System.Drawing.Point(96, 362);
             this.txtGender.Name = "txtGender";
-            this.txtGender.Size = new System.Drawing.Size(84, 35);
+            this.txtGender.Size = new System.Drawing.Size(358, 35);
             this.txtGender.TabIndex = 19;
             // 
             // txtCCCD
             // 
             this.txtCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCCCD.Location = new System.Drawing.Point(131, 193);
+            this.txtCCCD.Location = new System.Drawing.Point(96, 308);
             this.txtCCCD.Name = "txtCCCD";
-            this.txtCCCD.Size = new System.Drawing.Size(329, 35);
+            this.txtCCCD.Size = new System.Drawing.Size(358, 35);
             this.txtCCCD.TabIndex = 18;
             // 
             // txtEmail
             // 
             this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmail.Location = new System.Drawing.Point(131, 386);
+            this.txtEmail.Location = new System.Drawing.Point(96, 260);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(479, 35);
+            this.txtEmail.Size = new System.Drawing.Size(358, 35);
             this.txtEmail.TabIndex = 17;
             // 
             // txtSDT
             // 
             this.txtSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSDT.Location = new System.Drawing.Point(131, 339);
+            this.txtSDT.Location = new System.Drawing.Point(96, 213);
             this.txtSDT.Name = "txtSDT";
-            this.txtSDT.Size = new System.Drawing.Size(479, 35);
+            this.txtSDT.Size = new System.Drawing.Size(358, 35);
             this.txtSDT.TabIndex = 16;
             // 
             // txtDiachi
             // 
             this.txtDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDiachi.Location = new System.Drawing.Point(131, 292);
+            this.txtDiachi.Location = new System.Drawing.Point(96, 166);
             this.txtDiachi.Name = "txtDiachi";
-            this.txtDiachi.Size = new System.Drawing.Size(479, 35);
+            this.txtDiachi.Size = new System.Drawing.Size(358, 35);
             this.txtDiachi.TabIndex = 15;
             // 
             // txtTen
             // 
             this.txtTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTen.Location = new System.Drawing.Point(131, 244);
+            this.txtTen.Location = new System.Drawing.Point(96, 118);
             this.txtTen.Name = "txtTen";
-            this.txtTen.Size = new System.Drawing.Size(479, 35);
+            this.txtTen.Size = new System.Drawing.Size(358, 35);
             this.txtTen.TabIndex = 14;
             // 
             // lblNote
             // 
             this.lblNote.AutoSize = true;
             this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(62, 737);
+            this.lblNote.Location = new System.Drawing.Point(15, 601);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(61, 22);
             this.lblNote.TabIndex = 13;
@@ -223,39 +158,37 @@ namespace HOTEL_MINI.Forms
             // 
             // txtNote
             // 
-            this.txtNote.Location = new System.Drawing.Point(143, 737);
+            this.txtNote.Location = new System.Drawing.Point(96, 601);
             this.txtNote.Multiline = true;
             this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(479, 133);
+            this.txtNote.Size = new System.Drawing.Size(358, 133);
             this.txtNote.TabIndex = 12;
             // 
             // dtpCheckoutTime
             // 
-            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH";
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpCheckoutTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpCheckoutTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpCheckoutTime.Location = new System.Drawing.Point(223, 672);
+            this.dtpCheckoutTime.Location = new System.Drawing.Point(176, 536);
             this.dtpCheckoutTime.Name = "dtpCheckoutTime";
-            this.dtpCheckoutTime.ShowUpDown = true;
-            this.dtpCheckoutTime.Size = new System.Drawing.Size(399, 30);
+            this.dtpCheckoutTime.Size = new System.Drawing.Size(278, 30);
             this.dtpCheckoutTime.TabIndex = 11;
             // 
             // dtpCheckinTime
             // 
-            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH";
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpCheckinTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpCheckinTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpCheckinTime.Location = new System.Drawing.Point(223, 624);
+            this.dtpCheckinTime.Location = new System.Drawing.Point(176, 488);
             this.dtpCheckinTime.Name = "dtpCheckinTime";
-            this.dtpCheckinTime.ShowUpDown = true;
-            this.dtpCheckinTime.Size = new System.Drawing.Size(399, 30);
+            this.dtpCheckinTime.Size = new System.Drawing.Size(278, 30);
             this.dtpCheckinTime.TabIndex = 10;
             // 
             // lblCHECKOUT
             // 
             this.lblCHECKOUT.AutoSize = true;
             this.lblCHECKOUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKOUT.Location = new System.Drawing.Point(62, 680);
+            this.lblCHECKOUT.Location = new System.Drawing.Point(15, 544);
             this.lblCHECKOUT.Name = "lblCHECKOUT";
             this.lblCHECKOUT.Size = new System.Drawing.Size(137, 22);
             this.lblCHECKOUT.TabIndex = 9;
@@ -265,7 +198,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblCHECKIN.AutoSize = true;
             this.lblCHECKIN.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKIN.Location = new System.Drawing.Point(66, 632);
+            this.lblCHECKIN.Location = new System.Drawing.Point(15, 496);
             this.lblCHECKIN.Name = "lblCHECKIN";
             this.lblCHECKIN.Size = new System.Drawing.Size(126, 22);
             this.lblCHECKIN.TabIndex = 8;
@@ -275,25 +208,17 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblKieuThue.AutoSize = true;
             this.lblKieuThue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKieuThue.Location = new System.Drawing.Point(50, 508);
+            this.lblKieuThue.Location = new System.Drawing.Point(15, 427);
             this.lblKieuThue.Name = "lblKieuThue";
             this.lblKieuThue.Size = new System.Drawing.Size(86, 22);
             this.lblKieuThue.TabIndex = 7;
             this.lblKieuThue.Text = "Kiểu thuê";
             // 
-            // cbxPricingType
-            // 
-            this.cbxPricingType.FormattingEnabled = true;
-            this.cbxPricingType.Location = new System.Drawing.Point(147, 494);
-            this.cbxPricingType.Name = "cbxPricingType";
-            this.cbxPricingType.Size = new System.Drawing.Size(121, 45);
-            this.cbxPricingType.TabIndex = 6;
-            // 
             // lblSex
             // 
             this.lblSex.AutoSize = true;
             this.lblSex.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSex.Location = new System.Drawing.Point(50, 451);
+            this.lblSex.Location = new System.Drawing.Point(15, 370);
             this.lblSex.Name = "lblSex";
             this.lblSex.Size = new System.Drawing.Size(81, 22);
             this.lblSex.TabIndex = 5;
@@ -303,7 +228,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblCCCD.AutoSize = true;
             this.lblCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCCCD.Location = new System.Drawing.Point(50, 206);
+            this.lblCCCD.Location = new System.Drawing.Point(15, 321);
             this.lblCCCD.Name = "lblCCCD";
             this.lblCCCD.Size = new System.Drawing.Size(67, 22);
             this.lblCCCD.TabIndex = 4;
@@ -313,7 +238,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblEmail.AutoSize = true;
             this.lblEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmail.Location = new System.Drawing.Point(52, 394);
+            this.lblEmail.Location = new System.Drawing.Point(17, 268);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(59, 22);
             this.lblEmail.TabIndex = 3;
@@ -323,7 +248,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblSDT.AutoSize = true;
             this.lblSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSDT.Location = new System.Drawing.Point(54, 347);
+            this.lblSDT.Location = new System.Drawing.Point(19, 221);
             this.lblSDT.Name = "lblSDT";
             this.lblSDT.Size = new System.Drawing.Size(57, 22);
             this.lblSDT.TabIndex = 2;
@@ -333,7 +258,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblDiachi.AutoSize = true;
             this.lblDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDiachi.Location = new System.Drawing.Point(47, 300);
+            this.lblDiachi.Location = new System.Drawing.Point(12, 174);
             this.lblDiachi.Name = "lblDiachi";
             this.lblDiachi.Size = new System.Drawing.Size(70, 22);
             this.lblDiachi.TabIndex = 1;
@@ -343,20 +268,49 @@ namespace HOTEL_MINI.Forms
             // 
             this.lblTen.AutoSize = true;
             this.lblTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTen.Location = new System.Drawing.Point(47, 254);
+            this.lblTen.Location = new System.Drawing.Point(12, 128);
             this.lblTen.Name = "lblTen";
             this.lblTen.Size = new System.Drawing.Size(47, 22);
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
             // 
-            // frmBookingPopup
+            // btnBack
+            // 
+            this.btnBack.Location = new System.Drawing.Point(16, 784);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(214, 46);
+            this.btnBack.TabIndex = 21;
+            this.btnBack.Text = "Trở lại";
+            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
+            // 
+            // btnHuy
+            // 
+            this.btnHuy.Location = new System.Drawing.Point(255, 784);
+            this.btnHuy.Name = "btnHuy";
+            this.btnHuy.Size = new System.Drawing.Size(233, 46);
+            this.btnHuy.TabIndex = 22;
+            this.btnHuy.Text = "Hủy đặt phòng";
+            this.btnHuy.UseVisualStyleBackColor = true;
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
+            // 
+            // lblRoomNumber
+            // 
+            this.lblRoomNumber.AutoSize = true;
+            this.lblRoomNumber.Location = new System.Drawing.Point(206, 68);
+            this.lblRoomNumber.Name = "lblRoomNumber";
+            this.lblRoomNumber.Size = new System.Drawing.Size(106, 37);
+            this.lblRoomNumber.TabIndex = 23;
+            this.lblRoomNumber.Text = "label1";
+            // 
+            // frmBookedRoomInfor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(793, 1050);
+            this.ClientSize = new System.Drawing.Size(500, 842);
             this.Controls.Add(this.gbxRoomInfor);
-            this.Name = "frmBookingPopup";
-            this.Text = "frmBookingPopup";
+            this.Name = "frmBookedRoomInfor";
+            this.Text = "frmBookedRoomInfor";
             this.gbxRoomInfor.ResumeLayout(false);
             this.gbxRoomInfor.PerformLayout();
             this.ResumeLayout(false);
@@ -366,11 +320,9 @@ namespace HOTEL_MINI.Forms
         #endregion
 
         private System.Windows.Forms.GroupBox gbxRoomInfor;
-        private System.Windows.Forms.Button btnCheckExistCCCD;
-        private System.Windows.Forms.Button btnBookConfirm;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.RadioButton rbtnDattruoc;
-        private System.Windows.Forms.RadioButton rbtnNhanngay;
+        private System.Windows.Forms.Button btnHuy;
+        private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.TextBox txtPricingType;
         private System.Windows.Forms.TextBox txtGender;
         private System.Windows.Forms.TextBox txtCCCD;
         private System.Windows.Forms.TextBox txtEmail;
@@ -384,7 +336,6 @@ namespace HOTEL_MINI.Forms
         private System.Windows.Forms.Label lblCHECKOUT;
         private System.Windows.Forms.Label lblCHECKIN;
         private System.Windows.Forms.Label lblKieuThue;
-        private System.Windows.Forms.ComboBox cbxPricingType;
         private System.Windows.Forms.Label lblSex;
         private System.Windows.Forms.Label lblCCCD;
         private System.Windows.Forms.Label lblEmail;
@@ -392,7 +343,5 @@ namespace HOTEL_MINI.Forms
         private System.Windows.Forms.Label lblDiachi;
         private System.Windows.Forms.Label lblTen;
         private System.Windows.Forms.Label lblRoomNumber;
-        private System.Windows.Forms.Label lblRoomType;
-        private System.Windows.Forms.ComboBox cbxRoomType;
     }
 }

@@ -192,6 +192,22 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
+        public bool UpdateBookingStatus(int bookingID, string status)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"UPDATE Bookings 
+                          SET Status = @Status 
+                          WHERE BookingID = @BookingID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@BookingID", bookingID);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
         public void RemoveServiceFromBooking(int bookingServiceId)
         {
             using (var conn = new SqlConnection(_stringConnection))
@@ -211,6 +227,39 @@ namespace HOTEL_MINI.DAL
                 cmd.Parameters.AddWithValue("@id", bookingServiceId);
                 conn.Open();
                 cmd.ExecuteNonQuery();
+            }
+        }
+        public List<string> getPaymentMethods()
+        {
+            var list = new List<string>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"SELECT * FROM PaymentMethodEnum";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(reader["Value"].ToString());
+                    }
+                }
+            }
+            return list;
+        }
+        public bool CancelBooking(int bookingID)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"UPDATE Bookings 
+                      SET Status = 'Cancelled' 
+                      WHERE BookingID = @BookingID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@BookingID", bookingID);
+
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
     }
