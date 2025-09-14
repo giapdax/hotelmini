@@ -1,6 +1,8 @@
 ﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
+using HOTEL_MINI.Model.Response;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace HOTEL_MINI.DAL
@@ -39,6 +41,156 @@ namespace HOTEL_MINI.DAL
                 return Convert.ToInt32(result);
             }
         }
+        public DataTable GetRevenueLast6Months()
+        {
+            string query = @"
+            ;WITH Last6Months AS (
+                SELECT DATEADD(MONTH, -5, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) as StartDate
+            ),
+            MonthSeries AS (
+                SELECT DATEADD(MONTH, n, (SELECT StartDate FROM Last6Months)) as MonthDate
+                FROM (SELECT 0 UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) numbers(n)
+            )
+            SELECT 
+                FORMAT(ms.MonthDate, 'MM/yyyy') as PeriodKey,
+                DATENAME(MONTH, ms.MonthDate) + ' ' + FORMAT(ms.MonthDate, 'yyyy') as DisplayPeriod,
+                ISNULL(SUM(i.TotalAmount), 0) as TotalRevenue
+            FROM MonthSeries ms
+            LEFT JOIN Invoices i ON 
+                i.IssuedAt >= ms.MonthDate AND 
+                i.IssuedAt < DATEADD(MONTH, 1, ms.MonthDate) AND
+                i.Status IN ('Paid', 'PartiallyPaid')
+            GROUP BY ms.MonthDate
+            ORDER BY ms.MonthDate";
+
+            return ExecuteQuery(query);
+        }
+        public DataTable GetRevenueByMonth(int year)
+        {
+            string query = $@"
+            ;WITH MonthSeries AS (
+                SELECT DATEFROMPARTS({year}, n, 1) as MonthDate
+                FROM (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+                      UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) numbers(n)
+            )
+            SELECT 
+                FORMAT(ms.MonthDate, 'MM/yyyy') as PeriodKey,
+                DATENAME(MONTH, ms.MonthDate) + ' ' + FORMAT(ms.MonthDate, 'yyyy') as DisplayPeriod,
+                ISNULL(SUM(i.TotalAmount), 0) as TotalRevenue
+            FROM MonthSeries ms
+            LEFT JOIN Invoices i ON 
+                YEAR(i.IssuedAt) = {year} AND 
+                MONTH(i.IssuedAt) = MONTH(ms.MonthDate) AND
+                i.Status IN ('Paid', 'PartiallyPaid')
+            GROUP BY ms.MonthDate
+            ORDER BY ms.MonthDate";
+
+            return ExecuteQuery(query);
+        }
+        public DataTable GetRevenueByCurrentWeek()
+        {
+            // Tính ngày bắt đầu và kết thúc của tuần hiện tại (Thứ 2 đến Chủ nhật)
+            DateTime today = DateTime.Today;
+            int daysSinceMonday = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            DateTime startOfWeek = today.AddDays(-daysSinceMonday);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            string query = @"
+        ;WITH DaySeries AS (
+            SELECT DATEADD(DAY, n, @StartDate) as DayDate
+            FROM (SELECT 0 UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6) numbers(n)
+        )
+        SELECT 
+            FORMAT(ds.DayDate, 'dd/MM/yyyy') as PeriodKey,
+            CASE DATEPART(WEEKDAY, ds.DayDate)
+                WHEN 1 THEN N'Chủ nhật'
+                WHEN 2 THEN N'Thứ 2' 
+                WHEN 3 THEN N'Thứ 3'
+                WHEN 4 THEN N'Thứ 4'
+                WHEN 5 THEN N'Thứ 5'
+                WHEN 6 THEN N'Thứ 6'
+                WHEN 7 THEN N'Thứ 7'
+            END + ' ' + FORMAT(ds.DayDate, 'dd/MM') as DisplayPeriod,
+            ISNULL(SUM(i.TotalAmount), 0) as TotalRevenue
+        FROM DaySeries ds
+        LEFT JOIN Invoices i ON 
+            CAST(i.IssuedAt AS DATE) = ds.DayDate AND
+            i.Status IN ('Paid', 'PartiallyPaid')
+        WHERE ds.DayDate <= @EndDate
+        GROUP BY ds.DayDate
+        ORDER BY ds.DayDate";
+
+            DataTable dt = new DataTable();
+
+            using (var conn = new SqlConnection(_stringConnection))
+            {
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@StartDate", startOfWeek);
+                    cmd.Parameters.AddWithValue("@EndDate", endOfWeek);
+
+                    conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+            }
+
+            return dt;
+        }
+        public RevenueSummary GetRevenueSummary()
+        {
+            string query = @"
+            SELECT 
+                ISNULL(SUM(RoomCharge), 0) as RoomCharge,
+                ISNULL(SUM(ServiceCharge), 0) as ServiceCharge,
+                ISNULL(SUM(Discount), 0) as Discount,
+                ISNULL(SUM(Surcharge), 0) as Surcharge,
+                ISNULL(SUM(TotalAmount), 0) as TotalAmount
+            FROM Invoices 
+            WHERE Status IN ('Paid', 'PartiallyPaid') AND
+                  IssuedAt >= DATEADD(MONTH, -6, GETDATE())";
+
+            using (var conn = new SqlConnection(_stringConnection))
+            {
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new RevenueSummary
+                            {
+                                RoomCharge = reader.GetDecimal(0),
+                                ServiceCharge = reader.GetDecimal(1),
+                                Discount = reader.GetDecimal(2),
+                                Surcharge = reader.GetDecimal(3),
+                                TotalAmount = reader.GetDecimal(4)
+                            };
+                        }
+                    }
+                }
+            }
+
+            return new RevenueSummary();
+        }
+        private DataTable ExecuteQuery(string query)
+        {
+            DataTable dt = new DataTable();
+
+            using (var conn = new SqlConnection(_stringConnection))
+            {
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+            }
+
+            return dt;
+        }
+
 
         public Invoice GetInvoiceByBookingID(int bookingID)
         {

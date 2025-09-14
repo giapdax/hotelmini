@@ -62,6 +62,7 @@ namespace HOTEL_MINI.Forms
             this.Text = "Quản Lý Phòng";
             this.tabControlMain.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
         #endregion
 

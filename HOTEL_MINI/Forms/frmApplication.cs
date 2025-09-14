@@ -37,7 +37,7 @@ namespace HOTEL_MINI
             label1.Text = $"Xin chào, {_currentUser.FullName}";
 
             // Mở form frmDashboard ngay khi khởi động
-            OpenChildForm(new Forms.frmDashboard(), btnDashboard);
+            OpenChildForm(new Forms.frmStatistical(), btnDashboard);
         }
         public User GetCurrentUser()
         {
@@ -155,7 +155,7 @@ namespace HOTEL_MINI
         //}
         private void btnDashboard_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new Forms.frmDashboard(), sender);
+            OpenChildForm(new Forms.frmStatistical(), sender);
         }
 
         private void btnRoom_Click(object sender, EventArgs e)

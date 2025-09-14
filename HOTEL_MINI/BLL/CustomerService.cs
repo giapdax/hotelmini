@@ -35,5 +35,9 @@ namespace HOTEL_MINI.BLL
         {
             return _customerRepository.GetCustomerByCustomerID(customerID);
         }
+        public List<string> getAllGender()
+        {
+            return _customerRepository.getAllGender();
+        }
     }
 }

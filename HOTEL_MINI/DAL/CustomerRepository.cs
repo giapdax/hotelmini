@@ -128,6 +128,22 @@ namespace HOTEL_MINI.DAL
                 return count > 0;
             }
         }
-
+        public List<string> getAllGender() //hàm này để lấy toàn bộ giưới tính trong bảng GenderEnum với cột Value
+        {
+            List<string> listGender = new List<string>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELECT Value FROM GenderEnum", conn);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        listGender.Add(reader["Value"].ToString());
+                    }
+                }
+            }
+            return listGender;
+        }
     }
 }
