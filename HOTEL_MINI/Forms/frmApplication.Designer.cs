@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmApplication));
             this.panelMenu = new System.Windows.Forms.Panel();
-            this.btnSetting = new System.Windows.Forms.Button();
             this.btnRoomManager = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnExit = new System.Windows.Forms.Button();
@@ -49,6 +48,7 @@
             this.contextMenuProfile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnLogout = new System.Windows.Forms.ToolStripMenuItem();
             this.btnProfile = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnCustomerManage = new System.Windows.Forms.Button();
             this.panelMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLogo.SuspendLayout();
@@ -61,7 +61,7 @@
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
-            this.panelMenu.Controls.Add(this.btnSetting);
+            this.panelMenu.Controls.Add(this.btnCustomerManage);
             this.panelMenu.Controls.Add(this.btnRoomManager);
             this.panelMenu.Controls.Add(this.panel1);
             this.panelMenu.Controls.Add(this.btnUser);
@@ -76,24 +76,6 @@
             this.panelMenu.Size = new System.Drawing.Size(220, 666);
             this.panelMenu.TabIndex = 0;
             // 
-            // btnSetting
-            // 
-            this.btnSetting.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnSetting.FlatAppearance.BorderSize = 0;
-            this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSetting.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSetting.ForeColor = System.Drawing.Color.Transparent;
-            this.btnSetting.Image = global::HOTEL_MINI.Properties.Resources.setting;
-            this.btnSetting.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSetting.Location = new System.Drawing.Point(0, 442);
-            this.btnSetting.Name = "btnSetting";
-            this.btnSetting.Size = new System.Drawing.Size(220, 60);
-            this.btnSetting.TabIndex = 9;
-            this.btnSetting.Text = "   Setting";
-            this.btnSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSetting.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSetting.UseVisualStyleBackColor = true;
-            // 
             // btnRoomManager
             // 
             this.btnRoomManager.Dock = System.Windows.Forms.DockStyle.Top;
@@ -107,7 +89,7 @@
             this.btnRoomManager.Name = "btnRoomManager";
             this.btnRoomManager.Size = new System.Drawing.Size(220, 60);
             this.btnRoomManager.TabIndex = 8;
-            this.btnRoomManager.Text = "   Quản Lý Phòng";
+            this.btnRoomManager.Text = " Quản Lý Phòng";
             this.btnRoomManager.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRoomManager.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRoomManager.UseVisualStyleBackColor = true;
@@ -154,7 +136,7 @@
             this.btnUser.Name = "btnUser";
             this.btnUser.Size = new System.Drawing.Size(220, 60);
             this.btnUser.TabIndex = 4;
-            this.btnUser.Text = "   Quản Lý User";
+            this.btnUser.Text = " Quản Lý User";
             this.btnUser.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnUser.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnUser.UseVisualStyleBackColor = true;
@@ -173,7 +155,7 @@
             this.btnService.Name = "btnService";
             this.btnService.Size = new System.Drawing.Size(220, 60);
             this.btnService.TabIndex = 3;
-            this.btnService.Text = "   Quản Lý Dịch Vụ";
+            this.btnService.Text = " Quản Lý Dịch Vụ";
             this.btnService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnService.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnService.UseVisualStyleBackColor = true;
@@ -192,7 +174,7 @@
             this.btnRoom.Name = "btnRoom";
             this.btnRoom.Size = new System.Drawing.Size(220, 60);
             this.btnRoom.TabIndex = 2;
-            this.btnRoom.Text = "   Quản Lý Đặt Phòng";
+            this.btnRoom.Text = " Quản Lý Đặt Phòng";
             this.btnRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRoom.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRoom.UseVisualStyleBackColor = true;
@@ -211,7 +193,7 @@
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Size = new System.Drawing.Size(220, 60);
             this.btnDashboard.TabIndex = 1;
-            this.btnDashboard.Text = "   Thống Kê";
+            this.btnDashboard.Text = " Thống Kê";
             this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDashboard.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnDashboard.UseVisualStyleBackColor = true;
@@ -325,6 +307,25 @@
             this.btnProfile.Text = "Profile";
             this.btnProfile.Click += new System.EventHandler(this.btnProfile_Click);
             // 
+            // btnCustomerManage
+            // 
+            this.btnCustomerManage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnCustomerManage.FlatAppearance.BorderSize = 0;
+            this.btnCustomerManage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCustomerManage.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCustomerManage.ForeColor = System.Drawing.Color.Transparent;
+            this.btnCustomerManage.Image = global::HOTEL_MINI.Properties.Resources.about__1_;
+            this.btnCustomerManage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCustomerManage.Location = new System.Drawing.Point(0, 442);
+            this.btnCustomerManage.Name = "btnCustomerManage";
+            this.btnCustomerManage.Size = new System.Drawing.Size(220, 60);
+            this.btnCustomerManage.TabIndex = 9;
+            this.btnCustomerManage.Text = " Quản Lý KH";
+            this.btnCustomerManage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCustomerManage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnCustomerManage.UseVisualStyleBackColor = true;
+            this.btnCustomerManage.Click += new System.EventHandler(this.btnCustomerManage_Click);
+            // 
             // frmApplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -373,8 +374,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuProfile;
         private System.Windows.Forms.ToolStripMenuItem btnLogout;
         private System.Windows.Forms.ToolStripMenuItem btnProfile;
-        private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.Button btnRoomManager;
+        private System.Windows.Forms.Button btnCustomerManage;
     }
 }
 

@@ -173,12 +173,6 @@ namespace HOTEL_MINI
             OpenChildForm(new Forms.frmUser(), sender);
         }
 
-        private void btnSetting_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new Forms.frmSetting(), sender);
-        }
-
-
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             contextMenuProfile.Show(pictureBox1, new Point(0, pictureBox1.Height));
@@ -222,6 +216,11 @@ namespace HOTEL_MINI
         private void btnRoomManager_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.frmRoomManager(), sender);
+        }
+
+        private void btnCustomerManage_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new Forms.frmCustomer(), sender);
         }
     }
 }

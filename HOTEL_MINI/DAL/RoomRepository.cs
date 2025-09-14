@@ -165,7 +165,7 @@
                 var newId = cmd.ExecuteScalar();
                 if (newId != null && int.TryParse(newId.ToString(), out var id))
                 {
-                    m.RoomID = id;  // để UI có thể re-select
+                    m.RoomID = id;
                     return true;
                 }
                 return false;
