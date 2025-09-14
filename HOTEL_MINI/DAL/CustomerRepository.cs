@@ -128,6 +128,67 @@ namespace HOTEL_MINI.DAL
                 return count > 0;
             }
         }
+        public List<Customer> GetAllCustomers()
+        {
+            var list = new List<Customer>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string sql = @"SELECT CustomerID, FullName, Gender, Phone, Email, Address, IDNumber, CreatedAt
+                       FROM Customers
+                       ORDER BY CreatedAt DESC, CustomerID DESC";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlDataReader r = cmd.ExecuteReader())
+                {
+                    while (r.Read())
+                    {
+                        list.Add(new Customer
+                        {
+                            CustomerID = r.GetInt32(0),
+                            FullName = r.IsDBNull(1) ? null : r.GetString(1),
+                            Gender = r.IsDBNull(2) ? null : r.GetString(2),
+                            Phone = r.IsDBNull(3) ? null : r.GetString(3),
+                            Email = r.IsDBNull(4) ? null : r.GetString(4),
+                            Address = r.IsDBNull(5) ? null : r.GetString(5),
+                            IDNumber = r.IsDBNull(6) ? null : r.GetString(6),
+                            CreatedAt = r.GetDateTime(7)
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        public bool UpdateCustomer(Customer c)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string sql = @"
+UPDATE Customers SET
+    FullName = @FullName,
+    Gender   = @Gender,
+    Phone    = @Phone,
+    Email    = @Email,
+    Address  = @Address,
+    IDNumber = @IDNumber
+WHERE CustomerID = @CustomerID";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@CustomerID", c.CustomerID);
+                    cmd.Parameters.AddWithValue("@FullName", (object)c.FullName ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Gender", (object)c.Gender ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Phone", (object)c.Phone ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Email", (object)c.Email ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Address", (object)c.Address ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@IDNumber", (object)c.IDNumber ?? DBNull.Value);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
 
     }
 }
