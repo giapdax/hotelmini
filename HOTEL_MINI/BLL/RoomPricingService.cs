@@ -11,7 +11,7 @@ namespace HOTEL_MINI.BLL
         private readonly RoomPricingRepository _repo = new RoomPricingRepository();
 
         public List<RoomPricing> GetAll() => _repo.GetAll();
-        public RoomPricing GetById(int id) => _repo.GetById(id);
+        public RoomPricing GetById(int id) => _repo.GetPricingTypeById(id);
         public List<string> GetPricingTypes() => _repo.GetPricingTypes();
         public RoomPricing GetByRoomTypeAndType(int roomTypeId, string pricingType) => _repo.GetByRoomTypeAndType(roomTypeId, pricingType);
 
