@@ -1,4 +1,5 @@
-﻿using System;
+﻿// File: HOTEL_MINI/Forms/UcRoom.cs
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,10 +19,12 @@ namespace HOTEL_MINI.Forms
         private FormMode _mode = FormMode.View;
 
         private int _currentRoomId = 0;
+
+        // [LOAD] cache dữ liệu hiển thị
         private List<RoomTypes> _allTypes = new List<RoomTypes>();
         private List<Room> _allRooms = new List<Room>();
 
-        // Lớp hiển thị cho grid
+        // ======= Model hiển thị cho grid =======
         private class RoomRow
         {
             public int RoomID { get; set; }
@@ -48,36 +51,33 @@ namespace HOTEL_MINI.Forms
 
             Load += UcRoom_Load;
 
-            // filter
+            // [LOAD] filter thay đổi → nạp lại danh sách
             txtSearch.TextChanged += (s, e) => LoadRooms();
             cboRoomTypeNameSearch.SelectedIndexChanged += (s, e) => LoadRooms();
             cbmRoomStatusSearch.SelectedIndexChanged += (s, e) => LoadRooms();
 
-            // chọn row -> hiện info
+            // [LOAD] chọn row → hiện info bên phải
             dgvRoom.SelectionChanged += (s, e) =>
             {
                 if (_mode == FormMode.View) LoadRightPanelInfo();
             };
 
             // CRUD
-            btnAdd.Click += btnAdd_Click;
-            btnEdit.Click += btnEdit_Click;
-            btnSave.Click += btnSave_Click;
-            btnCancel.Click += btnCancel_Click;
-
-            // KHÔNG cần chức năng xóa nữa -> bỏ KeyDown/Delete
+            btnAdd.Click += btnAdd_Click;       // [ADD]
+            btnEdit.Click += btnEdit_Click;     // [UPDATE]
+            btnCancel.Click += btnCancel_Click; // [LOAD] reset view
 
             SetMode(FormMode.View);
         }
 
         private void UcRoom_Load(object sender, EventArgs e)
         {
-            SetupFilters();
-            SetupRoomGrid();
-            LoadRooms();
+            SetupFilters();   // [LOAD]
+            SetupRoomGrid();  // [LOAD]
+            LoadRooms();      // [LOAD]
         }
 
-        // ------- UI state -------
+        // ======= UI state =======
         private void SetMode(FormMode m)
         {
             _mode = m;
@@ -109,6 +109,7 @@ namespace HOTEL_MINI.Forms
             txtWeeklyPrice.Clear();
         }
 
+        // ======= Đọc dữ liệu từ form (dùng cho add/update) =======
         private Room ReadForm()
         {
             return new Room
@@ -121,6 +122,7 @@ namespace HOTEL_MINI.Forms
             };
         }
 
+        // ======= Đổ dữ liệu vào form khi chọn 1 dòng =======  [LOAD]
         private void FillFormFromRow(RoomRow row)
         {
             if (row == null) return;
@@ -133,13 +135,13 @@ namespace HOTEL_MINI.Forms
             LoadPricesByRoomType(row.RoomTypeID);
         }
 
-        // ------- Filters & Grid -------
+        // ================== [LOAD] Filters & Grid ==================
         private void SetupFilters()
         {
             _allTypes = _rtSvc.GetAllRoomTypes();
 
             var filterItems = new List<TypeFilterItem> { new TypeFilterItem { Id = 0, Name = "Tất cả" } };
-            foreach (var t in _allTypes) filterItems.Add(new TypeFilterItem { Id = t.RoomTypesID, Name = t.TypeName });
+            foreach (var t in _allTypes) filterItems.Add(new TypeFilterItem { Id = t.RoomTypeID, Name = t.TypeName });
 
             cboRoomTypeNameSearch.DisplayMember = "Name";
             cboRoomTypeNameSearch.ValueMember = "Id";
@@ -147,7 +149,7 @@ namespace HOTEL_MINI.Forms
             cboRoomTypeNameSearch.SelectedIndex = 0;
 
             cboRoomTypeName.DisplayMember = "TypeName";
-            cboRoomTypeName.ValueMember = "RoomTypesID";
+            cboRoomTypeName.ValueMember = "RoomTypeID";
             cboRoomTypeName.DataSource = _allTypes.ToList();
 
             var statuses = new List<string> { "Available", "Booked", "Maintenance", "Occupied" };
@@ -165,19 +167,30 @@ namespace HOTEL_MINI.Forms
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { Name = "RoomTypeName", DataPropertyName = "RoomTypeName", HeaderText = "Loại", Width = 150 });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { Name = "RoomStatus", DataPropertyName = "RoomStatus", HeaderText = "Trạng thái", Width = 130 });
 
+            // 👇 Thêm cột Ghi chú (yêu cầu của bạn)
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Note",
+                DataPropertyName = "Note",
+                HeaderText = "Ghi chú",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            });
+
             dgvRoom.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvRoom.MultiSelect = false;
         }
 
+        // ======= [LOAD] Nạp danh sách phòng & filter =======
         private void LoadRooms(int? keepSelectedId = null)
         {
-            _allRooms = _roomSvc.getAllRoom(); // List<Room>
+            _allRooms = _roomSvc.getAllRoom();
 
             string kw = (txtSearch.Text ?? "").Trim().ToLowerInvariant();
             int typeId = (cboRoomTypeNameSearch.SelectedValue is int v) ? v : 0;
             string st = cbmRoomStatusSearch.SelectedItem as string;
 
-            var typeDict = _allTypes.ToDictionary(t => t.RoomTypesID, t => t.TypeName ?? "");
+            // ⚠️ Dùng đúng RoomTypesID
+            var typeDict = _allTypes.ToDictionary(t => t.RoomTypeID, t => t.TypeName ?? "");
 
             var view = new List<RoomRow>();
             foreach (var r in _allRooms)
@@ -200,17 +213,63 @@ namespace HOTEL_MINI.Forms
 
             dgvRoom.DataSource = view;
 
+            // chọn dòng phù hợp / hoặc dòng đầu
             if (keepSelectedId.HasValue) SelectRowById(keepSelectedId.Value);
+            else if (dgvRoom.Rows.Count > 0 && dgvRoom.CurrentRow == null)
+            {
+                dgvRoom.Rows[0].Selected = true;
+                dgvRoom.CurrentCell = dgvRoom.Rows[0].Cells["RoomNumber"];
+            }
+
             if (_mode == FormMode.View) LoadRightPanelInfo();
+
+            // 🔔 Quan trọng: bật lại trạng thái nút theo data hiện tại
+            btnEdit.Enabled = _mode == FormMode.View && dgvRoom.Rows.Count > 0;
+            btnAdd.Enabled = _mode == FormMode.View;
+            btnSave.Enabled = _mode != FormMode.View;
+            btnCancel.Enabled = _mode != FormMode.View;
         }
 
+
+        // ======= [LOAD] Hiển thị panel phải theo dòng chọn =======
         private void LoadRightPanelInfo()
         {
             if (dgvRoom.CurrentRow == null) { ClearForm(); return; }
             var row = dgvRoom.CurrentRow.DataBoundItem as RoomRow;
             if (row == null) { ClearForm(); return; }
             FillFormFromRow(row);
-            txtNote.Text = ""; // nếu có field Note trong DB thì bind vào đây
+
+            // KHÔNG xóa txtNote nữa – để hiển thị dữ liệu
+            // txtNote.Text = "";
+        }
+
+        // ======= [LOAD] Giá theo loại phòng =======
+        private static string NormalizePricingKey(string s)
+        {
+            var k = (s ?? "").Trim().ToLowerInvariant();
+            // EN
+            if (k.StartsWith("hour") || k.Contains("per hour")) return "hourly";
+            if (k.StartsWith("night")) return "nightly";
+            if (k.StartsWith("day") || k.Contains("daily") || k.Contains("per day")) return "daily";
+            if (k.StartsWith("week") || k.Contains("weekly")) return "weekly";
+            // VI
+            if (k.Contains("giờ")) return "hourly";
+            if (k.Contains("đêm")) return "nightly";
+            if (k.Contains("ngày")) return "daily";
+            if (k.Contains("tuần")) return "weekly";
+            return "";
+        }
+
+        private void SetPriceTextbox(string key, decimal price)
+        {
+            var val = price.ToString("0.##");
+            switch (key)
+            {
+                case "hourly": txtHourlyPrice.Text = val; break;
+                case "nightly": txtNightlyPrice.Text = val; break;
+                case "daily": txtDayPrice.Text = val; break;
+                case "weekly": txtWeeklyPrice.Text = val; break;
+            }
         }
 
         private void LoadPricesByRoomType(int roomTypeId)
@@ -220,17 +279,15 @@ namespace HOTEL_MINI.Forms
             txtDayPrice.Clear();
             txtWeeklyPrice.Clear();
 
-            var kinds = _pricingSvc.GetPricingTypes(); // Hourly, Nightly, Daily, Weekly (hoặc tiếng Việt)
+            // Lấy danh sách loại giá có trong enum/service
+            var kinds = _pricingSvc.GetPricingTypes(); // ví dụ: Hourly, Nightly, Daily, Weekly (hoặc tiếng Việt)
             foreach (var k in kinds)
             {
                 var p = _pricingSvc.GetByRoomTypeAndType(roomTypeId, k);
                 if (p == null) continue;
 
-                var key = (k ?? "").ToLowerInvariant();
-                if (key.Contains("hour")) txtHourlyPrice.Text = p.Price.ToString("0.##");
-                else if (key.Contains("night")) txtNightlyPrice.Text = p.Price.ToString("0.##");
-                else if (key.Contains("day")) txtDayPrice.Text = p.Price.ToString("0.##");
-                else if (key.Contains("week")) txtWeeklyPrice.Text = p.Price.ToString("0.##");
+                var key = NormalizePricingKey(k);
+                SetPriceTextbox(key, p.Price);
             }
         }
 
@@ -248,11 +305,11 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // ------- CRUD -------
+        // ================== [ADD] / [UPDATE] ==================
         private void btnAdd_Click(object sender, EventArgs e)
         {
             ClearForm();
-            SetMode(FormMode.Adding);
+            SetMode(FormMode.Adding);   // [ADD]
             txtRoomNumber.Focus();
         }
 
@@ -262,7 +319,7 @@ namespace HOTEL_MINI.Forms
             var row = dgvRoom.CurrentRow.DataBoundItem as RoomRow;
             if (row == null) return;
             FillFormFromRow(row);
-            SetMode(FormMode.Editing);
+            SetMode(FormMode.Editing);  // [UPDATE]
             txtRoomNumber.Focus();
         }
 
@@ -270,6 +327,7 @@ namespace HOTEL_MINI.Forms
         {
             var m = ReadForm();
 
+            // ==== VALIDATE CƠ BẢN ====
             if (string.IsNullOrWhiteSpace(m.RoomNumber))
             { MessageBox.Show("Nhập Số phòng."); txtRoomNumber.Focus(); return; }
             if (m.RoomTypeID <= 0)
@@ -277,6 +335,23 @@ namespace HOTEL_MINI.Forms
             if (string.IsNullOrWhiteSpace(m.RoomStatus))
             { MessageBox.Show("Chọn Trạng thái."); cboRoomStatus.Focus(); return; }
 
+            // ==== CHECK TRÙNG SỐ PHÒNG (UI) ====
+            var num = (m.RoomNumber ?? "").Trim();
+            var all = _roomSvc.getAllRoom(); // lấy lại để chắc cú
+            bool duplicate = all.Any(r =>
+                string.Equals((r.RoomNumber ?? "").Trim(), num, StringComparison.OrdinalIgnoreCase)
+                && r.RoomID != m.RoomID);
+
+            if (duplicate)
+            {
+                MessageBox.Show("Số phòng này đã tồn tại. Vui lòng nhập số khác.",
+                                "Trùng số phòng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtRoomNumber.Focus();
+                txtRoomNumber.SelectAll();
+                return;
+            }
+
+            // ==== LƯU ====
             bool ok = false;
             if (_mode == FormMode.Adding) ok = AddRoomToService(m);
             else if (_mode == FormMode.Editing) ok = UpdateRoomInService(m);
@@ -288,16 +363,24 @@ namespace HOTEL_MINI.Forms
                 SetMode(FormMode.View);
                 LoadRooms(m.RoomID);
             }
-            else MessageBox.Show("Không lưu được bản ghi (chưa cài đặt hàm BLL?).");
+            else
+            {
+                // fallback: nếu DAL vẫn trả false (ví dụ va chạm UNIQUE ở DB)
+                MessageBox.Show("Không lưu được. Có thể số phòng đã tồn tại. Vui lòng kiểm tra lại.",
+                                "Lỗi lưu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtRoomNumber.Focus();
+                txtRoomNumber.SelectAll();
+            }
         }
+
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            SetMode(FormMode.View);
-            LoadRightPanelInfo();
+            SetMode(FormMode.View);  // [LOAD]
+            LoadRightPanelInfo();    // [LOAD]
         }
 
-        // ------- Wrapper gọi BLL theo tên hàm có sẵn -------
+        // ======= [ADD] gọi xuống BLL với tên hàm linh hoạt =======
         private bool AddRoomToService(Room r)
         {
             var t = _roomSvc.GetType();
@@ -309,6 +392,7 @@ namespace HOTEL_MINI.Forms
             return false;
         }
 
+        // ======= [UPDATE] gọi xuống BLL với tên hàm linh hoạt =======
         private bool UpdateRoomInService(Room r)
         {
             var t = _roomSvc.GetType();
@@ -319,29 +403,31 @@ namespace HOTEL_MINI.Forms
             }
             return false;
         }
-        // Cho form mẹ gọi khi tab "Loại phòng & Giá" đổi lựa chọn
+        // Thêm vào trong class UcRoom (cùng cấp với các hàm khác)
         public void SelectRoomType(int roomTypeId)
         {
-            // đặt filter theo loại phòng
+            // 1) Đặt filter theo loại phòng
             try { cboRoomTypeNameSearch.SelectedValue = roomTypeId; } catch { }
 
-            // nạp lại danh sách theo filter
+            // 2) Nạp lại danh sách theo filter
             LoadRooms();
 
-            // chọn dòng đầu tiên có RoomTypeID trùng khớp
+            // 3) Chọn dòng đầu tiên có RoomTypeID khớp và hiển thị info bên phải
             foreach (DataGridViewRow r in dgvRoom.Rows)
             {
                 if (r.DataBoundItem is RoomRow rr && rr.RoomTypeID == roomTypeId)
                 {
                     r.Selected = true;
-                    dgvRoom.CurrentCell = r.Cells["RoomNumber"];
+                    if (r.Cells["RoomNumber"] != null)
+                        dgvRoom.CurrentCell = r.Cells["RoomNumber"];
                     LoadRightPanelInfo();
                     break;
                 }
             }
         }
 
-        // handlers rỗng do designer đã gán
+
+        // ======= handlers rỗng do designer đã gán =======
         private void label4_Click(object sender, EventArgs e) { }
         private void txtRoomNumber_TextChanged(object sender, EventArgs e) { }
         private void lblRoomTypeName_Click(object sender, EventArgs e) { }

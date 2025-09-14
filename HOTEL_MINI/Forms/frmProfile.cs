@@ -33,10 +33,6 @@ namespace HOTEL_MINI.Forms
             txtEmail.Text = _currentUser.Email;
             txtPhone.Text = _currentUser.Phone;
 
-            txtPassword.Text = "";
-            txtPassword.UseSystemPasswordChar = true; // luôn mặc định dạng chấm
-            isPasswordVisible = false; // reset trạng thái
-            btnTogglePassword.Image = Properties.Resources.eye_slash; // icon mắt đóng
 
             txtUsername.ReadOnly = true;
         }
@@ -51,7 +47,6 @@ namespace HOTEL_MINI.Forms
             txtFullName.ReadOnly = !editable;
             txtEmail.ReadOnly = !editable;
             txtPhone.ReadOnly = !editable;
-            txtPassword.ReadOnly = !editable;
 
             btnEditSave.Text = editable ? "Lưu" : "Chỉnh sửa";
         }
@@ -72,13 +67,7 @@ namespace HOTEL_MINI.Forms
                 _currentUser.Email = txtEmail.Text.Trim();
                 _currentUser.Phone = txtPhone.Text.Trim();
 
-                string newPassword = null;
-                if (!string.IsNullOrWhiteSpace(txtPassword.Text))
-                {
-                    newPassword = txtPassword.Text.Trim();
-                }
-
-                bool isUpdated = _userService.UpdateUser(_currentUser, newPassword);
+                bool isUpdated = _userService.UpdateUser(_currentUser);
                 if (isUpdated)
                 {
                     MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -125,17 +114,6 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
             return true;
-        }
-
-        // Nút bật/tắt hiển thị mật khẩu
-        private void btnTogglePassword_Click(object sender, EventArgs e)
-        {
-            isPasswordVisible = !isPasswordVisible;
-            txtPassword.UseSystemPasswordChar = !isPasswordVisible;
-
-            btnTogglePassword.Image = isPasswordVisible
-                ? Properties.Resources.eye        // đang hiện mật khẩu
-                : Properties.Resources.eye_slash; // đang ẩn mật khẩu
         }
     }
 }

@@ -124,6 +124,7 @@
             this.dgvRoom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvRoom.Location = new System.Drawing.Point(3, 65);
             this.dgvRoom.Name = "dgvRoom";
+            this.dgvRoom.ReadOnly = true;
             this.dgvRoom.RowHeadersWidth = 62;
             this.dgvRoom.RowTemplate.Height = 28;
             this.dgvRoom.Size = new System.Drawing.Size(663, 433);
@@ -578,6 +579,7 @@
             // 
             // cboRoomStatus
             // 
+            this.cboRoomStatus.BackColor = System.Drawing.SystemColors.HighlightText;
             this.cboRoomStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboRoomStatus.FormattingEnabled = true;
             this.cboRoomStatus.Location = new System.Drawing.Point(170, 117);

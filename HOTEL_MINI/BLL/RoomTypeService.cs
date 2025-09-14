@@ -41,7 +41,7 @@ namespace HOTEL_MINI.BLL
         private static void Validate(RoomTypes rt, bool requireId)
         {
             if (rt == null) throw new ArgumentNullException(nameof(rt));
-            if (requireId && rt.RoomTypesID <= 0)
+            if (requireId && rt.RoomTypeID <= 0)
                 throw new ArgumentException("ID loại phòng không hợp lệ.");
             if (string.IsNullOrWhiteSpace(rt.TypeName))
                 throw new ArgumentException("Tên loại phòng không được để trống.");
