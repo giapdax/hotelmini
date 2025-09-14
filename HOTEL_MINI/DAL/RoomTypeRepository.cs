@@ -33,7 +33,7 @@ namespace HOTEL_MINI.DAL
                     {
                         list.Add(new RoomTypes
                         {
-                            RoomTypesID = reader.GetInt32(0),
+                            RoomTypeID = reader.GetInt32(0),
                             TypeName = reader.GetString(1),
                             Description = reader.IsDBNull(2) ? "" : reader.GetString(2)
                         });
@@ -57,7 +57,7 @@ namespace HOTEL_MINI.DAL
                     if (!reader.Read()) return null;
                     return new RoomTypes
                     {
-                        RoomTypesID = reader.GetInt32(0),
+                        RoomTypeID = reader.GetInt32(0),
                         TypeName = reader.GetString(1),
                         Description = reader.IsDBNull(2) ? "" : reader.GetString(2)
                     };
@@ -91,7 +91,7 @@ namespace HOTEL_MINI.DAL
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@RoomTypeID", roomType.RoomTypesID);
+                command.Parameters.AddWithValue("@RoomTypeID", roomType.RoomTypeID);
                 command.Parameters.AddWithValue("@TypeName", roomType.TypeName);
                 command.Parameters.AddWithValue("@Description", (object)roomType.Description ?? "");
 

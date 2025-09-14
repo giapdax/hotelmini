@@ -328,7 +328,7 @@ namespace HOTEL_MINI.Forms
                     var result=frmCheckout.ShowDialog();
                 if (result == DialogResult.Cancel)
                 {
-                    //_booking.CheckOutDate = null;
+                   // _booking.CheckOutDate = null;
                 }
                 else if (result == DialogResult.OK)
                 {

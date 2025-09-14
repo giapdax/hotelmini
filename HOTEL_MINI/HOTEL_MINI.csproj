@@ -102,6 +102,7 @@
     <Compile Include="BLL\ServicesService.cs" />
     <Compile Include="BLL\UserService.cs" />
     <Compile Include="Common\ConfigHelper.cs" />
+    <Compile Include="Common\PasswordHelper.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
     <Compile Include="DAL\CustomerRepository.cs" />
     <Compile Include="DAL\InvoiceRepository.cs" />
@@ -165,6 +166,12 @@
     </Compile>
     <Compile Include="Forms\frmBookingPopup.Designer.cs">
       <DependentUpon>frmBookingPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmChangePass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmChangePass.Designer.cs">
+      <DependentUpon>FrmChangePass.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmCheckout.cs">
       <SubType>Form</SubType>
@@ -275,6 +282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmBookingPopup.resx">
       <DependentUpon>frmBookingPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmChangePass.resx">
+      <DependentUpon>FrmChangePass.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmCheckout.resx">
       <DependentUpon>frmCheckout.cs</DependentUpon>

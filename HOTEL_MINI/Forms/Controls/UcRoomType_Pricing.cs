@@ -100,7 +100,7 @@ namespace HOTEL_MINI.Forms
 
             foreach (var t in types)
             {
-                int id = t.RoomTypesID;
+                int id = t.RoomTypeID;
                 int count = countByType.ContainsKey(id) ? countByType[id] : 0;
                 dt.Rows.Add(id, t.TypeName ?? "", t.Description ?? "", count);
             }
@@ -122,8 +122,12 @@ namespace HOTEL_MINI.Forms
         {
             _currentRoomTypeId = 0;
             if (_bsRoomType.Current is DataRowView drv)
-                _currentRoomTypeId = Convert.ToInt32(drv["RoomTypesID"]);
+            {
+
+                _currentRoomTypeId = drv.Row.Field<int?>("RoomTypesID") ?? 0;
+            }
         }
+
 
         private void SetRtMode(RtMode mode)
         {
@@ -185,7 +189,7 @@ namespace HOTEL_MINI.Forms
                 else if (_mode == RtMode.Editing)
                 {
                     if (_currentRoomTypeId <= 0) { MessageBox.Show("Không xác định ID loại phòng."); return; }
-                    var model = new RoomTypes { RoomTypesID = _currentRoomTypeId, TypeName = name, Description = desc };
+                    var model = new RoomTypes { RoomTypeID = _currentRoomTypeId, TypeName = name, Description = desc };
                     if (_roomTypeSvc.UpdateRoomType(model)) { MessageBox.Show("Cập nhật loại phòng thành công!"); ResetRtForm(); LoadRoomTypeSummary(); }
                     else MessageBox.Show("Không cập nhật được loại phòng.");
                 }
@@ -203,7 +207,7 @@ namespace HOTEL_MINI.Forms
             var roomTypes = _roomTypeSvc.GetAllRoomTypes();
             cboRoomType.DataSource = roomTypes;
             cboRoomType.DisplayMember = "TypeName";
-            cboRoomType.ValueMember = "RoomTypesID";
+            cboRoomType.ValueMember = "RoomTypeID";
             cboRoomType.SelectedIndex = roomTypes.Count > 0 ? 0 : -1;
 
             var pricingTypes = _pricingSvc.GetPricingTypes(); // List<string>

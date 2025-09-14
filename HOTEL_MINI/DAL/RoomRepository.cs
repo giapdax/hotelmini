@@ -31,7 +31,7 @@ namespace HOTEL_MINI.DAL
                 {
                     listRoomType.Add(new RoomTypes
                     {
-                        RoomTypesID = sqlDataReader.GetInt32(0),
+                        RoomTypeID = sqlDataReader.GetInt32(0),
                         TypeName = sqlDataReader.GetString(1),
                         Description = sqlDataReader.GetString(2),
                     });
@@ -119,7 +119,7 @@ namespace HOTEL_MINI.DAL
                         RoomNumber = sqlDataReader.GetString(1),
                         RoomTypeID = sqlDataReader.GetInt32(2),
                         RoomStatus = sqlDataReader.GetString(3),
-                        Note = sqlDataReader.GetString(4),
+                        Note = sqlDataReader.IsDBNull(4) ? null : sqlDataReader.GetString(4),
                     });
                 }
             }
@@ -193,45 +193,74 @@ namespace HOTEL_MINI.DAL
                         PricingID = sqlDataReader.GetInt32(0),
                         RoomTypeID = roomType,
                         PricingType = pricingType,
-                        Price = sqlDataReader.GetDecimal(2)
+                        Price = sqlDataReader.GetDecimal(1)
                     };
                     //pricingID = sqlDataReader.GetInt32(0);
                 }
             }
             return null;
+
         }
+        private bool IsRoomNumberUnique(string roomNumber, int currentRoomId)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                const string sql = "SELECT COUNT(*) FROM Rooms WHERE RoomNumber = @RoomNumber AND RoomID <> @RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomNumber", (roomNumber ?? "").Trim());
+                    cmd.Parameters.AddWithValue("@RoomID", currentRoomId); // 0 cho Add
+                    int count = (int)cmd.ExecuteScalar();
+                    return count == 0;
+                }
+            }
+        }
+
         public bool AddRoom(Room room)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                string sql = "INSERT INTO Rooms (RoomNumber, RoomTypeID, Status, Note) " +
-                             "VALUES (@RoomNumber, @RoomTypeID, @Status, @Note)";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
-                cmd.Parameters.AddWithValue("@RoomTypeID", room.RoomTypeID);
-                cmd.Parameters.AddWithValue("@Status", room.RoomStatus);
-                cmd.Parameters.AddWithValue("@Note", room.Note ?? (object)DBNull.Value);
-                int rowsAffected = cmd.ExecuteNonQuery();
-                return rowsAffected > 0;
+
+                // ❗ Chặn trùng trước khi insert
+                if (!IsRoomNumberUnique(room.RoomNumber, 0)) return false;
+
+                const string sql = "INSERT INTO Rooms (RoomNumber, RoomTypeID, Status, Note) " +
+                                   "VALUES (@RoomNumber, @RoomTypeID, @Status, @Note)";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomNumber", (room.RoomNumber ?? "").Trim());
+                    cmd.Parameters.AddWithValue("@RoomTypeID", room.RoomTypeID);
+                    cmd.Parameters.AddWithValue("@Status", room.RoomStatus ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@Note", (object)(room.Note ?? (string)null) ?? DBNull.Value);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
             }
         }
+
         public bool UpdateRoom(Room room)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                string sql = "UPDATE Rooms SET RoomNumber = @RoomNumber, RoomTypeID = @RoomTypeID, Status = @Status, Note = @Note " +
-                             "WHERE RoomID = @RoomID";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@RoomID", room.RoomID);
-                cmd.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
-                cmd.Parameters.AddWithValue("@RoomTypeID", room.RoomTypeID);
-                cmd.Parameters.AddWithValue("@Status", room.RoomStatus);
-                cmd.Parameters.AddWithValue("@Note", room.Note ?? (object)DBNull.Value);
-                int rowsAffected = cmd.ExecuteNonQuery();
-                return rowsAffected > 0;
+
+                // ❗ Chặn trùng (loại trừ chính record đang sửa)
+                if (!IsRoomNumberUnique(room.RoomNumber, room.RoomID)) return false;
+
+                const string sql = "UPDATE Rooms SET RoomNumber=@RoomNumber, RoomTypeID=@RoomTypeID, " +
+                                   "Status=@Status, Note=@Note WHERE RoomID=@RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", room.RoomID);
+                    cmd.Parameters.AddWithValue("@RoomNumber", (room.RoomNumber ?? "").Trim());
+                    cmd.Parameters.AddWithValue("@RoomTypeID", room.RoomTypeID);
+                    cmd.Parameters.AddWithValue("@Status", room.RoomStatus ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@Note", (object)(room.Note ?? (string)null) ?? DBNull.Value);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
             }
         }
+
     }
 }

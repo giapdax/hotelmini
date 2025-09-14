@@ -1,4 +1,5 @@
 ﻿using HOTEL_MINI.BLL;
+using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
@@ -307,7 +308,7 @@ namespace HOTEL_MINI.Forms
         private bool ValidateInputs(bool isNew)
         {
             string username = txtUsername.Text.Trim();
-            string password = txtPassword.Text; // giữ nguyên để còn check "********"
+            string password = txtPassword.Text; // giữ nguyên để check "********"
             string email = txtEmail.Text.Trim();
             string phone = txtPhone.Text.Trim();
 
@@ -327,23 +328,27 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
 
-            // 2) Password: thêm mới bắt buộc >= 8 ký tự; khi sửa thì chỉ check nếu người dùng đổi (khác ********)
+            // 2) Password (dùng chung PasswordHelper)
             if (isNew)
             {
-                if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+                if (!PasswordHelper.Validate(password, out var msg))
                 {
-                    MessageBox.Show("Password phải có ít nhất 8 ký tự.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtPassword.Focus();
                     return false;
                 }
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(password) && password != "********" && password.Length < 8)
+                // Chỉ validate khi user thực sự đổi (khác placeholder)
+                if (!string.IsNullOrWhiteSpace(password) && password != "********")
                 {
-                    MessageBox.Show("Password phải có ít nhất 8 ký tự.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtPassword.Focus();
-                    return false;
+                    if (!PasswordHelper.Validate(password, out var msg))
+                    {
+                        MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txtPassword.Focus();
+                        return false;
+                    }
                 }
             }
 
@@ -375,8 +380,10 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
 
+            // Quan trọng: đảm bảo luôn có return true ở cuối
             return true;
         }
+
 
 
         #endregion
