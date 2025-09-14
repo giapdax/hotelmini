@@ -76,6 +76,7 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -93,6 +94,7 @@
     <Compile Include="BLL\BookingService.cs" />
     <Compile Include="BLL\CheckoutService.cs" />
     <Compile Include="BLL\CustomerService.cs" />
+    <Compile Include="BLL\InvoiceService.cs" />
     <Compile Include="BLL\RoleService.cs" />
     <Compile Include="BLL\RoomPricingService.cs" />
     <Compile Include="BLL\RoomService.cs" />
@@ -111,11 +113,23 @@
     <Compile Include="DAL\RoomTypeRepository.cs" />
     <Compile Include="DAL\ServicesRepository.cs" />
     <Compile Include="DAL\UserRepository.cs" />
+    <Compile Include="Forms\Controls\UcRevenue.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\UcRevenue.Designer.cs">
+      <DependentUpon>UcRevenue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Controls\UcRoom.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\Controls\UcRoom.Designer.cs">
       <DependentUpon>UcRoom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Controls\UcRoomStatiscal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\UcRoomStatiscal.Designer.cs">
+      <DependentUpon>UcRoomStatiscal.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Controls\UcRoomType_Pricing.cs">
       <SubType>UserControl</SubType>
@@ -213,6 +227,12 @@
     <Compile Include="Forms\frmService.Designer.cs">
       <DependentUpon>frmService.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmStatistical.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmStatistical.Designer.cs">
+      <DependentUpon>frmStatistical.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmUser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,13 +250,20 @@
     <Compile Include="Model\Entity\RoomTypes.cs" />
     <Compile Include="Model\Entity\Service.cs" />
     <Compile Include="Model\Entity\User.cs" />
-    <Compile Include="Model\Response\CheckoutDto.cs" />
+    <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
+    <Compile Include="Model\Response\RoomStatistics.cs" />
     <Compile Include="Model\Response\UsedServiceDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\Controls\UcRevenue.resx">
+      <DependentUpon>UcRevenue.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcRoom.resx">
       <DependentUpon>UcRoom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Controls\UcRoomStatiscal.resx">
+      <DependentUpon>UcRoomStatiscal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcRoomType_Pricing.resx">
       <DependentUpon>UcRoomType_Pricing.cs</DependentUpon>
@@ -285,6 +312,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmService.resx">
       <DependentUpon>frmService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmStatistical.resx">
+      <DependentUpon>frmStatistical.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmUser.resx">
       <DependentUpon>frmUser.cs</DependentUpon>

@@ -1,5 +1,6 @@
 ﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
+using HOTEL_MINI.Model.Response;
 using MiniHotel.Models;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,40 @@ namespace HOTEL_MINI.DAL
                 }
             }
             return listRoomType;
+        }
+        public RoomStatistics GetRoomStatistics()
+        {
+            RoomStatistics stats = new RoomStatistics();
+
+            string query = @"
+            SELECT 
+                COUNT(*) as TotalRooms,
+                SUM(CASE WHEN Status = 'Available' THEN 1 ELSE 0 END) as AvailableRooms,
+                SUM(CASE WHEN Status = 'Booked' THEN 1 ELSE 0 END) as BookedRooms,
+                SUM(CASE WHEN Status = 'Occupied' THEN 1 ELSE 0 END) as OccupiedRooms,
+                SUM(CASE WHEN Status = 'Maintenance' THEN 1 ELSE 0 END) as MaintenanceRooms
+            FROM Rooms";
+
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            stats.TotalRooms = reader.GetInt32(0);
+                            stats.AvailableRooms = reader.GetInt32(1);
+                            stats.BookedRooms = reader.GetInt32(2);
+                            stats.OccupiedRooms = reader.GetInt32(3);
+                            stats.MaintenanceRooms = reader.GetInt32(4);
+                        }
+                    }
+                }
+            }
+
+            return stats;
         }
         public bool UpdateRoomStatusAfterCheckout(int roomID, string status)
         {

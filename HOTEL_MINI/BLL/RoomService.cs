@@ -1,5 +1,6 @@
 ﻿using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
+using HOTEL_MINI.Model.Response;
 using MiniHotel.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,10 @@ namespace HOTEL_MINI.BLL
         public RoomService()
         {
             roomRepository = new RoomRepository();
+        }
+        public RoomStatistics GetRoomStatistics()
+        {
+            return roomRepository.GetRoomStatistics();
         }
         public List<Room> getAllRoom()
         {

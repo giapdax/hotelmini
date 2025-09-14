@@ -99,7 +99,7 @@
             // 
             this.lblSurcharge.AutoSize = true;
             this.lblSurcharge.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSurcharge.Location = new System.Drawing.Point(18, 644);
+            this.lblSurcharge.Location = new System.Drawing.Point(24, 555);
             this.lblSurcharge.Name = "lblSurcharge";
             this.lblSurcharge.Size = new System.Drawing.Size(85, 25);
             this.lblSurcharge.TabIndex = 3;
@@ -109,7 +109,7 @@
             // 
             this.lblDiscount.AutoSize = true;
             this.lblDiscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDiscount.Location = new System.Drawing.Point(18, 702);
+            this.lblDiscount.Location = new System.Drawing.Point(29, 606);
             this.lblDiscount.Name = "lblDiscount";
             this.lblDiscount.Size = new System.Drawing.Size(97, 25);
             this.lblDiscount.TabIndex = 4;
@@ -119,7 +119,7 @@
             // 
             this.lblTotalAmount.AutoSize = true;
             this.lblTotalAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalAmount.Location = new System.Drawing.Point(18, 759);
+            this.lblTotalAmount.Location = new System.Drawing.Point(23, 656);
             this.lblTotalAmount.Name = "lblTotalAmount";
             this.lblTotalAmount.Size = new System.Drawing.Size(103, 25);
             this.lblTotalAmount.TabIndex = 5;
@@ -129,7 +129,7 @@
             // 
             this.lblIssuedBy.AutoSize = true;
             this.lblIssuedBy.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIssuedBy.Location = new System.Drawing.Point(18, 814);
+            this.lblIssuedBy.Location = new System.Drawing.Point(23, 697);
             this.lblIssuedBy.Name = "lblIssuedBy";
             this.lblIssuedBy.Size = new System.Drawing.Size(109, 25);
             this.lblIssuedBy.TabIndex = 6;
@@ -139,7 +139,7 @@
             // 
             this.lblPaymentMethod.AutoSize = true;
             this.lblPaymentMethod.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPaymentMethod.Location = new System.Drawing.Point(16, 867);
+            this.lblPaymentMethod.Location = new System.Drawing.Point(23, 738);
             this.lblPaymentMethod.Name = "lblPaymentMethod";
             this.lblPaymentMethod.Size = new System.Drawing.Size(103, 25);
             this.lblPaymentMethod.TabIndex = 7;
@@ -149,7 +149,7 @@
             // 
             this.lblNote.AutoSize = true;
             this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(18, 919);
+            this.lblNote.Location = new System.Drawing.Point(23, 778);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(86, 25);
             this.lblNote.TabIndex = 8;
@@ -167,7 +167,7 @@
             // txtSurcharge
             // 
             this.txtSurcharge.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSurcharge.Location = new System.Drawing.Point(217, 638);
+            this.txtSurcharge.Location = new System.Drawing.Point(218, 555);
             this.txtSurcharge.Name = "txtSurcharge";
             this.txtSurcharge.Size = new System.Drawing.Size(455, 35);
             this.txtSurcharge.TabIndex = 11;
@@ -178,9 +178,9 @@
             // txtDiscount
             // 
             this.txtDiscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDiscount.Location = new System.Drawing.Point(217, 692);
+            this.txtDiscount.Location = new System.Drawing.Point(219, 596);
             this.txtDiscount.Name = "txtDiscount";
-            this.txtDiscount.Size = new System.Drawing.Size(117, 35);
+            this.txtDiscount.Size = new System.Drawing.Size(452, 35);
             this.txtDiscount.TabIndex = 12;
             this.txtDiscount.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
             this.txtDiscount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDiscount_KeyPress);
@@ -189,7 +189,7 @@
             // txtTotalAmount
             // 
             this.txtTotalAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTotalAmount.Location = new System.Drawing.Point(217, 749);
+            this.txtTotalAmount.Location = new System.Drawing.Point(219, 650);
             this.txtTotalAmount.Name = "txtTotalAmount";
             this.txtTotalAmount.Size = new System.Drawing.Size(455, 35);
             this.txtTotalAmount.TabIndex = 13;
@@ -197,7 +197,7 @@
             // txtEmployeeName
             // 
             this.txtEmployeeName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmployeeName.Location = new System.Drawing.Point(217, 808);
+            this.txtEmployeeName.Location = new System.Drawing.Point(219, 691);
             this.txtEmployeeName.Name = "txtEmployeeName";
             this.txtEmployeeName.Size = new System.Drawing.Size(455, 35);
             this.txtEmployeeName.TabIndex = 14;
@@ -205,7 +205,7 @@
             // txtNote
             // 
             this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNote.Location = new System.Drawing.Point(217, 919);
+            this.txtNote.Location = new System.Drawing.Point(216, 778);
             this.txtNote.Multiline = true;
             this.txtNote.Name = "txtNote";
             this.txtNote.Size = new System.Drawing.Size(455, 192);
@@ -218,7 +218,7 @@
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Location = new System.Drawing.Point(217, 206);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(455, 411);
+            this.panel1.Size = new System.Drawing.Size(455, 342);
             this.panel1.TabIndex = 17;
             // 
             // dgvUsedService
@@ -229,7 +229,7 @@
             this.dgvUsedService.Name = "dgvUsedService";
             this.dgvUsedService.RowHeadersWidth = 62;
             this.dgvUsedService.RowTemplate.Height = 28;
-            this.dgvUsedService.Size = new System.Drawing.Size(453, 364);
+            this.dgvUsedService.Size = new System.Drawing.Size(453, 295);
             this.dgvUsedService.TabIndex = 1;
             // 
             // panel2
@@ -237,7 +237,7 @@
             this.panel2.Controls.Add(this.txtServiceCharge);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 364);
+            this.panel2.Location = new System.Drawing.Point(0, 295);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(453, 45);
             this.panel2.TabIndex = 0;
@@ -269,7 +269,7 @@
             // 
             this.cbxPaymentMethod.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxPaymentMethod.FormattingEnabled = true;
-            this.cbxPaymentMethod.Location = new System.Drawing.Point(218, 867);
+            this.cbxPaymentMethod.Location = new System.Drawing.Point(219, 732);
             this.cbxPaymentMethod.Name = "cbxPaymentMethod";
             this.cbxPaymentMethod.Size = new System.Drawing.Size(171, 37);
             this.cbxPaymentMethod.TabIndex = 18;
@@ -299,7 +299,7 @@
             this.txtCheckin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCheckin.Location = new System.Drawing.Point(217, 118);
             this.txtCheckin.Name = "txtCheckin";
-            this.txtCheckin.Size = new System.Drawing.Size(260, 35);
+            this.txtCheckin.Size = new System.Drawing.Size(454, 35);
             this.txtCheckin.TabIndex = 21;
             // 
             // txtCheckout
@@ -307,12 +307,12 @@
             this.txtCheckout.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCheckout.Location = new System.Drawing.Point(218, 159);
             this.txtCheckout.Name = "txtCheckout";
-            this.txtCheckout.Size = new System.Drawing.Size(259, 35);
+            this.txtCheckout.Size = new System.Drawing.Size(453, 35);
             this.txtCheckout.TabIndex = 22;
             // 
             // btnConfirm
             // 
-            this.btnConfirm.Location = new System.Drawing.Point(929, 542);
+            this.btnConfirm.Location = new System.Drawing.Point(474, 993);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(84, 66);
             this.btnConfirm.TabIndex = 23;
@@ -322,7 +322,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(782, 539);
+            this.btnCancel.Location = new System.Drawing.Point(306, 993);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(84, 66);
             this.btnCancel.TabIndex = 24;
@@ -334,7 +334,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1649, 1144);
+            this.ClientSize = new System.Drawing.Size(713, 1076);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.txtCheckout);

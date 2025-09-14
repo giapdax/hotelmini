@@ -34,11 +34,26 @@ namespace HOTEL_MINI.Forms
             lblRoomNumber.Text = $"Room: {_room.RoomNumber}";
             dtpCheckinTime.Enabled = false;
             dtpCheckoutTime.Enabled = false;
-            LoadRoomStatus();
+            LoadPricingType();
+            LoadGenderType();
             inAccessible();
             cbxPricingType.SelectedIndexChanged += cbxPricingType_SelectedIndexChanged;
             dtpCheckinTime.ValueChanged += dtpCheckinTime_ValueChanged;
             _frmRoom = frmRoom;
+
+            // Ẩn textbox gender ban đầu, hiện combobox
+            txtGender.Visible = false;
+            cbxGender.Visible = true;
+        }
+        private void LoadGenderType()
+        {
+            cbxGender.Items.Clear();
+            var genderType = _customerService.getAllGender();
+            foreach (var gen in genderType)
+            {
+                cbxGender.Items.Add(gen);
+            }
+
         }
         private void ApplyPricing()
         {
@@ -58,6 +73,7 @@ namespace HOTEL_MINI.Forms
                     dtpCheckoutTime.Enabled = false;
                     checkin = dtpCheckinTime.Value; // cho chọn ngày + giờ
                     dtpCheckoutTime.Value = now;   // giữ chỗ thôi, ko dùng
+                    dtpCheckoutTime.Enabled = false; // ko cho chọn
                     break;
 
                 case "Weekly":
@@ -252,9 +268,51 @@ namespace HOTEL_MINI.Forms
             txtEmail.Clear();
             txtSDT.Clear();
             txtGender.Clear();
+
+            // Mở khóa các field và hiện combobox gender
+            txtCCCD.ReadOnly = false;
+            txtSDT.ReadOnly = false;
+            txtTen.ReadOnly = false;
+            txtDiachi.ReadOnly = false;
+            txtEmail.ReadOnly = false;
+
+            // Ẩn textbox gender và hiện combobox
+            txtGender.Visible = false;
+            cbxGender.Visible = true;
+            cbxGender.SelectedIndex = -1; // Reset selection
         }
+        //private void clickBtnCheckExistCCCDAgain()
+        //{
+        //    _customer = null;
+        //    txtTen.Clear();
+        //    txtDiachi.Clear();
+        //    txtEmail.Clear();
+        //    txtSDT.Clear();
+        //    txtGender.Clear();
+        //}
+        //private void addNewCustomer(Customer customer)
+        //{
+        //    var customerResult = _customerService.addNewCustomer(customer);
+        //    if (customerResult != null)
+        //    {
+        //        MessageBox.Show("User added successfully.");
+        //        _customer = customerResult;
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Failed to add user.");
+        //        return;
+        //    }
+        //}
         private void addNewCustomer(Customer customer)
         {
+            // Lấy gender từ combobox nếu khách mới
+            if (_customer == null && cbxGender.SelectedItem != null)
+            {
+                customer.Gender = cbxGender.SelectedItem.ToString();
+            }
+
             var customerResult = _customerService.addNewCustomer(customer);
             if (customerResult != null)
             {
@@ -296,15 +354,23 @@ namespace HOTEL_MINI.Forms
             txtDiachi.Text = customer.Address;
             txtEmail.Text = customer.Email;
             txtSDT.Text = customer.Phone;
+
+            // Hiển thị gender trong textbox thay vì combobox
             txtGender.Text = customer.Gender;
-            txtCCCD.ReadOnly = false;
+
+            // Khóa các field thông tin khách hàng
+            txtCCCD.ReadOnly = true;
             txtSDT.ReadOnly = true;
             txtTen.ReadOnly = true;
             txtDiachi.ReadOnly = true;
             txtEmail.ReadOnly = true;
             txtGender.ReadOnly = true;
+
+            // Ẩn combobox gender và hiện textbox
+            cbxGender.Visible = false;
+            txtGender.Visible = true;
         }
-        private void LoadRoomStatus()
+        private void LoadPricingType()
         {
             var pricingType = _roomService.getAllPricingType();
             foreach (var status in pricingType)
@@ -312,6 +378,7 @@ namespace HOTEL_MINI.Forms
                 cbxPricingType.Items.Add(status);
             }
         }
+        
         private void inAccessible()
         {
             dtpCheckinTime.Enabled = false;
@@ -323,6 +390,7 @@ namespace HOTEL_MINI.Forms
             txtGender.ReadOnly = true;
             txtNote.ReadOnly = true;
             cbxPricingType.Enabled = false;
+            cbxGender.Enabled = false;
             rbtnDattruoc.Enabled = false;
             rbtnNhanngay.Enabled = false;
             btnBookConfirm.Enabled = false;
@@ -335,21 +403,45 @@ namespace HOTEL_MINI.Forms
             txtTen.ReadOnly = false;
             txtDiachi.ReadOnly = false;
             txtEmail.ReadOnly = false;
-            txtGender.ReadOnly = false;
             txtNote.ReadOnly = false;
             cbxPricingType.Enabled = true;
             rbtnDattruoc.Enabled = true;
             rbtnNhanngay.Enabled = true;
             btnBookConfirm.Enabled = true;
+
+            // Chỉ enable gender control dựa trên trạng thái khách hàng
+            if (_customer != null)
+            {
+                txtGender.ReadOnly = true;
+                txtGender.Visible = true;
+                cbxGender.Visible = false;
+            }
+            else
+            {
+                cbxGender.Enabled = true;
+                txtGender.Visible = false;
+                cbxGender.Visible = true;
+            }
         }
         private bool ValidateCustomerInputs()
         {
+            bool genderValid;
+
+            if (_customer != null) // Khách đã tồn tại
+            {
+                genderValid = !string.IsNullOrWhiteSpace(txtGender.Text);
+            }
+            else // Khách mới
+            {
+                genderValid = cbxGender.SelectedItem != null;
+            }
+
             return !string.IsNullOrWhiteSpace(txtTen.Text) &&
                    !string.IsNullOrWhiteSpace(txtDiachi.Text) &&
                    !string.IsNullOrWhiteSpace(txtEmail.Text) &&
                    !string.IsNullOrWhiteSpace(txtSDT.Text) &&
-                   !string.IsNullOrWhiteSpace(txtGender.Text) &&
                    !string.IsNullOrWhiteSpace(txtCCCD.Text) &&
+                   genderValid &&
                    cbxPricingType.SelectedItem != null;
         }
 

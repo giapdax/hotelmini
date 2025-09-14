@@ -63,7 +63,8 @@ namespace HOTEL_MINI
             // Mở form mặc định theo quyền
             if (IsAdmin())
             {
-                OpenChildForm(new frmDashboard(), btnDashboardManage);
+                //OpenChildForm(new frmDashboard(), btnDashboardManage);
+                OpenChildForm(new frmStatistical(), btnDashboardManage);
             }
             else
             {
@@ -250,6 +251,7 @@ namespace HOTEL_MINI
         private void btnRoomManager_Click(object sender, EventArgs e)
         {
             OpenChildForm(new frmRoomManager(), sender);
+            OpenChildForm(new Forms.frmStatistical(), sender);
         }
 
         private void btnCustomerManage_Click(object sender, EventArgs e)
