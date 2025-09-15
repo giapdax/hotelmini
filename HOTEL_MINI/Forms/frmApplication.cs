@@ -320,7 +320,7 @@ namespace HOTEL_MINI
 
         private void btnInvoicesManage_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new frmInvoices(), sender);
+            OpenChildForm(new frmInvoiceManage(), sender);
         }
     }
 }

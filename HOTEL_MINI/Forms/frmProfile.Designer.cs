@@ -58,6 +58,8 @@
             // txtPhone
             // 
             this.txtPhone.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtPhone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtPhone.ForeColor = System.Drawing.Color.White;
             this.txtPhone.Location = new System.Drawing.Point(208, 322);
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.Size = new System.Drawing.Size(300, 30);
@@ -67,6 +69,7 @@
             // 
             this.lblPhone.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPhone.AutoSize = true;
+            this.lblPhone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblPhone.Location = new System.Drawing.Point(86, 324);
             this.lblPhone.Name = "lblPhone";
             this.lblPhone.Size = new System.Drawing.Size(116, 25);
@@ -76,6 +79,8 @@
             // txtEmail
             // 
             this.txtEmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtEmail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtEmail.ForeColor = System.Drawing.Color.White;
             this.txtEmail.Location = new System.Drawing.Point(208, 230);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(300, 30);
@@ -85,6 +90,7 @@
             // 
             this.lblEmail.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEmail.AutoSize = true;
+            this.lblEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblEmail.Location = new System.Drawing.Point(130, 232);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(72, 25);
@@ -94,6 +100,8 @@
             // txtFullName
             // 
             this.txtFullName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtFullName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtFullName.ForeColor = System.Drawing.Color.White;
             this.txtFullName.Location = new System.Drawing.Point(208, 138);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(300, 30);
@@ -103,6 +111,7 @@
             // 
             this.lblFullName.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFullName.AutoSize = true;
+            this.lblFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblFullName.Location = new System.Drawing.Point(83, 140);
             this.lblFullName.Name = "lblFullName";
             this.lblFullName.Size = new System.Drawing.Size(119, 25);
@@ -112,6 +121,8 @@
             // txtUsername
             // 
             this.txtUsername.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtUsername.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtUsername.ForeColor = System.Drawing.Color.White;
             this.txtUsername.Location = new System.Drawing.Point(208, 46);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(300, 30);
@@ -121,6 +132,7 @@
             // 
             this.lblUsername.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUsername.AutoSize = true;
+            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblUsername.Location = new System.Drawing.Point(85, 48);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(117, 25);

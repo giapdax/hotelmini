@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace HOTEL_MINI.Forms
 {
-    public partial class frmInvoices : Form
+    public partial class frmInvoiceManage : Form
     {
-        public frmInvoices()
+        public frmInvoiceManage()
         {
             InitializeComponent();
         }

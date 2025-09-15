@@ -42,7 +42,7 @@
             // 
             // tableLayoutPanelMain
             // 
-            this.tableLayoutPanelMain.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.tableLayoutPanelMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(52)))), ((int)(((byte)(58)))));
             this.tableLayoutPanelMain.ColumnCount = 3;
             this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.42729F));
             this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.42729F));
@@ -75,6 +75,7 @@
             // 
             this.lblUsername.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUsername.AutoSize = true;
+            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblUsername.Location = new System.Drawing.Point(98, 33);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(184, 25);
@@ -84,6 +85,8 @@
             // txtUsername
             // 
             this.txtUsername.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtUsername.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtUsername.ForeColor = System.Drawing.Color.White;
             this.txtUsername.Location = new System.Drawing.Point(288, 30);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(248, 30);
@@ -93,6 +96,7 @@
             // 
             this.lblFullName.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFullName.AutoSize = true;
+            this.lblFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblFullName.Location = new System.Drawing.Point(134, 94);
             this.lblFullName.Name = "lblFullName";
             this.lblFullName.Size = new System.Drawing.Size(148, 25);
@@ -102,6 +106,8 @@
             // txtFullName
             // 
             this.txtFullName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtFullName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtFullName.ForeColor = System.Drawing.Color.White;
             this.txtFullName.Location = new System.Drawing.Point(288, 91);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(248, 30);
@@ -111,6 +117,7 @@
             // 
             this.lblEmail.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEmail.AutoSize = true;
+            this.lblEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblEmail.Location = new System.Drawing.Point(50, 155);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(232, 25);
@@ -120,6 +127,8 @@
             // txtEmail
             // 
             this.txtEmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtEmail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtEmail.ForeColor = System.Drawing.Color.White;
             this.txtEmail.Location = new System.Drawing.Point(288, 152);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(248, 30);
@@ -156,6 +165,7 @@
             this.ClientSize = new System.Drawing.Size(599, 278);
             this.Controls.Add(this.tableLayoutPanelMain);
             this.Name = "FrmChangePass";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Thay đổi mật khẩu";
             this.tableLayoutPanelMain.ResumeLayout(false);
             this.tableLayoutPanelMain.PerformLayout();

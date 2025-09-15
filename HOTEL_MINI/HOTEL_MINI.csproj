@@ -185,11 +185,11 @@
     <Compile Include="Forms\frmCustomer.Designer.cs">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmInvoiceManager.cs">
+    <Compile Include="Forms\frmInvoiceManage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmInvoices.Designer.cs">
-      <DependentUpon>frmInvoiceManager.cs</DependentUpon>
+    <Compile Include="Forms\frmInvoiceManage.Designer.cs">
+      <DependentUpon>frmInvoiceManage.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmLogin.cs">
       <SubType>Form</SubType>
@@ -292,8 +292,8 @@
     <EmbeddedResource Include="Forms\frmCustomer.resx">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmInvoices.resx">
-      <DependentUpon>frmInvoiceManager.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmInvoiceManage.resx">
+      <DependentUpon>frmInvoiceManage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>

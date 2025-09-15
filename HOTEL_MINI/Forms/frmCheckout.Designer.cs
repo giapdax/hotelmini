@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblRoomNumber = new System.Windows.Forms.Label();
             this.lblRoomCharge = new System.Windows.Forms.Label();
             this.lblServiceChange = new System.Windows.Forms.Label();
@@ -177,7 +179,7 @@
             this.txtRoomCharge.ForeColor = System.Drawing.Color.White;
             this.txtRoomCharge.Location = new System.Drawing.Point(121, 3);
             this.txtRoomCharge.Name = "txtRoomCharge";
-            this.txtRoomCharge.Size = new System.Drawing.Size(128, 26);
+            this.txtRoomCharge.Size = new System.Drawing.Size(206, 26);
             this.txtRoomCharge.TabIndex = 9;
             // 
             // txtSurcharge
@@ -278,7 +280,7 @@
             this.txtCheckin.ForeColor = System.Drawing.Color.White;
             this.txtCheckin.Location = new System.Drawing.Point(121, 41);
             this.txtCheckin.Name = "txtCheckin";
-            this.txtCheckin.Size = new System.Drawing.Size(128, 26);
+            this.txtCheckin.Size = new System.Drawing.Size(206, 26);
             this.txtCheckin.TabIndex = 21;
             // 
             // txtCheckout
@@ -288,7 +290,7 @@
             this.txtCheckout.ForeColor = System.Drawing.Color.White;
             this.txtCheckout.Location = new System.Drawing.Point(121, 79);
             this.txtCheckout.Name = "txtCheckout";
-            this.txtCheckout.Size = new System.Drawing.Size(128, 26);
+            this.txtCheckout.Size = new System.Drawing.Size(206, 26);
             this.txtCheckout.TabIndex = 22;
             // 
             // btnConfirm
@@ -374,7 +376,18 @@
             // 
             // dgvUsedService
             // 
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
+            this.dgvUsedService.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvUsedService.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvUsedService.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvUsedService.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvUsedService.Location = new System.Drawing.Point(3, 3);
             this.dgvUsedService.Name = "dgvUsedService";
