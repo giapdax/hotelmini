@@ -3,6 +3,7 @@ using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HOTEL_MINI.BLL
 {
@@ -45,10 +46,26 @@ namespace HOTEL_MINI.BLL
         public int GetQuantity(int serviceId)
             => _serviceRepository.GetQuantity(serviceId);
 
-        private static void Validate(Service s)
+        private void Validate(Service s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+
             if (s.Price < 0) throw new ArgumentException("Giá dịch vụ không thể là số âm.");
             if (s.Quantity < 0) throw new ArgumentException("Số lượng tồn kho không thể là số âm.");
+
+            var name = (s.ServiceName ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Tên dịch vụ không được để trống.");
+
+            // Check trùng tên: bỏ qua chính nó khi cập nhật (ServiceID), so sánh không phân biệt hoa/thường
+            bool nameTaken = _serviceRepository
+                .GetAllServices()
+                .Any(x =>
+                    x.ServiceID != s.ServiceID &&
+                    string.Equals((x.ServiceName ?? string.Empty).Trim(), name, StringComparison.OrdinalIgnoreCase));
+
+            if (nameTaken)
+                throw new ArgumentException("Tên dịch vụ đã tồn tại. Vui lòng chọn tên khác.");
         }
     }
 }

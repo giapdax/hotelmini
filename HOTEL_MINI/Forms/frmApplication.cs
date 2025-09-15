@@ -27,7 +27,9 @@ namespace HOTEL_MINI
             "frmRoom",          // Quản lý đặt phòng (tạm map frmRoom)
             "frmService",       // Quản lý dịch vụ
             "frmRoomManager",   // Quản lý phòng
-            "frmCustomer"       // Quản lý khách hàng
+            "frmCustomer",// Quản lý khách hàng
+            "frmBookingDetail",
+            "frmInvoiceManage"
             // Nếu bạn có frmBooking riêng: "frmBooking", "frmBookingManager"
         };
 
@@ -144,6 +146,7 @@ namespace HOTEL_MINI
                 SafeShow(btnService, true);
                 SafeShow(btnRoomManager, true);
                 SafeShow(btnCustomerManage, true);
+                SafeShow(btnInvoicesManage, true);
 
                 // Ẩn hẳn 2 nút này cho non-admin
                 SafeShow(btnDashboardManage, false);

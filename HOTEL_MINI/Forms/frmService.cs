@@ -236,19 +236,37 @@ namespace HOTEL_MINI.Forms
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateInput())
-            {
                 return;
-            }
 
-            if (_currentState == FormState.Adding)
+            try
             {
-                HandleAddService();
+                if (_currentState == FormState.Adding)
+                {
+                    HandleAddService();   // có thể ném ArgumentException (trùng tên, giá âm, v.v.)
+                }
+                else if (_currentState == FormState.Editing)
+                {
+                    HandleEditService();  // tương tự
+                }
+                else
+                {
+                    MessageBox.Show("Không ở trạng thái Thêm/Sửa.",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
-            else if (_currentState == FormState.Editing)
+            catch (ArgumentException ex)   // lỗi validate từ BLL
             {
-                HandleEditService();
+                MessageBox.Show(ex.Message,
+                    "Dữ liệu chưa hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtServiceName.Focus();    // focus vào ô hay sai nhất
+            }
+            catch (Exception ex)           // lỗi hệ thống/DB khác
+            {
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void HandleAddService()
         {
