@@ -4,6 +4,7 @@ using HOTEL_MINI.Model.Response;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Documents;
 
 namespace HOTEL_MINI.DAL
 {
@@ -191,7 +192,7 @@ namespace HOTEL_MINI.DAL
             return dt;
         }
 
-
+        
         public Invoice GetInvoiceByBookingID(int bookingID)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))
@@ -223,6 +224,33 @@ namespace HOTEL_MINI.DAL
                     }
                 }
                 return null;
+            }
+        }
+        public string GetPaymentByInvoice(int invoiceID)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT TOP 1 Method FROM Payments WHERE InvoiceID = @InvoiceID ORDER BY PaymentDate DESC";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@InvoiceID", invoiceID);
+                var result = cmd.ExecuteScalar();
+                return result?.ToString() ?? "N/A";
+            }
+        }
+        public string getFullNameByInvoiceID(int invoiceID)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"SELECT u.FullName 
+                               FROM Users u
+                               JOIN Invoices i ON u.UserID = i.IssuedBy
+                               WHERE i.InvoiceID = @InvoiceID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@InvoiceID", invoiceID);
+                var result = cmd.ExecuteScalar();
+                return result?.ToString() ?? "N/A";
             }
         }
     }

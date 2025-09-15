@@ -317,5 +317,20 @@ namespace HOTEL_MINI
                 changePassForm.ShowDialog();
             }
         }
+
+        //private void btnDashboardManage_Click(object sender, EventArgs e)
+        //{
+        //    OpenChildForm(new frmStatistical(), sender);
+        //}
+
+        //private void btnUserManage_Click(object sender, EventArgs e)
+        //{
+        //    OpenChildForm(new frmUser(), sender);
+        //}
+
+        private void btnInvoicesManage_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new frmInvoiceManage(this), sender);
+        }
     }
 }

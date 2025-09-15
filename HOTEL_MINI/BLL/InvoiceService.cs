@@ -1,4 +1,5 @@
 ﻿using HOTEL_MINI.DAL;
+using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,18 @@ namespace HOTEL_MINI.BLL
         public RevenueSummary GetRevenueSummary()
         {
             return _invoiceRepo.GetRevenueSummary();
+        }
+        public Invoice GetInvoiceByBookingID(int bookingID)
+        {
+            return _invoiceRepo.GetInvoiceByBookingID(bookingID);
+        }
+        public string GetPaymentByInvoiceID(int invoiceID)
+        {
+            return _invoiceRepo.GetPaymentByInvoice(invoiceID);
+        }
+        public string getFullNameByInvoiceID(int invoiceID)
+        {
+            return _invoiceRepo.getFullNameByInvoiceID(invoiceID);
         }
     }
 }

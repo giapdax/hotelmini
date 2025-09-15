@@ -35,14 +35,14 @@
             this.txtFullName = new System.Windows.Forms.TextBox();
             this.lblEmail = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
-            this.btnEditSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnEditSave = new System.Windows.Forms.Button();
             this.tableLayoutPanelMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanelMain
             // 
-            this.tableLayoutPanelMain.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.tableLayoutPanelMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(52)))), ((int)(((byte)(58)))));
             this.tableLayoutPanelMain.ColumnCount = 3;
             this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.42729F));
             this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.42729F));
@@ -68,14 +68,15 @@
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanelMain.Size = new System.Drawing.Size(566, 279);
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(599, 278);
             this.tableLayoutPanelMain.TabIndex = 1;
             // 
             // lblUsername
             // 
             this.lblUsername.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUsername.AutoSize = true;
-            this.lblUsername.Location = new System.Drawing.Point(82, 33);
+            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
+            this.lblUsername.Location = new System.Drawing.Point(98, 33);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(184, 25);
             this.lblUsername.TabIndex = 0;
@@ -84,7 +85,9 @@
             // txtUsername
             // 
             this.txtUsername.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtUsername.Location = new System.Drawing.Point(272, 31);
+            this.txtUsername.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtUsername.ForeColor = System.Drawing.Color.White;
+            this.txtUsername.Location = new System.Drawing.Point(288, 30);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(248, 30);
             this.txtUsername.TabIndex = 1;
@@ -93,7 +96,8 @@
             // 
             this.lblFullName.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFullName.AutoSize = true;
-            this.lblFullName.Location = new System.Drawing.Point(118, 95);
+            this.lblFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
+            this.lblFullName.Location = new System.Drawing.Point(134, 94);
             this.lblFullName.Name = "lblFullName";
             this.lblFullName.Size = new System.Drawing.Size(148, 25);
             this.lblFullName.TabIndex = 2;
@@ -102,7 +106,9 @@
             // txtFullName
             // 
             this.txtFullName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtFullName.Location = new System.Drawing.Point(272, 93);
+            this.txtFullName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtFullName.ForeColor = System.Drawing.Color.White;
+            this.txtFullName.Location = new System.Drawing.Point(288, 91);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(248, 30);
             this.txtFullName.TabIndex = 3;
@@ -111,7 +117,8 @@
             // 
             this.lblEmail.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEmail.AutoSize = true;
-            this.lblEmail.Location = new System.Drawing.Point(34, 157);
+            this.lblEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
+            this.lblEmail.Location = new System.Drawing.Point(50, 155);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(232, 25);
             this.lblEmail.TabIndex = 4;
@@ -120,28 +127,18 @@
             // txtEmail
             // 
             this.txtEmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtEmail.Location = new System.Drawing.Point(272, 155);
+            this.txtEmail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtEmail.ForeColor = System.Drawing.Color.White;
+            this.txtEmail.Location = new System.Drawing.Point(288, 152);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(248, 30);
             this.txtEmail.TabIndex = 5;
-            // 
-            // btnEditSave
-            // 
-            this.btnEditSave.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnEditSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.btnEditSave.Location = new System.Drawing.Point(370, 212);
-            this.btnEditSave.Name = "btnEditSave";
-            this.btnEditSave.Size = new System.Drawing.Size(150, 40);
-            this.btnEditSave.TabIndex = 10;
-            this.btnEditSave.Text = "Lưu";
-            this.btnEditSave.UseVisualStyleBackColor = true;
-            this.btnEditSave.Click += new System.EventHandler(this.btnEditSave_Click);
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.btnCancel.Location = new System.Drawing.Point(18, 212);
+            this.btnCancel.Location = new System.Drawing.Point(18, 210);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(150, 40);
             this.btnCancel.TabIndex = 11;
@@ -149,13 +146,26 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // btnEditSave
+            // 
+            this.btnEditSave.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnEditSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
+            this.btnEditSave.Location = new System.Drawing.Point(402, 210);
+            this.btnEditSave.Name = "btnEditSave";
+            this.btnEditSave.Size = new System.Drawing.Size(150, 40);
+            this.btnEditSave.TabIndex = 10;
+            this.btnEditSave.Text = "Lưu";
+            this.btnEditSave.UseVisualStyleBackColor = true;
+            this.btnEditSave.Click += new System.EventHandler(this.btnEditSave_Click);
+            // 
             // FrmChangePass
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(566, 279);
+            this.ClientSize = new System.Drawing.Size(599, 278);
             this.Controls.Add(this.tableLayoutPanelMain);
             this.Name = "FrmChangePass";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Thay đổi mật khẩu";
             this.tableLayoutPanelMain.ResumeLayout(false);
             this.tableLayoutPanelMain.PerformLayout();

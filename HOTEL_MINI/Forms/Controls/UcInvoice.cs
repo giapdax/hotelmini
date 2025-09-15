@@ -15,28 +15,25 @@ namespace HOTEL_MINI.Forms.Controls
     public partial class UcInvoice : UserControl
     {
         public readonly Booking _booking;
-        public readonly Room _room;
+        public readonly string _roomNumber;
         public readonly Invoice _invoice;
-        public readonly Payment _payment;
         private readonly BookingService _bookingService;
         private readonly RoomService _roomService;
         private readonly InvoiceService _invoiceService;
-        private readonly PaymentService _paymentService;
+        private readonly PdfExportService _pdfExportService;
 
-        public UcInvoice(Booking booking, Room room, Invoice invoice, Payment payment)
+        public UcInvoice(Booking booking, string roomNumber, Invoice invoice)
         {
             InitializeComponent();
 
             _booking = booking;
-            _room = room;
+            _roomNumber = roomNumber;
             _invoice = invoice;
-            _payment = payment;
 
             _bookingService = new BookingService();
             _roomService = new RoomService();
             _invoiceService = new InvoiceService();
-            _paymentService = new PaymentService();
-
+            _pdfExportService = new PdfExportService();
             LoadInvoiceData();
             SetupEvents();
         }
@@ -46,7 +43,7 @@ namespace HOTEL_MINI.Forms.Controls
             try
             {
                 // Hiển thị thông tin cơ bản
-                label4.Text = $"Phòng {_room.RoomNumber}";
+                label4.Text = $"Phòng {_roomNumber}";
                 txtCheckin.Text = _booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
                 txtCheckout.Text = _booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
 
@@ -58,8 +55,8 @@ namespace HOTEL_MINI.Forms.Controls
                 txtTotalAmount.Text = _invoice.TotalAmount.ToString("N0") + " đ";
 
                 // Hiển thị thông tin thanh toán
-                txtPaymentMethod.Text = _payment?.Method ?? "N/A";
-                txtEmployeeName.Text = $"NV{_invoice.IssuedBy}"; // Có thể lấy tên từ UserService
+                txtPaymentMethod.Text = _invoiceService.GetPaymentByInvoiceID(_invoice.InvoiceID);
+                txtEmployeeName.Text = _invoiceService.getFullNameByInvoiceID(_invoice.InvoiceID); // Có thể lấy tên từ UserService
                 txtNote.Text = _invoice.Note;
 
                 // Load dịch vụ đã sử dụng
@@ -104,7 +101,13 @@ namespace HOTEL_MINI.Forms.Controls
 
         private void SetupEvents()
         {
-            btnBack.Click += (s, e) => { /* Logic quay lại */ };
+            btnBack.Click += (s, e) =>
+            {
+                // Tìm form cha và đóng nó
+                var parentForm = this.Parent as Form;
+                parentForm?.Close();
+            };
+
             btnExportInvoice.Click += (s, e) => ExportInvoice();
         }
 
@@ -112,23 +115,31 @@ namespace HOTEL_MINI.Forms.Controls
         {
             try
             {
-                // Logic export PDF
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     Filter = "PDF Files|*.pdf",
-                    FileName = $"HoaDon_{_room.RoomNumber}_{_invoice.InvoiceID}.pdf"
+                    FileName = $"HoaDon_{_roomNumber}_{_invoice.InvoiceID}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
                 };
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Gọi service export PDF
-                    //_invoiceService.ExportInvoiceToPdf(_invoice, _booking, _room, saveFileDialog.FileName);
-                    MessageBox.Show("Xuất hóa đơn thành công!");
+                    // Lấy danh sách dịch vụ đã sử dụng
+                    var usedServices = _bookingService.GetUsedServicesByBookingID(_booking.BookingID);
+
+                    // Export PDF
+                    _pdfExportService.ExportInvoiceToPdf(_invoice, _booking, _roomNumber, usedServices, saveFileDialog.FileName);
+
+                    MessageBox.Show("Xuất hóa đơn thành công!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Mở file sau khi export (tuỳ chọn)
+                    System.Diagnostics.Process.Start(saveFileDialog.FileName);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi xuất hóa đơn: {ex.Message}");
+                MessageBox.Show($"Lỗi khi xuất hóa đơn: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

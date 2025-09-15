@@ -57,6 +57,12 @@
     <Reference Include="BCrypt.Net-Next, Version=4.0.3.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
       <HintPath>..\packages\BCrypt.Net-Next.4.0.3\lib\net472\BCrypt.Net-Next.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -95,6 +101,8 @@
     <Compile Include="BLL\CheckoutService.cs" />
     <Compile Include="BLL\CustomerService.cs" />
     <Compile Include="BLL\InvoiceService.cs" />
+    <Compile Include="BLL\PaymentService.cs" />
+    <Compile Include="BLL\PdfExportService.cs" />
     <Compile Include="BLL\RoleService.cs" />
     <Compile Include="BLL\RoomPricingService.cs" />
     <Compile Include="BLL\RoomService.cs" />
@@ -113,6 +121,12 @@
     <Compile Include="DAL\RoomTypeRepository.cs" />
     <Compile Include="DAL\ServicesRepository.cs" />
     <Compile Include="DAL\UserRepository.cs" />
+    <Compile Include="Forms\Controls\UcInvoice.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\UcInvoice.Designer.cs">
+      <DependentUpon>UcInvoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Controls\UcRevenue.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -185,11 +199,11 @@
     <Compile Include="Forms\frmCustomer.Designer.cs">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmDashboard.cs">
+    <Compile Include="Forms\frmInvoiceManage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmDashboard.Designer.cs">
-      <DependentUpon>frmDashboard.cs</DependentUpon>
+    <Compile Include="Forms\frmInvoiceManage.Designer.cs">
+      <DependentUpon>frmInvoiceManage.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmLogin.cs">
       <SubType>Form</SubType>
@@ -250,12 +264,16 @@
     <Compile Include="Model\Entity\RoomTypes.cs" />
     <Compile Include="Model\Entity\Service.cs" />
     <Compile Include="Model\Entity\User.cs" />
+    <Compile Include="Model\Response\BookingDisplay.cs" />
     <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Model\Response\RoomStatistics.cs" />
     <Compile Include="Model\Response\UsedServiceDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\Controls\UcInvoice.resx">
+      <DependentUpon>UcInvoice.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcRevenue.resx">
       <DependentUpon>UcRevenue.cs</DependentUpon>
     </EmbeddedResource>
@@ -292,8 +310,8 @@
     <EmbeddedResource Include="Forms\frmCustomer.resx">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmDashboard.resx">
-      <DependentUpon>frmDashboard.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmInvoiceManage.resx">
+      <DependentUpon>frmInvoiceManage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
@@ -329,6 +347,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Fonts\TAHOMA.TTF" />
+    <None Include="Fonts\TAHOMABD.TTF" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -438,6 +458,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\hotel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\changepass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-password-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-customer-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-double-bed-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-double-bed-32 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-invoice-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-double-bed-32 %282%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

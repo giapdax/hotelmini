@@ -35,9 +35,28 @@ namespace HOTEL_MINI.BLL
         {
             return _customerRepository.GetCustomerByCustomerID(customerID);
         }
+        public Customer GetCustomerByNumberID(string numberID)
+        {
+            return _customerRepository.GetCustomerByIDNumber(numberID);
+        }
+        public List<Customer> getAllCustomers()
+        {
+            return _customerRepository.GetAllCustomers();
+        }
+
+        public bool updateCustomer(Customer customer)
+        {
+            return _customerRepository.UpdateCustomer(customer);
+        }
+
         public List<string> getAllGender()
         {
             return _customerRepository.getAllGender();
         }
+        public Dictionary<int, int> getBookingCounts()
+        {
+            return _customerRepository.GetBookingCounts();
+        }
+
     }
 }

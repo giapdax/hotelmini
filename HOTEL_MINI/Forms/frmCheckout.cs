@@ -202,8 +202,7 @@ namespace HOTEL_MINI.Forms
 
                 // Gọi service để checkout
                 _bookingService.Checkout(
-                    _booking.BookingID,
-                    _booking.RoomID,
+                    _booking,
                     room,
                     service,
                     discount,
@@ -281,5 +280,7 @@ namespace HOTEL_MINI.Forms
         // Các phương thức event handler rỗng (nếu cần)
         private void label1_Click(object sender, EventArgs e) { }
         private void frmCheckout_Load(object sender, EventArgs e) { }
+        private void lblDiscount_Click(object sender, EventArgs e) { }
+        
     }
 }

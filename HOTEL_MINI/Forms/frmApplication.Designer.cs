@@ -31,32 +31,33 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmApplication));
             this.panelMenu = new System.Windows.Forms.Panel();
-            this.btnUserManage = new System.Windows.Forms.Button();
-            this.btnDashboardManage = new System.Windows.Forms.Button();
-            this.btnCustomerManage = new System.Windows.Forms.Button();
-            this.btnRoomManager = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.btnService = new System.Windows.Forms.Button();
-            this.btnRoom = new System.Windows.Forms.Button();
             this.panelLogo = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.picLogo = new System.Windows.Forms.PictureBox();
             this.panelTitleBar = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.panelDesktop = new System.Windows.Forms.Panel();
             this.contextMenuProfile = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnUserManage = new System.Windows.Forms.Button();
+            this.btnDashboardManage = new System.Windows.Forms.Button();
+            this.btnInvoicesManage = new System.Windows.Forms.Button();
+            this.btnCustomerManage = new System.Windows.Forms.Button();
+            this.btnRoomManager = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.btnService = new System.Windows.Forms.Button();
+            this.btnRoom = new System.Windows.Forms.Button();
+            this.picLogo = new System.Windows.Forms.PictureBox();
             this.btnLogout = new System.Windows.Forms.ToolStripMenuItem();
             this.btnProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.btnChangepass = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panelLogo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.panelTitleBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuProfile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // panelMenu
@@ -64,6 +65,7 @@
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.panelMenu.Controls.Add(this.btnUserManage);
             this.panelMenu.Controls.Add(this.btnDashboardManage);
+            this.panelMenu.Controls.Add(this.btnInvoicesManage);
             this.panelMenu.Controls.Add(this.btnCustomerManage);
             this.panelMenu.Controls.Add(this.btnRoomManager);
             this.panelMenu.Controls.Add(this.panel1);
@@ -77,6 +79,93 @@
             this.panelMenu.Size = new System.Drawing.Size(220, 666);
             this.panelMenu.TabIndex = 0;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btnExit);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 598);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(220, 68);
+            this.panel1.TabIndex = 6;
+            // 
+            // panelLogo
+            // 
+            this.panelLogo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(41)))), ((int)(((byte)(47)))));
+            this.panelLogo.Controls.Add(this.label1);
+            this.panelLogo.Controls.Add(this.picLogo);
+            this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelLogo.Location = new System.Drawing.Point(0, 0);
+            this.panelLogo.MinimumSize = new System.Drawing.Size(220, 100);
+            this.panelLogo.Name = "panelLogo";
+            this.panelLogo.Size = new System.Drawing.Size(220, 142);
+            this.panelLogo.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
+            this.label1.Location = new System.Drawing.Point(28, 99);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(155, 21);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Xin Chào, Đình Giáp!";
+            // 
+            // panelTitleBar
+            // 
+            this.panelTitleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.panelTitleBar.Controls.Add(this.pictureBox1);
+            this.panelTitleBar.Controls.Add(this.lblTitle);
+            this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTitleBar.Location = new System.Drawing.Point(220, 0);
+            this.panelTitleBar.Margin = new System.Windows.Forms.Padding(0);
+            this.panelTitleBar.Name = "panelTitleBar";
+            this.panelTitleBar.Size = new System.Drawing.Size(1070, 64);
+            this.panelTitleBar.TabIndex = 1;
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Mongolian Baiti", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
+            this.lblTitle.Location = new System.Drawing.Point(492, 18);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(85, 25);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "TITLE";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // panelDesktop
+            // 
+            this.panelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelDesktop.Location = new System.Drawing.Point(220, 64);
+            this.panelDesktop.MinimumSize = new System.Drawing.Size(590, 375);
+            this.panelDesktop.Name = "panelDesktop";
+            this.panelDesktop.Size = new System.Drawing.Size(1070, 602);
+            this.panelDesktop.TabIndex = 2;
+            // 
+            // contextMenuProfile
+            // 
+            this.contextMenuProfile.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.contextMenuProfile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnLogout,
+            this.btnProfile,
+            this.btnChangepass});
+            this.contextMenuProfile.Name = "contextMenuStrip1";
+            this.contextMenuProfile.Size = new System.Drawing.Size(240, 100);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pictureBox1.Image = global::HOTEL_MINI.Properties.Resources.menus;
+            this.pictureBox1.Location = new System.Drawing.Point(1003, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(67, 64);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
             // btnUserManage
             // 
             this.btnUserManage.Dock = System.Windows.Forms.DockStyle.Top;
@@ -86,10 +175,10 @@
             this.btnUserManage.ForeColor = System.Drawing.Color.Transparent;
             this.btnUserManage.Image = global::HOTEL_MINI.Properties.Resources.about__1_;
             this.btnUserManage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnUserManage.Location = new System.Drawing.Point(0, 442);
+            this.btnUserManage.Location = new System.Drawing.Point(0, 502);
             this.btnUserManage.Name = "btnUserManage";
             this.btnUserManage.Size = new System.Drawing.Size(220, 60);
-            this.btnUserManage.TabIndex = 11;
+            this.btnUserManage.TabIndex = 14;
             this.btnUserManage.Text = " Quản Lý User";
             this.btnUserManage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnUserManage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -105,15 +194,34 @@
             this.btnDashboardManage.ForeColor = System.Drawing.Color.Transparent;
             this.btnDashboardManage.Image = global::HOTEL_MINI.Properties.Resources.report;
             this.btnDashboardManage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDashboardManage.Location = new System.Drawing.Point(0, 382);
+            this.btnDashboardManage.Location = new System.Drawing.Point(0, 442);
             this.btnDashboardManage.Name = "btnDashboardManage";
             this.btnDashboardManage.Size = new System.Drawing.Size(220, 60);
-            this.btnDashboardManage.TabIndex = 10;
+            this.btnDashboardManage.TabIndex = 13;
             this.btnDashboardManage.Text = " Thống Kê";
             this.btnDashboardManage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDashboardManage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnDashboardManage.UseVisualStyleBackColor = true;
             this.btnDashboardManage.Click += new System.EventHandler(this.btnDashboardManage_Click);
+            // 
+            // btnInvoicesManage
+            // 
+            this.btnInvoicesManage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnInvoicesManage.FlatAppearance.BorderSize = 0;
+            this.btnInvoicesManage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInvoicesManage.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInvoicesManage.ForeColor = System.Drawing.Color.Transparent;
+            this.btnInvoicesManage.Image = global::HOTEL_MINI.Properties.Resources.icons8_invoice_32;
+            this.btnInvoicesManage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnInvoicesManage.Location = new System.Drawing.Point(0, 382);
+            this.btnInvoicesManage.Name = "btnInvoicesManage";
+            this.btnInvoicesManage.Size = new System.Drawing.Size(220, 60);
+            this.btnInvoicesManage.TabIndex = 12;
+            this.btnInvoicesManage.Text = "Quản Lý Hóa Đơn";
+            this.btnInvoicesManage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnInvoicesManage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnInvoicesManage.UseVisualStyleBackColor = true;
+            this.btnInvoicesManage.Click += new System.EventHandler(this.btnInvoicesManage_Click);
             // 
             // btnCustomerManage
             // 
@@ -122,7 +230,7 @@
             this.btnCustomerManage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCustomerManage.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCustomerManage.ForeColor = System.Drawing.Color.Transparent;
-            this.btnCustomerManage.Image = global::HOTEL_MINI.Properties.Resources.about__1_;
+            this.btnCustomerManage.Image = global::HOTEL_MINI.Properties.Resources.icons8_customer_32;
             this.btnCustomerManage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCustomerManage.Location = new System.Drawing.Point(0, 322);
             this.btnCustomerManage.Name = "btnCustomerManage";
@@ -141,7 +249,7 @@
             this.btnRoomManager.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRoomManager.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRoomManager.ForeColor = System.Drawing.Color.Transparent;
-            this.btnRoomManager.Image = global::HOTEL_MINI.Properties.Resources.about__1_;
+            this.btnRoomManager.Image = global::HOTEL_MINI.Properties.Resources.icons8_double_bed_32__2_;
             this.btnRoomManager.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRoomManager.Location = new System.Drawing.Point(0, 262);
             this.btnRoomManager.Name = "btnRoomManager";
@@ -152,15 +260,6 @@
             this.btnRoomManager.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRoomManager.UseVisualStyleBackColor = true;
             this.btnRoomManager.Click += new System.EventHandler(this.btnRoomManager_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.btnExit);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 598);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(220, 68);
-            this.panel1.TabIndex = 6;
             // 
             // btnExit
             // 
@@ -219,29 +318,6 @@
             this.btnRoom.UseVisualStyleBackColor = true;
             this.btnRoom.Click += new System.EventHandler(this.btnRoom_Click);
             // 
-            // panelLogo
-            // 
-            this.panelLogo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(41)))), ((int)(((byte)(47)))));
-            this.panelLogo.Controls.Add(this.label1);
-            this.panelLogo.Controls.Add(this.picLogo);
-            this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelLogo.Location = new System.Drawing.Point(0, 0);
-            this.panelLogo.MinimumSize = new System.Drawing.Size(220, 100);
-            this.panelLogo.Name = "panelLogo";
-            this.panelLogo.Size = new System.Drawing.Size(220, 142);
-            this.panelLogo.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.label1.Location = new System.Drawing.Point(28, 99);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(155, 21);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Xin Chào, Đình Giáp!";
-            // 
             // picLogo
             // 
             this.picLogo.Image = global::HOTEL_MINI.Properties.Resources.user;
@@ -252,68 +328,13 @@
             this.picLogo.TabIndex = 0;
             this.picLogo.TabStop = false;
             // 
-            // panelTitleBar
-            // 
-            this.panelTitleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
-            this.panelTitleBar.Controls.Add(this.pictureBox1);
-            this.panelTitleBar.Controls.Add(this.lblTitle);
-            this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTitleBar.Location = new System.Drawing.Point(220, 0);
-            this.panelTitleBar.Margin = new System.Windows.Forms.Padding(0);
-            this.panelTitleBar.Name = "panelTitleBar";
-            this.panelTitleBar.Size = new System.Drawing.Size(1070, 64);
-            this.panelTitleBar.TabIndex = 1;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox1.Image = global::HOTEL_MINI.Properties.Resources.menus;
-            this.pictureBox1.Location = new System.Drawing.Point(1003, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(67, 64);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Mongolian Baiti", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblTitle.Location = new System.Drawing.Point(492, 18);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(85, 25);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "TITLE";
-            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // panelDesktop
-            // 
-            this.panelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelDesktop.Location = new System.Drawing.Point(220, 64);
-            this.panelDesktop.MinimumSize = new System.Drawing.Size(590, 375);
-            this.panelDesktop.Name = "panelDesktop";
-            this.panelDesktop.Size = new System.Drawing.Size(1070, 602);
-            this.panelDesktop.TabIndex = 2;
-            // 
-            // contextMenuProfile
-            // 
-            this.contextMenuProfile.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.contextMenuProfile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnLogout,
-            this.btnProfile,
-            this.btnChangepass});
-            this.contextMenuProfile.Name = "contextMenuStrip1";
-            this.contextMenuProfile.Size = new System.Drawing.Size(249, 133);
-            // 
             // btnLogout
             // 
             this.btnLogout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnLogout.ForeColor = System.Drawing.Color.White;
             this.btnLogout.Image = global::HOTEL_MINI.Properties.Resources.power_off__1_;
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(248, 32);
+            this.btnLogout.Size = new System.Drawing.Size(239, 32);
             this.btnLogout.Text = "Logout";
             this.btnLogout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
@@ -324,7 +345,7 @@
             this.btnProfile.ForeColor = System.Drawing.Color.White;
             this.btnProfile.Image = global::HOTEL_MINI.Properties.Resources.user__2_;
             this.btnProfile.Name = "btnProfile";
-            this.btnProfile.Size = new System.Drawing.Size(248, 32);
+            this.btnProfile.Size = new System.Drawing.Size(239, 32);
             this.btnProfile.Text = "Thông tin cá nhân";
             this.btnProfile.Click += new System.EventHandler(this.btnProfile_Click);
             // 
@@ -332,8 +353,9 @@
             // 
             this.btnChangepass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
             this.btnChangepass.ForeColor = System.Drawing.Color.White;
+            this.btnChangepass.Image = global::HOTEL_MINI.Properties.Resources.icons8_password_32;
             this.btnChangepass.Name = "btnChangepass";
-            this.btnChangepass.Size = new System.Drawing.Size(248, 32);
+            this.btnChangepass.Size = new System.Drawing.Size(239, 32);
             this.btnChangepass.Text = "Thay đổi mật khẩu";
             this.btnChangepass.Click += new System.EventHandler(this.btnChangepass_Click);
             // 
@@ -357,11 +379,11 @@
             this.panel1.ResumeLayout(false);
             this.panelLogo.ResumeLayout(false);
             this.panelLogo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.panelTitleBar.ResumeLayout(false);
             this.panelTitleBar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuProfile.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -385,9 +407,10 @@
         private System.Windows.Forms.ToolStripMenuItem btnProfile;
         private System.Windows.Forms.Button btnRoomManager;
         private System.Windows.Forms.Button btnCustomerManage;
+        private System.Windows.Forms.ToolStripMenuItem btnChangepass;
         private System.Windows.Forms.Button btnUserManage;
         private System.Windows.Forms.Button btnDashboardManage;
-        private System.Windows.Forms.ToolStripMenuItem btnChangepass;
+        private System.Windows.Forms.Button btnInvoicesManage;
     }
 }
 

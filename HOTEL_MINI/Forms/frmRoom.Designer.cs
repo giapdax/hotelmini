@@ -60,7 +60,7 @@ namespace HOTEL_MINI.Forms
             this.flpAllRooms.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpAllRooms.Location = new System.Drawing.Point(0, 0);
             this.flpAllRooms.Name = "flpAllRooms";
-            this.flpAllRooms.Size = new System.Drawing.Size(1096, 834);
+            this.flpAllRooms.Size = new System.Drawing.Size(670, 450);
             this.flpAllRooms.TabIndex = 0;
             // 
             // cbxRoomStatus
@@ -82,14 +82,14 @@ namespace HOTEL_MINI.Forms
             this.pnlRight.Controls.Add(this.txtSearchRoomNumber);
             this.pnlRight.Controls.Add(this.cbxRoomStatus);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlRight.Location = new System.Drawing.Point(1096, 0);
+            this.pnlRight.Location = new System.Drawing.Point(918, 0);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(364, 834);
+            this.pnlRight.Size = new System.Drawing.Size(130, 546);
             this.pnlRight.TabIndex = 2;
             // 
             // btnResetFilter
             // 
-            this.btnResetFilter.Location = new System.Drawing.Point(146, 179);
+            this.btnResetFilter.Location = new System.Drawing.Point(28, 115);
             this.btnResetFilter.Name = "btnResetFilter";
             this.btnResetFilter.Size = new System.Drawing.Size(75, 45);
             this.btnResetFilter.TabIndex = 3;
@@ -113,7 +113,7 @@ namespace HOTEL_MINI.Forms
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(1096, 834);
+            this.pnlMain.Size = new System.Drawing.Size(918, 546);
             this.pnlMain.TabIndex = 3;
             // 
             // cbxRoomType
@@ -222,7 +222,7 @@ namespace HOTEL_MINI.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.ClientSize = new System.Drawing.Size(1460, 834);
+            this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.pnlRight);
             this.Name = "frmRoom";

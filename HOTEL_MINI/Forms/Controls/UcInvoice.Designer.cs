@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtPaymentMethod = new System.Windows.Forms.TextBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.btnExportInvoice = new System.Windows.Forms.Button();
             this.txtCheckout = new System.Windows.Forms.TextBox();
@@ -54,8 +56,6 @@
             this.lblTotalAmount = new System.Windows.Forms.Label();
             this.lblIssuedBy = new System.Windows.Forms.Label();
             this.lblPaymentMethod = new System.Windows.Forms.Label();
-            this.txtPaymentMethod = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsedService)).BeginInit();
@@ -93,6 +93,24 @@
             this.panel1.Size = new System.Drawing.Size(698, 979);
             this.panel1.TabIndex = 0;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(276, 13);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(115, 37);
+            this.label4.TabIndex = 48;
+            this.label4.Text = "Phòng";
+            // 
+            // txtPaymentMethod
+            // 
+            this.txtPaymentMethod.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPaymentMethod.Location = new System.Drawing.Point(149, 729);
+            this.txtPaymentMethod.Name = "txtPaymentMethod";
+            this.txtPaymentMethod.Size = new System.Drawing.Size(191, 35);
+            this.txtPaymentMethod.TabIndex = 47;
+            // 
             // btnBack
             // 
             this.btnBack.Location = new System.Drawing.Point(237, 905);
@@ -122,7 +140,7 @@
             // txtCheckin
             // 
             this.txtCheckin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCheckin.Location = new System.Drawing.Point(148, 115);
+            this.txtCheckin.Location = new System.Drawing.Point(148, 108);
             this.txtCheckin.Name = "txtCheckin";
             this.txtCheckin.Size = new System.Drawing.Size(454, 35);
             this.txtCheckin.TabIndex = 43;
@@ -254,7 +272,7 @@
             // 
             this.lblNote.AutoSize = true;
             this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(25, 775);
+            this.lblNote.Location = new System.Drawing.Point(20, 775);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(86, 25);
             this.lblNote.TabIndex = 32;
@@ -294,7 +312,7 @@
             // 
             this.lblDiscount.AutoSize = true;
             this.lblDiscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDiscount.Location = new System.Drawing.Point(31, 603);
+            this.lblDiscount.Location = new System.Drawing.Point(20, 599);
             this.lblDiscount.Name = "lblDiscount";
             this.lblDiscount.Size = new System.Drawing.Size(97, 25);
             this.lblDiscount.TabIndex = 28;
@@ -304,7 +322,7 @@
             // 
             this.lblTotalAmount.AutoSize = true;
             this.lblTotalAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalAmount.Location = new System.Drawing.Point(25, 653);
+            this.lblTotalAmount.Location = new System.Drawing.Point(14, 653);
             this.lblTotalAmount.Name = "lblTotalAmount";
             this.lblTotalAmount.Size = new System.Drawing.Size(103, 25);
             this.lblTotalAmount.TabIndex = 29;
@@ -314,7 +332,7 @@
             // 
             this.lblIssuedBy.AutoSize = true;
             this.lblIssuedBy.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIssuedBy.Location = new System.Drawing.Point(25, 694);
+            this.lblIssuedBy.Location = new System.Drawing.Point(14, 698);
             this.lblIssuedBy.Name = "lblIssuedBy";
             this.lblIssuedBy.Size = new System.Drawing.Size(109, 25);
             this.lblIssuedBy.TabIndex = 30;
@@ -324,29 +342,11 @@
             // 
             this.lblPaymentMethod.AutoSize = true;
             this.lblPaymentMethod.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPaymentMethod.Location = new System.Drawing.Point(25, 735);
+            this.lblPaymentMethod.Location = new System.Drawing.Point(20, 735);
             this.lblPaymentMethod.Name = "lblPaymentMethod";
             this.lblPaymentMethod.Size = new System.Drawing.Size(103, 25);
             this.lblPaymentMethod.TabIndex = 31;
             this.lblPaymentMethod.Text = "Hình thức";
-            // 
-            // txtPaymentMethod
-            // 
-            this.txtPaymentMethod.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPaymentMethod.Location = new System.Drawing.Point(149, 729);
-            this.txtPaymentMethod.Name = "txtPaymentMethod";
-            this.txtPaymentMethod.Size = new System.Drawing.Size(191, 35);
-            this.txtPaymentMethod.TabIndex = 47;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(276, 13);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(115, 37);
-            this.label4.TabIndex = 48;
-            this.label4.Text = "Phòng";
             // 
             // UcInvoice
             // 

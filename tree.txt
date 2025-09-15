@@ -1,0 +1,476 @@
+Folder PATH listing
+Volume serial number is B29C-49EF
+C:.
+|   .gitignore
+|   HOTEL_MINI.sln
+|   README.md
+|   tree.txt
+|   
++---HOTEL_MINI
+|   |   App.config
+|   |   HOTEL_MINI.csproj
+|   |   HOTEL_MINI.csproj.user
+|   |   packages.config
+|   |   Program.cs
+|   |   
+|   +---bin
+|   |   +---Debug
+|   |   |       BCrypt.Net-Core.dll
+|   |   |       BCrypt.Net-Core.pdb
+|   |   |       HOTEL_MINI.exe
+|   |   |       HOTEL_MINI.exe.config
+|   |   |       HOTEL_MINI.pdb
+|   |   |       System.Numerics.Vectors.dll
+|   |   |       
+|   |   \---Release
+|   +---BLL
+|   |       AuthService.cs
+|   |       BookingService.cs
+|   |       CheckoutService.cs
+|   |       CustomerService.cs
+|   |       InvoiceService.cs
+|   |       RoleService.cs
+|   |       RoomPricingService.cs
+|   |       RoomService.cs
+|   |       RoomTypeService.cs
+|   |       ServicesService.cs
+|   |       UserService.cs
+|   |       
+|   +---Common
+|   |       ConfigHelper.cs
+|   |       PasswordHelper.cs
+|   |       
+|   +---DAL
+|   |       BookingRepository.cs
+|   |       CustomerRepository.cs
+|   |       InvoiceRepository.cs
+|   |       PaymentRepository.cs
+|   |       RoleRepository.cs
+|   |       RoomPricingRepository.cs
+|   |       RoomRepository.cs
+|   |       RoomTypeRepository.cs
+|   |       ServicesRepository.cs
+|   |       UserRepository.cs
+|   |       
+|   +---Forms
+|   |   |   BookingDetail.cs
+|   |   |   BookingDetail.Designer.cs
+|   |   |   BookingDetail.resx
+|   |   |   BookingPopupForm.cs
+|   |   |   BookingPopupForm.Designer.cs
+|   |   |   BookingPopupForm.resx
+|   |   |   frmApplication.cs
+|   |   |   frmApplication.Designer.cs
+|   |   |   frmApplication.resx
+|   |   |   frmBookedRoomInfor.cs
+|   |   |   frmBookedRoomInfor.Designer.cs
+|   |   |   frmBookedRoomInfor.resx
+|   |   |   frmBookingDetail.cs
+|   |   |   frmBookingDetail.Designer.cs
+|   |   |   frmBookingDetail.resx
+|   |   |   frmBookingPopup.cs
+|   |   |   frmBookingPopup.Designer.cs
+|   |   |   frmBookingPopup.resx
+|   |   |   FrmChangePass.cs
+|   |   |   FrmChangePass.Designer.cs
+|   |   |   FrmChangePass.resx
+|   |   |   frmCheckout.cs
+|   |   |   frmCheckout.Designer.cs
+|   |   |   frmCheckout.resx
+|   |   |   frmCustomer.cs
+|   |   |   frmCustomer.Designer.cs
+|   |   |   frmCustomer.resx
+|   |   |   frmLogin.cs
+|   |   |   frmLogin.Designer.cs
+|   |   |   frmLogin.resx
+|   |   |   frmProfile.cs
+|   |   |   frmProfile.Designer.cs
+|   |   |   frmProfile.resx
+|   |   |   frmRoom.cs
+|   |   |   frmRoom.Designer.cs
+|   |   |   frmRoom.resx
+|   |   |   frmRoomManager.cs
+|   |   |   frmRoomManager.Designer.cs
+|   |   |   frmRoomManager.resx
+|   |   |   frmSelectCheckoutTime.cs
+|   |   |   frmSelectCheckoutTime.Designer.cs
+|   |   |   frmSelectCheckoutTime.resx
+|   |   |   frmService.cs
+|   |   |   frmService.Designer.cs
+|   |   |   frmService.resx
+|   |   |   frmStatistical.cs
+|   |   |   frmStatistical.Designer.cs
+|   |   |   frmStatistical.resx
+|   |   |   frmUser.cs
+|   |   |   frmUser.Designer.cs
+|   |   |   frmUser.resx
+|   |   |   
+|   |   \---Controls
+|   |           RoomCard.cs
+|   |           RoomCard.Designer.cs
+|   |           RoomCard.resx
+|   |           UcRevenue.cs
+|   |           UcRevenue.Designer.cs
+|   |           UcRevenue.resx
+|   |           UcRoom.cs
+|   |           UcRoom.Designer.cs
+|   |           UcRoom.resx
+|   |           UcRoomStatiscal.cs
+|   |           UcRoomStatiscal.Designer.cs
+|   |           UcRoomStatiscal.resx
+|   |           UcRoomType_Pricing.cs
+|   |           UcRoomType_Pricing.Designer.cs
+|   |           UcRoomType_Pricing.resx
+|   |           
+|   +---Model
+|   |   +---Entity
+|   |   |       Booking.cs
+|   |   |       BookingServiceDetail.cs
+|   |   |       Customer.cs
+|   |   |       Invoice.cs
+|   |   |       Payment.cs
+|   |   |       Role.cs
+|   |   |       Room.cs
+|   |   |       RoomPricing.cs
+|   |   |       RoomTypes.cs
+|   |   |       Service.cs
+|   |   |       Services.cs
+|   |   |       User.cs
+|   |   |       
+|   |   \---Response
+|   |           LoginResult.cs
+|   |           RevenueSummary.cs
+|   |           RoomStatistics.cs
+|   |           UsedServiceDto.cs
+|   |           
+|   +---obj
+|   |   +---Debug
+|   |   |   |   .NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+|   |   |   |   DesignTimeResolveAssemblyReferences.cache
+|   |   |   |   DesignTimeResolveAssemblyReferencesInput.cache
+|   |   |   |   HOTEL_MINI.csproj.AssemblyReference.cache
+|   |   |   |   HOTEL_MINI.csproj.CoreCompileInputs.cache
+|   |   |   |   HOTEL_MINI.csproj.FileListAbsolute.txt
+|   |   |   |   HOTEL_MINI.csproj.GenerateResource.cache
+|   |   |   |   HOTEL_MINI.csproj.Up2Date
+|   |   |   |   HOTEL_MINI.exe
+|   |   |   |   HOTEL_MINI.exe.config
+|   |   |   |   HOTEL_MINI.Forms.Controls.RoomCard.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcRevenue.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcRoomStatiscal.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookedRoomInfor.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookingDetail.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookingPopup.resources
+|   |   |   |   HOTEL_MINI.Forms.FrmChangePass.resources
+|   |   |   |   HOTEL_MINI.Forms.frmCheckout.resources
+|   |   |   |   HOTEL_MINI.Forms.frmCustomer.resources
+|   |   |   |   HOTEL_MINI.Forms.frmLogin.resources
+|   |   |   |   HOTEL_MINI.Forms.frmProfile.resources
+|   |   |   |   HOTEL_MINI.Forms.frmRoom.resources
+|   |   |   |   HOTEL_MINI.Forms.frmRoomManager.resources
+|   |   |   |   HOTEL_MINI.Forms.frmSelectCheckoutTime.resources
+|   |   |   |   HOTEL_MINI.Forms.frmService.resources
+|   |   |   |   HOTEL_MINI.Forms.frmStatistical.resources
+|   |   |   |   HOTEL_MINI.Forms.frmUser.resources
+|   |   |   |   HOTEL_MINI.Forms.UcRoom.resources
+|   |   |   |   HOTEL_MINI.Forms.UcRoomType_Pricing.resources
+|   |   |   |   HOTEL_MINI.frmApplication.resources
+|   |   |   |   HOTEL_MINI.pdb
+|   |   |   |   HOTEL_MINI.Properties.Resources.resources
+|   |   |   |   HOTEL_MINI_MarkupCompile.i.cache
+|   |   |   |   
+|   |   |   +---Forms
+|   |   |   |   \---Controls
+|   |   |   |           UcRoopType_Pricing.g.i.cs
+|   |   |   |           
+|   |   |   \---TempPE
+|   |   |           Properties.Resources.Designer.cs.dll
+|   |   |           
+|   |   \---Release
+|   |           .NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+|   |           HOTEL_MINI.csproj.AssemblyReference.cache
+|   |           
+|   +---Properties
+|   |       AssemblyInfo.cs
+|   |       Resources.Designer.cs
+|   |       Resources.resx
+|   |       Settings.Designer.cs
+|   |       Settings.settings
+|   |       
+|   \---Resources
+|           about (1).png
+|           bed.png
+|           changepass.png
+|           cleaning (1).png
+|           cleaning.png
+|           dashboard (3).png
+|           division.png
+|           exit.png
+|           eye.png
+|           eye_slash.png
+|           help.png
+|           home.png
+|           hotel (1).png
+|           hotel.png
+|           icons8-customer-32.png
+|           icons8-double-bed-32 (1).png
+|           icons8-double-bed-32.png
+|           icons8-password-32.png
+|           menus.png
+|           online-booking.png
+|           power-off (1).png
+|           report.png
+|           room (1).png
+|           room-service.png
+|           room.png
+|           search (1).png
+|           search.png
+|           setting.png
+|           settings (1).png
+|           settings.png
+|           user (1).png
+|           user (2).png
+|           user.png
+|           
+\---packages
+    +---BCrypt.Net-Core.1.6.0
+    |   |   .signature.p7s
+    |   |   BCrypt.Net-Core.1.6.0.nupkg
+    |   |   
+    |   \---lib
+    |       +---net40
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---net45
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---net451
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---net452
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---netstandard1.3
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       \---netstandard2.0
+    |               BCrypt.Net-Core.dll
+    |               BCrypt.Net-Core.pdb
+    |               
+    +---BCrypt.Net-Next.4.0.3
+    |   |   .signature.p7s
+    |   |   BCrypt.Net-Next.4.0.3.nupkg
+    |   |   ico.png
+    |   |   readme.md
+    |   |   
+    |   \---lib
+    |       +---net20
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net35
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net462
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net472
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net48
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net5.0
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net6.0
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       \---netstandard2.1
+    |               BCrypt.Net-Next.xml
+    |               
+    +---System.Buffers.4.5.1
+    |   |   .signature.p7s
+    |   |   LICENSE.TXT
+    |   |   System.Buffers.4.5.1.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   version.txt
+    |   |   
+    |   +---lib
+    |   |   +---net461
+    |   |   |       System.Buffers.xml
+    |   |   |       
+    |   |   +---netcoreapp2.0
+    |   |   |       _._
+    |   |   |       
+    |   |   +---netstandard1.1
+    |   |   |       System.Buffers.xml
+    |   |   |       
+    |   |   +---netstandard2.0
+    |   |   |       System.Buffers.xml
+    |   |   |       
+    |   |   \---uap10.0.16299
+    |   |           _._
+    |   |           
+    |   \---ref
+    |       +---net45
+    |       |       System.Buffers.xml
+    |       |       
+    |       +---netcoreapp2.0
+    |       |       _._
+    |       |       
+    |       +---netstandard1.1
+    |       |       System.Buffers.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       System.Buffers.xml
+    |       |       
+    |       \---uap10.0.16299
+    |               _._
+    |               
+    +---System.Memory.4.5.4
+    |   |   .signature.p7s
+    |   |   LICENSE.TXT
+    |   |   System.Memory.4.5.4.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   version.txt
+    |   |   
+    |   +---lib
+    |   |   +---net461
+    |   |   |       System.Memory.xml
+    |   |   |       
+    |   |   +---netcoreapp2.1
+    |   |   |       _._
+    |   |   |       
+    |   |   +---netstandard1.1
+    |   |   |       System.Memory.xml
+    |   |   |       
+    |   |   \---netstandard2.0
+    |   |           System.Memory.xml
+    |   |           
+    |   \---ref
+    |       \---netcoreapp2.1
+    |               _._
+    |               
+    +---System.Numerics.Vectors.4.5.0
+    |   |   .signature.p7s
+    |   |   LICENSE.TXT
+    |   |   System.Numerics.Vectors.4.5.0.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   version.txt
+    |   |   
+    |   +---lib
+    |   |   +---MonoAndroid10
+    |   |   |       _._
+    |   |   |       
+    |   |   +---MonoTouch10
+    |   |   |       _._
+    |   |   |       
+    |   |   +---net46
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---netcoreapp2.0
+    |   |   |       _._
+    |   |   |       
+    |   |   +---netstandard1.0
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---netstandard2.0
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---portable-net45+win8+wp8+wpa81
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---uap10.0.16299
+    |   |   |       _._
+    |   |   |       
+    |   |   +---xamarinios10
+    |   |   |       _._
+    |   |   |       
+    |   |   +---xamarinmac20
+    |   |   |       _._
+    |   |   |       
+    |   |   +---xamarintvos10
+    |   |   |       _._
+    |   |   |       
+    |   |   \---xamarinwatchos10
+    |   |           _._
+    |   |           
+    |   \---ref
+    |       +---MonoAndroid10
+    |       |       _._
+    |       |       
+    |       +---MonoTouch10
+    |       |       _._
+    |       |       
+    |       +---net45
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---net46
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---netcoreapp2.0
+    |       |       _._
+    |       |       
+    |       +---netstandard1.0
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---uap10.0.16299
+    |       |       _._
+    |       |       
+    |       +---xamarinios10
+    |       |       _._
+    |       |       
+    |       +---xamarinmac20
+    |       |       _._
+    |       |       
+    |       +---xamarintvos10
+    |       |       _._
+    |       |       
+    |       \---xamarinwatchos10
+    |               _._
+    |               
+    \---System.Runtime.CompilerServices.Unsafe.4.5.3
+        |   .signature.p7s
+        |   LICENSE.TXT
+        |   System.Runtime.CompilerServices.Unsafe.4.5.3.nupkg
+        |   THIRD-PARTY-NOTICES.TXT
+        |   useSharedDesignerContext.txt
+        |   version.txt
+        |   
+        +---lib
+        |   +---net461
+        |   |       System.Runtime.CompilerServices.Unsafe.xml
+        |   |       
+        |   +---netcoreapp2.0
+        |   |       System.Runtime.CompilerServices.Unsafe.xml
+        |   |       
+        |   +---netstandard1.0
+        |   |       System.Runtime.CompilerServices.Unsafe.xml
+        |   |       
+        |   \---netstandard2.0
+        |           System.Runtime.CompilerServices.Unsafe.xml
+        |           
+        \---ref
+            +---net461
+            |       System.Runtime.CompilerServices.Unsafe.xml
+            |       
+            +---netstandard1.0
+            |       System.Runtime.CompilerServices.Unsafe.xml
+            |       
+            \---netstandard2.0
+                    System.Runtime.CompilerServices.Unsafe.xml
+                    

@@ -83,6 +83,16 @@ namespace HOTEL_MINI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap changepass {
+            get {
+                object obj = ResourceManager.GetObject("changepass", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cleaning {
             get {
                 object obj = ResourceManager.GetObject("cleaning", resourceCulture);
@@ -186,6 +196,66 @@ namespace HOTEL_MINI.Properties {
         internal static System.Drawing.Bitmap hotel__1_ {
             get {
                 object obj = ResourceManager.GetObject("hotel (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_customer_32 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-customer-32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_double_bed_32 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-double-bed-32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_double_bed_32__1_ {
+            get {
+                object obj = ResourceManager.GetObject("icons8-double-bed-32 (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_double_bed_32__2_ {
+            get {
+                object obj = ResourceManager.GetObject("icons8-double-bed-32 (2)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_invoice_32 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-invoice-32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_password_32 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-password-32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
