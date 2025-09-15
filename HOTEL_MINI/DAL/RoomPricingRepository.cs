@@ -27,8 +27,27 @@ namespace HOTEL_MINI.DAL
                 RoomTypeID = rd.GetInt32(1),
                 PricingType = rd.GetString(2),
                 Price = rd.GetDecimal(3),
-                IsActive = rd.GetBoolean(4)
+                IsActive = rd.GetBoolean(4),
             };
+        }
+        public List<RoomPricing> GetByRoomType(int roomTypeId)
+        {
+            var list = new List<RoomPricing>();
+            const string sql = @"SELECT PricingID, RoomTypeID, PricingType, Price, IsActive
+                                 FROM RoomPricing
+                                 WHERE RoomTypeID = @rtId";
+            using (var conn = CreateConnection())
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@rtId", roomTypeId);
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(Map(rd));
+                }
+            }
+            return list;
         }
 
         public List<RoomPricing> GetAll()
@@ -79,6 +98,7 @@ namespace HOTEL_MINI.DAL
 
             return null; // không tìm thấy thì trả null
         }
+        
 
         public RoomPricing GetByRoomTypeAndType(int roomTypeId, string pricingType)
         {

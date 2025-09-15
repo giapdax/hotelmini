@@ -309,7 +309,7 @@ namespace HOTEL_MINI.Forms
                 }
                 else
                 {
-                    MessageBox.Show($"Mở phòng {_room.RoomNumber}!");
+                    //MessageBox.Show($"Mở phòng {_room.RoomNumber}!");
                     // Chưa có giờ checkout, mở form chọn giờ trước
                     OpenCheckoutTimeForm();
                 }

@@ -208,7 +208,7 @@
             this.txtNote.Location = new System.Drawing.Point(216, 778);
             this.txtNote.Multiline = true;
             this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(455, 192);
+            this.txtNote.Size = new System.Drawing.Size(455, 111);
             this.txtNote.TabIndex = 16;
             // 
             // panel1
@@ -312,7 +312,7 @@
             // 
             // btnConfirm
             // 
-            this.btnConfirm.Location = new System.Drawing.Point(474, 993);
+            this.btnConfirm.Location = new System.Drawing.Point(474, 908);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(84, 66);
             this.btnConfirm.TabIndex = 23;
@@ -322,7 +322,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(306, 993);
+            this.btnCancel.Location = new System.Drawing.Point(306, 908);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(84, 66);
             this.btnCancel.TabIndex = 24;
@@ -334,7 +334,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(713, 1076);
+            this.ClientSize = new System.Drawing.Size(689, 1016);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.txtCheckout);

@@ -33,7 +33,6 @@ namespace HOTEL_MINI.Forms
 
         private void LoadInfor()
         {
-            MessageBox.Show($"Mơ phòng {_room.RoomNumber} trong select");
             lblRoomNumber.Text = _room.RoomNumber;
             dtpCheckinTime.Value = _booking.CheckInDate.Value;
             dtpCheckinTime.Enabled = false;

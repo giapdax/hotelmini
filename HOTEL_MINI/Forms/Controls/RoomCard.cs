@@ -19,7 +19,9 @@ namespace HOTEL_MINI.Forms.Controls
         private readonly frmRoom _frmRoom;
         private readonly BookingService _bookingService;
         private readonly RoomService _roomService;
+        private readonly RoomTypeService _roomTypeService;
         private readonly Booking _booking;
+
         public RoomCard(frmApplication frmApplication, Room room, frmRoom frmRoom)//au tạo constructor thì thêm Form1 form1,
         {
             InitializeComponent();
@@ -28,15 +30,21 @@ namespace HOTEL_MINI.Forms.Controls
             _frmRoom = frmRoom;
             _bookingService = new BookingService();
             _roomService = new RoomService();
+            _roomTypeService = new RoomTypeService();
             _booking = new Booking();
             LoadUiRoomCard();
 
+        }
+        public string nameRoomType()
+        {
+            return _roomTypeService.GetById(_room.RoomTypeID).TypeName;
         }
         public void LoadUiRoomCard()
         {
             lblRoomNumber.Text = $"{_room.RoomNumber}";
             var roomStatus = _room.RoomStatus;
             lblRoomStatus.Text = roomStatus;
+            lblRoomType.Text = nameRoomType();
 
             // reset màu mặc định
             this.BackColor = Color.Gray;

@@ -21,7 +21,8 @@ namespace HOTEL_MINI.BLL
 
         public RoomTypes GetById(int roomTypeId)
             => _roomTypeRepository.GetById(roomTypeId);
-
+        //public List<RoomTypes> getAllRoomType() //lấy toàn bộ RoomType ở bảng RoomTypes
+        //    => _roomTypeRepository.GetAllRoomTypes();
         public bool AddRoomType(RoomTypes roomType)
         {
             Validate(roomType, requireId: false);

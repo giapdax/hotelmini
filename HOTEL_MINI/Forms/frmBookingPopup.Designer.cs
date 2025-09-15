@@ -31,6 +31,7 @@ namespace HOTEL_MINI.Forms
         private void InitializeComponent()
         {
             this.gbxRoomInfor = new System.Windows.Forms.GroupBox();
+            this.cbxGender = new System.Windows.Forms.ComboBox();
             this.lblRoomNumber = new System.Windows.Forms.Label();
             this.btnCheckExistCCCD = new System.Windows.Forms.Button();
             this.btnBookConfirm = new System.Windows.Forms.Button();
@@ -57,7 +58,6 @@ namespace HOTEL_MINI.Forms
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblDiachi = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
-            this.cbxGender = new System.Windows.Forms.ComboBox();
             this.gbxRoomInfor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,6 +99,14 @@ namespace HOTEL_MINI.Forms
             this.gbxRoomInfor.TabIndex = 2;
             this.gbxRoomInfor.TabStop = false;
             this.gbxRoomInfor.Text = "Thông tin ";
+            // 
+            // cbxGender
+            // 
+            this.cbxGender.FormattingEnabled = true;
+            this.cbxGender.Location = new System.Drawing.Point(161, 358);
+            this.cbxGender.Name = "cbxGender";
+            this.cbxGender.Size = new System.Drawing.Size(121, 45);
+            this.cbxGender.TabIndex = 26;
             // 
             // lblRoomNumber
             // 
@@ -167,10 +175,10 @@ namespace HOTEL_MINI.Forms
             // 
             // txtGender
             // 
-            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGender.Location = new System.Drawing.Point(652, 363);
+            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtGender.Location = new System.Drawing.Point(156, 358);
             this.txtGender.Name = "txtGender";
-            this.txtGender.Size = new System.Drawing.Size(84, 35);
+            this.txtGender.Size = new System.Drawing.Size(126, 44);
             this.txtGender.TabIndex = 19;
             // 
             // txtCCCD
@@ -350,14 +358,6 @@ namespace HOTEL_MINI.Forms
             this.lblTen.Size = new System.Drawing.Size(47, 22);
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
-            // 
-            // cbxGender
-            // 
-            this.cbxGender.FormattingEnabled = true;
-            this.cbxGender.Location = new System.Drawing.Point(156, 357);
-            this.cbxGender.Name = "cbxGender";
-            this.cbxGender.Size = new System.Drawing.Size(121, 45);
-            this.cbxGender.TabIndex = 26;
             // 
             // frmBookingPopup
             // 

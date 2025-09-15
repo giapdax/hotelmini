@@ -18,7 +18,7 @@ namespace HOTEL_MINI.BLL
         public bool Add(RoomPricing p) { Validate(p, requireId: false); return _repo.Add(p); }
         public bool Update(RoomPricing p) { Validate(p, requireId: true); return _repo.Update(p); }
         public bool Delete(int id) => _repo.Delete(id);
-
+        public List<RoomPricing> GetByRoomType(int roomTypeId) => _repo.GetByRoomType(roomTypeId);
         private static void Validate(RoomPricing p, bool requireId)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));

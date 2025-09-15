@@ -251,7 +251,7 @@ namespace HOTEL_MINI
         private void btnRoomManager_Click(object sender, EventArgs e)
         {
             OpenChildForm(new frmRoomManager(), sender);
-            OpenChildForm(new Forms.frmStatistical(), sender);
+            
         }
 
         private void btnCustomerManage_Click(object sender, EventArgs e)
@@ -266,7 +266,7 @@ namespace HOTEL_MINI
 
         private void btnDashboardManage_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new frmDashboard(), sender);
+            OpenChildForm(new Forms.frmStatistical(), sender);
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
