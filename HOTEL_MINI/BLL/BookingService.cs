@@ -108,7 +108,7 @@ namespace HOTEL_MINI.BLL
                         Amount = invoice.TotalAmount,
                         PaymentDate = DateTime.Now,
                         Method = paymentMethod,
-                        Status = "Completed"
+                        Status = "Paid"
                     };
 
                     _paymentRepository.AddPayment(payment);

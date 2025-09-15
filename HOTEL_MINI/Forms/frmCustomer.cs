@@ -44,9 +44,7 @@ namespace HOTEL_MINI.Forms
             // wire events ngoài các event đã có sẵn trong Designer
             this.Load += FrmCustomer_Load;
             dgvCustomer.SelectionChanged += dgvCustomer_SelectionChanged;
-            textBox2.TextChanged += textBox2_TextChanged; // ô search
-            btnSave.Click += btnSave_Click;
-            btnCancel.Click += btnCancel_Click;
+            textBox2.TextChanged += textBox2_TextChanged; // ô search 
         }
 
         #region Load + Binding

@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using HOTEL_MINI.BLL;
-using HOTEL_MINI.Model.Entity;   // RoomPricing
+using HOTEL_MINI.Model.Entity;   // Room, RoomPricing
 using MiniHotel.Models;          // RoomTypes
 
 namespace HOTEL_MINI.Forms
@@ -123,11 +123,9 @@ namespace HOTEL_MINI.Forms
             _currentRoomTypeId = 0;
             if (_bsRoomType.Current is DataRowView drv)
             {
-
                 _currentRoomTypeId = drv.Row.Field<int?>("RoomTypesID") ?? 0;
             }
         }
-
 
         private void SetRtMode(RtMode mode)
         {
@@ -183,14 +181,50 @@ namespace HOTEL_MINI.Forms
                 if (_mode == RtMode.Adding)
                 {
                     var model = new RoomTypes { TypeName = name, Description = desc };
-                    if (_roomTypeSvc.AddRoomType(model)) { MessageBox.Show("Thêm loại phòng thành công!"); ResetRtForm(); LoadRoomTypeSummary(); }
+                    if (_roomTypeSvc.AddRoomType(model))
+                    {
+                        MessageBox.Show("Thêm loại phòng thành công!");
+
+                        // 1) Reload grid đếm số lượng
+                        LoadRoomTypeSummary();
+
+                        // 2) Lấy ID mới nhất (giả định ID tăng dần)
+                        var latestId = _roomTypeSvc.GetAllRoomTypes()
+                                                   .OrderByDescending(x => x.RoomTypeID)
+                                                   .Select(x => x.RoomTypeID)
+                                                   .FirstOrDefault();
+
+                        // 3) Reload combo & chọn item mới
+                        ReloadRoomTypeComboAndSelect(latestId);
+
+                        // 4) Reset form thêm/sửa
+                        ResetRtForm();
+
+                        // 5) cập nhật UI pricing theo selection mới
+                        OnPricingSelectionChanged();
+                    }
                     else MessageBox.Show("Không thêm được loại phòng.");
                 }
                 else if (_mode == RtMode.Editing)
                 {
                     if (_currentRoomTypeId <= 0) { MessageBox.Show("Không xác định ID loại phòng."); return; }
                     var model = new RoomTypes { RoomTypeID = _currentRoomTypeId, TypeName = name, Description = desc };
-                    if (_roomTypeSvc.UpdateRoomType(model)) { MessageBox.Show("Cập nhật loại phòng thành công!"); ResetRtForm(); LoadRoomTypeSummary(); }
+                    if (_roomTypeSvc.UpdateRoomType(model))
+                    {
+                        MessageBox.Show("Cập nhật loại phòng thành công!");
+
+                        // 1) Reload grid
+                        LoadRoomTypeSummary();
+
+                        // 2) Reload combo & giữ nguyên selection đang sửa
+                        ReloadRoomTypeComboAndSelect(_currentRoomTypeId);
+
+                        // 3) Reset form
+                        ResetRtForm();
+
+                        // 4) cập nhật UI pricing theo selection hiện tại
+                        OnPricingSelectionChanged();
+                    }
                     else MessageBox.Show("Không cập nhật được loại phòng.");
                 }
                 else MessageBox.Show("Chưa chọn chế độ Thêm/Sửa.");
@@ -204,11 +238,8 @@ namespace HOTEL_MINI.Forms
         // ===== PRICING =====
         private void LoadPricingCombos()
         {
-            var roomTypes = _roomTypeSvc.GetAllRoomTypes();
-            cboRoomType.DataSource = roomTypes;
-            cboRoomType.DisplayMember = "TypeName";
-            cboRoomType.ValueMember = "RoomTypeID";
-            cboRoomType.SelectedIndex = roomTypes.Count > 0 ? 0 : -1;
+            // dùng helper để load combo loại phòng cho đồng nhất
+            ReloadRoomTypeComboAndSelect();
 
             var pricingTypes = _pricingSvc.GetPricingTypes(); // List<string>
             cboPricingType.DataSource = pricingTypes;
@@ -216,6 +247,25 @@ namespace HOTEL_MINI.Forms
 
             txtPrice.Text = "";
             chkActive.Checked = true;
+        }
+
+        // Helper: Reload combo RoomType và optionally chọn ID chỉ định
+        private void ReloadRoomTypeComboAndSelect(int? selectId = null)
+        {
+            var roomTypes = _roomTypeSvc.GetAllRoomTypes(); // List<RoomTypes>
+            cboRoomType.DataSource = null;
+            cboRoomType.DataSource = roomTypes;
+            cboRoomType.DisplayMember = "TypeName";
+            cboRoomType.ValueMember = "RoomTypeID";
+
+            if (selectId.HasValue && roomTypes.Any(rt => rt.RoomTypeID == selectId.Value))
+            {
+                cboRoomType.SelectedValue = selectId.Value;
+            }
+            else
+            {
+                cboRoomType.SelectedIndex = roomTypes.Count > 0 ? 0 : -1;
+            }
         }
 
         private void UpdatePricingEditState()
@@ -267,7 +317,7 @@ namespace HOTEL_MINI.Forms
             int roomTypeId = (cboRoomType.SelectedValue is int v) ? v : 0;
             string pricingType = cboPricingType.SelectedItem as string ?? "";
             decimal price = 0;
-            decimal.TryParse(txtPrice.Text.Trim(), out price);
+            decimal.TryParse((txtPrice.Text ?? "").Trim(), out price);
 
             return new RoomPricing
             {
@@ -334,14 +384,22 @@ namespace HOTEL_MINI.Forms
                 if (_prMode == PrMode.Adding)
                 {
                     var model = ReadPricingFromForm();
-                    if (_pricingSvc.Add(model)) { MessageBox.Show("Thêm loại giá thành công!"); ResetPricingForm(); }
+                    if (_pricingSvc.Add(model))
+                    {
+                        MessageBox.Show("Thêm loại giá thành công!");
+                        ResetPricingForm();
+                    }
                     else MessageBox.Show("Không thêm được loại giá.");
                 }
                 else if (_prMode == PrMode.Editing)
                 {
                     if (_currentPricingId <= 0) { MessageBox.Show("Không xác định bản ghi giá."); return; }
                     var model = ReadPricingFromForm(_currentPricingId);
-                    if (_pricingSvc.Update(model)) { MessageBox.Show("Cập nhật loại giá thành công!"); ResetPricingForm(); }
+                    if (_pricingSvc.Update(model))
+                    {
+                        MessageBox.Show("Cập nhật loại giá thành công!");
+                        ResetPricingForm();
+                    }
                     else MessageBox.Show("Không cập nhật được loại giá.");
                 }
                 else MessageBox.Show("Chưa chọn chế độ Thêm/Sửa.");

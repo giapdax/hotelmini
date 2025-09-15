@@ -229,5 +229,10 @@ namespace HOTEL_MINI.Forms
                 cbxPaymentMethod.Items.Add(method);
             }
         }
+
+        private void lblDiscount_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

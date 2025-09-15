@@ -202,7 +202,7 @@ namespace HOTEL_MINI.DAL
 
                     using (var cmd = new SqlCommand(sql, _connection, tran))
                     {
-                        string passwordHash = BCrypt.Net.BCrypt.HashPassword("12345678", workFactor: 12);
+                        string passwordHash = BCrypt.Net.BCrypt.HashPassword("Matkhau1234", workFactor: 12);
 
                         cmd.Parameters.Add("@Username", SqlDbType.VarChar, 50).Value = "admin";
                         cmd.Parameters.Add("@PasswordHash", SqlDbType.VarChar, 255).Value = passwordHash;
