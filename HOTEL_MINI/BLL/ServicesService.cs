@@ -16,8 +16,7 @@ namespace HOTEL_MINI.BLL
             _serviceRepository = new ServicesRepository();
         }
 
-        public List<Service> GetAllServices()
-            => _serviceRepository.GetAllServices();
+        public List<Service> GetAllServices() { return _serviceRepository.GetAllServices(); }
 
         public bool AddService(Service service)
         {
@@ -54,8 +53,8 @@ namespace HOTEL_MINI.BLL
             }
         }
 
-        public int GetQuantity(int serviceId)
-            => _serviceRepository.GetQuantity(serviceId);
+        public int GetQuantity(int serviceId) { return _serviceRepository.GetQuantity(serviceId); }
+            
 
         private void Validate(Service s)
         {

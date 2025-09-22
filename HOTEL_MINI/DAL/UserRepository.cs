@@ -314,28 +314,28 @@ namespace HOTEL_MINI.DAL
             }
         }
 
+
         public bool DeleteUser(int userId)
         {
-            const string query = "DELETE FROM Users WHERE UserID = @UserID";
+            const string sql = "DELETE FROM Users WHERE UserID = @UserID";
             try
             {
-                using (var _connection = CreateConnection())
+                using (var conn = CreateConnection())
+                using (var cmd = new SqlCommand(sql, conn))
                 {
-                    _connection.Open();
-
-                    using (var command = new SqlCommand(query, _connection))
-                    {
-                        command.Parameters.AddWithValue("@UserID", userId);
-                        int result = command.ExecuteNonQuery();
-                        return result > 0;
-                    }
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    conn.Open();
+                    return cmd.ExecuteNonQuery() > 0;
                 }
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                Console.WriteLine($"Lỗi khi xóa người dùng: {ex.Message}");
-                return false;
+                if (ex.Number == 547)
+                    throw new InvalidOperationException("Không thể xóa user vì đang được tham chiếu ở nơi khác (đơn/phiếu/hóa đơn...).", ex);
+
+                throw;
             }
         }
+
     }
 }

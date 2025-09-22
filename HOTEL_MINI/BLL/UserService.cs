@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
-using HOTEL_MINI.Common;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace HOTEL_MINI.BLL
 {
@@ -38,16 +39,6 @@ namespace HOTEL_MINI.BLL
 
             if (string.IsNullOrWhiteSpace(user.Username))
                 return ValidationResult.Fail("Username không được để trống.");
-            if (!UsernameRegex.IsMatch(user.Username.Trim()))
-                return ValidationResult.Fail("Username chỉ chứa chữ/số/._- và dài 3-50 ký tự.");
-            if (!string.IsNullOrEmpty(user.FullName) && user.FullName.Trim().Length > 100)
-                return ValidationResult.Fail("Họ tên tối đa 100 ký tự.");
-            if (!string.IsNullOrWhiteSpace(user.Email) && !EmailRegex.IsMatch(user.Email.Trim()))
-                return ValidationResult.Fail("Email không hợp lệ.");
-            if (!string.IsNullOrWhiteSpace(user.Phone) && !PhoneRegex.IsMatch(user.Phone.Trim()))
-                return ValidationResult.Fail("Số điện thoại không hợp lệ.");
-            if (user.Role <= 0)
-                return ValidationResult.Fail("Role không hợp lệ.");
             var existed = _userRepository.GetUserByUsername(user.Username.Trim());
             if (!isUpdate)
             {
@@ -58,7 +49,8 @@ namespace HOTEL_MINI.BLL
                 if (existed != null && existed.UserID != user.UserID)
                     return ValidationResult.Fail("Username đã được người khác sử dụng.");
             }
-
+            if (!UsernameRegex.IsMatch(user.Username.Trim()))
+                return ValidationResult.Fail("Username chỉ chứa chữ/số/._- và dài 3-50 ký tự.");
             if (!string.IsNullOrWhiteSpace(plainPasswordIfProvided))
             {
                 if (!PasswordHelper.Validate(plainPasswordIfProvided, out var pwMsg))
@@ -70,6 +62,14 @@ namespace HOTEL_MINI.BLL
                     return ValidationResult.Fail("Vui lòng nhập mật khẩu.");
             }
 
+            if (!string.IsNullOrEmpty(user.FullName) && user.FullName.Trim().Length > 100)
+                return ValidationResult.Fail("Họ tên tối đa 100 ký tự.");
+            if (!string.IsNullOrWhiteSpace(user.Email) && !EmailRegex.IsMatch(user.Email.Trim()))
+                return ValidationResult.Fail("Email không hợp lệ.");
+            if (!string.IsNullOrWhiteSpace(user.Phone) && !PhoneRegex.IsMatch(user.Phone.Trim()))
+                return ValidationResult.Fail("Số điện thoại không hợp lệ.");
+            if (user.Role <= 0)
+                return ValidationResult.Fail("Role không hợp lệ.");
             return ValidationResult.Ok();
         }
 
@@ -135,8 +135,24 @@ namespace HOTEL_MINI.BLL
             return ChangePasswordResult.Success;
         }
 
-        public bool DeleteUser(int userId) => _userRepository.DeleteUser(userId);
+        public bool DeleteUser(int userId)
+        {
+            try
+            {
+                return _userRepository.DeleteUser(userId);
+            }
+            catch (InvalidOperationException ex)
+            {
 
-        public void CreateAdminUserIfNotExist() => _userRepository.CreateAdminUserIfNotExist();
+                throw new ArgumentException(ex.Message);
+            }
+            catch (SqlException ex) // phòng khi DAL không wrap
+            {
+                if (ex.Number == 547)
+                    throw new ArgumentException("Không thể xóa user vì đang được tham chiếu ở nơi khác (đơn/phiếu/hóa đơn...).");
+                throw;
+            }
+        }
+        public void CreateAdminUserIfNotExist() { _userRepository.CreateAdminUserIfNotExist(); }
     }
 }

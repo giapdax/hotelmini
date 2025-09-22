@@ -308,9 +308,8 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // ===== Inventory =====
 
-        private void btnSaveInventory_Click_1(object sender, EventArgs e)
+        private void btnSaveInventory_Click(object sender, EventArgs e)
         {
             var selected = cboServiceName.SelectedItem as Service;
             if (selected == null)
@@ -327,7 +326,6 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            // Lấy lại số lượng hiện tại từ DS (đảm bảo mới nhất)
             var current = _servicesService.GetAllServices()
                                           .FirstOrDefault(x => x.ServiceID == selected.ServiceID);
             var curQty = current?.Quantity ?? selected.Quantity;

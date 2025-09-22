@@ -1,462 +1,227 @@
 ﻿using HOTEL_MINI.BLL;
-using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace HOTEL_MINI.Forms
 {
     public partial class frmUser : Form
     {
-        private readonly UserService _userService;
-        private readonly RoleService _roleService;
-        private List<Role> _roles;
-        private List<User> _allUsers;
+        private readonly UserService _userSvc = new UserService();
+        private readonly RoleService _roleSvc = new RoleService();
 
-        private enum FormState { View, Add, Edit }
-        private FormState _currentState;
+        private bool isAdd = false; 
+        private BindingList<User> _binding;
 
         public frmUser()
         {
             InitializeComponent();
-            _userService = new UserService();
-            _roleService = new RoleService();
         }
-
-        #region Load dữ liệu
 
         private void frmUser_Load(object sender, EventArgs e)
         {
-            LoadRolesAndStatusToComboBox();
-            LoadAllUsers();
-            SetupDataGridView();
-            SetFormState(FormState.View);
+            LoadRoles();
+            LoadData();
+            SetButtons(viewMode: true);
         }
 
-        private void LoadAllUsers()
+        private void LoadRoles()
         {
-            _allUsers = _userService.GetAllUsers();
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = _allUsers;
-            ClearFields();
-            // Cập nhật lại trạng thái nút sau khi tải xong
-            SetFormState(_currentState);
-        }
-
-        private void LoadRolesAndStatusToComboBox()
-        {
-            _roles = _roleService.GetAllRoles();
-            cmbRole.DataSource = _roles;
+            var roles = _roleSvc.GetAllRoles() ?? new List<Role>();
+            cmbRole.DataSource = roles;
             cmbRole.DisplayMember = "RoleName";
             cmbRole.ValueMember = "RoleID";
             cmbRole.SelectedIndex = -1;
 
-            cmbStatus.DataSource = Enum.GetValues(typeof(UserStatus));
+            cmbStatus.DataSource = Enum.GetNames(typeof(UserStatus));
             cmbStatus.SelectedIndex = -1;
         }
 
-        #endregion
-
-        #region Form state
-
-        private void SetFormState(FormState state)
+        private void LoadData()
         {
-            _currentState = state;
-
-            // Kiểm soát trạng thái của các nút
-            btnAdd.Visible = (_currentState == FormState.View);
-            btnEdit.Visible = (_currentState == FormState.View);
-            btnDelete.Visible = (_currentState == FormState.View);
-            btnSave.Visible = (_currentState == FormState.Add || _currentState == FormState.Edit);
-            btnCancel.Visible = (_currentState == FormState.Add || _currentState == FormState.Edit);
-
-            // Kiểm soát trạng thái của DataGridView
-            dataGridView1.Enabled = (_currentState == FormState.View);
-
-            // Cập nhật trạng thái ReadOnly/Enabled của các trường nhập liệu
-            txtUsername.ReadOnly = (_currentState != FormState.Add);
-            txtFullName.ReadOnly = (_currentState == FormState.View);
-            txtEmail.ReadOnly = (_currentState == FormState.View);
-            txtPhone.ReadOnly = (_currentState == FormState.View);
-
-            // Password chỉ có thể nhập khi thêm mới, hoặc khi đang sửa
-            txtPassword.ReadOnly = (_currentState == FormState.View);
-            if (_currentState == FormState.Edit)
-            {
-                txtPassword.Text = "********";
-                txtPassword.PasswordChar = '*';
-            }
-            else
-            {
-                txtPassword.PasswordChar = (char)0; // Hiển thị rõ ràng
-            }
-
-            cmbRole.Enabled = (_currentState != FormState.View);
-            cmbStatus.Enabled = (_currentState != FormState.View);
-
-            if (_currentState == FormState.View)
-            {
-                ClearFields();
-            }
+            var list = _userSvc.GetAllUsers() ?? new List<User>();
+            _binding = new BindingList<User>(list);
+            dataGridView1.AutoGenerateColumns = true; 
+            dataGridView1.DataSource = _binding;
+            FillFromGrid();
         }
 
-        #endregion
-
-        #region DataGridView Events
-
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void SetButtons(bool viewMode)
         {
-            if (e.RowIndex >= 0 && _currentState == FormState.View)
+            btnAdd.Enabled = viewMode;
+            btnEdit.Enabled = viewMode && dataGridView1.CurrentRow != null;
+            btnDelete.Enabled = viewMode && dataGridView1.CurrentRow != null;
+            btnSave.Enabled = !viewMode;
+            btnCancel.Enabled = !viewMode;
+            txtUsername.Enabled = !viewMode && isAdd;
+        }
+
+        private void ClearInputs()
+        {
+            txtUsername.Clear();
+            txtFullName.Clear();
+            txtPhone.Clear();
+            txtEmail.Clear();
+            txtPassword.Clear();
+            cmbRole.SelectedIndex = -1;
+            cmbStatus.SelectedIndex = -1;
+        }
+
+        private void FillFromGrid()
+        {
+            var u = dataGridView1.CurrentRow?.DataBoundItem as User;
+            if (u == null) { ClearInputs(); return; }
+
+            txtUsername.Text = u.Username;
+            txtFullName.Text = u.FullName ?? "";
+            txtPhone.Text = u.Phone ?? "";
+            txtEmail.Text = u.Email ?? "";
+            txtPassword.Text = "********";
+            cmbRole.SelectedValue = u.Role;
+            cmbStatus.SelectedItem = u.Status.ToString();
+        }
+
+        private User FillToModel()
+        {
+            int id = 0;
+            if (!isAdd && dataGridView1.CurrentRow?.DataBoundItem is User cur)
+                id = cur.UserID;
+
+            var statusName = cmbStatus.SelectedItem?.ToString();
+            Enum.TryParse(statusName, out UserStatus status);
+
+            int roleId = cmbRole.SelectedValue is int r ? r : 0;
+
+            return new User
             {
-                DisplaySelectedRowInfo();
-                // Sau khi click, ta có thể enable các nút Edit/Delete
-                btnEdit.Enabled = true;
-                btnDelete.Enabled = true;
-            }
+                UserID = id,
+                Username = txtUsername.Text?.Trim(),
+                FullName = txtFullName.Text?.Trim(),
+                Phone = txtPhone.Text?.Trim(),
+                Email = txtEmail.Text?.Trim(),
+                Role = roleId,
+                Status = status
+            };
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            // Chỉ xử lý khi ở chế độ View để tránh xung đột
-            if (_currentState == FormState.View)
-            {
-                if (dataGridView1.SelectedRows.Count > 0)
-                {
-                    btnEdit.Enabled = true;
-                    btnDelete.Enabled = true;
-                    DisplaySelectedRowInfo();
-                }
-                else
-                {
-                    btnEdit.Enabled = false;
-                    btnDelete.Enabled = false;
-                    ClearFields();
-                }
-            }
+            if (btnSave.Enabled) return;
+            FillFromGrid();
+            SetButtons(viewMode: true);
         }
 
-        private void DisplaySelectedRowInfo()
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count == 0) return;
-
-            DataGridViewRow row = dataGridView1.SelectedRows[0];
-
-            txtUsername.Text = row.Cells["Username"].Value?.ToString() ?? "";
-            txtFullName.Text = row.Cells["FullName"].Value?.ToString() ?? "";
-            txtEmail.Text = row.Cells["Email"].Value?.ToString() ?? "";
-            txtPhone.Text = row.Cells["Phone"].Value?.ToString() ?? "";
-
-            // Không hiển thị password thật, chỉ placeholder
-            txtPassword.Text = "********";
-            txtPassword.PasswordChar = '*';
-
-            if (row.Cells["Role"].Value != null && int.TryParse(row.Cells["Role"].Value.ToString(), out int roleId))
+            var q = (txtSearch.Text ?? "").Trim().ToLower();
+            var all = _userSvc.GetAllUsers() ?? new List<User>();
+            if (!string.IsNullOrEmpty(q))
             {
-                if (_roles.Any(r => r.RoleID == roleId))
-                    cmbRole.SelectedValue = roleId;
-                else
-                    cmbRole.SelectedIndex = -1;
+                all = all.Where(u =>
+                        (u.Username ?? "").ToLower().Contains(q) ||
+                        (u.FullName ?? "").ToLower().Contains(q) ||
+                        (u.Email ?? "").ToLower().Contains(q) ||
+                        (u.Phone ?? "").ToLower().Contains(q) ||
+                        u.Status.ToString().ToLower().Contains(q) ||
+                        u.Role.ToString().Contains(q))
+                    .ToList();
             }
-
-            if (row.Cells["Status"].Value is UserStatus status)
-                cmbStatus.SelectedItem = status;
+            _binding = new BindingList<User>(all);
+            dataGridView1.DataSource = _binding;
         }
-
-        #endregion
-
-        #region CRUD Button Events
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            SetFormState(FormState.Add);
-            ClearFields();
+            isAdd = true;
+            ClearInputs();
+            SetButtons(viewMode: false);
             txtUsername.Focus();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
-            {
-                SetFormState(FormState.Edit);
-                txtFullName.Focus();
-            }
-            else
-            {
-                MessageBox.Show("Vui lòng chọn người dùng để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            if (dataGridView1.CurrentRow == null) return;
+            isAdd = false;
+            FillFromGrid();
+            txtPassword.Text = "********";
+            SetButtons(viewMode: false);
+            txtFullName.Focus();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            isAdd = false;
+            LoadData();
+            SetButtons(viewMode: true);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (_currentState == FormState.Add)
+            var model = FillToModel();
+
+            var plainPassword = txtPassword.Text;
+            if (!isAdd && plainPassword == "********")
+                plainPassword = null;
+
+            try
             {
-                HandleAddUser();
+                // Validate ở BLL và HIỂN THỊ LỖI
+                var vr = _userSvc.TryValidateUser(model, isUpdate: !isAdd, plainPasswordIfProvided: plainPassword);
+                if (!vr.IsValid)
+                {
+                    MessageBox.Show(vr.Message, "Dữ liệu chưa hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                bool ok = isAdd
+                    ? _userSvc.AddUser(model, plainPassword)                 
+                    : _userSvc.UpdateUser(model, plainPassword);  
+
+                if (!ok)
+                {
+                    MessageBox.Show("Thao tác không thành công.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                MessageBox.Show("Đã lưu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                isAdd = false;
+                LoadData();
+                SetButtons(viewMode: true);
             }
-            else if (_currentState == FormState.Edit)
+            catch (Exception ex)
             {
-                HandleUpdateUser();
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count == 0)
+            var u = dataGridView1.CurrentRow?.DataBoundItem as User;
+            if (u == null) return;
+
+            var cf = MessageBox.Show($"Xóa user '{u.Username}' ?", "Xác nhận",
+                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (cf != DialogResult.Yes) return;
+
+            try
             {
-                MessageBox.Show("Vui lòng chọn người dùng để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var selectedUser = dataGridView1.SelectedRows[0].DataBoundItem as User;
-            if (selectedUser == null) return;
-
-            DialogResult result = MessageBox.Show($"Bạn có chắc chắn muốn xóa người dùng '{selectedUser.Username}'?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-                bool isDeleted = _userService.DeleteUser(selectedUser.UserID);
-                if (isDeleted)
+                if (_userSvc.DeleteUser(u.UserID))
                 {
-                    MessageBox.Show("Xóa người dùng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadAllUsers();
+                    MessageBox.Show("Đã xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData();
                 }
                 else
                 {
-                    MessageBox.Show("Xóa người dùng thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Xóa thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            LoadAllUsers();
-            SetFormState(FormState.View);
-        }
-
-        #endregion
-
-        #region Xử lý thêm/sửa
-
-        private void HandleAddUser()
-        {
-            if (!ValidateInputs(isNew: true)) return;
-
-            var newUser = new User()
+            catch (Exception ex)
             {
-                Username = txtUsername.Text.Trim(),
-                FullName = txtFullName.Text.Trim(),
-                Phone = txtPhone.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
-                Role = (int)cmbRole.SelectedValue,
-                Status = (UserStatus)cmbStatus.SelectedItem
-            };
-
-            string password = txtPassword.Text.Trim();
-
-            bool isAdded = _userService.AddUser(newUser, password);
-            if (isAdded)
-            {
-                MessageBox.Show("Thêm người dùng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadAllUsers();
-                SetFormState(FormState.View);
-            }
-            else
-            {
-                MessageBox.Show("Thêm người dùng thất bại. Username có thể đã tồn tại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void HandleUpdateUser()
-        {
-            if (dataGridView1.SelectedRows.Count == 0) return;
-            if (!ValidateInputs(isNew: false)) return;
-
-            var selectedUser = dataGridView1.SelectedRows[0].DataBoundItem as User;
-            if (selectedUser == null) return;
-
-            selectedUser.FullName = txtFullName.Text.Trim();
-            selectedUser.Phone = txtPhone.Text.Trim();
-            selectedUser.Email = txtEmail.Text.Trim();
-            selectedUser.Role = (int)cmbRole.SelectedValue;
-            selectedUser.Status = (UserStatus)cmbStatus.SelectedItem;
-
-            string newPassword = null;
-            if (!string.IsNullOrWhiteSpace(txtPassword.Text) && txtPassword.Text != "********")
-            {
-                newPassword = txtPassword.Text.Trim();
-            }
-
-            bool isUpdated = _userService.UpdateUser(selectedUser, newPassword);
-            if (isUpdated)
-            {
-                MessageBox.Show("Cập nhật người dùng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadAllUsers();
-                SetFormState(FormState.View);
-            }
-            else
-            {
-                MessageBox.Show("Cập nhật người dùng thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        #endregion
-
-        #region Validate
-
-        private bool ValidateInputs(bool isNew)
-        {
-            string username = txtUsername.Text.Trim();
-            string password = txtPassword.Text; // giữ nguyên để check "********"
-            string email = txtEmail.Text.Trim();
-            string phone = txtPhone.Text.Trim();
-
-            // 1) Username: chỉ chữ & số, không khoảng trắng, không ký tự đặc biệt
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                MessageBox.Show("Username không được để trống.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtUsername.Focus();
-                return false;
-            }
-            if (!Regex.IsMatch(username, @"^[A-Za-z0-9]+$"))
-            {
-                MessageBox.Show("Username chỉ được chứa chữ và số, không có khoảng trắng hoặc ký tự đặc biệt.",
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtUsername.Focus();
-                txtUsername.SelectAll();
-                return false;
-            }
-
-            // 2) Password (dùng chung PasswordHelper)
-            if (isNew)
-            {
-                if (!PasswordHelper.Validate(password, out var msg))
-                {
-                    MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtPassword.Focus();
-                    return false;
-                }
-            }
-            else
-            {
-                // Chỉ validate khi user thực sự đổi (khác placeholder)
-                if (!string.IsNullOrWhiteSpace(password) && password != "********")
-                {
-                    if (!PasswordHelper.Validate(password, out var msg))
-                    {
-                        MessageBox.Show(msg, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        txtPassword.Focus();
-                        return false;
-                    }
-                }
-            }
-
-            // 3) Role/Status bắt buộc
-            if (cmbRole.SelectedValue == null || cmbStatus.SelectedItem == null)
-            {
-                MessageBox.Show("Vai trò và Trạng thái không được để trống.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            // 4) Email (nếu có) phải hợp lệ
-            if (!string.IsNullOrWhiteSpace(email) &&
-                !Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                MessageBox.Show("Email không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtEmail.Focus();
-                txtEmail.SelectAll();
-                return false;
-            }
-
-            // 5) SĐT (nếu có) phải đúng 10 số
-            if (!string.IsNullOrWhiteSpace(phone) &&
-                !Regex.IsMatch(phone, @"^\d{10}$"))
-            {
-                MessageBox.Show("Số điện thoại không đúng định dạng (phải gồm đúng 10 số).",
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtPhone.Focus();
-                txtPhone.SelectAll();
-                return false;
-            }
-
-            // Quan trọng: đảm bảo luôn có return true ở cuối
-            return true;
-        }
-
-
-
-        #endregion
-
-        #region Tiện ích và Cấu hình
-
-        private void ClearFields()
-        {
-            txtUsername.Text = "";
-            txtFullName.Text = "";
-            txtEmail.Text = "";
-            txtPhone.Text = "";
-            txtPassword.Text = "";
-            txtPassword.PasswordChar = (char)0; // Reset password char
-            cmbRole.SelectedIndex = -1;
-            cmbStatus.SelectedIndex = -1;
-            dataGridView1.ClearSelection();
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            string searchText = txtSearch.Text.ToLower().Trim();
-            if (string.IsNullOrWhiteSpace(searchText))
-                dataGridView1.DataSource = _allUsers;
-            else
-            {
-                var filteredUsers = _allUsers.Where(user =>
-                    user.Username.ToLower().Contains(searchText) ||
-                    (user.FullName != null && user.FullName.ToLower().Contains(searchText)) ||
-                    (user.Email != null && user.Email.ToLower().Contains(searchText)) ||
-                    (user.Phone != null && user.Phone.Contains(searchText))
-                ).ToList();
-
-                dataGridView1.DataSource = filteredUsers;
-            }
-        }
-
-        private void SetupDataGridView()
-        {
-            dataGridView1.AutoGenerateColumns = true; // Tự động tạo cột
-            // Tùy chỉnh HeaderText và ẩn cột không cần thiết
-            dataGridView1.DataBindingComplete += (sender, e) =>
-            {
-                if (dataGridView1.Columns.Contains("UserID"))
-                    dataGridView1.Columns["UserID"].Visible = false;
-                if (dataGridView1.Columns.Contains("PasswordHash"))
-                    dataGridView1.Columns["PasswordHash"].Visible = false;
-
-                if (dataGridView1.Columns.Contains("FullName")) dataGridView1.Columns["FullName"].HeaderText = "Họ và Tên";
-                if (dataGridView1.Columns.Contains("Username")) dataGridView1.Columns["Username"].HeaderText = "Tên đăng nhập";
-                if (dataGridView1.Columns.Contains("Email")) dataGridView1.Columns["Email"].HeaderText = "Email";
-                if (dataGridView1.Columns.Contains("Phone")) dataGridView1.Columns["Phone"].HeaderText = "Điện thoại";
-                if (dataGridView1.Columns.Contains("Role")) dataGridView1.Columns["Role"].HeaderText = "Vai trò";
-                if (dataGridView1.Columns.Contains("Status")) dataGridView1.Columns["Status"].HeaderText = "Trạng thái";
-            };
-        }
-
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "Status" && e.Value is UserStatus)
-            {
-                e.Value = e.Value.ToString();
-                e.FormattingApplied = true;
-            }
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "Role" && e.Value is int roleId)
-            {
-                var role = _roles?.FirstOrDefault(r => r.RoleID == roleId);
-                if (role != null) e.Value = role.RoleName;
-                e.FormattingApplied = true;
-            }
-        }
-
-        #endregion
-
     }
 }

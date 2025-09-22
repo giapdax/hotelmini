@@ -164,8 +164,6 @@ namespace HOTEL_MINI.Forms
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(688, 460);
             this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-            this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
             // tableLayoutRight
@@ -207,8 +205,9 @@ namespace HOTEL_MINI.Forms
             // 
             // btnAdd
             // 
-            this.btnAdd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnAdd.BackColor = System.Drawing.Color.Brown;
             this.btnAdd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
             this.btnAdd.Location = new System.Drawing.Point(3, 3);
             this.btnAdd.Name = "btnAdd";
@@ -220,8 +219,9 @@ namespace HOTEL_MINI.Forms
             // 
             // btnEdit
             // 
-            this.btnEdit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnEdit.BackColor = System.Drawing.Color.Brown;
             this.btnEdit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnEdit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEdit.ForeColor = System.Drawing.Color.White;
             this.btnEdit.Location = new System.Drawing.Point(3, 46);
             this.btnEdit.Name = "btnEdit";
@@ -233,8 +233,9 @@ namespace HOTEL_MINI.Forms
             // 
             // btnDelete
             // 
-            this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnDelete.BackColor = System.Drawing.Color.Brown;
             this.btnDelete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDelete.ForeColor = System.Drawing.Color.White;
             this.btnDelete.Location = new System.Drawing.Point(171, 3);
             this.btnDelete.Name = "btnDelete";
@@ -246,7 +247,7 @@ namespace HOTEL_MINI.Forms
             // 
             // groupBoxDetail
             // 
-            this.groupBoxDetail.BackColor = System.Drawing.Color.NavajoWhite;
+            this.groupBoxDetail.BackColor = System.Drawing.Color.SeaShell;
             this.groupBoxDetail.Controls.Add(this.tableLayoutUserInfo);
             this.groupBoxDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -260,7 +261,7 @@ namespace HOTEL_MINI.Forms
             // 
             // tableLayoutUserInfo
             // 
-            this.tableLayoutUserInfo.BackColor = System.Drawing.Color.NavajoWhite;
+            this.tableLayoutUserInfo.BackColor = System.Drawing.Color.SeaShell;
             this.tableLayoutUserInfo.ColumnCount = 2;
             this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutUserInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
@@ -294,7 +295,7 @@ namespace HOTEL_MINI.Forms
             // 
             // lblUsername
             // 
-            this.lblUsername.BackColor = System.Drawing.Color.NavajoWhite;
+            this.lblUsername.BackColor = System.Drawing.Color.SeaShell;
             this.lblUsername.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUsername.ForeColor = System.Drawing.Color.Firebrick;
@@ -316,7 +317,7 @@ namespace HOTEL_MINI.Forms
             // 
             // lblFullName
             // 
-            this.lblFullName.BackColor = System.Drawing.Color.NavajoWhite;
+            this.lblFullName.BackColor = System.Drawing.Color.SeaShell;
             this.lblFullName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblFullName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFullName.ForeColor = System.Drawing.Color.Firebrick;
@@ -347,7 +348,7 @@ namespace HOTEL_MINI.Forms
             // 
             // lblEmail
             // 
-            this.lblEmail.BackColor = System.Drawing.Color.NavajoWhite;
+            this.lblEmail.BackColor = System.Drawing.Color.SeaShell;
             this.lblEmail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmail.ForeColor = System.Drawing.Color.Firebrick;
@@ -360,7 +361,7 @@ namespace HOTEL_MINI.Forms
             // 
             // lblPassword
             // 
-            this.lblPassword.BackColor = System.Drawing.Color.NavajoWhite;
+            this.lblPassword.BackColor = System.Drawing.Color.SeaShell;
             this.lblPassword.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPassword.ForeColor = System.Drawing.Color.Firebrick;
@@ -382,7 +383,7 @@ namespace HOTEL_MINI.Forms
             // 
             // lblStatus
             // 
-            this.lblStatus.BackColor = System.Drawing.Color.NavajoWhite;
+            this.lblStatus.BackColor = System.Drawing.Color.SeaShell;
             this.lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblStatus.ForeColor = System.Drawing.Color.Firebrick;
@@ -395,7 +396,7 @@ namespace HOTEL_MINI.Forms
             // 
             // label1
             // 
-            this.label1.BackColor = System.Drawing.Color.NavajoWhite;
+            this.label1.BackColor = System.Drawing.Color.SeaShell;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Firebrick;
@@ -446,7 +447,7 @@ namespace HOTEL_MINI.Forms
             // 
             // lblRole
             // 
-            this.lblRole.BackColor = System.Drawing.Color.NavajoWhite;
+            this.lblRole.BackColor = System.Drawing.Color.SeaShell;
             this.lblRole.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblRole.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRole.ForeColor = System.Drawing.Color.Firebrick;
@@ -488,7 +489,8 @@ namespace HOTEL_MINI.Forms
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnSave.BackColor = System.Drawing.Color.Brown;
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSave.ForeColor = System.Drawing.Color.White;
             this.btnSave.Location = new System.Drawing.Point(204, 3);
             this.btnSave.Name = "btnSave";
@@ -501,7 +503,8 @@ namespace HOTEL_MINI.Forms
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnCancel.BackColor = System.Drawing.Color.Brown;
+            this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.ForeColor = System.Drawing.Color.White;
             this.btnCancel.Location = new System.Drawing.Point(120, 4);
             this.btnCancel.Name = "btnCancel";
