@@ -3,9 +3,6 @@ using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HOTEL_MINI.DAL
 {
@@ -191,15 +188,14 @@ namespace HOTEL_MINI.DAL
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                string sql = @"
-UPDATE Customers SET
-    FullName = @FullName,
-    Gender   = @Gender,
-    Phone    = @Phone,
-    Email    = @Email,
-    Address  = @Address,
-    IDNumber = @IDNumber
-WHERE CustomerID = @CustomerID";
+                string sql = @"UPDATE Customers SET
+                            FullName = @FullName,
+                            Gender   = @Gender,
+                            Phone    = @Phone,
+                            Email    = @Email,
+                            Address  = @Address,
+                            IDNumber = @IDNumber
+                        WHERE CustomerID = @CustomerID";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {

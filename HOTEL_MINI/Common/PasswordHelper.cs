@@ -4,9 +4,6 @@ namespace HOTEL_MINI.Common
 {
     public static class PasswordHelper
     {
-        /// <summary>
-        /// Yêu cầu: >= 8 ký tự và có ít nhất 2/3 nhóm: chữ, số, ký tự đặc biệt.
-        /// </summary>
         public static bool Validate(string password, out string message)
         {
             message = null;

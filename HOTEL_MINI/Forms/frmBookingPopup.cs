@@ -180,7 +180,7 @@ namespace HOTEL_MINI.Forms
             else
             {
                 MessageBox.Show("Đặt phòng thành công! BookingID: " + bookingResult.BookingID);
-                var changeStatus = _roomService.updateRoomStatus(_room.RoomID, rbtnNhanngay.Checked ? "Occupied" : "Booked");
+                var changeStatus = _roomService.UpdateRoomStatus(_room.RoomID, rbtnNhanngay.Checked ? "Occupied" : "Booked");
                 if (changeStatus)
                 {
                     MessageBox.Show("Cap nhat trang thai phong thanh cong");

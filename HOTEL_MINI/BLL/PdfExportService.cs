@@ -149,7 +149,7 @@ namespace HOTEL_MINI.BLL
                 document.Add(new Paragraph(" "));
 
                 // Footer
-                Paragraph footer = new Paragraph("Cảm ơn quý khách đã sử dụng dịch vụ!", GetVietnameseFont(10, Font.ITALIC))
+                    Paragraph footer = new Paragraph("Cảm ơn quý khách đã sử dụng dịch vụ!", GetVietnameseFont(10, Font.ITALIC))
                 {
                     Alignment = Element.ALIGN_CENTER,
                     SpacingBefore = 20f

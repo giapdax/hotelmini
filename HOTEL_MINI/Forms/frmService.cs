@@ -1,7 +1,6 @@
 ﻿using HOTEL_MINI.BLL;
 using HOTEL_MINI.Model.Entity;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,115 +9,80 @@ namespace HOTEL_MINI.Forms
 {
     public partial class frmService : Form
     {
-        // Enum để quản lý trạng thái của form
-        private enum FormState { Viewing, Adding, Editing }
-        private FormState _currentState;
-
-        private readonly ServicesService _servicesService;
+        private readonly ServicesService _servicesService = new ServicesService();
         private BindingList<Service> _bindingListServices;
-        private BindingSource _bindingSource;
-        private decimal price;
+        private BindingSource _bindingSource = new BindingSource();
+
+        private Service _current = new Service();
+        private bool _isAdd = false;
 
         public frmService()
         {
             InitializeComponent();
-            _servicesService = new ServicesService();
-            _bindingSource = new BindingSource();
-
-            // Chỉ gán những event mà Designer KHÔNG gán
-            this.datagridViewService.CellClick += datagridViewService_CellClick;
             this.datagridViewService.CellFormatting += datagridViewService_CellFormatting;
-
-            // Không gán Load, Click, TextChanged… ở đây nữa vì Designer đã gán
-            SetFormState(FormState.Viewing);
+            this.datagridViewService.CellClick += datagridViewService_CellClick;
         }
-
 
         private void frmService_Load(object sender, EventArgs e)
         {
-            SetupDataGridView();
-            LoadAllServices();
-            PopulateComboBox();
+            SetupGrid();
+            ReloadAll();
+            ResetUI();
         }
 
-        // Hàm này thiết lập trạng thái của form và điều chỉnh hiển thị/enable của controls
-        private void SetFormState(FormState newState)
-        {
-            _currentState = newState;
 
-            bool enableInput = false;
-            bool enableGridAndSearch = false;
-
-            btnAddService.Visible = _currentState == FormState.Viewing;
-            btnEditService.Visible = _currentState == FormState.Viewing;
-            btnDeleteService.Visible = _currentState == FormState.Viewing;
-
-            btnSave.Visible = _currentState == FormState.Adding || _currentState == FormState.Editing;
-            btnCancel.Visible = _currentState == FormState.Adding || _currentState == FormState.Editing;
-
-            datagridViewService.Enabled = _currentState == FormState.Viewing;
-            txtSearchService.Enabled = _currentState == FormState.Viewing;
-
-            // Bật/Tắt các control của phần nhập liệu chính
-            switch (newState)
-            {
-                case FormState.Viewing:
-                    enableInput = false;
-                    enableGridAndSearch = true;
-                    datagridViewService.ClearSelection();
-                    break;
-                case FormState.Adding:
-                    enableInput = true;
-                    enableGridAndSearch = false;
-                    ClearFields();
-                    break;
-                case FormState.Editing:
-                    enableInput = true;
-                    enableGridAndSearch = false;
-                    break;
-            }
-
-            // Áp dụng thuộc tính Enabled cho các control nhập liệu
-            txtServiceName.Enabled = enableInput;
-            txtPrice.Enabled = enableInput;
-            chkIsActive.Enabled = enableInput;
-            txtQuantity.Enabled = enableInput;
-        }
-
-        private void SetupDataGridView()
+        private void SetupGrid()
         {
             datagridViewService.AutoGenerateColumns = false;
             datagridViewService.DataSource = _bindingSource;
             datagridViewService.Columns.Clear();
-            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServiceID", Visible = false });
-            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServiceName", HeaderText = "Tên Dịch Vụ", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Price", HeaderText = "Giá", DefaultCellStyle = { Format = "N0" } });
-            // Thêm cột Quantity để hiển thị số lượng tồn kho
-            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quantity", HeaderText = "Số Lượng Tồn", AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader });
-            datagridViewService.Columns.Add(new DataGridViewCheckBoxColumn { DataPropertyName = "IsActive", HeaderText = "Hoạt Động" });
+
+            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ServiceID",
+                Visible = false
+            });
+            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ServiceName",
+                HeaderText = "Tên Dịch Vụ",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            });
+            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Price",
+                HeaderText = "Giá",
+                DefaultCellStyle = { Format = "N0" }
+            });
+            datagridViewService.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Quantity",
+                HeaderText = "Số Lượng Tồn",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader
+            });
+            datagridViewService.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                DataPropertyName = "IsActive",
+                HeaderText = "Hoạt Động"
+            });
         }
 
-        private void LoadAllServices()
+        private void ReloadAll()
         {
-            var services = _servicesService.GetAllServices();
-
+            var list = _servicesService.GetAllServices();
             if (_bindingListServices == null)
             {
-                _bindingListServices = new BindingList<Service>(services.ToList());
-                _bindingSource = new BindingSource(_bindingListServices, null);
-                datagridViewService.DataSource = _bindingSource;
+                _bindingListServices = new BindingList<Service>(list.ToList());
+                _bindingSource.DataSource = _bindingListServices;
             }
             else
             {
-                // ✅ Cập nhật lại list thay vì tạo mới
                 _bindingListServices.Clear();
-                foreach (var s in services)
-                {
-                    _bindingListServices.Add(s);
-                }
+                foreach (var s in list) _bindingListServices.Add(s);
             }
-        }
 
+            PopulateComboBox();
+        }
 
         private void PopulateComboBox()
         {
@@ -129,399 +93,277 @@ namespace HOTEL_MINI.Forms
             cboServiceName.ValueMember = "ServiceID";
             cboServiceName.SelectedIndex = -1;
 
-            // Tạo danh sách autocomplete
-            AutoCompleteStringCollection autoCompleteData = new AutoCompleteStringCollection();
-            foreach (var s in services)
-            {
-                autoCompleteData.Add(s.ServiceName);
-            }
-            cboServiceName.AutoCompleteCustomSource = autoCompleteData;
+            var ac = new AutoCompleteStringCollection();
+            foreach (var s in services) ac.Add(s.ServiceName);
+            cboServiceName.AutoCompleteCustomSource = ac;
         }
 
-
-        private void datagridViewService_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void ResetUI()
         {
-            if (datagridViewService.Columns[e.ColumnIndex].DataPropertyName == "Price")
-            {
-                if (e.Value is decimal price)
-                {
-                    e.Value = $"{price:N0} VNĐ";
-                    e.FormattingApplied = true;
-                }
-            }
+            SetInputsEnabled(false);
+
+            btnAddService.Enabled = true;
+            btnEditService.Enabled = true;
+            btnDeleteService.Enabled = true;
+            btnSave.Enabled = true;
+
+            datagridViewService.ReadOnly = true;
+            datagridViewService.ClearSelection();
         }
 
-        private void datagridViewService_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void SetInputsEnabled(bool on)
         {
-            if (_currentState != FormState.Viewing)
-            {
-                return;
-            }
-
-            if (e.RowIndex < 0 || datagridViewService.Rows[e.RowIndex].IsNewRow)
-            {
-                return;
-            }
-
-            if (datagridViewService.Rows[e.RowIndex].DataBoundItem is Service selectedService)
-            {
-                txtServiceName.Text = selectedService.ServiceName;
-                txtPrice.Text = selectedService.Price.ToString();
-                txtQuantity.Text = selectedService.Quantity.ToString(); // Thêm dòng này để hiển thị số lượng
-                chkIsActive.Checked = selectedService.IsActive;
-            }
+            txtServiceName.Enabled = on;
+            txtPrice.Enabled = on;
+            txtQuantity.Enabled = on;
+            chkIsActive.Enabled = on;
         }
 
-        private bool ValidateInput()
-        {
-            if (string.IsNullOrWhiteSpace(txtServiceName.Text))
-            {
-                MessageBox.Show("Tên dịch vụ không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtServiceName.Focus();
-                return false;
-            }
-
-            if (!decimal.TryParse(txtPrice.Text, out price) || price <= 0)
-            {
-                MessageBox.Show("Giá phải là một số dương hợp lệ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPrice.Focus();
-                return false;
-            }
-
-            if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity < 0)
-            {
-                MessageBox.Show("Số lượng phải là một số nguyên không âm hợp lệ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtQuantity.Focus();
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidateInventoryInput()
-        {
-            if (cboServiceName.SelectedIndex == -1)
-            {
-                MessageBox.Show("Vui lòng chọn một dịch vụ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboServiceName.Focus();
-                return false;
-            }
-
-            if (!int.TryParse(txtQuantityAdd.Text, out int quantity) || quantity <= 0)
-            {
-                MessageBox.Show("Số lượng thêm phải là một số nguyên dương hợp lệ.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtQuantityAdd.Focus();
-                return false;
-            }
-            return true;
-        }
-
-        private void btnAddService_Click(object sender, EventArgs e)
-        {
-            SetFormState(FormState.Adding);
-            txtServiceName.Focus();
-        }
-
-        private void btnEditService_Click(object sender, EventArgs e)
-        {
-            if (!(_bindingSource.Current is Service selectedService))
-            {
-                MessageBox.Show("Vui lòng chọn một dịch vụ để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            SetFormState(FormState.Editing);
-            txtServiceName.Focus();
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            if (!ValidateInput())
-                return;
-
-            try
-            {
-                if (_currentState == FormState.Adding)
-                {
-                    HandleAddService();   // có thể ném ArgumentException (trùng tên, giá âm, v.v.)
-                }
-                else if (_currentState == FormState.Editing)
-                {
-                    HandleEditService();  // tương tự
-                }
-                else
-                {
-                    MessageBox.Show("Không ở trạng thái Thêm/Sửa.",
-                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (ArgumentException ex)   // lỗi validate từ BLL
-            {
-                MessageBox.Show(ex.Message,
-                    "Dữ liệu chưa hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtServiceName.Focus();    // focus vào ô hay sai nhất
-            }
-            catch (Exception ex)           // lỗi hệ thống/DB khác
-            {
-                MessageBox.Show("Có lỗi xảy ra: " + ex.Message,
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-
-        private void HandleAddService()
-        {
-            if (!int.TryParse(txtQuantity.Text, out int quantity))
-            {
-                quantity = 0; // Gán mặc định nếu không hợp lệ
-            }
-
-            var newService = new Service
-            {
-                ServiceName = txtServiceName.Text,
-                Price = price,
-                IsActive = chkIsActive.Checked,
-                Quantity = quantity // Thêm Quantity
-            };
-
-            if (_servicesService.AddService(newService))
-            {
-                LoadAllServices();
-                PopulateComboBox(); // Cập nhật ComboBox
-                MessageBox.Show("Thêm dịch vụ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                SetFormState(FormState.Viewing);
-            }
-            else
-            {
-                MessageBox.Show("Thêm dịch vụ thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void HandleEditService()
-        {
-            if (!(_bindingSource.Current is Service selectedService))
-            {
-                return;
-            }
-
-            if (!int.TryParse(txtQuantity.Text, out int quantity))
-            {
-                quantity = selectedService.Quantity; // Giữ lại giá trị cũ nếu không hợp lệ
-            }
-
-            selectedService.ServiceName = txtServiceName.Text;
-            selectedService.Price = price;
-            selectedService.IsActive = chkIsActive.Checked;
-            selectedService.Quantity = quantity; // Cập nhật Quantity
-
-            if (_servicesService.UpdateService(selectedService))
-            {
-                MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _bindingSource.ResetBindings(false);
-                SetFormState(FormState.Viewing);
-            }
-            else
-            {
-                MessageBox.Show("Cập nhật thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            LoadAllServices();
-            SetFormState(FormState.Viewing);
-            ClearFields();
-        }
-
-        private void btnDeleteService_Click(object sender, EventArgs e)
-        {
-            if (!(_bindingSource.Current is Service selectedService))
-            {
-                MessageBox.Show("Vui lòng chọn một dịch vụ để xóa.",
-                                "Thông báo",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
-                return;
-            }
-
-            var confirm = MessageBox.Show("Bạn có chắc muốn xóa dịch vụ này?",
-                                          "Xác nhận",
-                                          MessageBoxButtons.YesNo,
-                                          MessageBoxIcon.Question);
-
-            if (confirm == DialogResult.Yes)
-            {
-                bool isDeleted = _servicesService.DeleteService(selectedService.ServiceID);
-
-                if (isDeleted)
-                {
-                    // ✅ Không RemoveCurrent nữa, thay bằng reload từ DB
-                    LoadAllServices();
-                    PopulateComboBox();
-
-                    MessageBox.Show("Xóa thành công!",
-                                    "Thông báo",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-
-                    ClearFields(); // reset form
-                }
-                else
-                {
-                    MessageBox.Show("Xóa thất bại. Vui lòng thử lại.",
-                                    "Lỗi",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-                }
-            }
-        }
-
-
-
-        private void txtSearchService_TextChanged(object sender, EventArgs e)
-        {
-            // Lấy chuỗi tìm kiếm và chuyển về chữ thường để tìm kiếm không phân biệt chữ hoa, chữ thường
-            string searchText = txtSearchService.Text.Trim().ToLower();
-
-            if (string.IsNullOrEmpty(searchText))
-            {
-                // Nếu ô tìm kiếm trống, hiển thị lại toàn bộ danh sách dịch vụ
-                _bindingSource.DataSource = _bindingListServices;
-            }
-            else
-            {
-                // Lọc danh sách dịch vụ bằng LINQ
-                var filteredServices = _bindingListServices
-                    .Where(s => s.ServiceName.ToLower().Contains(searchText) ||
-                                s.Price.ToString().Contains(searchText) ||
-                                s.Quantity.ToString().Contains(searchText))
-                    .ToList();
-
-                // Cập nhật DataSource của BindingSource bằng danh sách đã lọc
-                _bindingSource.DataSource = new BindingList<Service>(filteredServices);
-            }
-        }
-
-        private void ClearFields()
+        private void ClearInputs()
         {
             txtServiceName.Clear();
             txtPrice.Clear();
             txtQuantity.Clear();
             chkIsActive.Checked = false;
-            datagridViewService.ClearSelection();
+        }
+
+        private void ReadInputsToCurrent()
+        {
+            decimal.TryParse(txtPrice.Text?.Trim(), out var p);
+            int.TryParse(txtQuantity.Text?.Trim(), out var q);
+
+            _current.ServiceName = txtServiceName.Text?.Trim();
+            _current.Price = p;
+            _current.Quantity = q;
+            _current.IsActive = chkIsActive.Checked;
+        }
+
+        private void WriteCurrentToInputs()
+        {
+            txtServiceName.Text = _current?.ServiceName ?? "";
+            txtPrice.Text = (_current?.Price ?? 0m).ToString();
+            txtQuantity.Text = (_current?.Quantity ?? 0).ToString();
+            chkIsActive.Checked = _current?.IsActive ?? false;
+        }
+
+
+        private void datagridViewService_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (datagridViewService.Columns[e.ColumnIndex].DataPropertyName == "Price"
+                && e.Value is decimal price)
+            {
+                e.Value = $"{price:N0} VNĐ";
+                e.FormattingApplied = true;
+            }
+        }
+
+        private void datagridViewService_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || datagridViewService.Rows[e.RowIndex].IsNewRow) return;
+
+            if (datagridViewService.Rows[e.RowIndex].DataBoundItem is Service s)
+            {
+                _current = new Service
+                {
+                    ServiceID = s.ServiceID,
+                    ServiceName = s.ServiceName,
+                    Price = s.Price,
+                    Quantity = s.Quantity,
+                    IsActive = s.IsActive
+                };
+                WriteCurrentToInputs();
+            }
+        }
+
+        private void txtSearchService_TextChanged(object sender, EventArgs e)
+        {
+            var key = txtSearchService.Text.Trim().ToLower();
+            if (string.IsNullOrEmpty(key))
+            {
+                _bindingSource.DataSource = _bindingListServices;
+            }
+            else
+            {
+                var filtered = _bindingListServices
+                    .Where(s => (s.ServiceName ?? "").ToLower().Contains(key)
+                             || s.Price.ToString().Contains(key)
+                             || s.Quantity.ToString().Contains(key))
+                    .ToList();
+
+                _bindingSource.DataSource = new BindingList<Service>(filtered);
+            }
+        }
+
+
+        private void btnAddService_Click(object sender, EventArgs e)
+        {
+            _isAdd = true;
+            _current = new Service();
+            ClearInputs();
+            SetInputsEnabled(true);
             txtServiceName.Focus();
+
+            btnEditService.Enabled = false;
+            btnDeleteService.Enabled = false;
         }
 
-        private void btnClearService_Click(object sender, EventArgs e)
+        private void btnEditService_Click(object sender, EventArgs e)
         {
-            ClearFields();
+            if (_current == null || _current.ServiceID <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn dịch vụ để sửa.", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            _isAdd = false;
+            SetInputsEnabled(true);
+            txtServiceName.Focus();
+
+            btnAddService.Enabled = false;
+            btnDeleteService.Enabled = false;
         }
 
-        private void chkIsActive_CheckedChanged(object sender, EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)
         {
-            // Không có logic nào cần thêm ở đây
+            try
+            {
+                ReadInputsToCurrent();
+
+                bool ok = _isAdd
+                    ? _servicesService.AddService(_current)
+                    : _servicesService.UpdateService(_current);
+
+                if (ok)
+                {
+                    ReloadAll();
+                    MessageBox.Show(_isAdd ? "Thêm dịch vụ thành công!" : "Cập nhật thành công!",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    _isAdd = false;
+                    ResetUI();
+                }
+                else
+                {
+                    MessageBox.Show("Thao tác thất bại.", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (ArgumentException ex) 
+            {
+                MessageBox.Show(ex.Message, "Dữ liệu chưa hợp lệ",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        // Cập nhật số lượng tồn kho
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            ReloadAll();
+            ResetUI();
+            ClearInputs();
+            _isAdd = false;
+        }
+
+        private void btnDeleteService_Click(object sender, EventArgs e)
+        {
+            if (_current == null || _current.ServiceID <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn dịch vụ để xóa.",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var confirm = MessageBox.Show("Bạn có chắc muốn xóa dịch vụ này?",
+                "Xác nhận", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.OK)
+            {
+                try
+                {
+                    var ok = _servicesService.DeleteService(_current.ServiceID);
+                    if (ok)
+                    {
+                        ReloadAll();
+                        ClearInputs();
+                        _current = new Service();
+                        MessageBox.Show("Xóa thành công!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Xóa thất bại.", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        // ===== Inventory =====
+
         private void btnSaveInventory_Click_1(object sender, EventArgs e)
         {
-            if (!ValidateInventoryInput())
+            var selected = cboServiceName.SelectedItem as Service;
+            if (selected == null)
             {
+                MessageBox.Show("Vui lòng chọn dịch vụ cần nhập kho.",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Lấy ServiceID của dịch vụ được chọn từ ComboBox
-            var selectedService = cboServiceName.SelectedItem as Service;
-            if (selectedService == null)
+            if (!int.TryParse(txtQuantityAdd.Text?.Trim(), out var add) || add <= 0)
             {
-                MessageBox.Show("Vui lòng chọn một dịch vụ hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            int serviceId = selectedService.ServiceID;
-
-            // Lấy số lượng cần thêm
-            if (!int.TryParse(txtQuantityAdd.Text, out int quantityToAdd) || quantityToAdd <= 0)
-            {
-                MessageBox.Show("Số lượng thêm phải là một số nguyên dương.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtQuantityAdd.Focus();
+                MessageBox.Show("SL nhập phải là số nguyên dương.",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Lấy số lượng hiện tại
-            int currentQuantity = selectedService.Quantity;
-            int newQuantity = currentQuantity + quantityToAdd;
+            // Lấy lại số lượng hiện tại từ DS (đảm bảo mới nhất)
+            var current = _servicesService.GetAllServices()
+                                          .FirstOrDefault(x => x.ServiceID == selected.ServiceID);
+            var curQty = current?.Quantity ?? selected.Quantity;
+            var newQty = curQty + add;
 
             try
             {
-                if (_servicesService.UpdateServiceQuantity(serviceId, newQuantity))
+                if (_servicesService.UpdateServiceQuantity(selected.ServiceID, newQty))
                 {
-                    MessageBox.Show($"Đã cập nhật số lượng tồn kho cho dịch vụ '{selectedService.ServiceName}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Cập nhật lại giao diện
-                    LoadAllServices();
-                    PopulateComboBox();
+                    MessageBox.Show($"Đã cập nhật số lượng cho '{selected.ServiceName}'.",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ReloadAll();
                     txtQuantityAdd.Clear();
                     cboServiceName.SelectedIndex = -1;
                 }
                 else
                 {
-                    MessageBox.Show("Cập nhật số lượng tồn kho thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Cập nhật tồn kho thất bại.", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Dữ liệu chưa hợp lệ",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Khi chọn một dịch vụ trong ComboBox, xóa số lượng đã nhập
         private void cboServiceName_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtQuantityAdd.Clear();
-        }
-        private void cboServiceName_TextChanged_Filter(object sender, EventArgs e)
-        {
-            string searchText = cboServiceName.Text.Trim().ToLower();
-
-            if (string.IsNullOrEmpty(searchText))
-            {
-                // Load lại toàn bộ danh sách khi ô trống
-                cboServiceName.DataSource = _servicesService.GetAllServices();
-            }
-            else
-            {
-                var filteredServices = _servicesService.GetAllServices()
-                                        .FindAll(s => s.ServiceName.ToLower().Contains(searchText));
-
-                cboServiceName.DataSource = filteredServices;
-                cboServiceName.DisplayMember = "ServiceName";
-                cboServiceName.ValueMember = "ServiceID";
-
-                // Giữ con trỏ nhập
-                cboServiceName.DroppedDown = true;
-                cboServiceName.IntegralHeight = true;
-                cboServiceName.SelectedIndex = -1;
-                cboServiceName.Text = searchText;
-                cboServiceName.SelectionStart = cboServiceName.Text.Length;
-            }
-        }
-
-        private void groupBoxUpdateInvetory_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void groupBoxDetailService_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutButtons_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

@@ -5,10 +5,9 @@ using System;
 
 namespace HOTEL_MINI.BLL
 {
-    public class AuthService : IDisposable
+    public class AuthService
     {
         private readonly UserRepository _userRepository;
-        private bool _disposed = false;
 
         public AuthService()
         {
@@ -19,6 +18,9 @@ namespace HOTEL_MINI.BLL
         {
             try
             {
+                username = username?.Trim();
+                password = password?.Trim();
+
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 {
                     return new LoginResult
@@ -29,7 +31,6 @@ namespace HOTEL_MINI.BLL
                 }
 
                 var user = _userRepository.GetUserByUsername(username);
-
                 if (user == null)
                 {
                     return new LoginResult
@@ -39,7 +40,6 @@ namespace HOTEL_MINI.BLL
                     };
                 }
 
-                // Cập nhật lại điều kiện kiểm tra trạng thái
                 if (user.Status == UserStatus.Inactive || user.Status == UserStatus.Blocked)
                 {
                     return new LoginResult
@@ -49,7 +49,7 @@ namespace HOTEL_MINI.BLL
                     };
                 }
 
-                if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                if (string.IsNullOrEmpty(user.PasswordHash) || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 {
                     return new LoginResult
                     {
@@ -73,29 +73,6 @@ namespace HOTEL_MINI.BLL
                     Message = $"Lỗi hệ thống: {ex.Message}"
                 };
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _userRepository?.Dispose();
-                }
-                _disposed = true;
-            }
-        }
-
-        ~AuthService()
-        {
-            Dispose(false);
         }
     }
 }

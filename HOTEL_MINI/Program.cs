@@ -24,7 +24,8 @@ namespace HOTEL_MINI
             try
             {
                 // Seed tài khoản admin nếu chưa có
-                using (var repo = new UserRepository())
+                var repo = new UserRepository();
+                var user = repo.GetUserById(1);
                 {
                     repo.CreateAdminUserIfNotExist();
                 }

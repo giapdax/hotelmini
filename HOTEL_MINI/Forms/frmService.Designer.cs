@@ -112,7 +112,6 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutButtons.Size = new System.Drawing.Size(338, 102);
             this.tableLayoutButtons.TabIndex = 1;
-            this.tableLayoutButtons.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutButtons_Paint);
             // 
             // btnAddService
             // 
@@ -267,7 +266,6 @@ namespace HOTEL_MINI.Forms
             this.groupBoxDetailService.TabIndex = 0;
             this.groupBoxDetailService.TabStop = false;
             this.groupBoxDetailService.Text = "Thông tin dịch vụ";
-            this.groupBoxDetailService.Enter += new System.EventHandler(this.groupBoxDetailService_Enter);
             // 
             // tableLayoutPanel4
             // 
@@ -364,7 +362,6 @@ namespace HOTEL_MINI.Forms
             this.chkIsActive.TabIndex = 12;
             this.chkIsActive.Text = "Đang hoạt động";
             this.chkIsActive.UseVisualStyleBackColor = true;
-            this.chkIsActive.CheckedChanged += new System.EventHandler(this.chkIsActive_CheckedChanged);
             // 
             // txtQuantity
             // 
@@ -400,7 +397,6 @@ namespace HOTEL_MINI.Forms
             this.groupBoxUpdateInvetory.TabIndex = 2;
             this.groupBoxUpdateInvetory.TabStop = false;
             this.groupBoxUpdateInvetory.Text = "Cập Nhật  Kho";
-            this.groupBoxUpdateInvetory.Enter += new System.EventHandler(this.groupBoxUpdateInvetory_Enter);
             // 
             // tableLayoutPanel5
             // 
@@ -522,7 +518,6 @@ namespace HOTEL_MINI.Forms
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 86F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(692, 540);
             this.tableLayoutPanel1.TabIndex = 2;
-            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // groupBoxSearch
             // 

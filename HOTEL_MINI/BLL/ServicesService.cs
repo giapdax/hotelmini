@@ -1,8 +1,8 @@
-﻿// File: ServicesService.cs
-using HOTEL_MINI.DAL;
+﻿using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace HOTEL_MINI.BLL
@@ -31,7 +31,6 @@ namespace HOTEL_MINI.BLL
             return _serviceRepository.UpdateService(service);
         }
 
-        // Giữ 1 hàm DUY NHẤT để cập nhật số lượng
         public bool UpdateServiceQuantity(int serviceId, int quantity)
         {
             if (quantity < 0)
@@ -41,7 +40,19 @@ namespace HOTEL_MINI.BLL
         }
 
         public bool DeleteService(int serviceId)
-            => _serviceRepository.DeleteService(serviceId);
+        {
+            if (serviceId <= 0)
+                throw new ArgumentException("ServiceId không hợp lệ.");
+
+            try
+            {
+                return _serviceRepository.DeleteService(serviceId);
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                throw new InvalidOperationException("Không thể xoá: Dịch vụ đang được sử dụng.", ex);
+            }
+        }
 
         public int GetQuantity(int serviceId)
             => _serviceRepository.GetQuantity(serviceId);
@@ -57,7 +68,6 @@ namespace HOTEL_MINI.BLL
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Tên dịch vụ không được để trống.");
 
-            // Check trùng tên: bỏ qua chính nó khi cập nhật (ServiceID), so sánh không phân biệt hoa/thường
             bool nameTaken = _serviceRepository
                 .GetAllServices()
                 .Any(x =>

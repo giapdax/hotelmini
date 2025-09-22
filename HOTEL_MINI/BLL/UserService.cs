@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Common;
@@ -18,31 +20,80 @@ namespace HOTEL_MINI.BLL
         public User GetByUsername(string username) => _userRepository.GetUserByUsername(username);
         public User GetById(int userId) => _userRepository.GetUserById(userId);
 
-        // Admin thêm user
+
+        private static readonly Regex UsernameRegex = new Regex(@"^[A-Za-z0-9_.-]{3,50}$", RegexOptions.Compiled);
+        private static readonly Regex EmailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+        private static readonly Regex PhoneRegex = new Regex(@"^(\+?\d{9,15}|0\d{9,10})$", RegexOptions.Compiled);
+
+        public struct ValidationResult
+        {
+            public bool IsValid;
+            public string Message;
+            public static ValidationResult Ok() => new ValidationResult { IsValid = true, Message = "" };
+            public static ValidationResult Fail(string msg) => new ValidationResult { IsValid = false, Message = msg };
+        }
+        public ValidationResult TryValidateUser(User user, bool isUpdate, string plainPasswordIfProvided = null)
+        {
+            if (user == null) return ValidationResult.Fail("User không hợp lệ.");
+
+            if (string.IsNullOrWhiteSpace(user.Username))
+                return ValidationResult.Fail("Username không được để trống.");
+            if (!UsernameRegex.IsMatch(user.Username.Trim()))
+                return ValidationResult.Fail("Username chỉ chứa chữ/số/._- và dài 3-50 ký tự.");
+            if (!string.IsNullOrEmpty(user.FullName) && user.FullName.Trim().Length > 100)
+                return ValidationResult.Fail("Họ tên tối đa 100 ký tự.");
+            if (!string.IsNullOrWhiteSpace(user.Email) && !EmailRegex.IsMatch(user.Email.Trim()))
+                return ValidationResult.Fail("Email không hợp lệ.");
+            if (!string.IsNullOrWhiteSpace(user.Phone) && !PhoneRegex.IsMatch(user.Phone.Trim()))
+                return ValidationResult.Fail("Số điện thoại không hợp lệ.");
+            if (user.Role <= 0)
+                return ValidationResult.Fail("Role không hợp lệ.");
+            var existed = _userRepository.GetUserByUsername(user.Username.Trim());
+            if (!isUpdate)
+            {
+                if (existed != null) return ValidationResult.Fail("Username đã tồn tại.");
+            }
+            else
+            {
+                if (existed != null && existed.UserID != user.UserID)
+                    return ValidationResult.Fail("Username đã được người khác sử dụng.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(plainPasswordIfProvided))
+            {
+                if (!PasswordHelper.Validate(plainPasswordIfProvided, out var pwMsg))
+                    return ValidationResult.Fail(pwMsg ?? "Mật khẩu không đạt yêu cầu.");
+            }
+            else
+            {
+                if (!isUpdate)
+                    return ValidationResult.Fail("Vui lòng nhập mật khẩu.");
+            }
+
+            return ValidationResult.Ok();
+        }
+
+
         public bool AddUser(User user, string password)
         {
-            if (string.IsNullOrWhiteSpace(user?.Username)) return false;
-
-            if (!PasswordHelper.Validate(password, out var msg))
-                return false;
-
+            var vr = TryValidateUser(user, isUpdate: false, plainPasswordIfProvided: password);
+            if (!vr.IsValid) return false;
             user.PasswordHash = PasswordHelper.Hash(password);
             return _userRepository.AddUser(user);
         }
 
-        // Admin sửa user (có thể đổi mật khẩu)
         public bool UpdateUser(User user, string newPassword = null)
         {
+            var vr = TryValidateUser(user, isUpdate: true, plainPasswordIfProvided: newPassword);
+            if (!vr.IsValid) return false;
+
             if (!string.IsNullOrWhiteSpace(newPassword))
             {
-                if (!PasswordHelper.Validate(newPassword, out var _)) return false;
                 user.PasswordHash = PasswordHelper.Hash(newPassword);
             }
-            // nếu PasswordHash rỗng => repo sẽ không update field này
             return _userRepository.UpdateUser(user);
         }
 
-        // Login
         public User VerifyLogin(string username, string password)
         {
             var u = _userRepository.GetUserByUsername(username);
@@ -59,7 +110,6 @@ namespace HOTEL_MINI.BLL
             Error
         }
 
-        // Đổi mật khẩu (dành cho FrmChangePass)
         public ChangePasswordResult ChangePassword(int userId, string currentPassword, string newPassword)
         {
             var u = _userRepository.GetUserById(userId);
@@ -71,7 +121,6 @@ namespace HOTEL_MINI.BLL
             if (!PasswordHelper.Verify(currentPassword, u.PasswordHash))
                 return ChangePasswordResult.WrongCurrentPassword;
 
-            // Không cho trùng y hệt (theo plain text)
             if (PasswordHelper.Verify(newPassword, u.PasswordHash))
                 return ChangePasswordResult.SameAsOld;
 
@@ -79,7 +128,6 @@ namespace HOTEL_MINI.BLL
             var ok = _userRepository.UpdatePassword(userId, newHash);
             if (!ok) return ChangePasswordResult.Error;
 
-            // XÁC NHẬN từ DB
             var after = _userRepository.GetUserById(userId);
             if (after == null || !PasswordHelper.Verify(newPassword, after.PasswordHash))
                 return ChangePasswordResult.Error;

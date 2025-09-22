@@ -195,7 +195,6 @@ namespace HOTEL_MINI.DAL
                         PricingType = pricingType,
                         Price = sqlDataReader.GetDecimal(1)
                     };
-                    //pricingID = sqlDataReader.GetInt32(0);
                 }
             }
             return null;
@@ -210,7 +209,7 @@ namespace HOTEL_MINI.DAL
                 using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@RoomNumber", (roomNumber ?? "").Trim());
-                    cmd.Parameters.AddWithValue("@RoomID", currentRoomId); // 0 cho Add
+                    cmd.Parameters.AddWithValue("@RoomID", currentRoomId);
                     int count = (int)cmd.ExecuteScalar();
                     return count == 0;
                 }
@@ -222,8 +221,6 @@ namespace HOTEL_MINI.DAL
             using (SqlConnection conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-
-                // ❗ Chặn trùng trước khi insert
                 if (!IsRoomNumberUnique(room.RoomNumber, 0)) return false;
 
                 const string sql = "INSERT INTO Rooms (RoomNumber, RoomTypeID, Status, Note) " +
@@ -244,8 +241,6 @@ namespace HOTEL_MINI.DAL
             using (SqlConnection conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-
-                // ❗ Chặn trùng (loại trừ chính record đang sửa)
                 if (!IsRoomNumberUnique(room.RoomNumber, room.RoomID)) return false;
 
                 const string sql = "UPDATE Rooms SET RoomNumber=@RoomNumber, RoomTypeID=@RoomTypeID, " +
