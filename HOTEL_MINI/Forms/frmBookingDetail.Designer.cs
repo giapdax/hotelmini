@@ -39,7 +39,11 @@
             this.dgvUsedServices = new System.Windows.Forms.DataGridView();
             this.gbxRoomInfor = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblNote = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
+            this.dtpCheckoutTime = new System.Windows.Forms.DateTimePicker();
+            this.lblCHECKIN = new System.Windows.Forms.Label();
+            this.dtpCheckinTime = new System.Windows.Forms.DateTimePicker();
             this.txtPricingType = new System.Windows.Forms.TextBox();
             this.txtTen = new System.Windows.Forms.TextBox();
             this.txtGender = new System.Windows.Forms.TextBox();
@@ -53,12 +57,8 @@
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblCCCD = new System.Windows.Forms.Label();
             this.lblSex = new System.Windows.Forms.Label();
-            this.lblNote = new System.Windows.Forms.Label();
-            this.txtNote = new System.Windows.Forms.TextBox();
-            this.dtpCheckoutTime = new System.Windows.Forms.DateTimePicker();
-            this.dtpCheckinTime = new System.Windows.Forms.DateTimePicker();
             this.lblCHECKOUT = new System.Windows.Forms.Label();
-            this.lblCHECKIN = new System.Windows.Forms.Label();
+            this.txtNote = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.gbxServicesMenu = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
@@ -262,6 +262,18 @@
             this.tableLayoutPanel5.Size = new System.Drawing.Size(335, 345);
             this.tableLayoutPanel5.TabIndex = 21;
             // 
+            // lblNote
+            // 
+            this.lblNote.AutoSize = true;
+            this.lblNote.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNote.Location = new System.Drawing.Point(3, 306);
+            this.lblNote.Name = "lblNote";
+            this.lblNote.Size = new System.Drawing.Size(161, 39);
+            this.lblNote.TabIndex = 13;
+            this.lblNote.Text = "Ghi chú:";
+            this.lblNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblTen
             // 
             this.lblTen.AutoSize = true;
@@ -273,6 +285,40 @@
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
             this.lblTen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // dtpCheckoutTime
+            // 
+            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm";
+            this.dtpCheckoutTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dtpCheckoutTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpCheckoutTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpCheckoutTime.Location = new System.Drawing.Point(170, 275);
+            this.dtpCheckoutTime.Name = "dtpCheckoutTime";
+            this.dtpCheckoutTime.Size = new System.Drawing.Size(162, 26);
+            this.dtpCheckoutTime.TabIndex = 11;
+            // 
+            // lblCHECKIN
+            // 
+            this.lblCHECKIN.AutoSize = true;
+            this.lblCHECKIN.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblCHECKIN.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCHECKIN.Location = new System.Drawing.Point(3, 238);
+            this.lblCHECKIN.Name = "lblCHECKIN";
+            this.lblCHECKIN.Size = new System.Drawing.Size(161, 34);
+            this.lblCHECKIN.TabIndex = 8;
+            this.lblCHECKIN.Text = "Check-in Time:";
+            this.lblCHECKIN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // dtpCheckinTime
+            // 
+            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm";
+            this.dtpCheckinTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dtpCheckinTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpCheckinTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpCheckinTime.Location = new System.Drawing.Point(170, 241);
+            this.dtpCheckinTime.Name = "dtpCheckinTime";
+            this.dtpCheckinTime.Size = new System.Drawing.Size(162, 26);
+            this.dtpCheckinTime.TabIndex = 10;
             // 
             // txtPricingType
             // 
@@ -409,50 +455,6 @@
             this.lblSex.Text = "Giới tính:";
             this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblNote
-            // 
-            this.lblNote.AutoSize = true;
-            this.lblNote.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(3, 306);
-            this.lblNote.Name = "lblNote";
-            this.lblNote.Size = new System.Drawing.Size(161, 39);
-            this.lblNote.TabIndex = 13;
-            this.lblNote.Text = "Ghi chú:";
-            this.lblNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtNote
-            // 
-            this.txtNote.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNote.Location = new System.Drawing.Point(170, 309);
-            this.txtNote.Multiline = true;
-            this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(162, 33);
-            this.txtNote.TabIndex = 12;
-            // 
-            // dtpCheckoutTime
-            // 
-            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpCheckoutTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dtpCheckoutTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpCheckoutTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpCheckoutTime.Location = new System.Drawing.Point(170, 275);
-            this.dtpCheckoutTime.Name = "dtpCheckoutTime";
-            this.dtpCheckoutTime.Size = new System.Drawing.Size(162, 26);
-            this.dtpCheckoutTime.TabIndex = 11;
-            // 
-            // dtpCheckinTime
-            // 
-            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpCheckinTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dtpCheckinTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpCheckinTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpCheckinTime.Location = new System.Drawing.Point(170, 241);
-            this.dtpCheckinTime.Name = "dtpCheckinTime";
-            this.dtpCheckinTime.Size = new System.Drawing.Size(162, 26);
-            this.dtpCheckinTime.TabIndex = 10;
-            // 
             // lblCHECKOUT
             // 
             this.lblCHECKOUT.AutoSize = true;
@@ -465,17 +467,15 @@
             this.lblCHECKOUT.Text = "Check-out Time:";
             this.lblCHECKOUT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblCHECKIN
+            // txtNote
             // 
-            this.lblCHECKIN.AutoSize = true;
-            this.lblCHECKIN.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCHECKIN.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKIN.Location = new System.Drawing.Point(3, 238);
-            this.lblCHECKIN.Name = "lblCHECKIN";
-            this.lblCHECKIN.Size = new System.Drawing.Size(161, 34);
-            this.lblCHECKIN.TabIndex = 8;
-            this.lblCHECKIN.Text = "Check-in Time:";
-            this.lblCHECKIN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtNote.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNote.Location = new System.Drawing.Point(170, 309);
+            this.txtNote.Multiline = true;
+            this.txtNote.Name = "txtNote";
+            this.txtNote.Size = new System.Drawing.Size(162, 33);
+            this.txtNote.TabIndex = 12;
             // 
             // tableLayoutPanel1
             // 

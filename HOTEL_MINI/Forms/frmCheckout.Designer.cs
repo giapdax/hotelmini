@@ -88,7 +88,7 @@
             this.lblRoomCharge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.lblRoomCharge.Location = new System.Drawing.Point(3, 0);
             this.lblRoomCharge.Name = "lblRoomCharge";
-            this.lblRoomCharge.Size = new System.Drawing.Size(77, 38);
+            this.lblRoomCharge.Size = new System.Drawing.Size(77, 36);
             this.lblRoomCharge.TabIndex = 1;
             this.lblRoomCharge.Text = "Tiền phòng: ";
             // 
@@ -97,7 +97,7 @@
             this.lblServiceChange.AutoSize = true;
             this.lblServiceChange.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblServiceChange.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblServiceChange.Location = new System.Drawing.Point(3, 114);
+            this.lblServiceChange.Location = new System.Drawing.Point(3, 108);
             this.lblServiceChange.Name = "lblServiceChange";
             this.lblServiceChange.Size = new System.Drawing.Size(81, 25);
             this.lblServiceChange.TabIndex = 2;
@@ -109,7 +109,7 @@
             this.lblSurcharge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lblSurcharge.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblSurcharge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblSurcharge.Location = new System.Drawing.Point(3, 420);
+            this.lblSurcharge.Location = new System.Drawing.Point(3, 399);
             this.lblSurcharge.Name = "lblSurcharge";
             this.lblSurcharge.Size = new System.Drawing.Size(82, 25);
             this.lblSurcharge.TabIndex = 3;
@@ -120,7 +120,7 @@
             this.lblDiscount.AutoSize = true;
             this.lblDiscount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblDiscount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblDiscount.Location = new System.Drawing.Point(3, 458);
+            this.lblDiscount.Location = new System.Drawing.Point(3, 435);
             this.lblDiscount.Name = "lblDiscount";
             this.lblDiscount.Size = new System.Drawing.Size(92, 25);
             this.lblDiscount.TabIndex = 4;
@@ -132,7 +132,7 @@
             this.lblTotalAmount.AutoSize = true;
             this.lblTotalAmount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblTotalAmount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblTotalAmount.Location = new System.Drawing.Point(36, 595);
+            this.lblTotalAmount.Location = new System.Drawing.Point(3, 688);
             this.lblTotalAmount.Name = "lblTotalAmount";
             this.lblTotalAmount.Size = new System.Drawing.Size(99, 25);
             this.lblTotalAmount.TabIndex = 5;
@@ -143,7 +143,7 @@
             this.lblIssuedBy.AutoSize = true;
             this.lblIssuedBy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblIssuedBy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblIssuedBy.Location = new System.Drawing.Point(3, 496);
+            this.lblIssuedBy.Location = new System.Drawing.Point(3, 471);
             this.lblIssuedBy.Name = "lblIssuedBy";
             this.lblIssuedBy.Size = new System.Drawing.Size(104, 25);
             this.lblIssuedBy.TabIndex = 6;
@@ -154,7 +154,7 @@
             this.lblPaymentMethod.AutoSize = true;
             this.lblPaymentMethod.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblPaymentMethod.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblPaymentMethod.Location = new System.Drawing.Point(3, 534);
+            this.lblPaymentMethod.Location = new System.Drawing.Point(3, 507);
             this.lblPaymentMethod.Name = "lblPaymentMethod";
             this.lblPaymentMethod.Size = new System.Drawing.Size(102, 25);
             this.lblPaymentMethod.TabIndex = 7;
@@ -165,7 +165,7 @@
             this.lblNote.AutoSize = true;
             this.lblNote.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblNote.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.lblNote.Location = new System.Drawing.Point(3, 572);
+            this.lblNote.Location = new System.Drawing.Point(3, 543);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(82, 25);
             this.lblNote.TabIndex = 8;
@@ -187,7 +187,7 @@
             this.txtSurcharge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtSurcharge.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtSurcharge.ForeColor = System.Drawing.Color.White;
-            this.txtSurcharge.Location = new System.Drawing.Point(121, 423);
+            this.txtSurcharge.Location = new System.Drawing.Point(121, 402);
             this.txtSurcharge.Name = "txtSurcharge";
             this.txtSurcharge.Size = new System.Drawing.Size(128, 26);
             this.txtSurcharge.TabIndex = 11;
@@ -200,7 +200,7 @@
             this.txtDiscount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtDiscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtDiscount.ForeColor = System.Drawing.Color.White;
-            this.txtDiscount.Location = new System.Drawing.Point(121, 461);
+            this.txtDiscount.Location = new System.Drawing.Point(121, 438);
             this.txtDiscount.Name = "txtDiscount";
             this.txtDiscount.Size = new System.Drawing.Size(128, 26);
             this.txtDiscount.TabIndex = 12;
@@ -213,9 +213,9 @@
             this.txtTotalAmount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtTotalAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtTotalAmount.ForeColor = System.Drawing.Color.White;
-            this.txtTotalAmount.Location = new System.Drawing.Point(353, 594);
+            this.txtTotalAmount.Location = new System.Drawing.Point(121, 691);
             this.txtTotalAmount.Name = "txtTotalAmount";
-            this.txtTotalAmount.Size = new System.Drawing.Size(128, 26);
+            this.txtTotalAmount.Size = new System.Drawing.Size(246, 26);
             this.txtTotalAmount.TabIndex = 13;
             // 
             // txtEmployeeName
@@ -223,7 +223,7 @@
             this.txtEmployeeName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtEmployeeName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtEmployeeName.ForeColor = System.Drawing.Color.White;
-            this.txtEmployeeName.Location = new System.Drawing.Point(121, 499);
+            this.txtEmployeeName.Location = new System.Drawing.Point(121, 474);
             this.txtEmployeeName.Name = "txtEmployeeName";
             this.txtEmployeeName.Size = new System.Drawing.Size(206, 26);
             this.txtEmployeeName.TabIndex = 14;
@@ -234,10 +234,10 @@
             this.txtNote.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtNote.ForeColor = System.Drawing.Color.White;
-            this.txtNote.Location = new System.Drawing.Point(121, 575);
+            this.txtNote.Location = new System.Drawing.Point(121, 546);
             this.txtNote.Multiline = true;
             this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(510, 150);
+            this.txtNote.Size = new System.Drawing.Size(510, 139);
             this.txtNote.TabIndex = 16;
             // 
             // cbxPaymentMethod
@@ -246,7 +246,7 @@
             this.cbxPaymentMethod.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.cbxPaymentMethod.ForeColor = System.Drawing.Color.White;
             this.cbxPaymentMethod.FormattingEnabled = true;
-            this.cbxPaymentMethod.Location = new System.Drawing.Point(121, 537);
+            this.cbxPaymentMethod.Location = new System.Drawing.Point(121, 510);
             this.cbxPaymentMethod.Name = "cbxPaymentMethod";
             this.cbxPaymentMethod.Size = new System.Drawing.Size(128, 28);
             this.cbxPaymentMethod.TabIndex = 18;
@@ -256,7 +256,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.label2.Location = new System.Drawing.Point(3, 38);
+            this.label2.Location = new System.Drawing.Point(3, 36);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 25);
             this.label2.TabIndex = 19;
@@ -267,7 +267,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
-            this.label3.Location = new System.Drawing.Point(3, 76);
+            this.label3.Location = new System.Drawing.Point(3, 72);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(97, 25);
             this.label3.TabIndex = 20;
@@ -278,7 +278,7 @@
             this.txtCheckin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtCheckin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtCheckin.ForeColor = System.Drawing.Color.White;
-            this.txtCheckin.Location = new System.Drawing.Point(121, 41);
+            this.txtCheckin.Location = new System.Drawing.Point(121, 39);
             this.txtCheckin.Name = "txtCheckin";
             this.txtCheckin.Size = new System.Drawing.Size(206, 26);
             this.txtCheckin.TabIndex = 21;
@@ -288,7 +288,7 @@
             this.txtCheckout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.txtCheckout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.txtCheckout.ForeColor = System.Drawing.Color.White;
-            this.txtCheckout.Location = new System.Drawing.Point(121, 79);
+            this.txtCheckout.Location = new System.Drawing.Point(121, 75);
             this.txtCheckout.Name = "txtCheckout";
             this.txtCheckout.Size = new System.Drawing.Size(206, 26);
             this.txtCheckout.TabIndex = 22;
@@ -327,8 +327,10 @@
             this.tableLayoutPanel1.Controls.Add(this.txtRoomCharge, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtCheckout, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblTotalAmount, 0, 9);
             this.tableLayoutPanel1.Controls.Add(this.txtNote, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.txtCheckin, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txtTotalAmount, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lblServiceChange, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblRoomCharge, 0, 0);
@@ -344,17 +346,17 @@
             this.tableLayoutPanel1.Controls.Add(this.lblNote, 0, 8);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 49);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 9;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.10526F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.263158F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 21.05263F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowCount = 10;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(634, 728);
             this.tableLayoutPanel1.TabIndex = 25;
             // 
@@ -366,12 +368,12 @@
             this.tableLayoutPanel2.Controls.Add(this.dgvUsedService, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.panel2, 0, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(121, 117);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(121, 111);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 86.31579F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 13.68421F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(510, 300);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(510, 285);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // dgvUsedService
@@ -393,16 +395,16 @@
             this.dgvUsedService.Name = "dgvUsedService";
             this.dgvUsedService.RowHeadersWidth = 62;
             this.dgvUsedService.RowTemplate.Height = 28;
-            this.dgvUsedService.Size = new System.Drawing.Size(504, 252);
+            this.dgvUsedService.Size = new System.Drawing.Size(504, 240);
             this.dgvUsedService.TabIndex = 1;
             // 
             // panel2
             // 
             this.panel2.Controls.Add(this.tableLayoutPanel3);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 261);
+            this.panel2.Location = new System.Drawing.Point(3, 249);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(504, 36);
+            this.panel2.Size = new System.Drawing.Size(504, 33);
             this.panel2.TabIndex = 0;
             // 
             // tableLayoutPanel3
@@ -418,7 +420,7 @@
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(504, 36);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(504, 33);
             this.tableLayoutPanel3.TabIndex = 2;
             // 
             // label1
@@ -454,9 +456,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnConfirm);
-            this.Controls.Add(this.lblTotalAmount);
             this.Controls.Add(this.lblRoomNumber);
-            this.Controls.Add(this.txtTotalAmount);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.MaximumSize = new System.Drawing.Size(680, 960);
             this.MinimumSize = new System.Drawing.Size(680, 960);
