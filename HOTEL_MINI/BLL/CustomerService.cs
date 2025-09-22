@@ -35,6 +35,10 @@ namespace HOTEL_MINI.BLL
         {
             return _customerRepository.GetCustomerByCustomerID(customerID);
         }
+        public Customer GetCustomerByNumberID(string numberID)
+        {
+            return _customerRepository.GetCustomerByIDNumber(numberID);
+        }
         public List<Customer> getAllCustomers()
         {
             return _customerRepository.GetAllCustomers();

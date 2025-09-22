@@ -231,14 +231,17 @@ namespace HOTEL_MINI.Forms.Controls
             {
                 SaveFileDialog saveDialog = new SaveFileDialog();
                 saveDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|BMP Image|*.bmp";
-                saveDialog.Title = "Lưu biểu đồ";
+                saveDialog.Title = "Lưu biểu đồ doanh thu";
                 saveDialog.FileName = $"DoanhThu_{DateTime.Now:yyyyMMdd_HHmmss}";
+
+                // Set thư mục mặc định (Documents folder)
+                saveDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                 if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
                     ChartImageFormat format;
 
-                    // Sử dụng switch statement thay vì switch expression
+                    // Sử dụng switch statement
                     switch (saveDialog.FilterIndex)
                     {
                         case 2:
@@ -252,14 +255,31 @@ namespace HOTEL_MINI.Forms.Controls
                             break;
                     }
 
+                    // Lưu biểu đồ
                     chartRevenue.SaveImage(saveDialog.FileName, format);
-                    MessageBox.Show("Đã lưu biểu đồ thành công!", "Thành công",
+
+                    // Hiển thị thông báo chi tiết
+                    string message = $"Đã lưu biểu đồ thành công!\n\n" +
+                                   $"Tên file: {System.IO.Path.GetFileName(saveDialog.FileName)}\n" +
+                                   $"Vị trí: {System.IO.Path.GetDirectoryName(saveDialog.FileName)}\n" +
+                                   $"Kích thước: {new System.IO.FileInfo(saveDialog.FileName).Length / 1024} KB";
+
+                    MessageBox.Show(message, "Thành công",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Mở thư mục chứa file (tuỳ chọn)
+                    DialogResult openFolder = MessageBox.Show("Bạn có muốn mở thư mục chứa file không?",
+                        "Mở thư mục", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (openFolder == DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{saveDialog.FileName}\"");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi xuất biểu đồ: " + ex.Message, "Lỗi",
+                MessageBox.Show($"Lỗi khi xuất biểu đồ: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

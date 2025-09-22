@@ -262,6 +262,16 @@ namespace HOTEL_MINI
             OpenChildForm(new frmCustomer(), sender);
         }
 
+        private void btnUserManage_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new frmUser(), sender);
+        }
+
+        private void btnDashboardManage_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new Forms.frmStatistical(), sender);
+        }
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             contextMenuProfile.Show(pictureBox1, new Point(0, pictureBox1.Height));
@@ -311,19 +321,19 @@ namespace HOTEL_MINI
             }
         }
 
-        private void btnDashboardManage_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new frmStatistical(), sender);
-        }
+        //private void btnDashboardManage_Click(object sender, EventArgs e)
+        //{
+        //    OpenChildForm(new frmStatistical(), sender);
+        //}
 
-        private void btnUserManage_Click(object sender, EventArgs e)
-        {
-            OpenChildForm(new frmUser(), sender);
-        }
+        //private void btnUserManage_Click(object sender, EventArgs e)
+        //{
+        //    OpenChildForm(new frmUser(), sender);
+        //}
 
         private void btnInvoicesManage_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new frmInvoiceManage(), sender);
+            OpenChildForm(new frmInvoiceManage(this), sender);
         }
     }
 }

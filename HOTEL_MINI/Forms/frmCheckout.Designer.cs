@@ -298,9 +298,9 @@
             this.btnConfirm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.btnConfirm.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic);
             this.btnConfirm.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnConfirm.Location = new System.Drawing.Point(517, 798);
+            this.btnConfirm.Location = new System.Drawing.Point(414, 798);
             this.btnConfirm.Name = "btnConfirm";
-            this.btnConfirm.Size = new System.Drawing.Size(112, 34);
+            this.btnConfirm.Size = new System.Drawing.Size(101, 34);
             this.btnConfirm.TabIndex = 23;
             this.btnConfirm.Text = "Thanh toán";
             this.btnConfirm.UseVisualStyleBackColor = false;

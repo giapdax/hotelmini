@@ -18,6 +18,102 @@ namespace HOTEL_MINI.DAL
         {
             _stringConnection = ConfigHelper.GetConnectionString();
         }
+        public List<BookingDisplay> GetBookingDisplaysByCustomerNumber(string numberID)
+        {
+            var list = new List<BookingDisplay>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"SELECT 
+                        b.BookingID,
+                        r.RoomNumber,
+                        u.FullName as EmployeeName,
+                        b.BookingDate,
+                        b.CheckInDate,
+                        b.CheckOutDate,
+                        b.Notes,
+                        b.Status
+                    FROM Bookings b
+                    INNER JOIN Customers c ON b.CustomerID = c.CustomerID
+                    INNER JOIN Rooms r ON b.RoomID = r.RoomID
+                    INNER JOIN Users u ON b.CreatedBy = u.UserID
+                    WHERE c.IDNumber = @NumberID
+                    ORDER BY b.BookingDate DESC";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@NumberID", numberID);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new BookingDisplay
+                        {
+                            BookingID = (int)reader["BookingID"],
+                            RoomNumber = reader["RoomNumber"].ToString(),
+                            EmployeeName = reader["EmployeeName"].ToString(),
+                            BookingDate = (DateTime)reader["BookingDate"],
+                            CheckInDate = reader["CheckInDate"] == DBNull.Value ? null : (DateTime?)reader["CheckInDate"],
+                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
+                            Notes = reader["Notes"].ToString(),
+                            Status = reader["Status"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+        public bool UpdateCheckOutDate(int bookingId, DateTime checkOutDate)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"UPDATE Bookings 
+                      SET CheckOutDate = @CheckOutDate,
+                          Status = 'CheckedOut'
+                      WHERE BookingID = @BookingID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@CheckOutDate", checkOutDate);
+                cmd.Parameters.AddWithValue("@BookingID", bookingId);
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
+        }
+        public List<Booking> getBookingsByCustomerNumber(string numberID)
+        {
+            var list = new List<Booking>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"SELECT b.* FROM Bookings b
+                               INNER JOIN Customers c ON b.CustomerID = c.CustomerID
+                               WHERE c.IDNumber = @NumberID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@NumberID", numberID);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Booking
+                        {
+                            BookingID = (int)reader["BookingID"],
+                            RoomID = (int)reader["RoomID"],
+                            CustomerID = (int)reader["CustomerID"],
+                            PricingID = (int)reader["PricingID"],
+                            CreatedBy = (int)reader["CreatedBy"],
+                            BookingDate = (DateTime)reader["BookingDate"],
+                            CheckInDate = (DateTime)reader["CheckInDate"],
+                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
+                            Status = reader["Status"].ToString(),
+                            Notes = reader["Notes"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
         public Booking AddBooking(Booking booking)
         {
             using(SqlConnection conn = new SqlConnection(_stringConnection))
@@ -192,18 +288,20 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
-        public bool UpdateBookingStatus(int bookingID, string status)
+        public bool UpdateBookingStatusAndCheckOut(int bookingID, string status, DateTime checkoutDate)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
                 string sql = @"UPDATE Bookings 
-                          SET Status = @Status 
+                          SET Status = @Status ,
+                          CheckOutDate = @CheckOutDate
                           WHERE BookingID = @BookingID";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Status", status);
                 cmd.Parameters.AddWithValue("@BookingID", bookingID);
+                cmd.Parameters.AddWithValue("@CheckOutDate", checkoutDate);
 
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -247,6 +345,38 @@ namespace HOTEL_MINI.DAL
             }
             return list;
         }
+        public Booking GetBookingById(int bookingId)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT * FROM Bookings WHERE BookingID = @BookingID";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@BookingID", bookingId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Booking
+                        {
+                            BookingID = (int)reader["BookingID"],
+                            RoomID = (int)reader["RoomID"],
+                            CustomerID = (int)reader["CustomerID"],
+                            PricingID = (int)reader["PricingID"],
+                            CreatedBy = (int)reader["CreatedBy"],
+                            BookingDate = (DateTime)reader["BookingDate"],
+                            CheckInDate = (DateTime)reader["CheckInDate"],
+                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
+                            Status = reader["Status"].ToString(),
+                            Notes = reader["Notes"].ToString()
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
         public bool CancelBooking(int bookingID)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))

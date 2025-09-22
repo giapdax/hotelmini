@@ -25,11 +25,15 @@ namespace HOTEL_MINI.BLL
             _paymentRepository = new PaymentRepository();
             _roomRepository = new RoomRepository();
         }
-        public Booking AddBooking(Model.Entity.Booking booking)
+        public Booking AddBooking(Booking booking)
         {
             return _bookingRepository.AddBooking(booking);
         }
         public Booking GetLatestBookingByRoomId(int roomId) => _bookingRepository.GetLatestBookingByRoomId(roomId);
+        public Booking GetBookingById(int bookingId)
+        {
+            return _bookingRepository.GetBookingById(bookingId); 
+        }
         public bool UpdateBooking(Booking b) => _bookingRepository.Update(b);
         public List<UsedServiceDto> GetUsedServicesByBookingID(int bookingID)
         {
@@ -76,8 +80,16 @@ namespace HOTEL_MINI.BLL
             // --- Các loại khác (Nightly, Weekly, ...) ---
             return pricing.Price;
         }
+        public List<BookingDisplay> GetBookingDisplaysByCustomerNumber(string numberID)
+        {
+            return _bookingRepository.GetBookingDisplaysByCustomerNumber(numberID);
+        }
+        public List<Booking> GetBookingsByCustomerNumberID(string customerID)
+        {
+            return _bookingRepository.getBookingsByCustomerNumber(customerID);
+        }
         public List<string> getPaymentMethods() => _bookingRepository.getPaymentMethods();
-        public void Checkout(int bookingID, int roomID, decimal roomCharge, decimal serviceCharge,
+        public void Checkout(Booking booking, decimal roomCharge, decimal serviceCharge,
                             decimal discount, decimal surcharge, string paymentMethod, int currentUserID)
         {
             using (var transaction = new TransactionScope())
@@ -87,7 +99,7 @@ namespace HOTEL_MINI.BLL
                     // 1. Tạo Invoice
                     var invoice = new Invoice
                     {
-                        BookingID = bookingID,
+                        BookingID = booking.BookingID,
                         RoomCharge = roomCharge,
                         ServiceCharge = serviceCharge,
                         Surcharge = surcharge,
@@ -113,14 +125,14 @@ namespace HOTEL_MINI.BLL
 
                     _paymentRepository.AddPayment(payment);
 
-                    bool bookingUpdated = _bookingRepository.UpdateBookingStatus(bookingID, "CheckedOut");
+                    bool bookingUpdated = _bookingRepository.UpdateBookingStatusAndCheckOut(booking.BookingID, "CheckedOut", booking.CheckOutDate.Value);
                     if (!bookingUpdated)
                     {
-                        throw new Exception("Không thể cập nhật trạng thái booking");
+                        throw new Exception("Không thể cập nhật trạng thái booking và checkout");
                     }
 
                     // 5. Cập nhật trạng thái phòng
-                    bool roomUpdated = _roomRepository.UpdateRoomStatusAfterCheckout(roomID, "Available");
+                    bool roomUpdated = _roomRepository.UpdateRoomStatusAfterCheckout(booking.RoomID, "Available");
                     if (!roomUpdated)
                     {
                         throw new Exception("Không thể cập nhật trạng thái phòng");
