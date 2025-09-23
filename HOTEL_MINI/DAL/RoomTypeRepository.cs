@@ -65,34 +65,9 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
-        //public List<RoomTypes> getAllRoomType() //lấy toàn bộ RoomType ở bảng RoomTypes
-        //{
-        //    var list = new List<RoomTypes>();
-        //    const string query = "SELECT * FROM RoomTypes";
-        //    using (var connection = CreateConnection())
-        //    using (var command = new SqlCommand(query, connection))
-        //    {
-        //        connection.Open();
-        //        using (var reader = command.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                list.Add(new RoomTypes
-        //                {
-        //                    RoomTypeID = reader.GetInt32(0),
-        //                    TypeName = reader.GetString(1),
-        //                    Description = reader.IsDBNull(2) ? string.Empty : reader.GetString(2)
-        //                });
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
-
         public bool AddRoomType(RoomTypes roomType)
         {
-            const string query =
-                "INSERT INTO RoomTypes (TypeName, Description) " +
+            const string query ="INSERT INTO RoomTypes (TypeName, Description) " +
                 "VALUES (@TypeName, @Description)";
 
             using (var connection = CreateConnection())
@@ -108,8 +83,7 @@ namespace HOTEL_MINI.DAL
 
         public bool UpdateRoomType(RoomTypes roomType)
         {
-            const string query =
-                "UPDATE RoomTypes SET TypeName=@TypeName, Description=@Description " +
+            const string query ="UPDATE RoomTypes SET TypeName=@TypeName, Description=@Description " +
                 "WHERE RoomTypeID=@RoomTypeID";
 
             using (var connection = CreateConnection())
@@ -124,18 +98,5 @@ namespace HOTEL_MINI.DAL
             }
         }
 
-        public bool DeleteRoomType(int roomTypeId)
-        {
-            const string query = "DELETE FROM RoomTypes WHERE RoomTypeID=@RoomTypeID";
-
-            using (var connection = CreateConnection())
-            using (var command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@RoomTypeID", roomTypeId);
-
-                connection.Open();
-                return command.ExecuteNonQuery() > 0;
-            }
-        }
     }
 }

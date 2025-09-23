@@ -1,7 +1,5 @@
-﻿// File: HOTEL_MINI/DAL/RoomPricingRepository.cs
-using HOTEL_MINI.Common;
+﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -18,24 +16,13 @@ namespace HOTEL_MINI.DAL
 
         private SqlConnection CreateConnection() => new SqlConnection(_connectionString);
 
-        // Map helper: Đảm bảo index đúng thứ tự SELECT
-        private static RoomPricing Map(SqlDataReader rd)
-        {
-            return new RoomPricing
-            {
-                PricingID = rd.GetInt32(0),
-                RoomTypeID = rd.GetInt32(1),
-                PricingType = rd.GetString(2),
-                Price = rd.GetDecimal(3),
-                IsActive = rd.GetBoolean(4),
-            };
-        }
         public List<RoomPricing> GetByRoomType(int roomTypeId)
         {
             var list = new List<RoomPricing>();
             const string sql = @"SELECT PricingID, RoomTypeID, PricingType, Price, IsActive
                                  FROM RoomPricing
                                  WHERE RoomTypeID = @rtId";
+
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -44,7 +31,16 @@ namespace HOTEL_MINI.DAL
                 using (var rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
-                        list.Add(Map(rd));
+                    {
+                        list.Add(new RoomPricing
+                        {
+                            PricingID = (int)rd["PricingID"],
+                            RoomTypeID = (int)rd["RoomTypeID"],
+                            PricingType = (string)rd["PricingType"],
+                            Price = (decimal)rd["Price"],
+                            IsActive = (bool)rd["IsActive"]
+                        });
+                    }
                 }
             }
             return list;
@@ -55,6 +51,7 @@ namespace HOTEL_MINI.DAL
             var list = new List<RoomPricing>();
             const string sql = @"SELECT PricingID, RoomTypeID, PricingType, Price, IsActive
                                  FROM RoomPricing";
+
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -62,49 +59,55 @@ namespace HOTEL_MINI.DAL
                 using (var rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
-                        list.Add(Map(rd));
+                    {
+                        list.Add(new RoomPricing
+                        {
+                            PricingID = (int)rd["PricingID"],
+                            RoomTypeID = (int)rd["RoomTypeID"],
+                            PricingType = (string)rd["PricingType"],
+                            Price = (decimal)rd["Price"],
+                            IsActive = (bool)rd["IsActive"]
+                        });
+                    }
                 }
             }
             return list;
         }
 
-
         public RoomPricing GetPricingTypeById(int pricingId)
         {
-            const string query = "SELECT PricingID, RoomTypeID, PricingType, Price, IsActive " +
-                                 "FROM RoomPricing WHERE PricingID = @PricingID";
+            const string sql = @"SELECT PricingID, RoomTypeID, PricingType, Price, IsActive 
+                                 FROM RoomPricing WHERE PricingID = @PricingID";
 
-            using (var connection = new SqlConnection(_connectionString))
-            using (var command = new SqlCommand(query, connection))
+            using (var conn = CreateConnection())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                command.Parameters.AddWithValue("@PricingID", pricingId);
-
-                connection.Open();
-                using (var reader = command.ExecuteReader())
+                cmd.Parameters.AddWithValue("@PricingID", pricingId);
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
                 {
-                    if (reader.Read())
+                    if (rd.Read())
                     {
                         return new RoomPricing
                         {
-                            PricingID = (int)reader["PricingID"],
-                            RoomTypeID = (int)reader["RoomTypeID"],
-                            PricingType = reader["PricingType"].ToString(),
-                            Price = (decimal)reader["Price"],
-                            IsActive = (bool)reader["IsActive"]
+                            PricingID = (int)rd["PricingID"],
+                            RoomTypeID = (int)rd["RoomTypeID"],
+                            PricingType = (string)rd["PricingType"],
+                            Price = (decimal)rd["Price"],
+                            IsActive = (bool)rd["IsActive"]
                         };
                     }
                 }
             }
-
-            return null; // không tìm thấy thì trả null
+            return null;
         }
-        
 
         public RoomPricing GetByRoomTypeAndType(int roomTypeId, string pricingType)
         {
             const string sql = @"SELECT PricingID, RoomTypeID, PricingType, Price, IsActive
                                  FROM RoomPricing
                                  WHERE RoomTypeID = @rtId AND PricingType = @ptype";
+
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -114,7 +117,16 @@ namespace HOTEL_MINI.DAL
                 using (var rd = cmd.ExecuteReader())
                 {
                     if (rd.Read())
-                        return Map(rd);
+                    {
+                        return new RoomPricing
+                        {
+                            PricingID = (int)rd["PricingID"],
+                            RoomTypeID = (int)rd["RoomTypeID"],
+                            PricingType = (string)rd["PricingType"],
+                            Price = (decimal)rd["Price"],
+                            IsActive = (bool)rd["IsActive"]
+                        };
+                    }
                 }
             }
             return null;
@@ -124,6 +136,7 @@ namespace HOTEL_MINI.DAL
         {
             const string sql = @"INSERT INTO RoomPricing (RoomTypeID, PricingType, Price, IsActive)
                                  VALUES (@RoomTypeID, @PricingType, @Price, @IsActive)";
+
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -144,6 +157,7 @@ namespace HOTEL_MINI.DAL
                                      Price = @Price,
                                      IsActive = @IsActive
                                  WHERE PricingID = @PricingID";
+
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -157,22 +171,11 @@ namespace HOTEL_MINI.DAL
             }
         }
 
-        public bool Delete(int pricingId)
-        {
-            const string sql = @"DELETE FROM RoomPricing WHERE PricingID = @id";
-            using (var conn = CreateConnection())
-            using (var cmd = new SqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@id", pricingId);
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
-            }
-        }
-
         public List<string> GetPricingTypes()
         {
             var list = new List<string>();
             const string sql = @"SELECT Value FROM PricingTypeEnum ORDER BY Value";
+
             using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -180,7 +183,7 @@ namespace HOTEL_MINI.DAL
                 using (var rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
-                        list.Add(rd.GetString(0));
+                        list.Add((string)rd["Value"]);
                 }
             }
             return list;

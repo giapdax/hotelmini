@@ -17,15 +17,18 @@ namespace HOTEL_MINI.BLL
 
         public bool Add(RoomPricing p) { Validate(p, requireId: false); return _repo.Add(p); }
         public bool Update(RoomPricing p) { Validate(p, requireId: true); return _repo.Update(p); }
-        public bool Delete(int id) => _repo.Delete(id);
         public List<RoomPricing> GetByRoomType(int roomTypeId) => _repo.GetByRoomType(roomTypeId);
-        private static void Validate(RoomPricing p, bool requireId)
+        private void Validate(RoomPricing p, bool requireId)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
             if (requireId && p.PricingID <= 0) throw new ArgumentException("PricingID không hợp lệ.");
             if (p.RoomTypeID <= 0) throw new ArgumentException("Chưa chọn loại phòng.");
             if (string.IsNullOrWhiteSpace(p.PricingType)) throw new ArgumentException("Chưa chọn loại giá.");
             if (p.Price < 0) throw new ArgumentException("Giá không thể âm.");
+
+            var existed = _repo.GetByRoomTypeAndType(p.RoomTypeID, p.PricingType);
+            if (existed != null && (!requireId || existed.PricingID != p.PricingID))
+                throw new ArgumentException("Tổ hợp Loại phòng và Loại giá này đã được thiết lập giá.");
         }
     }
 }

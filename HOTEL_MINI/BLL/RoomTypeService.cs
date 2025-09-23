@@ -16,13 +16,9 @@ namespace HOTEL_MINI.BLL
             _roomTypeRepository = new RoomTypeRepository();
         }
 
-        public List<RoomTypes> GetAllRoomTypes()
-            => _roomTypeRepository.GetAllRoomTypes();
+        public List<RoomTypes> GetAllRoomTypes(){return _roomTypeRepository.GetAllRoomTypes(); }
 
-        public RoomTypes GetById(int roomTypeId)
-            => _roomTypeRepository.GetById(roomTypeId);
-        //public List<RoomTypes> getAllRoomType() //lấy toàn bộ RoomType ở bảng RoomTypes
-        //    => _roomTypeRepository.GetAllRoomTypes();
+        public RoomTypes GetById(int roomTypeId) { return _roomTypeRepository.GetById(roomTypeId); }
         public bool AddRoomType(RoomTypes roomType)
         {
             Validate(roomType, requireId: false);
@@ -35,10 +31,6 @@ namespace HOTEL_MINI.BLL
             return _roomTypeRepository.UpdateRoomType(roomType);
         }
 
-        public bool DeleteRoomType(int roomTypeId)
-            => _roomTypeRepository.DeleteRoomType(roomTypeId);
-
-        // ===== Helpers =====
         private static void Validate(RoomTypes rt, bool requireId)
         {
             if (rt == null) throw new ArgumentNullException(nameof(rt));

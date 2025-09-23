@@ -17,10 +17,10 @@ namespace HOTEL_MINI.Forms
         {
             InitializeComponent();
 
-            _ucRoom = new UcRoom(_roomService, _roomTypeSvc, _pricingSvc) { Dock = DockStyle.Fill };
+            _ucRoom = new UcRoom() { Dock = DockStyle.Fill };
             tabRooms.Controls.Add(_ucRoom);
 
-            _ucRoomTypePricing = new UcRoomType_Pricing(_roomService, _roomTypeSvc, _pricingSvc) { Dock = DockStyle.Fill };
+            _ucRoomTypePricing = new UcRoomType_Pricing() { Dock = DockStyle.Fill };
             _ucRoomTypePricing.RoomTypeChanged += id => _ucRoom?.SelectRoomType(id);
             tabRoomTypePricing.Controls.Add(_ucRoomTypePricing);
         }

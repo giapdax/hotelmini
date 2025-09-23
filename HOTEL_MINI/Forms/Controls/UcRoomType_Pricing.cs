@@ -4,93 +4,84 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using HOTEL_MINI.BLL;
-using HOTEL_MINI.Model.Entity;   // Room, RoomPricing
-using MiniHotel.Models;          // RoomTypes
+using HOTEL_MINI.Model.Entity;
+using MiniHotel.Models;
 
 namespace HOTEL_MINI.Forms
 {
     public partial class UcRoomType_Pricing : UserControl
     {
-        private readonly RoomService _roomService;
-        private readonly RoomTypeService _roomTypeSvc;
-        private readonly RoomPricingService _pricingSvc;
+        // BLL
+        RoomService _roomSvc = new RoomService();
+        RoomTypeService _rtSvc = new RoomTypeService();
+        RoomPricingService _prSvc = new RoomPricingService();
 
-        private readonly BindingSource _bsRoomType = new BindingSource();
+        // Cờ chế độ
+        bool AddRt = false;
+        bool AddPr = false;
 
-        private enum RtMode { None, Adding, Editing }
-        private RtMode _mode = RtMode.None;
-        private int _currentRoomTypeId = 0;
+        // Id đang chọn
+        int _curRoomTypeId = 0;
+        int _curPricingId = 0;
 
-        private enum PrMode { None, Adding, Editing }
-        private PrMode _prMode = PrMode.None;
-        private int _currentPricingId = 0;
-
-        // đơn giản: bắn ra RoomTypeID, form mẹ bắt để sync tab Phòng
         public event Action<int> RoomTypeChanged;
 
-        public UcRoomType_Pricing(RoomService roomService, RoomTypeService roomTypeSvc, RoomPricingService pricingSvc)
+        public UcRoomType_Pricing()
         {
             InitializeComponent();
-            _roomService = roomService;
-            _roomTypeSvc = roomTypeSvc;
-            _pricingSvc = pricingSvc;
-
             Load += Uc_Load;
 
-            // ROOM TYPE
+            // RoomType
+            dgvRoomType.CellClick += dgvRoomType_CellClick;
             btnAddRoomType.Click += btnAddRoomType_Click;
             btnEditRoomType.Click += btnEditRoomType_Click;
             btnSaveRoomType.Click += btnSaveRoomType_Click;
-            btnCancelRoomType.Click += (s, e) => ResetRtForm();
+            btnCancelRoomType.Click += btnCancelRoomType_Click;
 
-            // PRICING
+            // Pricing
             btnAddPricing.Click += btnAddPricing_Click;
             btnEditPricing.Click += btnEditPricing_Click;
             btnSavaPricing.Click += btnSavaPricing_Click;
-            btnCancelpricing.Click += (s, e) => ResetPricingForm();
+            btnCancelpricing.Click += btnCancelpricing_Click;
 
-            cboRoomType.SelectedIndexChanged += (s, e) => OnPricingSelectionChanged();
-            cboPricingType.SelectedIndexChanged += (s, e) => OnPricingSelectionChanged();
+            cboRoomType.SelectedIndexChanged += (_, __) => ShowPricingForSelection();
+            cboPricingType.SelectedIndexChanged += (_, __) => ShowPricingForSelection();
         }
 
+        // ===== LOAD =====
         private void Uc_Load(object sender, EventArgs e)
         {
-            SetupDgvRoomType();
-            dgvRoomType.DataSource = _bsRoomType;
+            SetupRoomTypeGrid();
+            LoadRoomTypeGrid();
+            BindRoomTypeInputs();
 
-            LoadRoomTypeSummary();
-            BindRoomTypeTextboxes();
+            LoadRoomTypeCombo();
+            LoadPricingTypeCombo();
 
-            LoadPricingCombos();
+            SetRtButtons(view: true);
+            SetPrButtons(view: true);
 
-            SetRtMode(RtMode.None);
-            SetPrMode(PrMode.None);
-
-            OnPricingSelectionChanged();
+            ShowPricingForSelection();
         }
 
-        // ===== ROOM TYPE GRID =====
-        private void SetupDgvRoomType()
+        // ===== ROOM TYPE =====
+        private void SetupRoomTypeGrid()
         {
             dgvRoomType.AutoGenerateColumns = false;
             dgvRoomType.Columns.Clear();
             dgvRoomType.Columns.Add(new DataGridViewTextBoxColumn { Name = "RoomTypesID", DataPropertyName = "RoomTypesID", HeaderText = "ID", Visible = false });
             dgvRoomType.Columns.Add(new DataGridViewTextBoxColumn { Name = "TypeName", DataPropertyName = "TypeName", HeaderText = "Loại phòng", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
             dgvRoomType.Columns.Add(new DataGridViewTextBoxColumn { Name = "Description", DataPropertyName = "Description", HeaderText = "Mô tả", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            dgvRoomType.Columns.Add(new DataGridViewTextBoxColumn { Name = "RoomCount", DataPropertyName = "RoomCount", HeaderText = "Số lượng", Width = 120 });
-
+            dgvRoomType.Columns.Add(new DataGridViewTextBoxColumn { Name = "RoomCount", DataPropertyName = "RoomCount", HeaderText = "Số lượng", Width = 100 });
             dgvRoomType.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvRoomType.MultiSelect = false;
-            dgvRoomType.SelectionChanged += (s, e) => UpdateCurrentRoomTypeId();
         }
 
-        private void LoadRoomTypeSummary()
+        private void LoadRoomTypeGrid()
         {
-            var types = _roomTypeSvc.GetAllRoomTypes();               // List<RoomTypes>
-            var rooms = _roomService.getAllRoom();                    // List<Room> (giả định có RoomTypeID)
-
-            var countByType = rooms.GroupBy(r => r.RoomTypeID)
-                                   .ToDictionary(g => g.Key, g => g.Count());
+            var types = _rtSvc.GetAllRoomTypes() ?? new List<RoomTypes>();
+            var rooms = _roomSvc.getAllRoom() ?? new List<Room>();
+            var countByType = rooms.GroupBy(r => r.RoomTypeID).ToDictionary(g => g.Key, g => g.Count());
 
             var dt = new DataTable();
             dt.Columns.Add("RoomTypesID", typeof(int));
@@ -101,133 +92,72 @@ namespace HOTEL_MINI.Forms
             foreach (var t in types)
             {
                 int id = t.RoomTypeID;
-                int count = countByType.ContainsKey(id) ? countByType[id] : 0;
-                dt.Rows.Add(id, t.TypeName ?? "", t.Description ?? "", count);
+                dt.Rows.Add(id, t.TypeName ?? "", t.Description ?? "", countByType.ContainsKey(id) ? countByType[id] : 0);
             }
+            dgvRoomType.DataSource = dt;
 
-            _bsRoomType.DataSource = dt;
-            UpdateCurrentRoomTypeId();
+            if (dgvRoomType.Rows.Count > 0)
+            {
+                dgvRoomType.Rows[0].Selected = true;
+                dgvRoomType_CellClick(dgvRoomType, new DataGridViewCellEventArgs(0, 0));
+            }
         }
 
-        private void BindRoomTypeTextboxes()
+        private void BindRoomTypeInputs()
         {
             txtRoomTypeName.DataBindings.Clear();
             txtDescription.DataBindings.Clear();
-            txtRoomTypeName.DataBindings.Add("Text", _bsRoomType, "TypeName", true, DataSourceUpdateMode.Never);
-            txtDescription.DataBindings.Add("Text", _bsRoomType, "Description", true, DataSourceUpdateMode.Never);
-            _bsRoomType.CurrentChanged += (s, e) => UpdateCurrentRoomTypeId();
+            txtRoomTypeName.DataBindings.Add("Text", dgvRoomType.DataSource, "TypeName");
+            txtDescription.DataBindings.Add("Text", dgvRoomType.DataSource, "Description");
         }
 
-        private void UpdateCurrentRoomTypeId()
+        private void dgvRoomType_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            _currentRoomTypeId = 0;
-            if (_bsRoomType.Current is DataRowView drv)
-            {
-                _currentRoomTypeId = drv.Row.Field<int?>("RoomTypesID") ?? 0;
-            }
-        }
-
-        private void SetRtMode(RtMode mode)
-        {
-            _mode = mode;
-            btnAddRoomType.Enabled = mode == RtMode.None;
-            btnEditRoomType.Enabled = mode == RtMode.None && dgvRoomType.Rows.Count > 0;
-            btnSaveRoomType.Enabled = mode != RtMode.None;
-            btnCancelRoomType.Enabled = mode != RtMode.None;
-
-            txtRoomTypeName.ReadOnly = mode == RtMode.None;
-            txtDescription.ReadOnly = mode == RtMode.None;
-            if (mode == RtMode.Editing) UpdateCurrentRoomTypeId();
-        }
-
-        private void ClearRtInputs()
-        {
-            _currentRoomTypeId = 0;
-            txtRoomTypeName.Text = "";
-            txtDescription.Text = "";
-        }
-
-        private void ResetRtForm()
-        {
-            ClearRtInputs();
-            SetRtMode(RtMode.None);
-            _bsRoomType.ResetBindings(false);
+            if (e.RowIndex < 0) return;
+            var drv = (dgvRoomType.Rows[e.RowIndex].DataBoundItem as DataRowView);
+            _curRoomTypeId = drv != null ? Convert.ToInt32(drv.Row["RoomTypesID"]) : 0;
+            RoomTypeChanged?.Invoke(_curRoomTypeId);
+            SetRtButtons(view: !AddRt); // cập nhật trạng thái nút
         }
 
         private void btnAddRoomType_Click(object sender, EventArgs e)
         {
-            ClearRtInputs();
-            SetRtMode(RtMode.Adding);
+            txtRoomTypeName.Clear();
+            txtDescription.Clear();
             txtRoomTypeName.Focus();
+            AddRt = true;
+            SetRtButtons(view: false);
         }
 
         private void btnEditRoomType_Click(object sender, EventArgs e)
         {
-            if (_bsRoomType.Count == 0 || _currentRoomTypeId <= 0)
-            { MessageBox.Show("Chọn một loại phòng để sửa."); return; }
-            SetRtMode(RtMode.Editing);
+            if (_curRoomTypeId <= 0) return;
+            AddRt = false;
+            SetRtButtons(view: false);
             txtRoomTypeName.Focus();
         }
 
         private void btnSaveRoomType_Click(object sender, EventArgs e)
         {
+            var name = (txtRoomTypeName.Text ?? "").Trim();
+            var desc = (txtDescription.Text ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(name)) { MessageBox.Show("Nhập Tên loại phòng."); txtRoomTypeName.Focus(); return; }
+            if (string.IsNullOrWhiteSpace(desc)) { MessageBox.Show("Nhập Mô tả."); txtDescription.Focus(); return; }
+
             try
             {
-                var name = (txtRoomTypeName.Text ?? "").Trim();
-                var desc = (txtDescription.Text ?? "").Trim();
-                if (string.IsNullOrWhiteSpace(name)) { MessageBox.Show("Nhập Tên loại phòng."); txtRoomTypeName.Focus(); return; }
-                if (string.IsNullOrWhiteSpace(desc)) { MessageBox.Show("Nhập Mô tả."); txtDescription.Focus(); return; }
+                bool ok = AddRt
+                    ? _rtSvc.AddRoomType(new RoomTypes { TypeName = name, Description = desc })
+                    : _rtSvc.UpdateRoomType(new RoomTypes { RoomTypeID = _curRoomTypeId, TypeName = name, Description = desc });
 
-                if (_mode == RtMode.Adding)
-                {
-                    var model = new RoomTypes { TypeName = name, Description = desc };
-                    if (_roomTypeSvc.AddRoomType(model))
-                    {
-                        MessageBox.Show("Thêm loại phòng thành công!");
+                if (!ok) { MessageBox.Show("Lưu loại phòng thất bại."); return; }
 
-                        // 1) Reload grid đếm số lượng
-                        LoadRoomTypeSummary();
-
-                        // 2) Lấy ID mới nhất (giả định ID tăng dần)
-                        var latestId = _roomTypeSvc.GetAllRoomTypes()
-                                                   .OrderByDescending(x => x.RoomTypeID)
-                                                   .Select(x => x.RoomTypeID)
-                                                   .FirstOrDefault();
-
-                        // 3) Reload combo & chọn item mới
-                        ReloadRoomTypeComboAndSelect(latestId);
-
-                        // 4) Reset form thêm/sửa
-                        ResetRtForm();
-
-                        // 5) cập nhật UI pricing theo selection mới
-                        OnPricingSelectionChanged();
-                    }
-                    else MessageBox.Show("Không thêm được loại phòng.");
-                }
-                else if (_mode == RtMode.Editing)
-                {
-                    if (_currentRoomTypeId <= 0) { MessageBox.Show("Không xác định ID loại phòng."); return; }
-                    var model = new RoomTypes { RoomTypeID = _currentRoomTypeId, TypeName = name, Description = desc };
-                    if (_roomTypeSvc.UpdateRoomType(model))
-                    {
-                        MessageBox.Show("Cập nhật loại phòng thành công!");
-
-                        // 1) Reload grid
-                        LoadRoomTypeSummary();
-
-                        // 2) Reload combo & giữ nguyên selection đang sửa
-                        ReloadRoomTypeComboAndSelect(_currentRoomTypeId);
-
-                        // 3) Reset form
-                        ResetRtForm();
-
-                        // 4) cập nhật UI pricing theo selection hiện tại
-                        OnPricingSelectionChanged();
-                    }
-                    else MessageBox.Show("Không cập nhật được loại phòng.");
-                }
-                else MessageBox.Show("Chưa chọn chế độ Thêm/Sửa.");
+                MessageBox.Show("Đã lưu loại phòng!");
+                AddRt = false;
+                LoadRoomTypeGrid();
+                LoadRoomTypeCombo();
+                SetRtButtons(view: true);
+                ShowPricingForSelection();
             }
             catch (Exception ex)
             {
@@ -235,145 +165,87 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // ===== PRICING =====
-        private void LoadPricingCombos()
+        private void btnCancelRoomType_Click(object sender, EventArgs e)
         {
-            // dùng helper để load combo loại phòng cho đồng nhất
-            ReloadRoomTypeComboAndSelect();
-
-            var pricingTypes = _pricingSvc.GetPricingTypes(); // List<string>
-            cboPricingType.DataSource = pricingTypes;
-            cboPricingType.SelectedIndex = pricingTypes.Count > 0 ? 0 : -1;
-
-            txtPrice.Text = "";
-            chkActive.Checked = true;
+            AddRt = false;
+            LoadRoomTypeGrid();
+            SetRtButtons(view: true);
         }
 
-        // Helper: Reload combo RoomType và optionally chọn ID chỉ định
-        private void ReloadRoomTypeComboAndSelect(int? selectId = null)
+        private void SetRtButtons(bool view)
         {
-            var roomTypes = _roomTypeSvc.GetAllRoomTypes(); // List<RoomTypes>
+            btnAddRoomType.Enabled = view;
+            btnEditRoomType.Enabled = view && _curRoomTypeId > 0;
+            btnSaveRoomType.Enabled = !view;
+            btnCancelRoomType.Enabled = !view;
+
+            txtRoomTypeName.ReadOnly = view;
+            txtDescription.ReadOnly = view;
+        }
+
+        // ===== PRICING =====
+        private void LoadRoomTypeCombo()
+        {
+            var list = _rtSvc.GetAllRoomTypes() ?? new List<RoomTypes>();
             cboRoomType.DataSource = null;
-            cboRoomType.DataSource = roomTypes;
             cboRoomType.DisplayMember = "TypeName";
             cboRoomType.ValueMember = "RoomTypeID";
-
-            if (selectId.HasValue && roomTypes.Any(rt => rt.RoomTypeID == selectId.Value))
-            {
-                cboRoomType.SelectedValue = selectId.Value;
-            }
-            else
-            {
-                cboRoomType.SelectedIndex = roomTypes.Count > 0 ? 0 : -1;
-            }
+            cboRoomType.DataSource = list;
+            if (list.Count > 0) cboRoomType.SelectedIndex = 0; else cboRoomType.SelectedIndex = -1;
         }
 
-        private void UpdatePricingEditState()
+        private void LoadPricingTypeCombo()
         {
-            if (_prMode != PrMode.None) return;
-            btnEditPricing.Enabled = _currentPricingId > 0;
-            txtPrice.ReadOnly = true;
-            chkActive.Enabled = false;
+            var types = _prSvc.GetPricingTypes() ?? new List<string>();
+            cboPricingType.DataSource = types;
+            if (types.Count > 0) cboPricingType.SelectedIndex = 0; else cboPricingType.SelectedIndex = -1;
         }
 
-        private void OnPricingSelectionChanged()
+        private void ShowPricingForSelection()
         {
-            if (_prMode != PrMode.None) return;
+            if (AddPr) return;
 
-            int roomTypeId = (cboRoomType.SelectedValue is int v) ? v : 0;
-            string pricingType = cboPricingType.SelectedItem as string;
-
-            if (roomTypeId <= 0 || string.IsNullOrWhiteSpace(pricingType))
+            int rtId = (cboRoomType.SelectedValue is int v) ? v : 0;
+            string ptype = cboPricingType.SelectedItem as string;
+            if (rtId <= 0 || string.IsNullOrWhiteSpace(ptype))
             {
-                _currentPricingId = 0;
-                txtPrice.Text = "";
+                _curPricingId = 0;
+                txtPrice.Clear();
                 chkActive.Checked = false;
-                UpdatePricingEditState();
+                SetPrButtons(view: true);
                 return;
             }
 
-            var pricing = _pricingSvc.GetByRoomTypeAndType(roomTypeId, pricingType);
-            if (pricing == null)
+            var p = _prSvc.GetByRoomTypeAndType(rtId, ptype);
+            if (p == null)
             {
-                _currentPricingId = 0;
-                txtPrice.Text = "Chưa có giá cho tổ hợp này";
+                _curPricingId = 0;
+                txtPrice.Clear();
                 chkActive.Checked = false;
             }
             else
             {
-                _currentPricingId = pricing.PricingID;
-                txtPrice.Text = pricing.Price.ToString("0.##");
-                chkActive.Checked = pricing.IsActive;
-
-                // báo cho tab Phòng (nếu cần sync)
-                RoomTypeChanged?.Invoke(roomTypeId);
+                _curPricingId = p.PricingID;
+                txtPrice.Text = p.Price.ToString("0.##");
+                chkActive.Checked = p.IsActive;
             }
-
-            UpdatePricingEditState();
-        }
-
-        private RoomPricing ReadPricingFromForm(int? pricingId = null)
-        {
-            int roomTypeId = (cboRoomType.SelectedValue is int v) ? v : 0;
-            string pricingType = cboPricingType.SelectedItem as string ?? "";
-            decimal price = 0;
-            decimal.TryParse((txtPrice.Text ?? "").Trim(), out price);
-
-            return new RoomPricing
-            {
-                PricingID = pricingId ?? 0,
-                RoomTypeID = roomTypeId,
-                PricingType = pricingType,
-                Price = price,
-                IsActive = chkActive.Checked
-            };
-        }
-
-        private void SetPrMode(PrMode mode)
-        {
-            _prMode = mode;
-            btnAddPricing.Enabled = mode == PrMode.None;
-            btnSavaPricing.Enabled = mode != PrMode.None;
-            btnCancelpricing.Enabled = mode != PrMode.None;
-
-            cboRoomType.Enabled = true;
-            cboPricingType.Enabled = true;
-
-            if (mode == PrMode.None)
-            {
-                btnEditPricing.Enabled = _currentPricingId > 0;
-                txtPrice.ReadOnly = true;
-                chkActive.Enabled = false;
-            }
-            else
-            {
-                btnEditPricing.Enabled = false;
-                txtPrice.ReadOnly = false;
-                chkActive.Enabled = true;
-            }
-        }
-
-        private void ResetPricingForm()
-        {
-            _currentPricingId = 0;
-            txtPrice.Text = "";
-            chkActive.Checked = true;
-            SetPrMode(PrMode.None);
-            OnPricingSelectionChanged();
+            SetPrButtons(view: true);
         }
 
         private void btnAddPricing_Click(object sender, EventArgs e)
         {
-            SetPrMode(PrMode.Adding);
-            if (!decimal.TryParse(txtPrice.Text, out _)) txtPrice.Text = "";
-            cboRoomType.Focus();
+            AddPr = true;
+            txtPrice.Clear();
+            chkActive.Checked = true;
+            SetPrButtons(view: false);
+            txtPrice.Focus();
         }
 
         private void btnEditPricing_Click(object sender, EventArgs e)
         {
-            if (_currentPricingId <= 0) { MessageBox.Show("Chọn tổ hợp đã có giá để sửa."); return; }
-            SetPrMode(PrMode.Editing);
-            if (!decimal.TryParse(txtPrice.Text, out _)) txtPrice.Text = "";
+            if (_curPricingId <= 0) { MessageBox.Show("Chọn tổ hợp đã có giá để sửa."); return; }
+            AddPr = false;
+            SetPrButtons(view: false);
             txtPrice.Focus();
         }
 
@@ -381,33 +253,44 @@ namespace HOTEL_MINI.Forms
         {
             try
             {
-                if (_prMode == PrMode.Adding)
-                {
-                    var model = ReadPricingFromForm();
-                    if (_pricingSvc.Add(model))
-                    {
-                        MessageBox.Show("Thêm loại giá thành công!");
-                        ResetPricingForm();
-                    }
-                    else MessageBox.Show("Không thêm được loại giá.");
-                }
-                else if (_prMode == PrMode.Editing)
-                {
-                    if (_currentPricingId <= 0) { MessageBox.Show("Không xác định bản ghi giá."); return; }
-                    var model = ReadPricingFromForm(_currentPricingId);
-                    if (_pricingSvc.Update(model))
-                    {
-                        MessageBox.Show("Cập nhật loại giá thành công!");
-                        ResetPricingForm();
-                    }
-                    else MessageBox.Show("Không cập nhật được loại giá.");
-                }
-                else MessageBox.Show("Chưa chọn chế độ Thêm/Sửa.");
+                int rtId = (cboRoomType.SelectedValue is int v) ? v : 0;
+                string ptype = cboPricingType.SelectedItem as string ?? "";
+                decimal price = 0; decimal.TryParse((txtPrice.Text ?? "").Trim(), out price);
+
+                bool ok = AddPr
+                    ? _prSvc.Add(new RoomPricing { RoomTypeID = rtId, PricingType = ptype, Price = price, IsActive = chkActive.Checked })
+                    : _prSvc.Update(new RoomPricing { PricingID = _curPricingId, RoomTypeID = rtId, PricingType = ptype, Price = price, IsActive = chkActive.Checked });
+
+                if (!ok) { MessageBox.Show("Lưu giá thất bại."); return; }
+
+                MessageBox.Show("Đã lưu giá!");
+                AddPr = false;
+                SetPrButtons(view: true);
+                ShowPricingForSelection();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnCancelpricing_Click(object sender, EventArgs e)
+        {
+            AddPr = false;
+            SetPrButtons(view: true);
+            ShowPricingForSelection();
+        }
+
+        private void SetPrButtons(bool view)
+        {
+            btnAddPricing.Enabled = view;
+            btnEditPricing.Enabled = view && _curPricingId > 0;
+            btnSavaPricing.Enabled = !view;
+            btnCancelpricing.Enabled = !view;
+            cboRoomType.Enabled = true;
+            cboPricingType.Enabled = true;
+            txtPrice.ReadOnly = view;
+            chkActive.Enabled = !view;
         }
     }
 }

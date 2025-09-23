@@ -168,7 +168,6 @@ namespace HOTEL_MINI.Forms
 
             try
             {
-                // Validate ở BLL và HIỂN THỊ LỖI
                 var vr = _userSvc.TryValidateUser(model, isUpdate: !isAdd, plainPasswordIfProvided: plainPassword);
                 if (!vr.IsValid)
                 {

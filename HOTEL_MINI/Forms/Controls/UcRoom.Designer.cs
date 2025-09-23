@@ -541,7 +541,6 @@
             this.lblNote.TabIndex = 8;
             this.lblNote.Text = "Ghi chú";
             this.lblNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblNote.Click += new System.EventHandler(this.lblNote_Click);
             // 
             // txtNote
             // 
@@ -551,7 +550,6 @@
             this.txtNote.ReadOnly = true;
             this.txtNote.Size = new System.Drawing.Size(162, 26);
             this.txtNote.TabIndex = 9;
-            this.txtNote.TextChanged += new System.EventHandler(this.txtNote_TextChanged);
             // 
             // label4
             // 
@@ -565,7 +563,6 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Số phòng:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // txtRoomNumber
             // 
@@ -575,7 +572,6 @@
             this.txtRoomNumber.ReadOnly = true;
             this.txtRoomNumber.Size = new System.Drawing.Size(162, 26);
             this.txtRoomNumber.TabIndex = 11;
-            this.txtRoomNumber.TextChanged += new System.EventHandler(this.txtRoomNumber_TextChanged);
             // 
             // cboRoomStatus
             // 
@@ -595,7 +591,6 @@
             this.cboRoomTypeName.Name = "cboRoomTypeName";
             this.cboRoomTypeName.Size = new System.Drawing.Size(162, 28);
             this.cboRoomTypeName.TabIndex = 3;
-            this.cboRoomTypeName.SelectedIndexChanged += new System.EventHandler(this.cboRoomTypeName_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -622,7 +617,6 @@
             this.lblRoomTypeName.TabIndex = 2;
             this.lblRoomTypeName.Text = "Loại Phòng:";
             this.lblRoomTypeName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblRoomTypeName.Click += new System.EventHandler(this.lblRoomTypeName_Click);
             // 
             // UcRoom
             // 
