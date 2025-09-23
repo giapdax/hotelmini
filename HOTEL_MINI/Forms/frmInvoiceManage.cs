@@ -19,6 +19,7 @@ namespace HOTEL_MINI.Forms
         private readonly BookingService _bookingService;
         private readonly InvoiceService _invoiceService;
         private readonly frmApplication _mainForm;
+        private Customer _currentCustomer = null;
         public frmInvoiceManage(frmApplication mainForm)
         {
             InitializeComponent();
@@ -42,11 +43,13 @@ namespace HOTEL_MINI.Forms
                 return;
             }
             var customer = _customerService.GetCustomerByNumberID(txtCustomerID.Text);
-            if(customer == null)
+            
+            if (customer == null)
             {
                 MessageBox.Show("Không tìm thấy khách hàng với ID đã nhập");
                 return;
             }
+            _currentCustomer = customer;
             LoadCustomerInfo(customer);
 
             LoadCustomerBookings(txtCustomerID.Text);
@@ -168,15 +171,20 @@ namespace HOTEL_MINI.Forms
                     MessageBox.Show("Không tìm thấy hóa đơn cho booking này");
                     return;
                 }
-
+                //if (_currentCustomer == null)
+                //{
+                //    MessageBox.Show("Không có thông tin khách hàng hiện tại");
+                //    return;
+                //}
+                //MessageBox.Show($"{_currentCustomer.FullName}");
                 // Tạo và hiển thị UC Invoice
-                var invoiceControl = new UcInvoice(booking, roomNumber, invoice);
+                var invoiceControl = new UcInvoice(booking, roomNumber, invoice, _currentCustomer.FullName, _currentCustomer.IDNumber);
 
                 // Tạo form popup
                 var popupForm = new Form
                 {
                     Text = $"Hóa đơn - Phòng {roomNumber}",
-                    Size = new Size(750, 1000),
+                    Size = new Size(648, 1116),
                     StartPosition = FormStartPosition.CenterScreen
                 };
 

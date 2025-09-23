@@ -42,18 +42,18 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(2693, 1556);
+            this.tabControl1.Size = new System.Drawing.Size(1048, 546);
             this.tabControl1.TabIndex = 0;
             // 
             // tabRevenue
             // 
+            this.tabRevenue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.tabRevenue.Location = new System.Drawing.Point(4, 29);
             this.tabRevenue.Name = "tabRevenue";
             this.tabRevenue.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRevenue.Size = new System.Drawing.Size(2685, 1523);
+            this.tabRevenue.Size = new System.Drawing.Size(1040, 513);
             this.tabRevenue.TabIndex = 0;
             this.tabRevenue.Text = "Doanh thu";
-            this.tabRevenue.UseVisualStyleBackColor = true;
             // 
             // tabRoom
             // 
@@ -69,7 +69,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1795, 1037);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.tabControl1);
             this.Name = "frmStatistical";
             this.Text = "Thống Kê";

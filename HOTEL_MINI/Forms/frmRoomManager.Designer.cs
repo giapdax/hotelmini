@@ -34,7 +34,7 @@ namespace HOTEL_MINI.Forms
             // 
             // tabRooms
             // 
-            this.tabRooms.BackColor = System.Drawing.Color.Thistle;
+            this.tabRooms.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.tabRooms.Location = new System.Drawing.Point(4, 29);
             this.tabRooms.Name = "tabRooms";
             this.tabRooms.Padding = new System.Windows.Forms.Padding(3);
@@ -44,13 +44,13 @@ namespace HOTEL_MINI.Forms
             // 
             // tabRoomTypePricing
             // 
+            this.tabRoomTypePricing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.tabRoomTypePricing.Location = new System.Drawing.Point(4, 29);
             this.tabRoomTypePricing.Name = "tabRoomTypePricing";
             this.tabRoomTypePricing.Padding = new System.Windows.Forms.Padding(3);
             this.tabRoomTypePricing.Size = new System.Drawing.Size(1040, 513);
             this.tabRoomTypePricing.TabIndex = 1;
             this.tabRoomTypePricing.Text = "Quản lý loại phòng và giá";
-            this.tabRoomTypePricing.UseVisualStyleBackColor = true;
             // 
             // frmRoomManager
             // 

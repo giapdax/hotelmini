@@ -32,6 +32,7 @@ namespace HOTEL_MINI
 
                 // Mở form đăng nhập
                 Application.Run(new frmLogin());
+
             }
             catch (Exception ex)
             {

@@ -59,6 +59,8 @@ namespace HOTEL_MINI.Forms
             }
             txtPricingType.Text = _roomService.getPricingTypeByID(_booking.PricingID);
             dtpCheckinTime.Value = _booking.CheckInDate.HasValue ? _booking.CheckInDate.Value : DateTime.Now;
+            txtNote.Text = _booking.Notes;
+            txtNote.ReadOnly = true;    
             if (_booking.CheckOutDate == null)
             {
                 //dtpCheckoutTime.Value = DateTime.Now;

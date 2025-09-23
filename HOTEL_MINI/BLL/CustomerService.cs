@@ -17,10 +17,6 @@ namespace HOTEL_MINI.BLL
         }
         public Customer getCustomerByIDNumber(string idNumber)
         {
-            //if(_customerRepository.checkExistNumberID(idNumber) == false)
-            //{
-            //    return null;
-            //}
             return _customerRepository.GetCustomerByIDNumber(idNumber);
         }
         public Customer addNewCustomer(Customer customer)

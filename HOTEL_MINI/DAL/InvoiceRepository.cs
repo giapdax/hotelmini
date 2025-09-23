@@ -2,6 +2,7 @@
 using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Documents;
@@ -16,7 +17,83 @@ namespace HOTEL_MINI.DAL
         {
             _stringConnection = ConfigHelper.GetConnectionString();
         }
+        public List<RevenueRoomDTO> GetRevenueByRoom(int month, int year)
+        {
+            using (var connection = new SqlConnection(_stringConnection))
+            {
+                connection.Open();
+                string sql = @"
+            SELECT r.RoomNumber,
+                   MONTH(i.IssuedAt) AS Month,
+                   YEAR(i.IssuedAt) AS Year,
+                   SUM(i.RoomCharge) AS RoomRevenue,
+                   SUM(i.ServiceCharge) AS ServiceRevenue,
+                   SUM(i.TotalAmount) AS TotalRevenue
+            FROM Invoices i
+            INNER JOIN Bookings b ON i.BookingID = b.BookingID
+            INNER JOIN Rooms r ON b.RoomID = r.RoomID
+            WHERE MONTH(i.IssuedAt) = @Month AND YEAR(i.IssuedAt) = @Year
+            GROUP BY r.RoomNumber, MONTH(i.IssuedAt), YEAR(i.IssuedAt)
+            ORDER BY r.RoomNumber;
+        ";
 
+                using (var cmd = new SqlCommand(sql, connection))
+                {
+                    cmd.Parameters.AddWithValue("@Month", month);
+                    cmd.Parameters.AddWithValue("@Year", year);
+
+                    var reader = cmd.ExecuteReader();
+                    var result = new List<RevenueRoomDTO>();
+
+                    while (reader.Read())
+                    {
+                        result.Add(new RevenueRoomDTO
+                        {
+                            RoomNumber = reader["RoomNumber"].ToString(),
+                            Month = (int)reader["Month"],
+                            Year = (int)reader["Year"],
+                            RoomRevenue = (decimal)reader["RoomRevenue"],
+                            ServiceRevenue = (decimal)reader["ServiceRevenue"],
+                            TotalRevenue = (decimal)reader["TotalRevenue"]
+                        });
+                    }
+
+                    return result;
+                }
+            }
+        }
+
+        public List<Invoice> getAllInvoices()
+        {
+            var invoices = new List<Invoice>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = "SELECT * FROM Invoices";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        invoices.Add(new Invoice
+                        {
+                            InvoiceID = Convert.ToInt32(reader["InvoiceID"]),
+                            BookingID = Convert.ToInt32(reader["BookingID"]),
+                            RoomCharge = Convert.ToDecimal(reader["RoomCharge"]),
+                            ServiceCharge = Convert.ToDecimal(reader["ServiceCharge"]),
+                            Surcharge = Convert.ToDecimal(reader["Surcharge"]),
+                            Discount = Convert.ToDecimal(reader["Discount"]),
+                            TotalAmount = Convert.ToDecimal(reader["TotalAmount"]),
+                            IssuedAt = Convert.ToDateTime(reader["IssuedAt"]),
+                            IssuedBy = Convert.ToInt32(reader["IssuedBy"]),
+                            Status = reader["Status"].ToString(),
+                            Note = reader["Note"] == DBNull.Value ? null : reader["Note"].ToString()
+                        });
+                    }
+                }
+            }
+            return invoices;
+        }
         public int AddInvoice(Invoice invoice)
         {
             using (SqlConnection conn = new SqlConnection(_stringConnection))

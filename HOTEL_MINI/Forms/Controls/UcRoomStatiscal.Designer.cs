@@ -31,7 +31,7 @@ namespace HOTEL_MINI.Forms.Controls
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnRefresh = new System.Windows.Forms.Button(); // CHỈ KHAI BÁO 1 LẦN
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.txtNumberOfMaintenanceRoom = new System.Windows.Forms.TextBox();
             this.txtNumberOfOccupiedRoom = new System.Windows.Forms.TextBox();
             this.txtNumberOfAvailableRoom = new System.Windows.Forms.TextBox();
@@ -47,6 +47,7 @@ namespace HOTEL_MINI.Forms.Controls
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.panel1.Controls.Add(this.btnRefresh);
             this.panel1.Controls.Add(this.txtNumberOfMaintenanceRoom);
             this.panel1.Controls.Add(this.txtNumberOfOccupiedRoom);
@@ -59,6 +60,7 @@ namespace HOTEL_MINI.Forms.Controls
             this.panel1.Controls.Add(this.lblNumberOfAvailableRoom);
             this.panel1.Controls.Add(this.lblNumberOfTotalRoom);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.ForeColor = System.Drawing.Color.White;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1311, 874);
@@ -67,6 +69,7 @@ namespace HOTEL_MINI.Forms.Controls
             // btnRefresh
             // 
             this.btnRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRefresh.ForeColor = System.Drawing.Color.Brown;
             this.btnRefresh.Location = new System.Drawing.Point(732, 744);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(200, 50);
@@ -119,41 +122,45 @@ namespace HOTEL_MINI.Forms.Controls
             // 
             this.lblNumberOfMaintenanceRoom.AutoSize = true;
             this.lblNumberOfMaintenanceRoom.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNumberOfMaintenanceRoom.ForeColor = System.Drawing.Color.White;
             this.lblNumberOfMaintenanceRoom.Location = new System.Drawing.Point(53, 616);
             this.lblNumberOfMaintenanceRoom.Name = "lblNumberOfMaintenanceRoom";
-            this.lblNumberOfMaintenanceRoom.Size = new System.Drawing.Size(536, 56);
+            this.lblNumberOfMaintenanceRoom.Size = new System.Drawing.Size(367, 37);
             this.lblNumberOfMaintenanceRoom.TabIndex = 4;
-            this.lblNumberOfMaintenanceRoom.Text = "Số phòng đang bảo trì";
+            this.lblNumberOfMaintenanceRoom.Text = "Số phòng đang bảo trì:";
             // 
             // lblnumberOfOccupiedRoom
             // 
             this.lblnumberOfOccupiedRoom.AutoSize = true;
             this.lblnumberOfOccupiedRoom.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblnumberOfOccupiedRoom.ForeColor = System.Drawing.Color.White;
             this.lblnumberOfOccupiedRoom.Location = new System.Drawing.Point(53, 492);
             this.lblnumberOfOccupiedRoom.Name = "lblnumberOfOccupiedRoom";
-            this.lblnumberOfOccupiedRoom.Size = new System.Drawing.Size(629, 56);
+            this.lblnumberOfOccupiedRoom.Size = new System.Drawing.Size(429, 37);
             this.lblnumberOfOccupiedRoom.TabIndex = 3;
-            this.lblnumberOfOccupiedRoom.Text = "Số phòng đang có người ở";
+            this.lblnumberOfOccupiedRoom.Text = "Số phòng đang có người ở:";
             // 
             // lblNumberOfBookedRoom
             // 
             this.lblNumberOfBookedRoom.AutoSize = true;
             this.lblNumberOfBookedRoom.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNumberOfBookedRoom.ForeColor = System.Drawing.Color.White;
             this.lblNumberOfBookedRoom.Location = new System.Drawing.Point(53, 366);
             this.lblNumberOfBookedRoom.Name = "lblNumberOfBookedRoom";
-            this.lblNumberOfBookedRoom.Size = new System.Drawing.Size(629, 56);
+            this.lblNumberOfBookedRoom.Size = new System.Drawing.Size(429, 37);
             this.lblNumberOfBookedRoom.TabIndex = 2;
-            this.lblNumberOfBookedRoom.Text = "Số phòng đang được book";
+            this.lblNumberOfBookedRoom.Text = "Số phòng đang được book:";
             // 
             // lblNumberOfAvailableRoom
             // 
             this.lblNumberOfAvailableRoom.AutoSize = true;
             this.lblNumberOfAvailableRoom.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNumberOfAvailableRoom.ForeColor = System.Drawing.Color.White;
             this.lblNumberOfAvailableRoom.Location = new System.Drawing.Point(53, 232);
             this.lblNumberOfAvailableRoom.Name = "lblNumberOfAvailableRoom";
-            this.lblNumberOfAvailableRoom.Size = new System.Drawing.Size(509, 56);
+            this.lblNumberOfAvailableRoom.Size = new System.Drawing.Size(349, 37);
             this.lblNumberOfAvailableRoom.TabIndex = 1;
-            this.lblNumberOfAvailableRoom.Text = "Số phòng đang trống";
+            this.lblNumberOfAvailableRoom.Text = "Số phòng đang trống:";
             // 
             // lblNumberOfTotalRoom
             // 
@@ -175,6 +182,7 @@ namespace HOTEL_MINI.Forms.Controls
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         #endregion

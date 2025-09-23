@@ -55,8 +55,8 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.6552F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.3448F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.08911F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.91089F));
             this.tableLayoutPanel1.Controls.Add(this.chartRevenue, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -80,12 +80,13 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chartRevenue.Series.Add(series1);
-            this.chartRevenue.Size = new System.Drawing.Size(729, 721);
+            this.chartRevenue.Size = new System.Drawing.Size(795, 721);
             this.chartRevenue.TabIndex = 0;
             this.chartRevenue.Text = "Revenue Chart";
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.panel1.Controls.Add(this.btnRefresh);
             this.panel1.Controls.Add(this.btnExport);
             this.panel1.Controls.Add(this.txtTotal);
@@ -99,30 +100,36 @@
             this.panel1.Controls.Add(this.lblRoomCharge);
             this.panel1.Controls.Add(this.lblServiceCharge);
             this.panel1.Controls.Add(this.lblTotal);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(738, 3);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(804, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(471, 721);
+            this.panel1.Size = new System.Drawing.Size(405, 721);
             this.panel1.TabIndex = 1;
             // 
             // btnRefresh
             // 
+            this.btnRefresh.BackColor = System.Drawing.Color.White;
+            this.btnRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRefresh.ForeColor = System.Drawing.Color.Brown;
             this.btnRefresh.Location = new System.Drawing.Point(282, 629);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(98, 60);
             this.btnRefresh.TabIndex = 15;
             this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.UseVisualStyleBackColor = false;
             this.btnRefresh.Click += new System.EventHandler(this.BtnRefresh_Click);
             // 
             // btnExport
             // 
+            this.btnExport.BackColor = System.Drawing.Color.White;
+            this.btnExport.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExport.ForeColor = System.Drawing.Color.Brown;
             this.btnExport.Location = new System.Drawing.Point(96, 629);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(98, 60);
             this.btnExport.TabIndex = 14;
             this.btnExport.Text = "Export";
-            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.UseVisualStyleBackColor = false;
             this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
             // 
             // txtTotal
@@ -176,47 +183,62 @@
             // lblSurcharge
             // 
             this.lblSurcharge.AutoSize = true;
+            this.lblSurcharge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblSurcharge.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSurcharge.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblSurcharge.Location = new System.Drawing.Point(32, 452);
             this.lblSurcharge.Name = "lblSurcharge";
-            this.lblSurcharge.Size = new System.Drawing.Size(83, 20);
+            this.lblSurcharge.Size = new System.Drawing.Size(92, 25);
             this.lblSurcharge.TabIndex = 6;
-            this.lblSurcharge.Text = "Surcharge";
+            this.lblSurcharge.Text = "Phụ phí:";
             // 
             // lblDiscount
             // 
             this.lblDiscount.AutoSize = true;
+            this.lblDiscount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblDiscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDiscount.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblDiscount.Location = new System.Drawing.Point(32, 348);
             this.lblDiscount.Name = "lblDiscount";
-            this.lblDiscount.Size = new System.Drawing.Size(72, 20);
+            this.lblDiscount.Size = new System.Drawing.Size(104, 25);
             this.lblDiscount.TabIndex = 5;
-            this.lblDiscount.Text = "Discount";
+            this.lblDiscount.Text = "Giảm giá:";
             // 
             // lblRoomCharge
             // 
             this.lblRoomCharge.AutoSize = true;
+            this.lblRoomCharge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblRoomCharge.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRoomCharge.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblRoomCharge.Location = new System.Drawing.Point(32, 142);
             this.lblRoomCharge.Name = "lblRoomCharge";
-            this.lblRoomCharge.Size = new System.Drawing.Size(105, 20);
+            this.lblRoomCharge.Size = new System.Drawing.Size(116, 25);
             this.lblRoomCharge.TabIndex = 4;
-            this.lblRoomCharge.Text = "Room charge";
+            this.lblRoomCharge.Text = "Phí phòng:";
             // 
             // lblServiceCharge
             // 
             this.lblServiceCharge.AutoSize = true;
+            this.lblServiceCharge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblServiceCharge.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblServiceCharge.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblServiceCharge.Location = new System.Drawing.Point(32, 245);
             this.lblServiceCharge.Name = "lblServiceCharge";
-            this.lblServiceCharge.Size = new System.Drawing.Size(114, 20);
+            this.lblServiceCharge.Size = new System.Drawing.Size(86, 25);
             this.lblServiceCharge.TabIndex = 3;
-            this.lblServiceCharge.Text = "Service charge";
+            this.lblServiceCharge.Text = "Phí DV:";
             // 
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
+            this.lblTotal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblTotal.Location = new System.Drawing.Point(32, 550);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(44, 20);
+            this.lblTotal.Size = new System.Drawing.Size(69, 25);
             this.lblTotal.TabIndex = 7;
-            this.lblTotal.Text = "Total";
+            this.lblTotal.Text = "Tổng:";
             // 
             // UcRevenue
             // 

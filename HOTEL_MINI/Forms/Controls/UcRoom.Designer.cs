@@ -120,6 +120,7 @@
             // 
             // dgvRoom
             // 
+            this.dgvRoom.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.dgvRoom.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvRoom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvRoom.Location = new System.Drawing.Point(3, 65);
@@ -142,9 +143,11 @@
             // 
             // grbSearch
             // 
+            this.grbSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.grbSearch.Controls.Add(this.tableLayoutPanel5);
             this.grbSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grbSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grbSearch.ForeColor = System.Drawing.Color.White;
             this.grbSearch.Location = new System.Drawing.Point(0, 0);
             this.grbSearch.Name = "grbSearch";
             this.grbSearch.Size = new System.Drawing.Size(663, 56);
@@ -178,7 +181,7 @@
             this.label3.AutoSize = true;
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Firebrick;
+            this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(428, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(108, 31);
@@ -200,7 +203,7 @@
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Firebrick;
+            this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(200, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(108, 31);
@@ -244,6 +247,7 @@
             // 
             // tableLayoutPanel6
             // 
+            this.tableLayoutPanel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.tableLayoutPanel6.ColumnCount = 2;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -260,9 +264,10 @@
             // 
             // btnEdit
             // 
-            this.btnEdit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnEdit.BackColor = System.Drawing.Color.White;
             this.btnEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnEdit.ForeColor = System.Drawing.Color.White;
+            this.btnEdit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEdit.ForeColor = System.Drawing.Color.Brown;
             this.btnEdit.Location = new System.Drawing.Point(176, 3);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(168, 39);
@@ -273,9 +278,10 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnAdd.BackColor = System.Drawing.Color.White;
             this.btnAdd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnAdd.ForeColor = System.Drawing.Color.White;
+            this.btnAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdd.ForeColor = System.Drawing.Color.Brown;
             this.btnAdd.Location = new System.Drawing.Point(3, 3);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(167, 39);
@@ -286,9 +292,11 @@
             // 
             // grbIPriceInformation
             // 
+            this.grbIPriceInformation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.grbIPriceInformation.Controls.Add(this.tableLayoutPanel9);
             this.grbIPriceInformation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grbIPriceInformation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grbIPriceInformation.ForeColor = System.Drawing.Color.White;
             this.grbIPriceInformation.Location = new System.Drawing.Point(3, 3);
             this.grbIPriceInformation.Name = "grbIPriceInformation";
             this.grbIPriceInformation.Size = new System.Drawing.Size(347, 205);
@@ -353,7 +361,7 @@
             this.lblWeeklyPrice.AutoSize = true;
             this.lblWeeklyPrice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblWeeklyPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblWeeklyPrice.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblWeeklyPrice.ForeColor = System.Drawing.Color.White;
             this.lblWeeklyPrice.Location = new System.Drawing.Point(3, 102);
             this.lblWeeklyPrice.Name = "lblWeeklyPrice";
             this.lblWeeklyPrice.Size = new System.Drawing.Size(161, 36);
@@ -375,7 +383,7 @@
             this.lblDayPrice.AutoSize = true;
             this.lblDayPrice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblDayPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDayPrice.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblDayPrice.ForeColor = System.Drawing.Color.White;
             this.lblDayPrice.Location = new System.Drawing.Point(3, 68);
             this.lblDayPrice.Name = "lblDayPrice";
             this.lblDayPrice.Size = new System.Drawing.Size(161, 34);
@@ -397,7 +405,7 @@
             this.lblNightlyPrice.AutoSize = true;
             this.lblNightlyPrice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblNightlyPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNightlyPrice.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblNightlyPrice.ForeColor = System.Drawing.Color.White;
             this.lblNightlyPrice.Location = new System.Drawing.Point(3, 34);
             this.lblNightlyPrice.Name = "lblNightlyPrice";
             this.lblNightlyPrice.Size = new System.Drawing.Size(161, 34);
@@ -419,7 +427,7 @@
             this.lblHourlyPrice.AutoSize = true;
             this.lblHourlyPrice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblHourlyPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHourlyPrice.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblHourlyPrice.ForeColor = System.Drawing.Color.White;
             this.lblHourlyPrice.Location = new System.Drawing.Point(3, 0);
             this.lblHourlyPrice.Name = "lblHourlyPrice";
             this.lblHourlyPrice.Size = new System.Drawing.Size(161, 34);
@@ -437,9 +445,11 @@
             // 
             // grbRoomInformation
             // 
+            this.grbRoomInformation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
             this.grbRoomInformation.Controls.Add(this.tableLayoutPanel3);
-            this.grbRoomInformation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grbRoomInformation.Dock = System.Windows.Forms.DockStyle.Top;
             this.grbRoomInformation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grbRoomInformation.ForeColor = System.Drawing.Color.White;
             this.grbRoomInformation.Location = new System.Drawing.Point(3, 214);
             this.grbRoomInformation.Name = "grbRoomInformation";
             this.grbRoomInformation.Size = new System.Drawing.Size(347, 233);
@@ -481,9 +491,10 @@
             // 
             // btnSave
             // 
-            this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnSave.BackColor = System.Drawing.Color.White;
             this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSave.ForeColor = System.Drawing.Color.White;
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.ForeColor = System.Drawing.Color.Brown;
             this.btnSave.Location = new System.Drawing.Point(170, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(162, 37);
@@ -494,9 +505,10 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.btnCancel.BackColor = System.Drawing.Color.White;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCancel.ForeColor = System.Drawing.Color.White;
+            this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.ForeColor = System.Drawing.Color.Brown;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(161, 37);
@@ -534,7 +546,7 @@
             this.lblNote.AutoSize = true;
             this.lblNote.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblNote.ForeColor = System.Drawing.Color.White;
             this.lblNote.Location = new System.Drawing.Point(3, 76);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(161, 38);
@@ -556,7 +568,7 @@
             this.label4.AutoSize = true;
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.Firebrick;
+            this.label4.ForeColor = System.Drawing.Color.White;
             this.label4.Location = new System.Drawing.Point(3, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(161, 38);
@@ -597,7 +609,7 @@
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Firebrick;
+            this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(3, 114);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(161, 39);
@@ -610,7 +622,7 @@
             this.lblRoomTypeName.AutoSize = true;
             this.lblRoomTypeName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblRoomTypeName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoomTypeName.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblRoomTypeName.ForeColor = System.Drawing.Color.White;
             this.lblRoomTypeName.Location = new System.Drawing.Point(3, 38);
             this.lblRoomTypeName.Name = "lblRoomTypeName";
             this.lblRoomTypeName.Size = new System.Drawing.Size(161, 38);
@@ -662,9 +674,6 @@
         private System.Windows.Forms.ComboBox cboRoomTypeNameSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.TableLayoutPanel tblRoom2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
-        private System.Windows.Forms.Button btnEdit;
-        private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.GroupBox grbIPriceInformation;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.Label lblRoomNumber;
@@ -679,17 +688,20 @@
         private System.Windows.Forms.TextBox txtHourlyPrice;
         private System.Windows.Forms.GroupBox grbRoomInformation;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.Label lblNote;
         private System.Windows.Forms.TextBox txtNote;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cboRoomStatus;
-        private System.Windows.Forms.Label lblRoomTypeName;
-        private System.Windows.Forms.ComboBox cboRoomTypeName;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtRoomNumber;
+        private System.Windows.Forms.ComboBox cboRoomStatus;
+        private System.Windows.Forms.ComboBox cboRoomTypeName;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblRoomTypeName;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
     }
 }
