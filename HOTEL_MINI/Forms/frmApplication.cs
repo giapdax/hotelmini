@@ -332,5 +332,10 @@ namespace HOTEL_MINI
         {
             OpenChildForm(new frmInvoiceManage(this), sender);
         }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new frmReport(), sender);
+        }
     }
 }

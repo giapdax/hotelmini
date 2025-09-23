@@ -21,21 +21,26 @@ namespace HOTEL_MINI.Forms.Controls
         private readonly RoomService _roomService;
         private readonly InvoiceService _invoiceService;
         private readonly PdfExportService _pdfExportService;
+        private readonly string _customerName;
+        private readonly string _customerID;
 
-        public UcInvoice(Booking booking, string roomNumber, Invoice invoice)
+        public UcInvoice(Booking booking, string roomNumber, Invoice invoice, string customerName, string customerID)
         {
             InitializeComponent();
 
             _booking = booking;
             _roomNumber = roomNumber;
             _invoice = invoice;
+            _customerName = customerName;
+            _customerID = customerID;
 
             _bookingService = new BookingService();
             _roomService = new RoomService();
             _invoiceService = new InvoiceService();
-            _pdfExportService = new PdfExportService();
+            _pdfExportService = new PdfExportService(customerName, customerID);
             LoadInvoiceData();
             SetupEvents();
+            
         }
 
         private void LoadInvoiceData()
@@ -44,6 +49,8 @@ namespace HOTEL_MINI.Forms.Controls
             {
                 // Hiển thị thông tin cơ bản
                 label4.Text = $"Phòng {_roomNumber}";
+                txtCusName.Text = _customerName;
+                txtCusId.Text = _customerID;
                 txtCheckin.Text = _booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
                 txtCheckout.Text = _booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
 
@@ -141,6 +148,11 @@ namespace HOTEL_MINI.Forms.Controls
                 MessageBox.Show($"Lỗi khi xuất hóa đơn: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void lblCusName_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

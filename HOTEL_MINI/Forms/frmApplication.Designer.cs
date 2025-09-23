@@ -39,6 +39,7 @@
             this.panelDesktop = new System.Windows.Forms.Panel();
             this.contextMenuProfile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnReport = new System.Windows.Forms.Button();
             this.btnUserManage = new System.Windows.Forms.Button();
             this.btnDashboardManage = new System.Windows.Forms.Button();
             this.btnInvoicesManage = new System.Windows.Forms.Button();
@@ -63,6 +64,7 @@
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(47)))), ((int)(((byte)(55)))));
+            this.panelMenu.Controls.Add(this.btnReport);
             this.panelMenu.Controls.Add(this.btnUserManage);
             this.panelMenu.Controls.Add(this.btnDashboardManage);
             this.panelMenu.Controls.Add(this.btnInvoicesManage);
@@ -83,9 +85,9 @@
             // 
             this.panel1.Controls.Add(this.btnExit);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 598);
+            this.panel1.Location = new System.Drawing.Point(0, 618);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(220, 68);
+            this.panel1.Size = new System.Drawing.Size(220, 48);
             this.panel1.TabIndex = 6;
             // 
             // panelLogo
@@ -166,6 +168,25 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
+            // btnReport
+            // 
+            this.btnReport.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnReport.FlatAppearance.BorderSize = 0;
+            this.btnReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReport.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReport.ForeColor = System.Drawing.Color.Transparent;
+            this.btnReport.Image = global::HOTEL_MINI.Properties.Resources.about__1_;
+            this.btnReport.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnReport.Location = new System.Drawing.Point(0, 555);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(220, 53);
+            this.btnReport.TabIndex = 15;
+            this.btnReport.Text = "Report";
+            this.btnReport.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnReport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            // 
             // btnUserManage
             // 
             this.btnUserManage.Dock = System.Windows.Forms.DockStyle.Top;
@@ -177,7 +198,7 @@
             this.btnUserManage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnUserManage.Location = new System.Drawing.Point(0, 502);
             this.btnUserManage.Name = "btnUserManage";
-            this.btnUserManage.Size = new System.Drawing.Size(220, 60);
+            this.btnUserManage.Size = new System.Drawing.Size(220, 53);
             this.btnUserManage.TabIndex = 14;
             this.btnUserManage.Text = " Quản Lý User";
             this.btnUserManage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -263,16 +284,16 @@
             // 
             // btnExit
             // 
-            this.btnExit.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnExit.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnExit.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(11)))), ((int)(((byte)(8)))), ((int)(((byte)(20)))));
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Times New Roman", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExit.ForeColor = System.Drawing.Color.White;
             this.btnExit.Image = global::HOTEL_MINI.Properties.Resources.exit;
             this.btnExit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnExit.Location = new System.Drawing.Point(0, 0);
+            this.btnExit.Location = new System.Drawing.Point(0, 3);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(220, 80);
+            this.btnExit.Size = new System.Drawing.Size(220, 45);
             this.btnExit.TabIndex = 5;
             this.btnExit.Text = "   Exit";
             this.btnExit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -411,6 +432,7 @@
         private System.Windows.Forms.Button btnUserManage;
         private System.Windows.Forms.Button btnDashboardManage;
         private System.Windows.Forms.Button btnInvoicesManage;
+        private System.Windows.Forms.Button btnReport;
     }
 }
 

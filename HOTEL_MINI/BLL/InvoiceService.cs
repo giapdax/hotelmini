@@ -45,5 +45,14 @@ namespace HOTEL_MINI.BLL
         {
             return _invoiceRepo.getFullNameByInvoiceID(invoiceID);
         }
+        public List<Invoice> GetAllInvoices()
+        {
+            return _invoiceRepo.getAllInvoices();
+        }
+        public List<RevenueRoomDTO> GetRevenueByRoom(int month, int year)
+        {
+            var result =  _invoiceRepo.GetRevenueByRoom(month, year);
+            return result ?? new List<RevenueRoomDTO>();
+        }
     }
 }

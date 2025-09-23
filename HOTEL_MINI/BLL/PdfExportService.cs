@@ -12,9 +12,13 @@ namespace HOTEL_MINI.BLL
     public class PdfExportService
     {
         private readonly BaseFont _vietnameseFont;
+        private readonly string customerName;
+        private readonly string customerID;
 
-        public PdfExportService()
+        public PdfExportService(string customerName, string customerCCCD)
         {
+            this.customerName = customerName;
+            this.customerID = customerCCCD;
             try
             {
                 // Thư mục Fonts trong project (nằm cạnh file .exe)
@@ -84,6 +88,8 @@ namespace HOTEL_MINI.BLL
 
                 AddInfoRow(infoTable, "Mã hóa đơn:", invoice.InvoiceID.ToString());
                 AddInfoRow(infoTable, "Phòng:", roomNumber);
+                AddInfoRow(infoTable, "Khách hàng:", customerName);
+                AddInfoRow(infoTable, "Số CMND/CCCD:", customerID);
                 AddInfoRow(infoTable, "Ngày check-in:", booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm"));
                 AddInfoRow(infoTable, "Ngày check-out:", booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm"));
                 AddInfoRow(infoTable, "Ngày xuất hóa đơn:", invoice.IssuedAt.ToString("dd/MM/yyyy HH:mm"));
