@@ -9,7 +9,7 @@ namespace HOTEL_MINI.Forms
         // giữ instance để không tạo lại nhiều lần
         private UcBookRoom _ucBookRoom;
         private UcBookingRoom _ucBookingRoom;
-
+        
         public frmBooking()
         {
             InitializeComponent();
