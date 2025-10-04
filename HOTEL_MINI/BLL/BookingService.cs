@@ -4,12 +4,11 @@ using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 
 namespace HOTEL_MINI.BLL
 {
     /// <summary>
-    /// Toàn bộ validate nằm ở Service. Repository chỉ làm việc DB và KHÔNG hiển thị UI / MessageBox.
+    /// Toàn bộ validate nằm ở Service. Repository chỉ làm DB và KHÔNG hiển thị UI.
     /// </summary>
     public class BookingService
     {
@@ -38,17 +37,14 @@ namespace HOTEL_MINI.BLL
         private void ValidateBookingCore(Booking b)
         {
             Ensure(b != null, "Booking rỗng.");
-
             Ensure(b.CustomerID > 0, "CustomerID không hợp lệ.");
             Ensure(b.RoomID > 0, "RoomID không hợp lệ.");
             Ensure(b.PricingID > 0, "PricingID không hợp lệ.");
             Ensure(b.CreatedBy > 0, "CreatedBy (UserID) không hợp lệ.");
-
             Ensure(b.CheckInDate.HasValue, "Thiếu Check-in.");
             Ensure(b.CheckOutDate.HasValue, "Thiếu Check-out.");
             Ensure(b.CheckOutDate.Value > b.CheckInDate.Value, "Check-out phải lớn hơn Check-in.");
 
-            // phòng rảnh?
             bool available = _roomRepository.IsRoomAvailable(b.RoomID, b.CheckInDate.Value, b.CheckOutDate.Value);
             Ensure(available, "Khoảng thời gian đã có booking khác.");
         }
@@ -61,11 +57,9 @@ namespace HOTEL_MINI.BLL
 
             foreach (var b in items)
             {
-                // áp chuẩn các trường bắt buộc cho group
                 b.CustomerID = customerId;
                 b.CreatedBy = createdBy;
-                b.Status = string.IsNullOrWhiteSpace(b.Status) ? "Booked" : b.Status?.Trim();
-
+                b.Status = string.IsNullOrWhiteSpace(b.Status) ? "Booked" : b.Status.Trim();
                 ValidateBookingCore(b);
             }
         }
@@ -78,21 +72,18 @@ namespace HOTEL_MINI.BLL
             return _bookingRepository.AddBooking(booking);
         }
 
-        /// <summary>
-        /// Đặt nhiều phòng trong cùng 1 header booking. Trả về map RoomID -> BookingRoomID.
-        /// </summary>
         public Dictionary<int, int> AddBookingGroup(int customerId, int createdBy, List<Booking> roomBookings, DataTable usedServices)
         {
             ValidateBookingsForGroup(customerId, createdBy, roomBookings);
-            // Repository sẽ tạo header + từng BookingRooms + (nếu có) dịch vụ
             return _bookingRepository.AddMultiRoomsBooking(customerId, createdBy, DateTime.Now, "Booked", roomBookings, usedServices);
         }
 
-        // ==================== Query / Update convenience =================
-
+        // Queries / convenience
         public List<BookingDisplay> GetTop20LatestBookingDisplays() => _bookingRepository.GetTop20LatestBookingDisplays();
+        public List<BookingDisplay> GetActiveBookingDisplays() => _bookingRepository.GetActiveBookingDisplays();
         public Booking GetLatestBookingByRoomId(int roomId) => _bookingRepository.GetLatestBookingByRoomId(roomId);
         public Booking GetBookingById(int bookingId) => _bookingRepository.GetBookingById(bookingId);
+
         public bool UpdateBooking(Booking b)
         {
             Ensure(b != null && b.BookingID > 0, "BookingID không hợp lệ.");
@@ -137,7 +128,7 @@ namespace HOTEL_MINI.BLL
 
         public List<string> getPaymentMethods() => _bookingRepository.getPaymentMethods();
 
-        // =============== Tính tiền phòng (tham chiếu Pricing) ===============
+        // =============== Tính tiền phòng ===============
         public decimal GetRoomCharge(Booking booking)
         {
             Ensure(booking != null, "Booking rỗng.");
@@ -156,7 +147,6 @@ namespace HOTEL_MINI.BLL
                 return rounded * pricing.Price;
             }
 
-            // Nightly/Daily/Weekly… -> đơn giá niêm yết
             return pricing.Price;
         }
 
@@ -207,6 +197,7 @@ namespace HOTEL_MINI.BLL
                 scope.Complete();
             }
         }
+
         public Booking GetActiveBookingByRoomId(int roomId) => _bookingRepository.GetActiveBookingByRoomId(roomId);
 
         public bool CheckInBooking(int bookingID)
@@ -219,15 +210,20 @@ namespace HOTEL_MINI.BLL
             var ok = _bookingRepository.CheckInBooking(bookingID, DateTime.Now);
             if (!ok) return false;
 
-            // cập nhật trạng thái phòng sang Occupied
             return _roomRepository.UpdateRoomStatus(bk.RoomID, "Occupied");
         }
-
 
         public bool CancelBooking(int bookingID)
         {
             Ensure(bookingID > 0, "BookingID không hợp lệ.");
             return _bookingRepository.CancelBooking(bookingID);
         }
+        public int? GetHeaderIdByBookingRoomId(int bookingRoomId)
+     => _bookingRepository.GetHeaderIdByBookingRoomId(bookingRoomId);
+
+        public List<Booking> GetBookingsByHeaderId(int headerBookingId)
+            => _bookingRepository.GetBookingsByHeaderId(headerBookingId);
+
+
     }
 }

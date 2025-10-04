@@ -3,878 +3,305 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
+using HOTEL_MINI.BLL;
+using HOTEL_MINI.Model.Response;
 
 namespace HOTEL_MINI.Forms.Controls
 {
     public partial class UcBookingRoom : UserControl
     {
-        // ====== Delegates mức Booking ======
-        // Trả về danh sách Booking theo CCCD + trạng thái (null => tất cả)
-        public Func<string, string, List<BookingRow>> FetchBookingsByCustomer { get; set; }
+        private readonly BookingService _svc = new BookingService();
 
-        // Trả về danh sách Room + Booking theo số phòng + trạng thái (null => tất cả)
-        public Func<string, string, List<RoomBookingRow>> FetchBookingsByRoom { get; set; }
+        private BindingList<BookingDisplay> _view = new BindingList<BookingDisplay>();
+        private List<BookingDisplay> _cache = new List<BookingDisplay>(); // dữ liệu đã load
 
-        // Single booking
-        public Func<int, bool> CheckInBooking { get; set; }
-        public Func<int, bool> CancelBooking { get; set; }
-        public Func<int, bool> CheckoutBooking { get; set; }
+        private CheckBox _chkHeader;
+        private const string COL_SEL = "colSelect";
+        private bool _suppressHeaderEvent = false; // tránh loop khi set Checked bằng code
 
-        // Batch booking (tuỳ chọn)
-        public Func<List<int>, bool> CheckInBookingsBatch { get; set; }
-        public Func<List<int>, bool> CancelBookingsBatch { get; set; }
-        public Func<List<int>, bool> CheckoutBookingsBatch { get; set; }
+        private static readonly string ST_ALL_NO_CANCEL = "Tất cả (trừ hủy)";
+        private static readonly string ST_BOOKED = "Booked";
+        private static readonly string ST_OCCUPIED = "Đang ở"; // CheckedIn/Occupied
+        private static readonly string ST_CANCELLED = "Đã hủy";
+        private static readonly string ST_COMPLETED = "Hoàn tất";
 
-        // ====== Delegates mức Room ======
-        public class RoomKey
-        {
-            public int BookingID { get; set; }
-            public string RoomNumber { get; set; }
-        }
-
-        // Single room (tuỳ chọn)
-        public Func<RoomKey, bool> CheckInRoom { get; set; }
-        public Func<RoomKey, bool> CheckoutRoom { get; set; }
-        public Func<RoomKey, bool> CancelRoom { get; set; }
-
-        // Batch rooms (tuỳ chọn)
-        public Func<List<RoomKey>, bool> CheckInRoomsBatch { get; set; }
-        public Func<List<RoomKey>, bool> CheckoutRoomsBatch { get; set; }
-        public Func<List<RoomKey>, bool> CancelRoomsBatch { get; set; }
-
-        // Mở form chi tiết (ví dụ trước khi checkout)
-        public Action<int> OpenBookingDetail { get; set; }
-
-        // ====== Binding ======
-        private BindingList<BookingRow> _leftData = new BindingList<BookingRow>();
-        private BindingList<RoomBookingRow> _rightData = new BindingList<RoomBookingRow>();
-
-        // Chọn hiện tại (cho thao tác single)
-        private int _selectedBookingId = 0;
-        private string _selectedStatus = null;
-
-        // Tên cột checkbox
-        private const string ColSelectBooking = "SelBooking";
-        private const string ColSelectRoom = "SelRoom";
-
-        // Debounce timers
-        private Timer _debounceLeft;
-        private Timer _debounceRight;
-
-        // Header checkbox: chọn tất cả
-        private CheckBox _chkHeaderLeft;
-        private CheckBox _chkHeaderRight;
+        // Tuỳ form cha
+        public event Action<int> RequestCheckout;
+        public event Action<List<int>> RequestCheckoutMany;
 
         public UcBookingRoom()
         {
             InitializeComponent();
-            SetupUI();
-            HookEvents();
-            LoadCombos();
-
-            // Debounce tìm kiếm
-            _debounceLeft = new Timer { Interval = 300 };
-            _debounceLeft.Tick += (s, e) => { _debounceLeft.Stop(); RefreshLeft(); };
-
-            _debounceRight = new Timer { Interval = 300 };
-            _debounceRight.Tick += (s, e) => { _debounceRight.Stop(); RefreshRight(); };
-
-            // Lần đầu: hiển thị (mặc định loại Hủy)
-            RefreshLeft();
-            RefreshRight();
+            InitGridAndUi();
+            LoadAll();  // vào là hiện tất cả luôn
         }
 
-        #region DTO
-        public class BookingRow
+        private void InitGridAndUi()
         {
-            public int BookingID { get; set; }
-            public string CustomerName { get; set; }
-            public string IDNumber { get; set; }
-            public string RoomNumber { get; set; }
-            public DateTime CheckIn { get; set; }
-            public DateTime CheckOut { get; set; }
-            /// <summary>"Booked" | "Occupied" | "CheckedIn" | "Cancelled" | "Completed"</summary>
-            public string Status { get; set; }
-            public decimal? TotalEstimate { get; set; }
+            // combobox trạng thái
+            cboStatusBooking.Items.Clear();
+            cboStatusBooking.Items.AddRange(new object[] { ST_ALL_NO_CANCEL, ST_BOOKED, ST_OCCUPIED, ST_CANCELLED, ST_COMPLETED });
+            cboStatusBooking.SelectedIndex = 0;
+            cboStatusBooking.SelectedIndexChanged += (s, e) => ApplyFilter();
 
-            // Checkbox nhiều booking
-            public bool Sel { get; set; }
-        }
+            // grid
+            var gv = dataGridView1;
+            gv.AutoGenerateColumns = false;
+            gv.AllowUserToAddRows = false;
+            gv.ReadOnly = false;
+            gv.MultiSelect = false;
+            gv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            gv.RowHeadersVisible = false;
+            gv.Columns.Clear();
 
-        public class RoomBookingRow
-        {
-            public string RoomNumber { get; set; }
-            public int BookingID { get; set; }
-            /// <summary>"Empty" | "Booked" | "Occupied"</summary>
-            public string RoomStatus { get; set; }
-            public string CustomerName { get; set; }
-            public DateTime? CheckIn { get; set; }
-            public DateTime? CheckOut { get; set; }
-
-            // Checkbox nhiều phòng
-            public bool Sel { get; set; }
-        }
-        #endregion
-
-        #region UI / Grid setup
-        private void SetupUI()
-        {
-            // ==== LEFT: Booking ====
-            var gvL = dataGridView1;
-            gvL.AutoGenerateColumns = false;
-            gvL.AllowUserToAddRows = false;
-            gvL.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            gvL.MultiSelect = false;
-            gvL.RowHeadersVisible = false;
-            gvL.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            gvL.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            gvL.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            gvL.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            gvL.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 248, 248);
-            SetDoubleBuffered(gvL);
-            gvL.Columns.Clear();
-
-            // Checkbox header
-            _chkHeaderLeft = new CheckBox { Size = new Size(15, 15) };
-            _chkHeaderLeft.CheckedChanged += (s, e) =>
+            // cột checkbox chọn
+            gv.Columns.Add(new DataGridViewCheckBoxColumn
             {
-                bool on = _chkHeaderLeft.Checked;
-                foreach (var r in _leftData) r.Sel = on;
-                gvL.Refresh();
-                UpdateButtons(_selectedStatus);
-            };
-            gvL.Controls.Add(_chkHeaderLeft);
-
-            var colSelL = new DataGridViewCheckBoxColumn
-            {
-                Name = ColSelectBooking,
-                DataPropertyName = nameof(BookingRow.Sel),
                 HeaderText = "",
-                FillWeight = 20,
-                MinimumWidth = 30
-            };
-            gvL.Columns.Add(colSelL);
+                Name = COL_SEL,
+                Width = 36
+            });
 
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
+            // các cột dữ liệu
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "BookingID", HeaderText = "BookingID", Width = 90, ReadOnly = true });
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "CustomerIDNumber", HeaderText = "CCCD", Width = 140, ReadOnly = true });
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "RoomNumber", HeaderText = "Phòng", Width = 80, ReadOnly = true });
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "EmployeeName", HeaderText = "NV tạo", Width = 140, ReadOnly = true });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
             {
-                DataPropertyName = nameof(BookingRow.BookingID),
-                HeaderText = "BookingID",
-                FillWeight = 55,
-                MinimumWidth = 70
+                DataPropertyName = "BookingDate",
+                HeaderText = "Ngày đặt",
+                Width = 130,
+                ReadOnly = true,
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
             });
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
+            gv.Columns.Add(new DataGridViewTextBoxColumn
             {
-                DataPropertyName = nameof(BookingRow.CustomerName),
-                HeaderText = "Khách hàng",
-                FillWeight = 160,
-                MinimumWidth = 140
-            });
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(BookingRow.IDNumber),
-                HeaderText = "CCCD",
-                FillWeight = 85,
-                MinimumWidth = 100
-            });
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(BookingRow.RoomNumber),
-                HeaderText = "Phòng",
-                FillWeight = 60,
-                MinimumWidth = 70
-            });
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(BookingRow.CheckIn),
+                DataPropertyName = "CheckInDate",
                 HeaderText = "Check-in",
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" },
-                FillWeight = 110,
-                MinimumWidth = 120
+                Width = 130,
+                ReadOnly = true,
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
             });
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
+            gv.Columns.Add(new DataGridViewTextBoxColumn
             {
-                DataPropertyName = nameof(BookingRow.CheckOut),
+                DataPropertyName = "CheckOutDate",
                 HeaderText = "Check-out",
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" },
-                FillWeight = 110,
-                MinimumWidth = 120
+                Width = 130,
+                ReadOnly = true,
+                DefaultCellStyle = { Format = "dd/MM/yyyy HH:mm" }
             });
-            gvL.Columns.Add(new DataGridViewTextBoxColumn
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Status", HeaderText = "Trạng thái", Width = 100, ReadOnly = true });
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Notes", HeaderText = "Ghi chú", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
+
+            gv.DataSource = _view;
+
+            // header checkbox (CHỈ gắn 1 handler duy nhất)
+            _chkHeader = new CheckBox { Size = new Size(15, 15) };
+            _chkHeader.CheckedChanged += HeaderCheckedChangedProxy;
+            gv.Controls.Add(_chkHeader);
+            gv.Scroll += (s, e) => PlaceHeaderChk();
+            gv.ColumnWidthChanged += (s, e) => PlaceHeaderChk();
+            gv.SizeChanged += (s, e) => PlaceHeaderChk();
+            gv.CurrentCellDirtyStateChanged += (s, e) =>
             {
-                DataPropertyName = nameof(BookingRow.Status),
-                HeaderText = "Trạng thái",
-                FillWeight = 90,
-                MinimumWidth = 100
-            });
-
-            gvL.DataSource = _leftData;
-            gvL.Scroll += (s, e) => PositionHeaderCheckBox(gvL, _chkHeaderLeft);
-            gvL.ColumnWidthChanged += (s, e) => PositionHeaderCheckBox(gvL, _chkHeaderLeft);
-            gvL.SizeChanged += (s, e) => PositionHeaderCheckBox(gvL, _chkHeaderLeft);
-
-            // ==== RIGHT: Room ====
-            var gvR = dataGridView2;
-            gvR.AutoGenerateColumns = false;
-            gvR.AllowUserToAddRows = false;
-            gvR.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            gvR.MultiSelect = false; // dùng checkbox để chọn nhiều
-            gvR.RowHeadersVisible = false;
-            gvR.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            gvR.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            gvR.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            gvR.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            gvR.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 248, 248);
-            SetDoubleBuffered(gvR);
-            gvR.Columns.Clear();
-
-            _chkHeaderRight = new CheckBox { Size = new Size(15, 15) };
-            _chkHeaderRight.CheckedChanged += (s, e) =>
-            {
-                bool on = _chkHeaderRight.Checked;
-                foreach (var r in _rightData) r.Sel = on;
-                gvR.Refresh();
-                UpdateButtons(_selectedStatus);
+                if (gv.IsCurrentCellDirty) gv.CommitEdit(DataGridViewDataErrorContexts.Commit);
             };
-            gvR.Controls.Add(_chkHeaderRight);
-
-            var colSelR = new DataGridViewCheckBoxColumn
+            gv.CellValueChanged += (s, e) =>
             {
-                Name = ColSelectRoom,
-                DataPropertyName = nameof(RoomBookingRow.Sel),
-                HeaderText = "",
-                FillWeight = 20,
-                MinimumWidth = 30
+                if (e.RowIndex >= 0 && gv.Columns[e.ColumnIndex].Name == COL_SEL) UpdateButtons();
             };
-            gvR.Columns.Add(colSelR);
 
-            gvR.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBookingRow.RoomNumber),
-                HeaderText = "Phòng",
-                FillWeight = 60,
-                MinimumWidth = 70
-            });
-            gvR.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBookingRow.RoomStatus),
-                HeaderText = "TT Phòng",
-                FillWeight = 90,
-                MinimumWidth = 100
-            });
-            gvR.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBookingRow.BookingID),
-                HeaderText = "BookingID",
-                FillWeight = 55,
-                MinimumWidth = 70
-            });
-            gvR.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBookingRow.CustomerName),
-                HeaderText = "Khách hàng",
-                FillWeight = 160,
-                MinimumWidth = 140
-            });
-            gvR.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBookingRow.CheckIn),
-                HeaderText = "Check-in",
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM HH:mm" },
-                FillWeight = 90,
-                MinimumWidth = 100
-            });
-            gvR.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBookingRow.CheckOut),
-                HeaderText = "Check-out",
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM HH:mm" },
-                FillWeight = 90,
-                MinimumWidth = 100
-            });
+            // search CCCD
+            txtCCCD.TextChanged += (s, e) => ApplyFilter();
 
-            gvR.DataSource = _rightData;
-            gvR.Scroll += (s, e) => PositionHeaderCheckBox(gvR, _chkHeaderRight);
-            gvR.ColumnWidthChanged += (s, e) => PositionHeaderCheckBox(gvR, _chkHeaderRight);
-            gvR.SizeChanged += (s, e) => PositionHeaderCheckBox(gvR, _chkHeaderRight);
-
-            // Nút
+            // buttons
             button1.Text = "Nhận phòng";
             button2.Text = "Trả phòng";
             button3.Text = "Hủy đặt phòng";
+            button1.Click += btnNhan_Click;
+            button2.Click += btnTra_Click;
+            button3.Click += btnHuy_Click;
 
-            UpdateButtons(null);
+            UpdateButtons();
         }
 
-        // Đặt vị trí checkbox header ở cột đầu tiên
-        private void PositionHeaderCheckBox(DataGridView gv, CheckBox chk)
+        private void PlaceHeaderChk()
         {
-            if (gv.Columns.Count == 0) return;
-            var rect = gv.GetCellDisplayRectangle(0, -1, true);
-            chk.Location = new Point(rect.X + 6, rect.Y + (rect.Height - chk.Height) / 2);
+            if (dataGridView1.Columns.Count == 0) return;
+            var rect = dataGridView1.GetCellDisplayRectangle(0, -1, true);
+            _chkHeader.Location = new Point(rect.X + 10, rect.Y + (rect.Height - _chkHeader.Height) / 2);
         }
 
-        // Giảm giật DataGridView
-        private static void SetDoubleBuffered(DataGridView gv)
+        // ================== DATA ==================
+        private void LoadAll()
         {
             try
             {
-                typeof(DataGridView).InvokeMember("DoubleBuffered",
-                    BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
-                    null, gv, new object[] { true });
+                Cursor.Current = Cursors.WaitCursor;
+                _cache = _svc.GetActiveBookingDisplays() ?? new List<BookingDisplay>();
+                ApplyFilter();
             }
-            catch { /* ignore */ }
-        }
-        #endregion
-
-        #region Hooks
-        private void HookEvents()
-        {
-            // Tự load khi gõ (debounce)
-            txtCCCD.TextChanged += (s, e) => { _debounceLeft.Stop(); _debounceLeft.Start(); };
-            txtRoomNumber.TextChanged += (s, e) => { _debounceRight.Stop(); _debounceRight.Start(); };
-
-            // Enter để load ngay
-            txtCCCD.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { _debounceLeft.Stop(); RefreshLeft(); } };
-            txtRoomNumber.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { _debounceRight.Stop(); RefreshRight(); } };
-
-            cboStatusBooking.SelectedIndexChanged += (s, e) => RefreshLeft();
-            cboStatusRoom.SelectedIndexChanged += (s, e) => RefreshRight();
-
-            // Chọn dòng (single)
-            dataGridView1.SelectionChanged += (s, e) => SelectFromLeft();
-            dataGridView2.SelectionChanged += (s, e) => SelectFromRight();
-
-            // Checkbox booking thay đổi → cập nhật nút
-            dataGridView1.CurrentCellDirtyStateChanged += (s, e) =>
+            catch (Exception ex)
             {
-                if (dataGridView1.IsCurrentCellDirty) dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            };
-            dataGridView1.CellValueChanged += (s, e) =>
-            {
-                if (e.RowIndex >= 0 && dataGridView1.Columns[e.ColumnIndex].Name == ColSelectBooking)
-                    UpdateButtons(_selectedStatus);
-            };
-
-            // Checkbox room thay đổi → cập nhật nút
-            dataGridView2.CurrentCellDirtyStateChanged += (s, e) =>
-            {
-                if (dataGridView2.IsCurrentCellDirty) dataGridView2.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            };
-            dataGridView2.CellValueChanged += (s, e) =>
-            {
-                if (e.RowIndex >= 0 && dataGridView2.Columns[e.ColumnIndex].Name == ColSelectRoom)
-                    UpdateButtons(_selectedStatus);
-            };
-
-            // Actions
-            button1.Click += (s, e) => DoCheckIn();
-            button2.Click += (s, e) => DoCheckout();
-            button3.Click += (s, e) => DoCancel();
-        }
-        #endregion
-
-        #region Load data & lọc
-        private static string NullIfEmpty(string s)
-            => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
-
-        // Map hiển thị → token
-        // "ALL_NO_CANCEL" = tất cả nhưng loại Cancelled theo yêu cầu
-        private string NormalizeBookingFilter(string raw)
-        {
-            if (string.IsNullOrWhiteSpace(raw)) return "ALL_NO_CANCEL";
-            switch (raw)
-            {
-                case "Tất cả (trừ hủy)": return "ALL_NO_CANCEL";
-                case "Booked/Đang ở": return "BookedOrOccupied";
-                case "Booked": return "Booked";
-                case "Đang ở": return "Occupied";
-                case "Đã hủy": return "Cancelled";
-                case "Hoàn tất": return "Completed";
-                default: return "ALL_NO_CANCEL";
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
             }
+            finally { Cursor.Current = Cursors.Default; }
         }
 
-        private string NormalizeRoomFilter(string raw)
+        private void ApplyFilter()
         {
-            if (string.IsNullOrWhiteSpace(raw) || raw == "Tất cả") return null;
-            if (raw.Equals("Đang ở", StringComparison.OrdinalIgnoreCase)) return "Occupied";
-            if (raw.Equals("Trống", StringComparison.OrdinalIgnoreCase)) return "Empty";
-            if (raw.Equals("Booked", StringComparison.OrdinalIgnoreCase)) return "Booked";
-            return null; // default all
-        }
+            string cccd = (txtCCCD.Text ?? "").Trim();
+            string st = cboStatusBooking.SelectedItem?.ToString();
 
-        private static bool IsBooked(string status)
-            => !string.IsNullOrWhiteSpace(status) && status.Equals("Booked", StringComparison.OrdinalIgnoreCase);
+            IEnumerable<BookingDisplay> q = _cache;
 
-        private static bool IsOccupied(string status)
-            => !string.IsNullOrWhiteSpace(status) && (
-                   status.Equals("Occupied", StringComparison.OrdinalIgnoreCase)
-                || status.Equals("CheckedIn", StringComparison.OrdinalIgnoreCase)
-                || status.Equals("Đang ở", StringComparison.OrdinalIgnoreCase));
-
-        private static bool IsCancelled(string status)
-            => !string.IsNullOrWhiteSpace(status) && status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase);
-
-        private static bool IsCompleted(string status)
-            => !string.IsNullOrWhiteSpace(status) && status.Equals("Completed", StringComparison.OrdinalIgnoreCase);
-
-        public void RefreshLeft()
-        {
-            var cccd = NullIfEmpty(txtCCCD.Text);
-            var statusToken = NormalizeBookingFilter(cboStatusBooking.SelectedItem?.ToString());
-
-            List<BookingRow> data;
-            if (FetchBookingsByCustomer != null)
+            // Nếu nhập CCCD → lấy thêm từ DB rồi gộp
+            if (!string.IsNullOrEmpty(cccd))
             {
                 try
                 {
-                    // truyền null nếu "ALL_NO_CANCEL" hoặc Booked/Đang ở để backend ko bó hẹp
-                    string backendStatus = statusToken == "ALL_NO_CANCEL" ? null : statusToken;
-                    data = FetchBookingsByCustomer(cccd, backendStatus) ?? new List<BookingRow>();
+                    var db = _svc.GetBookingDisplaysByCustomerNumber(cccd) ?? new List<BookingDisplay>();
+                    q = db.Concat(_cache).GroupBy(x => x.BookingID).Select(g => g.First());
                 }
                 catch
                 {
-                    data = new List<BookingRow>();
+                    // ignore
                 }
             }
-            else data = new List<BookingRow>();
 
-            // Chuẩn hoá theo token hiển thị:
-            if (statusToken == "ALL_NO_CANCEL")
+            bool IsOcc(string s) =>
+                s != null && (s.Equals("CheckedIn", StringComparison.OrdinalIgnoreCase)
+                           || s.Equals("Occupied", StringComparison.OrdinalIgnoreCase));
+
+            if (st == ST_BOOKED) q = q.Where(x => x.Status.Equals("Booked", StringComparison.OrdinalIgnoreCase));
+            else if (st == ST_OCCUPIED) q = q.Where(x => IsOcc(x.Status));
+            else if (st == ST_CANCELLED) q = q.Where(x => x.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase));
+            else if (st == ST_COMPLETED) q = q.Where(x => x.Status.Equals("CheckedOut", StringComparison.OrdinalIgnoreCase));
+            else if (st == ST_ALL_NO_CANCEL)
+                q = q.Where(x => !x.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase)
+                              && !x.Status.Equals("CheckedOut", StringComparison.OrdinalIgnoreCase));
+
+            var list = q
+                .OrderByDescending(x => x.BookingDate)
+                .ThenByDescending(x => x.CheckInDate)
+                .ToList();
+
+            _view = new BindingList<BookingDisplay>(list);
+            dataGridView1.DataSource = _view;
+
+            // clear tick tất cả ô + reset header checkbox an toàn (không gây loop)
+            _suppressHeaderEvent = true;
+            try
             {
-                data = data.Where(x => !IsCancelled(x.Status) && !IsCompleted(x.Status)).ToList();
+                foreach (DataGridViewRow r in dataGridView1.Rows)
+                    r.Cells[COL_SEL].Value = false;
+
+                _chkHeader.Checked = false;
             }
-            else if (statusToken == "BookedOrOccupied")
+            finally
             {
-                data = data.Where(x => IsBooked(x.Status) || IsOccupied(x.Status)).ToList();
-            }
-            // Các token khác (Booked/Occupied/Cancelled/Completed) đã được backend xử lý nếu truyền status,
-            // nhưng ta vẫn có thể lọc lại để chắc chắn:
-            else if (statusToken == "Booked")
-            {
-                data = data.Where(x => IsBooked(x.Status)).ToList();
-            }
-            else if (statusToken == "Occupied")
-            {
-                data = data.Where(x => IsOccupied(x.Status)).ToList();
-            }
-            else if (statusToken == "Cancelled")
-            {
-                data = data.Where(x => IsCancelled(x.Status)).ToList();
-            }
-            else if (statusToken == "Completed")
-            {
-                data = data.Where(x => IsCompleted(x.Status)).ToList();
+                _suppressHeaderEvent = false;
             }
 
-            // Clear tick khi reload
-            data.ForEach(x => x.Sel = false);
-
-            _leftData = new BindingList<BookingRow>(data.OrderByDescending(x => x.CheckIn).ToList());
-            dataGridView1.DataSource = _leftData;
-
-            // reset header checkbox
-            _chkHeaderLeft.CheckedChanged -= HeaderLeft_CheckedChanged_NoLoop;
-            _chkHeaderLeft.Checked = false;
-            _chkHeaderLeft.CheckedChanged += HeaderLeft_CheckedChanged_NoLoop;
-
-            _selectedBookingId = 0;
-            _selectedStatus = null;
-            UpdateButtons(null);
+            UpdateButtons();
         }
 
-        private void HeaderLeft_CheckedChanged_NoLoop(object sender, EventArgs e)
+        // ================== HEADER CHECKBOX HANDLER ==================
+        private void HeaderCheckedChangedProxy(object sender, EventArgs e)
         {
-            // placeholder nếu muốn xử lý đặc biệt
-        }
-
-        public void RefreshRight()
-        {
-            var roomNo = NullIfEmpty(txtRoomNumber.Text);
-            var status = NormalizeRoomFilter(cboStatusRoom.SelectedItem?.ToString());
-
-            List<RoomBookingRow> data;
-            if (FetchBookingsByRoom != null)
-            {
-                try { data = FetchBookingsByRoom(roomNo, status) ?? new List<RoomBookingRow>(); }
-                catch { data = new List<RoomBookingRow>(); }
-            }
-            else data = new List<RoomBookingRow>();
-
-            data.ForEach(x => x.Sel = false);
-
-            _rightData = new BindingList<RoomBookingRow>(data.OrderBy(x => x.RoomNumber).ToList());
-            dataGridView2.DataSource = _rightData;
-
-            _chkHeaderRight.CheckedChanged -= HeaderRight_CheckedChanged_NoLoop;
-            _chkHeaderRight.Checked = false;
-            _chkHeaderRight.CheckedChanged += HeaderRight_CheckedChanged_NoLoop;
-
-            _selectedBookingId = 0;
-            _selectedStatus = null;
-            UpdateButtons(null);
-        }
-
-        private void HeaderRight_CheckedChanged_NoLoop(object sender, EventArgs e)
-        {
-            // placeholder nếu muốn xử lý đặc biệt
-        }
-        #endregion
-
-        #region Selection & Button state
-        private void SelectFromLeft()
-        {
-            if (dataGridView1.CurrentRow?.DataBoundItem is BookingRow row)
-            {
-                _selectedBookingId = row.BookingID;
-                _selectedStatus = row.Status;
-                UpdateButtons(_selectedStatus);
-            }
-        }
-
-        private void SelectFromRight()
-        {
-            if (dataGridView2.CurrentRow?.DataBoundItem is RoomBookingRow row)
-            {
-                _selectedBookingId = row.BookingID;
-                _selectedStatus = row.RoomStatus;
-                UpdateButtons(_selectedStatus);
-            }
-        }
-
-        private List<BookingRow> GetCheckedBookings() => _leftData.Where(r => r.Sel).ToList();
-        private List<RoomBookingRow> GetCheckedRooms() => _rightData.Where(r => r.Sel).ToList();
-
-        private List<int> GetCheckedBookingIds()
-            => GetCheckedBookings().Select(b => b.BookingID).Distinct().ToList();
-
-        private List<RoomKey> GetCheckedRoomKeys()
-            => GetCheckedRooms().Select(r => new RoomKey { BookingID = r.BookingID, RoomNumber = r.RoomNumber }).ToList();
-
-        private void UpdateButtons(string statusFromSingleSelection)
-        {
-            // Ưu tiên: tick booking
-            var tickBookings = GetCheckedBookings();
-            if (tickBookings.Count > 0)
-            {
-                bool anyBooked = tickBookings.Any(b => IsBooked(b.Status));
-                bool anyOccupied = tickBookings.Any(b => IsOccupied(b.Status));
-                bool mixed = anyBooked && anyOccupied;
-
-                button1.Enabled = anyBooked && !mixed;   // Nhận phòng
-                button3.Enabled = anyBooked && !mixed;   // Hủy
-                button2.Enabled = anyOccupied && !mixed; // Trả phòng
-                return;
-            }
-
-            // Tick room
-            var tickRooms = GetCheckedRooms();
-            if (tickRooms.Count > 0)
-            {
-                bool anyBooked = tickRooms.Any(r => IsBooked(r.RoomStatus));
-                bool anyOccupied = tickRooms.Any(r => IsOccupied(r.RoomStatus));
-                bool mixed = anyBooked && anyOccupied;
-
-                button1.Enabled = anyBooked && !mixed;
-                button3.Enabled = anyBooked && !mixed;
-                button2.Enabled = anyOccupied && !mixed;
-                return;
-            }
-
-            // Không tick → theo selection
-            if (string.IsNullOrWhiteSpace(statusFromSingleSelection))
-            {
-                button1.Enabled = button2.Enabled = button3.Enabled = false;
-                return;
-            }
-
-            button1.Enabled = IsBooked(statusFromSingleSelection);
-            button3.Enabled = IsBooked(statusFromSingleSelection);
-            button2.Enabled = IsOccupied(statusFromSingleSelection);
-        }
-        #endregion
-
-        #region Actions
-        private void DoCheckIn()
-        {
-            var tickBookings = GetCheckedBookings();
-            var tickRooms = GetCheckedRooms();
-
-            // Batch booking
-            if (tickBookings.Count > 0)
-            {
-                if (!tickBookings.All(b => IsBooked(b.Status)))
-                {
-                    MessageBox.Show("Chỉ 'Nhận phòng' được các booking đang 'Booked'.");
-                    return;
-                }
-
-                var bookingIds = GetCheckedBookingIds();
-                if (MessageBox.Show($"Xác nhận nhận phòng cho {bookingIds.Count} booking đã chọn?",
-                        "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-                bool ok = false;
-                try
-                {
-                    if (CheckInBookingsBatch != null) ok = CheckInBookingsBatch(bookingIds);
-                    else if (CheckInBooking != null) ok = bookingIds.Select(id => CheckInBooking(id)).All(x => x);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi nhận phòng: " + ex.Message); }
-
-                if (ok) { MessageBox.Show("Đã nhận phòng.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Nhận phòng thất bại.", "Lỗi");
-                return;
-            }
-
-            // Batch room
-            if (tickRooms.Count > 0)
-            {
-                if (!tickRooms.All(r => IsBooked(r.RoomStatus)))
-                {
-                    MessageBox.Show("Chỉ 'Nhận phòng' được các phòng đang 'Booked'.");
-                    return;
-                }
-
-                var keys = GetCheckedRoomKeys();
-                if (MessageBox.Show($"Xác nhận nhận {keys.Count} phòng đã chọn?",
-                        "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-                bool ok = false;
-                try
-                {
-                    if (CheckInRoomsBatch != null) ok = CheckInRoomsBatch(keys);
-                    else if (CheckInRoom != null) ok = keys.Select(k => CheckInRoom(k)).All(x => x);
-                    else if (CheckInBookingsBatch != null) ok = CheckInBookingsBatch(keys.Select(k => k.BookingID).Distinct().ToList());
-                    else if (CheckInBooking != null) ok = keys.Select(k => k.BookingID).Distinct().Select(id => CheckInBooking(id)).All(x => x);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi nhận phòng: " + ex.Message); }
-
-                if (ok) { MessageBox.Show("Đã nhận phòng.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Nhận phòng thất bại.", "Lỗi");
-                return;
-            }
-
-            // Single
-            if (_selectedBookingId <= 0 || !IsBooked(_selectedStatus))
-            {
-                MessageBox.Show("Hãy chọn booking/phòng đang 'Booked'.");
-                return;
-            }
-
-            if (MessageBox.Show($"Xác nhận nhận phòng cho booking #{_selectedBookingId}?",
-                    "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (_suppressHeaderEvent) return;
 
             try
             {
-                var ok = CheckInBooking?.Invoke(_selectedBookingId) ?? false;
-                if (ok) { MessageBox.Show("Đã nhận phòng.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Nhận phòng thất bại.", "Lỗi");
+                _suppressHeaderEvent = true;
+                bool check = _chkHeader.Checked;
+                foreach (DataGridViewRow r in dataGridView1.Rows)
+                    r.Cells[COL_SEL].Value = check;
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi nhận phòng: " + ex.Message); }
+            finally
+            {
+                _suppressHeaderEvent = false;
+            }
+
+            UpdateButtons();
         }
 
-        private void DoCancel()
+        // ================== SELECTION ==================
+        private List<BookingDisplay> GetChecked() =>
+            dataGridView1.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => r.Cells[COL_SEL].Value is bool b && b)
+                .Select(r => r.DataBoundItem as BookingDisplay)
+                .Where(x => x != null).ToList();
+
+        private void UpdateButtons()
         {
-            var tickBookings = GetCheckedBookings();
-            var tickRooms = GetCheckedRooms();
+            var sel = GetChecked();
+            button1.Enabled = button2.Enabled = button3.Enabled = false;
+            if (sel.Count == 0) return;
 
-            // Batch booking
-            if (tickBookings.Count > 0)
-            {
-                if (!tickBookings.All(b => IsBooked(b.Status)))
-                {
-                    MessageBox.Show("Chỉ hủy được booking đang 'Booked'.");
-                    return;
-                }
+            bool allBooked = sel.All(x => x.Status.Equals("Booked", StringComparison.OrdinalIgnoreCase));
+            bool allOcc = sel.All(x => x.Status.Equals("CheckedIn", StringComparison.OrdinalIgnoreCase)
+                                       || x.Status.Equals("Occupied", StringComparison.OrdinalIgnoreCase));
 
-                var bookingIds = GetCheckedBookingIds();
-                if (MessageBox.Show($"Bạn chắc muốn hủy {bookingIds.Count} booking đã chọn?",
-                        "Xác nhận hủy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-
-                bool ok = false;
-                try
-                {
-                    if (CancelBookingsBatch != null) ok = CancelBookingsBatch(bookingIds);
-                    else if (CancelBooking != null) ok = bookingIds.Select(id => CancelBooking(id)).All(x => x);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi hủy: " + ex.Message); }
-
-                if (ok) { MessageBox.Show("Đã hủy.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Hủy thất bại.", "Lỗi");
-                return;
-            }
-
-            // Batch room
-            if (tickRooms.Count > 0)
-            {
-                if (!tickRooms.All(r => IsBooked(r.RoomStatus)))
-                {
-                    MessageBox.Show("Chỉ hủy được các phòng đang 'Booked'.");
-                    return;
-                }
-
-                var keys = GetCheckedRoomKeys();
-                if (MessageBox.Show($"Bạn chắc muốn hủy {keys.Count} phòng đã chọn?",
-                        "Xác nhận hủy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-
-                bool ok = false;
-                try
-                {
-                    if (CancelRoomsBatch != null) ok = CancelRoomsBatch(keys);
-                    else if (CancelRoom != null) ok = keys.Select(k => CancelRoom(k)).All(x => x);
-                    else if (CancelBookingsBatch != null) ok = CancelBookingsBatch(keys.Select(k => k.BookingID).Distinct().ToList());
-                    else if (CancelBooking != null) ok = keys.Select(k => k.BookingID).Distinct().Select(id => CancelBooking(id)).All(x => x);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi hủy: " + ex.Message); }
-
-                if (ok) { MessageBox.Show("Đã hủy.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Hủy thất bại.", "Lỗi");
-                return;
-            }
-
-            // Single
-            if (_selectedBookingId <= 0 || !IsBooked(_selectedStatus))
-            {
-                MessageBox.Show("Chỉ hủy được booking đang 'Booked'.");
-                return;
-            }
-
-            if (MessageBox.Show($"Bạn chắc muốn hủy booking #{_selectedBookingId}?",
-                    "Xác nhận hủy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-
-            try
-            {
-                var ok = CancelBooking?.Invoke(_selectedBookingId) ?? false;
-                if (ok) { MessageBox.Show("Đã hủy booking.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Hủy booking thất bại.", "Lỗi");
-            }
-            catch (Exception ex) { MessageBox.Show("Lỗi khi hủy: " + ex.Message); }
+            if (allBooked) { button1.Enabled = true; button3.Enabled = true; }
+            else if (allOcc) { button2.Enabled = true; }
         }
 
-        private void DoCheckout()
+        // ================== ACTIONS ==================
+        private void btnNhan_Click(object sender, EventArgs e)
         {
-            var tickBookings = GetCheckedBookings();
-            var tickRooms = GetCheckedRooms();
+            var sel = GetChecked();
+            if (sel.Count == 0) return;
+            if (!sel.All(x => x.Status.Equals("Booked", StringComparison.OrdinalIgnoreCase)))
+            { MessageBox.Show("Chỉ nhận những đơn đang 'Booked'."); return; }
 
-            // Batch booking
-            if (tickBookings.Count > 0)
+            int ok = 0, fail = 0;
+            foreach (var r in sel)
             {
-                if (!tickBookings.All(b => IsOccupied(b.Status)))
-                {
-                    MessageBox.Show("Chỉ 'Trả phòng' được các booking đang 'Đang ở'.");
-                    return;
-                }
-
-                var bookingIds = GetCheckedBookingIds();
-
-                // Nếu chỉ 1 booking → có thể mở form chi tiết hóa đơn
-                if (bookingIds.Count == 1 && OpenBookingDetail != null)
-                {
-                    try { OpenBookingDetail(bookingIds[0]); }
-                    catch (Exception ex) { MessageBox.Show("Không mở được chi tiết: " + ex.Message); }
-                }
-
-                if (MessageBox.Show($"Xác nhận trả phòng cho {bookingIds.Count} booking đã chọn?",
-                        "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-                bool ok = false;
-                try
-                {
-                    if (CheckoutBookingsBatch != null) ok = CheckoutBookingsBatch(bookingIds);
-                    else if (CheckoutBooking != null) ok = bookingIds.Select(id => CheckoutBooking(id)).All(x => x);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi trả phòng: " + ex.Message); }
-
-                if (ok) { MessageBox.Show("Đã trả phòng.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Trả phòng thất bại.", "Lỗi");
-                return;
+                try { if (_svc.CheckInBooking(r.BookingID)) ok++; else fail++; }
+                catch { fail++; }
             }
-
-            // Batch room
-            if (tickRooms.Count > 0)
-            {
-                if (!tickRooms.All(r => IsOccupied(r.RoomStatus)))
-                {
-                    MessageBox.Show("Chỉ 'Trả phòng' được các phòng đang 'Đang ở'.");
-                    return;
-                }
-
-                var keys = GetCheckedRoomKeys();
-                var bookingIds = keys.Select(k => k.BookingID).Distinct().ToList();
-
-                if (bookingIds.Count == 1 && OpenBookingDetail != null)
-                {
-                    try { OpenBookingDetail(bookingIds[0]); }
-                    catch (Exception ex) { MessageBox.Show("Không mở được chi tiết: " + ex.Message); }
-                }
-
-                if (MessageBox.Show($"Xác nhận trả {keys.Count} phòng đã chọn?",
-                        "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-                bool ok = false;
-                try
-                {
-                    if (CheckoutRoomsBatch != null) ok = CheckoutRoomsBatch(keys);
-                    else if (CheckoutRoom != null) ok = keys.Select(k => CheckoutRoom(k)).All(x => x);
-                    else if (CheckoutBookingsBatch != null) ok = CheckoutBookingsBatch(bookingIds);
-                    else if (CheckoutBooking != null) ok = bookingIds.Select(id => CheckoutBooking(id)).All(x => x);
-                }
-                catch (Exception ex) { MessageBox.Show("Lỗi trả phòng: " + ex.Message); }
-
-                if (ok) { MessageBox.Show("Đã trả phòng.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Trả phòng thất bại.", "Lỗi");
-                return;
-            }
-
-            // Single
-            if (_selectedBookingId <= 0 || !IsOccupied(_selectedStatus))
-            {
-                MessageBox.Show("Hãy chọn booking/phòng đang 'Đang ở' để trả phòng.");
-                return;
-            }
-
-            if (OpenBookingDetail != null)
-            {
-                try { OpenBookingDetail(_selectedBookingId); }
-                catch (Exception ex) { MessageBox.Show("Không mở được chi tiết: " + ex.Message); }
-            }
-
-            if (MessageBox.Show($"Xác nhận trả phòng cho booking #{_selectedBookingId}?",
-                    "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-            try
-            {
-                var ok = CheckoutBooking?.Invoke(_selectedBookingId) ?? false;
-                if (ok) { MessageBox.Show("Đã trả phòng.", "Thành công"); RefreshLeft(); RefreshRight(); }
-                else MessageBox.Show("Trả phòng thất bại.", "Lỗi");
-            }
-            catch (Exception ex) { MessageBox.Show("Lỗi khi trả phòng: " + ex.Message); }
+            MessageBox.Show($"Nhận phòng: thành công {ok}, thất bại {fail}.");
+            LoadAll();
         }
-        #endregion
 
-        #region Combo defaults
-        private void LoadCombos()
+        private void btnHuy_Click(object sender, EventArgs e)
         {
-            // Trái (booking) — loại Hủy theo mặc định
-            cboStatusBooking.Items.Clear();
-            cboStatusBooking.Items.Add("Tất cả (trừ hủy)"); // <= mặc định để bạn không thấy Hủy
-            cboStatusBooking.Items.Add("Booked");
-            cboStatusBooking.Items.Add("Đang ở");           // Occupied/CheckedIn
-            cboStatusBooking.Items.Add("Booked/Đang ở");
-            cboStatusBooking.Items.Add("Đã hủy");           // nếu muốn xem hủy thì chọn mục này
-            cboStatusBooking.Items.Add("Hoàn tất");
-            cboStatusBooking.SelectedIndex = 0;
+            var sel = GetChecked();
+            if (sel.Count == 0) return;
+            if (!sel.All(x => x.Status.Equals("Booked", StringComparison.OrdinalIgnoreCase)))
+            { MessageBox.Show("Chỉ hủy những đơn đang 'Booked'."); return; }
 
-            // Phải (room)
-            cboStatusRoom.Items.Clear();
-            cboStatusRoom.Items.Add("Tất cả");
-            cboStatusRoom.Items.Add("Booked");
-            cboStatusRoom.Items.Add("Đang ở");
-            cboStatusRoom.Items.Add("Trống");
-            cboStatusRoom.SelectedIndex = 0;
+            if (MessageBox.Show($"Bạn chắc muốn hủy {sel.Count} booking đã chọn?",
+                "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
+            int ok = 0, fail = 0;
+            foreach (var r in sel)
+            {
+                try { if (_svc.CancelBooking(r.BookingID)) ok++; else fail++; }
+                catch { fail++; }
+            }
+            MessageBox.Show($"Hủy đặt: thành công {ok}, thất bại {fail}.");
+            LoadAll();
         }
-        #endregion
+
+        private void btnTra_Click(object sender, EventArgs e)
+        {
+            var sel = GetChecked();
+            if (sel.Count == 0) return;
+            if (!sel.All(x => x.Status.Equals("CheckedIn", StringComparison.OrdinalIgnoreCase)
+                           || x.Status.Equals("Occupied", StringComparison.OrdinalIgnoreCase)))
+            { MessageBox.Show("Chỉ trả phòng cho những đơn đang 'CheckedIn'."); return; }
+
+            var ids = sel.Select(x => x.BookingID).Distinct().ToList();
+
+            if (ids.Count == 1 && RequestCheckout != null) { RequestCheckout.Invoke(ids[0]); return; }
+            if (RequestCheckoutMany != null) { RequestCheckoutMany.Invoke(ids); return; }
+
+            MessageBox.Show("Chưa gắn handler checkout. Gắn RequestCheckout hoặc RequestCheckoutMany ở form cha.");
+        }
     }
 }
