@@ -1,10 +1,12 @@
-﻿using HOTEL_MINI.BLL;
+﻿// frmCheckout1.cs
+using HOTEL_MINI.BLL;
 using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -12,278 +14,408 @@ namespace HOTEL_MINI.Forms
 {
     public partial class frmCheckout1 : Form
     {
-        // ===== Input =====
-        private readonly List<int> _bookingRoomIds;  // có thể 1 hoặc nhiều
+        // ===== Events cho form cha/UC =====
+        // isFull: đã thanh toán đủ?  invoiceId: id hoá đơn
+        public event Action<bool, int> PaidCompleted;
+        // Yêu cầu in/xem hoá đơn sau khi thanh toán đủ
+        public event Action<int> RequestPrintInvoice;
+
+        // ===== Services =====
+        private readonly BookingService _svc = new BookingService();
+        private readonly PaymentService _paySvc = new PaymentService();
+
+        // ===== State =====
+        private readonly int _headerBookingId;              // BookingID (header)
+        private readonly List<int> _selectedBookingRoomIds; // các BookingRoomID/BookingID được checkout
         private readonly int _currentUserId;
 
-        // ===== Services/Repos =====
-        private readonly BookingService _bookingSvc = new BookingService();
-        private readonly RoomService _roomSvc = new RoomService();
-        private readonly BookingRepository _repo = new BookingRepository();
+        private List<Booking> _allRooms;
+        private decimal _roomTotal, _serviceTotal, _subtotal, _daTra, _conLai;
+        private int _invoiceId;
 
-        // ===== Data tổng hợp =====
-        private class Line
+        // Lưới lịch sử thanh toán (tạo runtime gắn vào summaryLayout)
+        private DataGridView dgvPayments;
+
+        // ===== Overload để gọi new frmCheckout1(ids, _currentUserId) =====
+        private static int ResolveHeaderId(List<int> bookingIds)
         {
-            public int BookingRoomID { get; set; }
-            public int RoomID { get; set; }
-            public string RoomNumber { get; set; }
-            public string PricingType { get; set; }
-            public DateTime? CheckIn { get; set; }
-            public DateTime? CheckOut { get; set; }
-            public decimal RoomCharge { get; set; }
-            public decimal ServiceTotal { get; set; }
-            public decimal SubTotal => RoomCharge + ServiceTotal;
+            if (bookingIds == null || bookingIds.Count == 0)
+                throw new ArgumentException("Danh sách BookingID trống.");
+            // Nếu dự án có header riêng, map bookingRoomId -> headerId ở đây
+            return bookingIds[0];
         }
 
-        private readonly List<Line> _lines = new List<Line>();
-        private readonly List<UsedServiceDto> _services = new List<UsedServiceDto>();
-        private decimal _grandRoom = 0m, _grandService = 0m;
+        public frmCheckout1(List<int> bookingIds, int currentUserId)
+            : this(ResolveHeaderId(bookingIds), bookingIds, currentUserId)
+        {
+        }
 
-        // ===== UI controls (đã có trong Designer) =====
-        //  Gợi ý: form bạn đã có các control sau theo ảnh/sẵn code:
-        //  txtCusName, txtCusId, txtCheckin, txtCheckout, txtRoomCharge, txtServiceCharge, txtTotalAmount
-        //  txtSurcharge, txtDiscount, txtEmployeeName, txtNote
-        //  cbxPaymentMethod, dgvUsedService, dgvRoom, btnConfirm, btnCancel
-
-        // --- Constructors ---
-        public frmCheckout1(int bookingRoomId, int currentUserId)
-            : this(new List<int> { bookingRoomId }, currentUserId) { }
-
-        public frmCheckout1(List<int> bookingRoomIds, int currentUserId)
+        public frmCheckout1(int headerBookingId, List<int> selectedBookingRoomIds, int currentUserId)
         {
             InitializeComponent();
-            _bookingRoomIds = bookingRoomIds?.Distinct().ToList() ?? new List<int>();
+            _headerBookingId = headerBookingId;
+            _selectedBookingRoomIds = selectedBookingRoomIds ?? new List<int>();
             _currentUserId = currentUserId;
 
-            this.Load += frmCheckout1_Load;
-            btnConfirm.Click += btnConfirm_Click;
-            btnCancel.Click += (s, e) => this.Close();
-            txtDiscount.TextChanged += RecalcTotal;
-            txtSurcharge.TextChanged += RecalcTotal;
-
-            cbxPaymentMethod.DropDownStyle = ComboBoxStyle.DropDownList;
+            BuildUiBehavior();
+            EnsurePaymentHistoryUi();   // tạo khối "Lịch sử thanh toán"
+            LoadDataAndBind();
         }
 
-        // ================= LOAD =================
-        private void frmCheckout1_Load(object sender, EventArgs e)
+        #region UI helpers
+        private readonly CultureInfo vi = new CultureInfo("vi-VN");
+
+        private void BuildUiBehavior()
         {
-            if (_bookingRoomIds.Count == 0)
+            // Rooms grid
+            dgvRoom.ReadOnly = true;
+            dgvRoom.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvRoom.RowHeadersVisible = false;
+            dgvRoom.AllowUserToAddRows = false;
+            dgvRoom.AllowUserToDeleteRows = false;
+
+            // Services grid
+            dgvUsedService.ReadOnly = true;
+            dgvUsedService.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvUsedService.RowHeadersVisible = false;
+            dgvUsedService.AllowUserToAddRows = false;
+            dgvUsedService.AllowUserToDeleteRows = false;
+
+            // Payment methods
+            try
             {
-                MessageBox.Show("Không có phòng để thanh toán.", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Close(); return;
+                var methods = _svc.getPaymentMethods();
+                if (methods != null && methods.Count > 0)
+                    cbxPaymentMethod.DataSource = methods;
+                else
+                    cbxPaymentMethod.Items.AddRange(new object[] { "Cash", "Card", "Transfer" });
+            }
+            catch
+            {
+                cbxPaymentMethod.Items.AddRange(new object[] { "Cash", "Card", "Transfer" });
             }
 
-            // Nếu các phòng thuộc nhiều header khác nhau -> cảnh báo (nên cùng một Booking header)
-            var headerIds = _bookingRoomIds.Select(id => _repo.GetHeaderIdByBookingRoomId(id)).ToList();
-            if (headerIds.Any(h => !h.HasValue) || headerIds.Select(h => h.Value).Distinct().Count() > 1)
+            // Pay options
+            cboPayOption.Items.Clear();
+            cboPayOption.Items.AddRange(new object[] { "Trả đủ", "Trả một phần" });
+            cboPayOption.SelectedIndex = 0;
+            cboPayOption.SelectedIndexChanged += (s, e) => ApplyPayOption();
+
+            // Inputs
+            txtDiscount.TextChanged += (s, e) => RecalcTotals();
+            txtSurcharge.TextChanged += (s, e) => RecalcTotals();
+            txtDiscount.KeyPress += NumericOnly_KeyPress;
+            txtSurcharge.KeyPress += NumericOnly_KeyPress;
+            txtPayNow.KeyPress += NumericOnly_KeyPress;
+
+            // Buttons
+            btnConfirm.Text = "Thanh toán";
+            btnCancel.Text = "Hủy";
+            btnConfirm.Click += BtnConfirm_Click;
+            btnCancel.Click += (s, e) => Close();
+        }
+
+        private void EnsurePaymentHistoryUi()
+        {
+            // Tạo group + grid
+            var grp = new GroupBox { Text = "Lịch sử thanh toán", Dock = DockStyle.Fill };
+            dgvPayments = new DataGridView
             {
-                MessageBox.Show("Các phòng không thuộc cùng một đơn đặt phòng.", "Sai nhóm đơn",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                RowHeadersVisible = false
+            };
+            grp.Controls.Add(dgvPayments);
+
+            // summaryLayout trong Designer hiện có 7 rows (6 absolute 36f + 1 percent, buttonsPanel ở hàng cuối)
+            // Chèn group vào ngay TRƯỚC buttonsPanel
+            // 1) Lấy row của buttonsPanel
+            int buttonsRow = summaryLayout.GetRow(buttonsPanel);
+
+            // 2) Tăng RowCount + thêm RowStyle
+            summaryLayout.RowCount += 1;
+            summaryLayout.RowStyles.Insert(buttonsRow, new RowStyle(SizeType.Percent, 100F));
+
+            // 3) Di chuyển buttonsPanel xuống 1 hàng, add grp vào vị trí cũ
+            summaryLayout.Controls.Remove(buttonsPanel);
+            summaryLayout.Controls.Add(grp, 0, buttonsRow);
+            summaryLayout.SetColumnSpan(grp, 4);
+
+            summaryLayout.Controls.Add(buttonsPanel, 0, buttonsRow + 1);
+            summaryLayout.SetColumnSpan(buttonsPanel, 4);
+        }
+
+        private void NumericOnly_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) e.Handled = true;
+        }
+
+        private decimal ParseMoney(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return 0m;
+            if (decimal.TryParse(s, NumberStyles.AllowThousands, vi, out var v)) return v;
+            if (decimal.TryParse(s, out v)) return v;
+            return 0m;
+        }
+
+        private void SetMoney(TextBox txt, decimal value, bool bold = false)
+        {
+            txt.Text = value.ToString("#,0", vi);
+            txt.Font = new Font(txt.Font, bold ? FontStyle.Bold : FontStyle.Regular);
+        }
+        #endregion
+
+        #region Load & bind
+        private void LoadDataAndBind()
+        {
+            // 1) Lấy toàn bộ dòng phòng thuộc header
+            _allRooms = _svc.GetBookingsByHeaderId(_headerBookingId) ?? new List<Booking>();
+
+            // 2) Header info
+            var first = _allRooms.FirstOrDefault();
+            if (first != null)
+            {
+                try
+                {
+                    var cust = new BookingRepository().GetCustomerBasicById(first.CustomerID);
+                    txtCusName.Text = cust?.FullName ?? "";
+                    txtCusId.Text = cust?.IDNumber ?? "";
+                }
+                catch { }
+
+                txtCheckin.Text = first.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                txtCheckout.Text = (first.CheckOutDate ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm");
             }
 
-            // Khách + NV + phương thức
-            var firstBooking = _bookingSvc.GetBookingById(_bookingRoomIds[0]);
-            if (firstBooking != null)
+            // 3) Bảng phòng chi tiết
+            var rows = new List<dynamic>();
+            _roomTotal = 0; _serviceTotal = 0;
+
+            foreach (var b in _allRooms)
             {
-                var cust = _repo.GetCustomerBasicById(firstBooking.CustomerID);
-                txtCusName.Text = cust?.FullName ?? "";
-                txtCusId.Text = cust?.IDNumber ?? "";
-            }
-            txtEmployeeName.Text = _repo.GetUserFullNameById(_currentUserId) ?? "";
-            cbxPaymentMethod.DataSource = _bookingSvc.getPaymentMethods();
-
-            // Gom dữ liệu các phòng + dịch vụ
-            var serviceRows = new List<dynamic>();
-
-            foreach (var bid in _bookingRoomIds)
-            {
-                var b = _bookingSvc.GetBookingById(bid);
-                if (b == null) continue;
-
-                if (!b.CheckOutDate.HasValue || (b.CheckInDate.HasValue && b.CheckOutDate <= b.CheckInDate))
+                if (!b.CheckOutDate.HasValue && b.CheckInDate.HasValue && DateTime.Now > b.CheckInDate.Value)
                     b.CheckOutDate = DateTime.Now;
 
-                var roomNo = _repo.GetRoomNumberById(b.RoomID);
-                var pricingType = _roomSvc.getPricingTypeByID(b.PricingID);
-                var roomCharge = _bookingSvc.GetRoomCharge(b);
-
-                var svcs = _bookingSvc.GetUsedServicesByBookingID(bid) ?? new List<UsedServiceDto>();
+                var roomSub = _svc.GetRoomCharge(b);
+                var svcs = _svc.GetUsedServicesByBookingID(b.BookingID) ?? new List<UsedServiceDto>();
                 var svcTotal = svcs.Sum(x => x.Price * x.Quantity);
 
-                _lines.Add(new Line
+                string pricingType = "";
+                decimal unitPrice = 0m;
+                try
                 {
-                    BookingRoomID = bid,
-                    RoomID = b.RoomID,
-                    RoomNumber = roomNo,
-                    PricingType = pricingType,
-                    CheckIn = b.CheckInDate,
-                    CheckOut = b.CheckOutDate,
-                    RoomCharge = roomCharge,
-                    ServiceTotal = svcTotal
-                });
-
-                foreach (var s in svcs)
-                {
-                    _services.Add(s);
-                    serviceRows.Add(new
-                    {
-                        RoomNumber = roomNo,
-                        s.ServiceName,
-                        s.Price,
-                        s.Quantity,
-                        Total = s.Price * s.Quantity
-                    });
+                    var pr = new RoomPricingRepository().GetPricingTypeById(b.PricingID);
+                    if (pr != null) { pricingType = pr.PricingType; unitPrice = pr.Price; }
                 }
+                catch { }
+
+                string roomNumber = "";
+                try { roomNumber = new BookingRepository().GetRoomNumberById(b.RoomID); } catch { }
+
+                _roomTotal += roomSub;
+                _serviceTotal += svcTotal;
+
+                rows.Add(new
+                {
+                    Phòng = roomNumber,
+                    CheckIn = b.CheckInDate?.ToString("dd/MM HH:mm"),
+                    CheckOut = b.CheckOutDate?.ToString("dd/MM HH:mm"),
+                    GiáTheo = pricingType,
+                    ĐơnGiá = unitPrice.ToString("#,0", vi),
+                    TiềnPhòng = roomSub.ToString("#,0", vi),
+                    TổngDV = svcTotal.ToString("#,0", vi),
+                    TổngCộng = (roomSub + svcTotal).ToString("#,0", vi)
+                });
             }
 
-            // Tính tổng
-            _grandRoom = _lines.Sum(x => x.RoomCharge);
-            _grandService = _lines.Sum(x => x.ServiceTotal);
+            dgvRoom.AutoGenerateColumns = true;
+            dgvRoom.DataSource = rows;
 
-            // Bind lưới phòng
-            BindRoomsGrid();
+            // 4) Bảng dịch vụ (gộp)
+            var allSvc = _allRooms
+                .SelectMany(b => _svc.GetUsedServicesByBookingID(b.BookingID) ?? new List<UsedServiceDto>())
+                .GroupBy(x => x.ServiceName)
+                .Select(g => new
+                {
+                    DịchVụ = g.Key,
+                    ĐơnGiá = g.First().Price.ToString("#,0", vi),
+                    SL = g.Sum(x => x.Quantity),
+                    ThànhTiền = g.Sum(x => x.Price * x.Quantity).ToString("#,0", vi)
+                })
+                .ToList();
 
-            // Bind lưới dịch vụ
-            dgvUsedService.AutoGenerateColumns = false;
-            dgvUsedService.Columns.Clear();
-            var money = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight };
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "RoomNumber", HeaderText = "Phòng", Width = 80 });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServiceName", HeaderText = "Dịch vụ", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Price", HeaderText = "Đơn giá", Width = 90, DefaultCellStyle = money });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quantity", HeaderText = "SL", Width = 50 });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Total", HeaderText = "Thành tiền", Width = 110, DefaultCellStyle = money });
-            dgvUsedService.DataSource = serviceRows;
+            dgvUsedService.AutoGenerateColumns = true;
+            dgvUsedService.DataSource = allSvc;
 
-            // Hiển thị phần “đầu tiên” (giữ tương thích với UI cũ)
-            txtCheckin.Text = _lines.FirstOrDefault()?.CheckIn?.ToString("dd/MM/yyyy HH:mm");
-            txtCheckout.Text = _lines.FirstOrDefault()?.CheckOut?.ToString("dd/MM/yyyy HH:mm");
-            txtRoomCharge.Text = _grandRoom.ToString("N0");
-            txtServiceCharge.Text = _grandService.ToString("N0");
+            // 5) Tổng số
+            SetMoney(txtTongtien, _roomTotal);
+            SetMoney(txtServiceCharge, _serviceTotal);
+            SetMoney(txtRoomTotal2, _roomTotal);
+            SetMoney(txtServiceTotal2, _serviceTotal);
 
-            txtSurcharge.Text = "0";
-            txtDiscount.Text = "0";
-            RecalcTotal(null, null);
-        }
+            // 6) Tính Subtotal + Đã trả + Còn lại + Lịch sử thanh toán
+            RecalcTotals();
+            ApplyPayOption();
+            LoadPayments();
 
-        private void BindRoomsGrid()
-        {
-            dgvRoom.AutoGenerateColumns = false;
-            dgvRoom.Columns.Clear();
-            var money = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight };
-            var dtFmt = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" };
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.RoomNumber), HeaderText = "Phòng", Width = 80 });
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.PricingType), HeaderText = "Giá theo", Width = 90 });
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.CheckIn), HeaderText = "Check-in", Width = 130, DefaultCellStyle = dtFmt });
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.CheckOut), HeaderText = "Check-out", Width = 130, DefaultCellStyle = dtFmt });
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.RoomCharge), HeaderText = "Tiền phòng", Width = 110, DefaultCellStyle = money });
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.ServiceTotal), HeaderText = "Tổng DV", Width = 110, DefaultCellStyle = money });
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(Line.SubTotal), HeaderText = "Tạm tính", Width = 120, DefaultCellStyle = money });
-            dgvRoom.DataSource = _lines;
-        }
-
-        // ================= TÍNH TỔNG =================
-        private void RecalcTotal(object sender, EventArgs e)
-        {
-            decimal.TryParse((txtSurcharge.Text ?? "0").Replace(",", ""), out var surcharge);
-            decimal.TryParse((txtDiscount.Text ?? "0").Replace(",", ""), out var discount);
-            var total = _grandRoom + _grandService + surcharge - discount;
-            if (total < 0) total = 0;
-            txtTotalAmount.Text = total.ToString("N0");
-        }
-
-        // ================= CONFIRM =================
-        private void btnConfirm_Click(object sender, EventArgs e)
-        {
-            if (cbxPaymentMethod.SelectedItem == null)
+            // 7) Hiển thị tên nhân viên theo _currentUserId
+            try
             {
-                MessageBox.Show("Vui lòng chọn hình thức thanh toán.", "Thiếu thông tin",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                var userName = new BookingRepository().GetUserFullNameById(_currentUserId);
+                txtEmployeeName.Text = string.IsNullOrWhiteSpace(userName) ? $"User#{_currentUserId}" : userName;
             }
+            catch
+            {
+                txtEmployeeName.Text = $"User#{_currentUserId}";
+            }
+        }
+        #endregion
 
-            decimal.TryParse((txtSurcharge.Text ?? "0").Replace(",", ""), out var surcharge);
-            decimal.TryParse((txtDiscount.Text ?? "0").Replace(",", ""), out var discount);
-            var paymentMethod = cbxPaymentMethod.SelectedItem.ToString();
+        #region Tổng & invoice
+        private void RecalcTotals()
+        {
+            var surcharge = ParseMoney(txtSurcharge.Text);
+            var discount = ParseMoney(txtDiscount.Text);
+
+            _subtotal = _roomTotal + _serviceTotal + surcharge - discount;
+            if (_subtotal < 0) _subtotal = 0;
 
             try
             {
-                // Cho phép sửa giờ checkout của DÒNG ĐẦU – các dòng khác vẫn giữ nguyên
-                if (DateTime.TryParse(txtCheckout.Text, out var co) && _lines.Count > 0)
+                var invRepo = new InvoiceRepository();
+                _invoiceId = invRepo.UpsertInvoiceTotals(new Invoice
                 {
-                    var b0 = _bookingSvc.GetBookingById(_lines[0].BookingRoomID);
-                    if (b0 != null) b0.CheckOutDate = co;
-                }
+                    BookingID = _headerBookingId,
+                    RoomCharge = _roomTotal,
+                    ServiceCharge = _serviceTotal,
+                    Surcharge = surcharge,
+                    Discount = discount,
+                    TotalAmount = _subtotal,
+                    IssuedAt = DateTime.Now,
+                    IssuedBy = _currentUserId,
+                    Status = "Unpaid"
+                });
 
-                if (_lines.Count == 1)
-                {
-                    var ln = _lines[0];
-                    var b = _bookingSvc.GetBookingById(ln.BookingRoomID);
-                    if (!b.CheckOutDate.HasValue || (b.CheckInDate.HasValue && b.CheckOutDate <= b.CheckInDate))
-                        b.CheckOutDate = DateTime.Now;
-
-                    _bookingSvc.Checkout(b, ln.RoomCharge, ln.ServiceTotal, discount, surcharge, paymentMethod, _currentUserId);
-                }
-                else
-                {
-                    // Chia phụ phí/giảm giá theo tỉ lệ tạm tính
-                    var weights = _lines.Select(x => x.SubTotal <= 0 ? 0.0001m : x.SubTotal).ToList();
-                    var surShares = SplitProportionally(surcharge, weights);
-                    var disShares = SplitProportionally(discount, weights);
-
-                    for (int i = 0; i < _lines.Count; i++)
-                    {
-                        var ln = _lines[i];
-                        var b = _bookingSvc.GetBookingById(ln.BookingRoomID);
-                        if (b == null) continue;
-                        if (!b.CheckOutDate.HasValue || (b.CheckInDate.HasValue && b.CheckOutDate <= b.CheckInDate))
-                            b.CheckOutDate = DateTime.Now;
-
-                        _bookingSvc.Checkout(b, ln.RoomCharge, ln.ServiceTotal,
-                                             disShares[i], surShares[i], paymentMethod, _currentUserId);
-                    }
-                }
-
-                // (Tuỳ chọn) hiện 1 hoá đơn tổng hợp – nếu bạn muốn 1 bill duy nhất thì xem phần NOTE ở dưới.
-
-                MessageBox.Show("Thanh toán thành công.", "Thành công",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                // Đừng dùng biến tạm, luôn đọc đã trả theo HEADER để ổn định
+                _daTra = _paySvc.GetPaidAmountByHeader(_headerBookingId);
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show("Thanh toán thất bại: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _daTra = 0;
+            }
+
+            _conLai = Math.Max(0, _subtotal - _daTra);
+
+            SetMoney(txtTotalAmount, _subtotal);
+            SetMoney(txtSubtotal, _subtotal);
+            SetMoney(txtDaTra, _daTra);
+            SetMoney(txtConLai, _conLai, bold: true);
+        }
+
+        private void LoadPayments()
+        {
+            try
+            {
+                var list = _paySvc.GetPaymentsByHeader(_headerBookingId) ?? new List<Payment>();
+                dgvPayments.DataSource = list.Select(x => new
+                {
+                    Ngày = x.PaymentDate.ToString("dd/MM/yyyy HH:mm"),
+                    HìnhThức = x.Method,
+                    SốTiền = x.Amount.ToString("#,0", vi),
+                    TrạngThái = x.Status
+                }).ToList();
+            }
+            catch
+            {
+                // ignore
             }
         }
 
-        private static List<decimal> SplitProportionally(decimal total, List<decimal> weights)
+        private void ApplyPayOption()
         {
-            var n = weights.Count;
-            var shares = new List<decimal>(new decimal[n]);
-            if (n == 0 || total == 0) return shares;
-
-            var sum = weights.Sum();
-            if (sum == 0)
+            if (cboPayOption.SelectedItem?.ToString() == "Trả đủ")
             {
-                var even = Math.Round(total / n, 0, MidpointRounding.AwayFromZero);
-                for (int i = 0; i < n; i++) shares[i] = even;
+                txtPayNow.Enabled = false;
+                SetMoney(txtPayNow, _conLai);
             }
             else
             {
-                decimal acc = 0;
-                for (int i = 0; i < n; i++)
-                {
-                    var raw = total * (weights[i] / sum);
-                    shares[i] = Math.Round(raw, 0, MidpointRounding.AwayFromZero);
-                    acc += shares[i];
-                }
-                var diff = total - acc;
-                if (diff != 0 && n > 0) shares[0] += diff;
+                txtPayNow.Enabled = true;
+                if (ParseMoney(txtPayNow.Text) <= 0) txtPayNow.Text = "0";
             }
-            return shares;
         }
+        #endregion
+
+        #region Confirm
+        private void BtnConfirm_Click(object sender, EventArgs e)
+        {
+            var method = cbxPaymentMethod.SelectedItem?.ToString() ?? "Cash";
+            var payNow = (cboPayOption.SelectedItem?.ToString() == "Trả đủ")
+                ? _conLai
+                : ParseMoney(txtPayNow.Text);
+
+            if (payNow < 0) payNow = 0;
+            if (payNow > _conLai)
+            {
+                MessageBox.Show("Số tiền thanh toán vượt quá số còn lại.", "Cảnh báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                var surcharge = ParseMoney(txtSurcharge.Text);
+                var discount = ParseMoney(txtDiscount.Text);
+
+                // Ghi thanh toán (service sẽ cập nhật trạng thái invoice, set CheckedOut nếu đủ)
+                var invoiceId = _svc.PayForBookingHeader(
+                    _selectedBookingRoomIds,
+                    discount,
+                    surcharge,
+                    payNow,
+                    method,
+                    _currentUserId
+                );
+
+                // Sau khi ghi, luôn reload lại số liệu từ DB để tránh sai lệch
+                RecalcTotals();   // -> cũng đọc lại đã trả theo header
+                LoadPayments();   // reload lịch sử
+                var isFull = _conLai <= 0m;
+
+                if (isFull)
+                {
+                    MessageBox.Show(
+                        $"Đã thanh toán đủ.\nTổng: {_subtotal.ToString("#,0", vi)}",
+                        "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Bắn event cho ngoài xử lý (reload UC, đổi trạng thái, in…)
+                    PaidCompleted?.Invoke(true, invoiceId);
+                    RequestPrintInvoice?.Invoke(invoiceId);
+
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Thanh toán thành công {payNow.ToString("#,0", vi)}.\n" +
+                        $"Còn lại: {_conLai.ToString("#,0", vi)}",
+                        "Đã ghi nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Chưa đủ thì chỉ bắn event (isFull=false) để ngoài tuỳ ý reload
+                    PaidCompleted?.Invoke(false, invoiceId);
+                    // Không đóng form để có thể tiếp tục thu tiếp nếu muốn
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi thanh toán: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        #endregion
     }
 }

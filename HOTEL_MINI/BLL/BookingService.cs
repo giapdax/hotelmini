@@ -4,6 +4,7 @@ using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace HOTEL_MINI.BLL
 {
@@ -223,6 +224,101 @@ namespace HOTEL_MINI.BLL
 
         public List<Booking> GetBookingsByHeaderId(int headerBookingId)
             => _bookingRepository.GetBookingsByHeaderId(headerBookingId);
+        public Booking GetBookingRoomById(int bookingRoomId)
+        {
+            Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
+            return _bookingRepository.GetBookingRoomById(bookingRoomId);
+        }
+        public int PayForBookingHeader(List<int> bookingRoomIds, decimal discount, decimal surcharge,
+                               decimal payNowAmount, string paymentMethod, int userId)
+        {
+            Ensure(bookingRoomIds != null && bookingRoomIds.Count > 0, "Không có phòng nào được chọn.");
+            Ensure(userId > 0, "UserID không hợp lệ.");
+
+            var repo = new BookingRepository();
+            var invRepo = new InvoiceRepository();
+            var payRepo = new PaymentRepository();
+
+            // ===== Resolve header =====
+            var headerIds = bookingRoomIds.Distinct().Select(id => repo.GetHeaderIdByBookingRoomId(id)).ToList();
+            if (headerIds.Any(h => !h.HasValue)) throw new InvalidOperationException("Có phòng không hợp lệ.");
+            var headerId = headerIds.First().Value;
+            if (headerIds.Any(h => h.Value != headerId)) throw new InvalidOperationException("Các phòng không cùng một Booking.");
+
+            // ===== Tính tổng cho TOÀN bộ booking =====
+            var allLines = repo.GetBookingsByHeaderId(headerId) ?? new List<Booking>();
+            decimal roomTotal = 0m, svcTotal = 0m;
+
+            foreach (var line in allLines)
+            {
+                // đảm bảo có checkout tạm để tính tiền (nếu chưa set)
+                if (!line.CheckOutDate.HasValue && line.CheckInDate.HasValue && DateTime.Now > line.CheckInDate.Value)
+                    line.CheckOutDate = DateTime.Now;
+
+                // tiền phòng theo PricingType/CheckIn-Out
+                roomTotal += GetRoomCharge(line);
+
+                // dịch vụ theo từng dòng phòng
+                var svcs = GetUsedServicesByBookingID(line.BookingID) ?? new List<UsedServiceDto>();
+                svcTotal += svcs.Sum(x => x.Price * x.Quantity);
+            }
+
+            var invoiceTotal = roomTotal + svcTotal + surcharge - discount;
+            if (invoiceTotal < 0) invoiceTotal = 0;
+
+            // ===== Upsert invoice (1 booking = 1 invoice) =====
+            var invoiceId = invRepo.UpsertInvoiceTotals(new Invoice
+            {
+                BookingID = headerId,
+                RoomCharge = roomTotal,
+                ServiceCharge = svcTotal,
+                Discount = discount,
+                Surcharge = surcharge,
+                TotalAmount = invoiceTotal,
+                IssuedBy = userId,
+                IssuedAt = DateTime.Now,
+                Status = "Unpaid" // mặc định khi chỉ phát hành
+            });
+
+            // ===== Ghi nhận payment (nếu có) =====
+            if (payNowAmount > 0)
+            {
+                payRepo.AddPayment(new Payment
+                {
+                    InvoiceID = invoiceId,
+                    Amount = payNowAmount,
+                    Method = string.IsNullOrWhiteSpace(paymentMethod) ? "Cash" : paymentMethod,
+                    PaymentDate = DateTime.Now,
+                    Status = "Paid" // trạng thái bản ghi payment (đã thu thành công)
+                });
+            }
+
+            // ===== Cập nhật trạng thái Invoice =====
+            var paid = invRepo.GetPaidAmount(invoiceId);
+            var newInvoiceStatus =
+                paid <= 0 ? "Unpaid" :
+                paid < invoiceTotal ? "PartiallyPaid" : "Paid";
+            invRepo.UpdateInvoiceStatus(invoiceId, newInvoiceStatus);
+
+            // ===== Nếu đã thanh toán ĐỦ ⇒ set Booking về CheckedOut (KHÔNG đổi Rooms) =====
+            if (newInvoiceStatus == "Paid")
+            {
+                var co = DateTime.Now;
+                // set tất cả LINES (chỉ BookingLines) về CheckedOut
+                foreach (var brId in bookingRoomIds.Distinct())
+                {
+                    // nếu đâu đó còn null checkout thì set về "co" cho gọn
+                    var br = GetBookingRoomById(brId);
+                    var checkoutAt = br?.CheckOutDate ?? co;
+                    repo.UpdateBookingStatusAndCheckOut(brId, "CheckedOut", checkoutAt);
+                }
+                // set HEADER
+                repo.UpdateHeaderStatus(headerId, "CheckedOut");
+                // KHÔNG động tới bảng Rooms → để housekeeping xử lý vòng đời phòng riêng.
+            }
+
+            return invoiceId;
+        }
 
 
     }

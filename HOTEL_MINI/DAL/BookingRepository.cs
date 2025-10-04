@@ -822,7 +822,7 @@ WHERE b.BookingID = @id";
         public List<string> getPaymentMethods()
         {
             var list = new List<string>();
-            using (var conn = new SqlConnection(_cs))
+            using (var conn = new SqlConnection())
             using (var cmd = new SqlCommand(@"SELECT Value FROM PaymentMethodEnum", conn))
             {
                 conn.Open();
@@ -845,6 +845,67 @@ WHERE b.BookingID = @id";
                 return o == null || o == DBNull.Value ? "" : o.ToString();
             }
         }
+        // BookingRepository.cs
+
+        public Booking GetBookingRoomById(int bookingRoomId)
+        {
+            using (var conn = new SqlConnection(_cs))
+            {
+                conn.Open();
+                const string sql = @"
+SELECT 
+    br.BookingRoomID AS BookingID,   -- mapping về model Booking (dòng phòng)
+    br.RoomID,
+    br.PricingID,
+    br.CheckInDate,
+    br.CheckOutDate,
+    br.Status,
+    b.CustomerID,
+    b.CreatedBy,
+    b.BookingDate,
+    b.Notes
+FROM BookingRooms br
+JOIN Bookings b ON b.BookingID = br.BookingID
+WHERE br.BookingRoomID = @Id";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", bookingRoomId);
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        if (!rd.Read()) return null;
+                        return new Booking
+                        {
+                            BookingID = rd.GetInt32(rd.GetOrdinal("BookingID")), // = BookingRoomID
+                            RoomID = rd.GetInt32(rd.GetOrdinal("RoomID")),
+                            PricingID = rd.GetInt32(rd.GetOrdinal("PricingID")),
+                            CheckInDate = rd.IsDBNull(rd.GetOrdinal("CheckInDate")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("CheckInDate")),
+                            CheckOutDate = rd.IsDBNull(rd.GetOrdinal("CheckOutDate")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("CheckOutDate")),
+                            Status = rd.GetString(rd.GetOrdinal("Status")),
+                            CustomerID = rd.GetInt32(rd.GetOrdinal("CustomerID")),
+                            CreatedBy = rd.GetInt32(rd.GetOrdinal("CreatedBy")),
+                            BookingDate = rd.GetDateTime(rd.GetOrdinal("BookingDate")),
+                            Notes = rd.IsDBNull(rd.GetOrdinal("Notes")) ? null : rd.GetString(rd.GetOrdinal("Notes")),
+                        };
+                    }
+                }
+            }
+        }
+
+        public bool UpdateHeaderStatus(int headerBookingId, string status)
+        {
+            using (var conn = new SqlConnection(_cs))
+            {
+                conn.Open();
+                const string sql = @"UPDATE Bookings SET Status = @Status WHERE BookingID = @Id";
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Status", status);
+                    cmd.Parameters.AddWithValue("@Id", headerBookingId);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
 
     }
 }
