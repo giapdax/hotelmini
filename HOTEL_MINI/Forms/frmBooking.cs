@@ -205,6 +205,15 @@ namespace HOTEL_MINI.Forms
                         }
                     };
 
+                    _ucBookingRoom.OpenBookingDetail = (bookingId) =>
+                    {
+                        using (var f = new frmCheckout1(bookingId, _currentUserId))
+                        {
+                            f.StartPosition = FormStartPosition.CenterParent;
+                            f.ShowDialog(this);
+                        }
+                    };
+
                     // ===== Trả phòng (mặc định mở form chi tiết để tính hoá đơn) =====
                     _ucBookingRoom.OpenBookingDetail = (bookingId) =>
                     {

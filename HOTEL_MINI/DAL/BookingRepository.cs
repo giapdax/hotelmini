@@ -615,6 +615,45 @@ WHERE br.BookingRoomID = @Id AND br.Status = 'Booked'";
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
+        public class CustomerBasic
+        {
+            public int CustomerID { get; set; }
+            public string FullName { get; set; }
+            public string IDNumber { get; set; }
+        }
+
+        public CustomerBasic GetCustomerBasicById(int customerId)
+        {
+            const string sql = "SELECT CustomerID, FullName, IDNumber FROM Customers WHERE CustomerID = @Id";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", customerId);
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    if (!rd.Read()) return null;
+                    return new CustomerBasic
+                    {
+                        CustomerID = rd.GetInt32(0),
+                        FullName = rd.IsDBNull(1) ? "" : rd.GetString(1),
+                        IDNumber = rd.IsDBNull(2) ? "" : rd.GetString(2)
+                    };
+                }
+            }
+        }
+
+        public string GetRoomNumberById(int roomId)
+        {
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand("SELECT RoomNumber FROM Rooms WHERE RoomID=@id", conn))
+            {
+                cmd.Parameters.AddWithValue("@id", roomId);
+                conn.Open();
+                var o = cmd.ExecuteScalar();
+                return o == null ? "" : o.ToString();
+            }
+        }
 
 
         public void RemoveServiceFromBooking(int bookingServiceId)

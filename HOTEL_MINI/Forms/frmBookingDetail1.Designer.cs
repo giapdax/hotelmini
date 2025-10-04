@@ -42,15 +42,28 @@
             this.lblBookingID = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.gbxRoomInfor = new System.Windows.Forms.GroupBox();
+            this.btnCheck = new System.Windows.Forms.Button();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.lblNote = new System.Windows.Forms.Label();
-            this.lblTen = new System.Windows.Forms.Label();
+            this.txtTen = new System.Windows.Forms.TextBox();
             this.lblDiachi = new System.Windows.Forms.Label();
+            this.txtDiachi = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
             this.lblSDT = new System.Windows.Forms.Label();
-            this.lblKieuThue = new System.Windows.Forms.Label();
+            this.txtSDT = new System.Windows.Forms.TextBox();
             this.lblEmail = new System.Windows.Forms.Label();
-            this.lblCCCD = new System.Windows.Forms.Label();
+            this.lblTen = new System.Windows.Forms.Label();
             this.lblSex = new System.Windows.Forms.Label();
+            this.txtGender = new System.Windows.Forms.TextBox();
+            this.lblKieuThue = new System.Windows.Forms.Label();
+            this.txtPricingType = new System.Windows.Forms.TextBox();
+            this.lblNote = new System.Windows.Forms.Label();
+            this.txtNote = new System.Windows.Forms.TextBox();
+            this.lblCCCD = new System.Windows.Forms.Label();
+            this.txtCCCD = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
+            this.grbRoom = new System.Windows.Forms.GroupBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
             this.gbxUsedServices = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -60,30 +73,21 @@
             this.dgvUsedServices = new System.Windows.Forms.DataGridView();
             this.gbxServicesMenu = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.dgvHotelServices = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.btnIncrease = new System.Windows.Forms.Button();
             this.nbrIncrease = new System.Windows.Forms.NumericUpDown();
             this.lblAddQuantity = new System.Windows.Forms.Label();
-            this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
-            this.grbRoom = new System.Windows.Forms.GroupBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.txtNote = new System.Windows.Forms.TextBox();
-            this.txtSDT = new System.Windows.Forms.TextBox();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.txtDiachi = new System.Windows.Forms.TextBox();
-            this.txtCCCD = new System.Windows.Forms.TextBox();
-            this.txtGender = new System.Windows.Forms.TextBox();
-            this.txtTen = new System.Windows.Forms.TextBox();
-            this.txtPricingType = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnCheck = new System.Windows.Forms.Button();
+            this.dgvHotelServices = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel8.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.gbxRoomInfor.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
+            this.tableLayoutPanel10.SuspendLayout();
+            this.grbRoom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tableLayoutPanel11.SuspendLayout();
             this.gbxUsedServices.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -91,13 +95,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsedServices)).BeginInit();
             this.gbxServicesMenu.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHotelServices)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nbrIncrease)).BeginInit();
-            this.tableLayoutPanel10.SuspendLayout();
-            this.grbRoom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.tableLayoutPanel11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHotelServices)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel8
@@ -180,7 +180,7 @@
             this.lblBookingID.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBookingID.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBookingID.ForeColor = System.Drawing.Color.Red;
-            this.lblBookingID.Location = new System.Drawing.Point(350, 0);
+            this.lblBookingID.Location = new System.Drawing.Point(349, 0);
             this.lblBookingID.Name = "lblBookingID";
             this.lblBookingID.Size = new System.Drawing.Size(279, 55);
             this.lblBookingID.TabIndex = 9;
@@ -218,6 +218,15 @@
             this.gbxRoomInfor.TabStop = false;
             this.gbxRoomInfor.Text = "Thông tin ";
             // 
+            // btnCheck
+            // 
+            this.btnCheck.Location = new System.Drawing.Point(131, 53);
+            this.btnCheck.Name = "btnCheck";
+            this.btnCheck.Size = new System.Drawing.Size(86, 31);
+            this.btnCheck.TabIndex = 22;
+            this.btnCheck.Text = "Kiểm tra";
+            this.btnCheck.UseVisualStyleBackColor = true;
+            // 
             // tableLayoutPanel5
             // 
             this.tableLayoutPanel5.ColumnCount = 2;
@@ -250,29 +259,14 @@
             this.tableLayoutPanel5.Size = new System.Drawing.Size(270, 296);
             this.tableLayoutPanel5.TabIndex = 21;
             // 
-            // lblNote
+            // txtTen
             // 
-            this.lblNote.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblNote.AutoSize = true;
-            this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(21, 264);
-            this.lblNote.Name = "lblNote";
-            this.lblNote.Size = new System.Drawing.Size(68, 20);
-            this.lblNote.TabIndex = 13;
-            this.lblNote.Text = "Ghi chú:";
-            this.lblNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblTen
-            // 
-            this.lblTen.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblTen.AutoSize = true;
-            this.lblTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTen.Location = new System.Drawing.Point(49, 11);
-            this.lblTen.Name = "lblTen";
-            this.lblTen.Size = new System.Drawing.Size(40, 20);
-            this.lblTen.TabIndex = 0;
-            this.lblTen.Text = "Tên:";
-            this.lblTen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtTen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTen.Location = new System.Drawing.Point(95, 8);
+            this.txtTen.Name = "txtTen";
+            this.txtTen.Size = new System.Drawing.Size(172, 26);
+            this.txtTen.TabIndex = 14;
             // 
             // lblDiachi
             // 
@@ -286,6 +280,24 @@
             this.lblDiachi.Text = "Địa chỉ:";
             this.lblDiachi.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // txtDiachi
+            // 
+            this.txtDiachi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDiachi.Location = new System.Drawing.Point(95, 50);
+            this.txtDiachi.Name = "txtDiachi";
+            this.txtDiachi.Size = new System.Drawing.Size(172, 26);
+            this.txtDiachi.TabIndex = 15;
+            // 
+            // txtEmail
+            // 
+            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEmail.Location = new System.Drawing.Point(95, 134);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(172, 26);
+            this.txtEmail.TabIndex = 17;
+            // 
             // lblSDT
             // 
             this.lblSDT.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -298,17 +310,14 @@
             this.lblSDT.Text = "SĐT: ";
             this.lblSDT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblKieuThue
+            // txtSDT
             // 
-            this.lblKieuThue.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKieuThue.AutoSize = true;
-            this.lblKieuThue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKieuThue.Location = new System.Drawing.Point(13, 221);
-            this.lblKieuThue.Name = "lblKieuThue";
-            this.lblKieuThue.Size = new System.Drawing.Size(76, 20);
-            this.lblKieuThue.TabIndex = 7;
-            this.lblKieuThue.Text = "Kiểu thuê";
-            this.lblKieuThue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtSDT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSDT.Location = new System.Drawing.Point(95, 92);
+            this.txtSDT.Name = "txtSDT";
+            this.txtSDT.Size = new System.Drawing.Size(172, 26);
+            this.txtSDT.TabIndex = 16;
             // 
             // lblEmail
             // 
@@ -322,17 +331,17 @@
             this.lblEmail.Text = "Email:";
             this.lblEmail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblCCCD
+            // lblTen
             // 
-            this.lblCCCD.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblCCCD.AutoSize = true;
-            this.lblCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCCCD.Location = new System.Drawing.Point(21, 25);
-            this.lblCCCD.Name = "lblCCCD";
-            this.lblCCCD.Size = new System.Drawing.Size(58, 20);
-            this.lblCCCD.TabIndex = 4;
-            this.lblCCCD.Text = "CCCD:";
-            this.lblCCCD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblTen.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTen.AutoSize = true;
+            this.lblTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTen.Location = new System.Drawing.Point(49, 11);
+            this.lblTen.Name = "lblTen";
+            this.lblTen.Size = new System.Drawing.Size(40, 20);
+            this.lblTen.TabIndex = 0;
+            this.lblTen.Text = "Tên:";
+            this.lblTen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblSex
             // 
@@ -345,6 +354,133 @@
             this.lblSex.TabIndex = 5;
             this.lblSex.Text = "Giới tính:";
             this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtGender
+            // 
+            this.txtGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtGender.Location = new System.Drawing.Point(95, 176);
+            this.txtGender.Name = "txtGender";
+            this.txtGender.Size = new System.Drawing.Size(172, 26);
+            this.txtGender.TabIndex = 19;
+            // 
+            // lblKieuThue
+            // 
+            this.lblKieuThue.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKieuThue.AutoSize = true;
+            this.lblKieuThue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblKieuThue.Location = new System.Drawing.Point(13, 221);
+            this.lblKieuThue.Name = "lblKieuThue";
+            this.lblKieuThue.Size = new System.Drawing.Size(76, 20);
+            this.lblKieuThue.TabIndex = 7;
+            this.lblKieuThue.Text = "Kiểu thuê";
+            this.lblKieuThue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtPricingType
+            // 
+            this.txtPricingType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPricingType.Location = new System.Drawing.Point(95, 218);
+            this.txtPricingType.Name = "txtPricingType";
+            this.txtPricingType.Size = new System.Drawing.Size(172, 26);
+            this.txtPricingType.TabIndex = 20;
+            // 
+            // lblNote
+            // 
+            this.lblNote.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblNote.AutoSize = true;
+            this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNote.Location = new System.Drawing.Point(21, 264);
+            this.lblNote.Name = "lblNote";
+            this.lblNote.Size = new System.Drawing.Size(68, 20);
+            this.lblNote.TabIndex = 13;
+            this.lblNote.Text = "Ghi chú:";
+            this.lblNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtNote
+            // 
+            this.txtNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNote.Location = new System.Drawing.Point(95, 257);
+            this.txtNote.Multiline = true;
+            this.txtNote.Name = "txtNote";
+            this.txtNote.Size = new System.Drawing.Size(172, 33);
+            this.txtNote.TabIndex = 12;
+            // 
+            // lblCCCD
+            // 
+            this.lblCCCD.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCCCD.AutoSize = true;
+            this.lblCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCCCD.Location = new System.Drawing.Point(21, 25);
+            this.lblCCCD.Name = "lblCCCD";
+            this.lblCCCD.Size = new System.Drawing.Size(58, 20);
+            this.lblCCCD.TabIndex = 4;
+            this.lblCCCD.Text = "CCCD:";
+            this.lblCCCD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtCCCD
+            // 
+            this.txtCCCD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCCCD.Location = new System.Drawing.Point(85, 25);
+            this.txtCCCD.Name = "txtCCCD";
+            this.txtCCCD.Size = new System.Drawing.Size(172, 26);
+            this.txtCCCD.TabIndex = 18;
+            // 
+            // tableLayoutPanel10
+            // 
+            this.tableLayoutPanel10.ColumnCount = 1;
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel10.Controls.Add(this.grbRoom, 0, 0);
+            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel11, 0, 1);
+            this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel10.Location = new System.Drawing.Point(285, 3);
+            this.tableLayoutPanel10.Name = "tableLayoutPanel10";
+            this.tableLayoutPanel10.RowCount = 2;
+            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.93617F));
+            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.06383F));
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(754, 423);
+            this.tableLayoutPanel10.TabIndex = 10;
+            // 
+            // grbRoom
+            // 
+            this.grbRoom.Controls.Add(this.dataGridView1);
+            this.grbRoom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grbRoom.Location = new System.Drawing.Point(3, 3);
+            this.grbRoom.Name = "grbRoom";
+            this.grbRoom.Size = new System.Drawing.Size(748, 201);
+            this.grbRoom.TabIndex = 7;
+            this.grbRoom.TabStop = false;
+            this.grbRoom.Text = "Phòng sử dụng";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 22);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersWidth = 62;
+            this.dataGridView1.RowTemplate.Height = 28;
+            this.dataGridView1.Size = new System.Drawing.Size(742, 176);
+            this.dataGridView1.TabIndex = 0;
+            // 
+            // tableLayoutPanel11
+            // 
+            this.tableLayoutPanel11.ColumnCount = 2;
+            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.Controls.Add(this.gbxUsedServices, 0, 0);
+            this.tableLayoutPanel11.Controls.Add(this.gbxServicesMenu, 1, 0);
+            this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 210);
+            this.tableLayoutPanel11.Name = "tableLayoutPanel11";
+            this.tableLayoutPanel11.RowCount = 1;
+            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.Size = new System.Drawing.Size(748, 210);
+            this.tableLayoutPanel11.TabIndex = 1;
             // 
             // gbxUsedServices
             // 
@@ -488,41 +624,6 @@
             this.tableLayoutPanel6.Size = new System.Drawing.Size(362, 179);
             this.tableLayoutPanel6.TabIndex = 23;
             // 
-            // dgvHotelServices
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvHotelServices.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvHotelServices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvHotelServices.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvHotelServices.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHotelServices.Location = new System.Drawing.Point(3, 3);
-            this.dgvHotelServices.Name = "dgvHotelServices";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvHotelServices.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            this.dgvHotelServices.RowHeadersWidth = 62;
-            this.dgvHotelServices.RowTemplate.Height = 28;
-            this.dgvHotelServices.Size = new System.Drawing.Size(356, 133);
-            this.dgvHotelServices.TabIndex = 21;
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 3;
@@ -574,141 +675,40 @@
             this.lblAddQuantity.TabIndex = 17;
             this.lblAddQuantity.Text = "Số lượng";
             // 
-            // tableLayoutPanel10
+            // dgvHotelServices
             // 
-            this.tableLayoutPanel10.ColumnCount = 1;
-            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel10.Controls.Add(this.grbRoom, 0, 0);
-            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel11, 0, 1);
-            this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel10.Location = new System.Drawing.Point(285, 3);
-            this.tableLayoutPanel10.Name = "tableLayoutPanel10";
-            this.tableLayoutPanel10.RowCount = 2;
-            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.93617F));
-            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.06383F));
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(754, 423);
-            this.tableLayoutPanel10.TabIndex = 10;
-            // 
-            // grbRoom
-            // 
-            this.grbRoom.Controls.Add(this.dataGridView1);
-            this.grbRoom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grbRoom.Location = new System.Drawing.Point(3, 3);
-            this.grbRoom.Name = "grbRoom";
-            this.grbRoom.Size = new System.Drawing.Size(748, 201);
-            this.grbRoom.TabIndex = 7;
-            this.grbRoom.TabStop = false;
-            this.grbRoom.Text = "Phòng sử dụng";
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 22);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 62;
-            this.dataGridView1.RowTemplate.Height = 28;
-            this.dataGridView1.Size = new System.Drawing.Size(742, 176);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // txtNote
-            // 
-            this.txtNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNote.Location = new System.Drawing.Point(95, 257);
-            this.txtNote.Multiline = true;
-            this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(172, 33);
-            this.txtNote.TabIndex = 12;
-            // 
-            // txtSDT
-            // 
-            this.txtSDT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSDT.Location = new System.Drawing.Point(95, 92);
-            this.txtSDT.Name = "txtSDT";
-            this.txtSDT.Size = new System.Drawing.Size(172, 26);
-            this.txtSDT.TabIndex = 16;
-            // 
-            // txtEmail
-            // 
-            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmail.Location = new System.Drawing.Point(95, 134);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(172, 26);
-            this.txtEmail.TabIndex = 17;
-            // 
-            // txtDiachi
-            // 
-            this.txtDiachi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDiachi.Location = new System.Drawing.Point(95, 50);
-            this.txtDiachi.Name = "txtDiachi";
-            this.txtDiachi.Size = new System.Drawing.Size(172, 26);
-            this.txtDiachi.TabIndex = 15;
-            // 
-            // txtCCCD
-            // 
-            this.txtCCCD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCCCD.Location = new System.Drawing.Point(85, 25);
-            this.txtCCCD.Name = "txtCCCD";
-            this.txtCCCD.Size = new System.Drawing.Size(172, 26);
-            this.txtCCCD.TabIndex = 18;
-            // 
-            // txtGender
-            // 
-            this.txtGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGender.Location = new System.Drawing.Point(95, 176);
-            this.txtGender.Name = "txtGender";
-            this.txtGender.Size = new System.Drawing.Size(172, 26);
-            this.txtGender.TabIndex = 19;
-            // 
-            // txtTen
-            // 
-            this.txtTen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTen.Location = new System.Drawing.Point(95, 8);
-            this.txtTen.Name = "txtTen";
-            this.txtTen.Size = new System.Drawing.Size(172, 26);
-            this.txtTen.TabIndex = 14;
-            // 
-            // txtPricingType
-            // 
-            this.txtPricingType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPricingType.Location = new System.Drawing.Point(95, 218);
-            this.txtPricingType.Name = "txtPricingType";
-            this.txtPricingType.Size = new System.Drawing.Size(172, 26);
-            this.txtPricingType.TabIndex = 20;
-            // 
-            // tableLayoutPanel11
-            // 
-            this.tableLayoutPanel11.ColumnCount = 2;
-            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.Controls.Add(this.gbxUsedServices, 0, 0);
-            this.tableLayoutPanel11.Controls.Add(this.gbxServicesMenu, 1, 0);
-            this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 210);
-            this.tableLayoutPanel11.Name = "tableLayoutPanel11";
-            this.tableLayoutPanel11.RowCount = 1;
-            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.Size = new System.Drawing.Size(748, 210);
-            this.tableLayoutPanel11.TabIndex = 1;
-            // 
-            // btnCheck
-            // 
-            this.btnCheck.Location = new System.Drawing.Point(131, 53);
-            this.btnCheck.Name = "btnCheck";
-            this.btnCheck.Size = new System.Drawing.Size(86, 31);
-            this.btnCheck.TabIndex = 22;
-            this.btnCheck.Text = "Kiểm tra";
-            this.btnCheck.UseVisualStyleBackColor = true;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvHotelServices.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvHotelServices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvHotelServices.DefaultCellStyle = dataGridViewCellStyle5;
+            this.dgvHotelServices.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvHotelServices.Location = new System.Drawing.Point(3, 3);
+            this.dgvHotelServices.Name = "dgvHotelServices";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvHotelServices.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            this.dgvHotelServices.RowHeadersWidth = 62;
+            this.dgvHotelServices.RowTemplate.Height = 28;
+            this.dgvHotelServices.Size = new System.Drawing.Size(356, 133);
+            this.dgvHotelServices.TabIndex = 21;
             // 
             // frmBookingDetail1
             // 
@@ -726,6 +726,10 @@
             this.gbxRoomInfor.PerformLayout();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
+            this.tableLayoutPanel10.ResumeLayout(false);
+            this.grbRoom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tableLayoutPanel11.ResumeLayout(false);
             this.gbxUsedServices.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
@@ -734,14 +738,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsedServices)).EndInit();
             this.gbxServicesMenu.ResumeLayout(false);
             this.tableLayoutPanel6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHotelServices)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nbrIncrease)).EndInit();
-            this.tableLayoutPanel10.ResumeLayout(false);
-            this.grbRoom.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.tableLayoutPanel11.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHotelServices)).EndInit();
             this.ResumeLayout(false);
 
         }
