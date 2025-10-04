@@ -552,6 +552,70 @@ WHERE brs.BookingRoomID = @Id";
                 }
             }
         }
+        public Booking GetActiveBookingByRoomId(int roomId)
+        {
+            const string sql = @"
+SELECT TOP 1
+    br.BookingRoomID AS BookingID,
+    b.CustomerID,
+    br.RoomID,
+    br.PricingID,
+    b.CreatedBy,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    br.Status,
+    ISNULL(br.Note, b.Notes) AS Notes
+FROM BookingRooms br
+JOIN Bookings b ON b.BookingID = br.BookingID
+WHERE br.RoomID = @RoomID
+  AND br.Status IN ('Booked','CheckedIn')
+ORDER BY ISNULL(br.CheckInDate, b.BookingDate) DESC";
+
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@RoomID", roomId);
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    if (!rd.Read()) return null;
+                    return new Booking
+                    {
+                        BookingID = rd.GetInt32(0),
+                        CustomerID = rd.GetInt32(1),
+                        RoomID = rd.GetInt32(2),
+                        PricingID = rd.GetInt32(3),
+                        CreatedBy = rd.GetInt32(4),
+                        BookingDate = rd.GetDateTime(5),
+                        CheckInDate = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                        CheckOutDate = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
+                        Status = rd.GetString(8),
+                        Notes = rd.IsDBNull(9) ? null : rd.GetString(9)
+                    };
+                }
+            }
+        }
+
+        public bool CheckInBooking(int bookingID, DateTime checkInAt)
+        {
+            const string sql = @"
+UPDATE br
+SET br.Status      = 'CheckedIn',
+    br.CheckInDate = ISNULL(br.CheckInDate, @CheckInAt)
+FROM BookingRooms br
+WHERE br.BookingRoomID = @Id AND br.Status = 'Booked'";
+
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", bookingID);
+                cmd.Parameters.AddWithValue("@CheckInAt", checkInAt);
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
 
         public void RemoveServiceFromBooking(int bookingServiceId)
         {

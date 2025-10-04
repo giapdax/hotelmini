@@ -20,23 +20,15 @@ namespace HOTEL_MINI.Forms.Controls
 
         private BindingList<RoomBrowsePriceItem> _data = new BindingList<RoomBrowsePriceItem>();
 
-        // tick đã chọn
         private readonly HashSet<int> _selectedRoomIds = new HashSet<int>();
-        // thời gian riêng từng phòng
-        private readonly Dictionary<int, Tuple<DateTime, DateTime>> _selectedTimes
-            = new Dictionary<int, Tuple<DateTime, DateTime>>();
-        // plan thuê từng phòng
-        private readonly Dictionary<int, RoomPlan> _selectedPlans
-            = new Dictionary<int, RoomPlan>();
-        // cache phòng
-        private readonly Dictionary<int, RoomBrowsePriceItem> _roomCache
-            = new Dictionary<int, RoomBrowsePriceItem>();
+        private readonly Dictionary<int, Tuple<DateTime, DateTime>> _selectedTimes = new Dictionary<int, Tuple<DateTime, DateTime>>();
+        private readonly Dictionary<int, RoomPlan> _selectedPlans = new Dictionary<int, RoomPlan>();
+        private readonly Dictionary<int, RoomBrowsePriceItem> _roomCache = new Dictionary<int, RoomBrowsePriceItem>();
 
-        // thông tin KH (không bắt buộc set trước)
         private int _currentCustomerId;
         private string _currentIdNumber = "";
 
-        public int CurrentUserId { get; set; }  // set từ màn hình chính sau đăng nhập
+        public int CurrentUserId { get; set; }  // set từ frmBooking
 
         public UcBookRoom()
         {
@@ -44,7 +36,6 @@ namespace HOTEL_MINI.Forms.Controls
             this.Load += UcBookRoom_Load;
         }
 
-        // giữ lại API này nếu bạn muốn set sẵn khách từ màn hình khác (không bắt buộc)
         public void SetCustomer(int customerId, string idNumber)
         {
             _currentCustomerId = customerId;
@@ -53,10 +44,18 @@ namespace HOTEL_MINI.Forms.Controls
 
         private void UcBookRoom_Load(object sender, EventArgs e)
         {
-            SetupFilters();
-            SetupGrid();
-            WireEvents();
-            LoadRooms();
+            try
+            {
+                SetupFilters();
+                SetupGrid();
+                WireEvents();
+                LoadRooms();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải màn hình đặt phòng: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void SetupFilters()
@@ -105,52 +104,18 @@ namespace HOTEL_MINI.Forms.Controls
 
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Hình thức", Name = "colPlanType", ReadOnly = true, Width = 100 });
 
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.RoomID),
-                HeaderText = "RoomID",
-                Name = "colRoomID",
-                Visible = false
-            });
-
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.RoomNumber),
-                HeaderText = "Phòng",
-                ReadOnly = true,
-                Width = 90
-            });
-
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.RoomTypeName),
-                HeaderText = "Loại",
-                ReadOnly = true,
-                Width = 140
-            });
-
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.Status),
-                HeaderText = "Trạng thái",
-                ReadOnly = true,
-                Width = 110
-            });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.RoomID), HeaderText = "RoomID", Name = "colRoomID", Visible = false });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.RoomNumber), HeaderText = "Phòng", ReadOnly = true, Width = 90 });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.RoomTypeName), HeaderText = "Loại", ReadOnly = true, Width = 140 });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.Status), HeaderText = "Trạng thái", ReadOnly = true, Width = 110 });
 
             var money = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight };
-
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceHourly), HeaderText = "Giá/giờ", ReadOnly = true, Width = 90, DefaultCellStyle = money });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceNightly), HeaderText = "Giá/đêm", ReadOnly = true, Width = 90, DefaultCellStyle = money });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceDaily), HeaderText = "Giá/ngày", ReadOnly = true, Width = 90, DefaultCellStyle = money });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceWeekly), HeaderText = "Giá/tuần", ReadOnly = true, Width = 90, DefaultCellStyle = money });
 
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.Note),
-                HeaderText = "Ghi chú",
-                ReadOnly = true,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.Note), HeaderText = "Ghi chú", ReadOnly = true, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
 
             dgvRoom.CellContentClick += DgvRoom_CellContentClick;
             dgvRoom.DataSource = _data;
@@ -315,7 +280,13 @@ namespace HOTEL_MINI.Forms.Controls
                 return;
             }
 
-            // build danh sách phòng + thời gian (KH sẽ nhập ở form tiếp theo)
+            if (CurrentUserId <= 0)
+            {
+                MessageBox.Show("Thiếu UserID đăng nhập. Hãy truyền CurrentUserId từ màn hình chính.",
+                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var selected = _selectedRoomIds
                 .Where(id => _roomCache.ContainsKey(id))
                 .Select(id =>
@@ -354,7 +325,6 @@ namespace HOTEL_MINI.Forms.Controls
                 };
             }
 
-            // KHÔNG ép buộc phải có khách trước – truyền 0/"" để form tự xử lý CCCD
             using (var f = new frmBookingDetail1(selected, plans, 0, "", CurrentUserId))
             {
                 f.StartPosition = FormStartPosition.CenterParent;

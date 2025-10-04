@@ -17,14 +17,17 @@ namespace HOTEL_MINI
         private const int ROLE_ADMIN = 1;
         private const int ROLE_RECEPTIONIST = 2;
 
+        // Whitelist cho lễ tân
         private readonly HashSet<string> _recAllowedForms = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "frmRoom",
+            "frmBooking",
+            "frmRoom",           // nếu còn dùng đâu đó
             "frmService",
             "frmRoomManager",
             "frmCustomer",
-            "frmBookingDetail",
-            "frmInvoiceManage"
+            "frmBookingDetail",  // dialog để cũng không sao
+            "frmInvoiceManage",
+            "frmReport"
         };
 
         public frmApplication(User user)
@@ -50,7 +53,9 @@ namespace HOTEL_MINI
             }
             else
             {
-                OpenChildForm(new frmRoom(this), btnRoom);
+                // Quan trọng: KHÔNG dùng 'sender' ở đây vì không có trong constructor
+                // Mặc định mở màn booking và truyền User hiện tại
+                OpenChildForm(new frmBooking(_currentUser), btnRoom);
             }
         }
 
@@ -71,12 +76,15 @@ namespace HOTEL_MINI
                 foreach (Control c in panelMenu.Controls)
                     if (c is Button b) b.Visible = false;
 
-                SafeShow(btnRoom, true);
+                // Cho phép các nút cần cho lễ tân
+                SafeShow(btnRoom, true);              // sẽ mở frmBooking
                 SafeShow(btnService, true);
                 SafeShow(btnRoomManager, true);
                 SafeShow(btnCustomerManage, true);
                 SafeShow(btnInvoicesManage, true);
+                SafeShow(btnReport, true);
 
+                // Ẩn những mục chỉ dành cho Admin
                 SafeShow(btnDashboardManage, false);
                 SafeShow(btnUserManage, false);
 
@@ -135,6 +143,7 @@ namespace HOTEL_MINI
 
         public void OpenChildForm(Form childForm, object btnSender)
         {
+            // Nếu không phải admin thì chỉ cho mở các form trong whitelist
             if (!IsAdmin())
             {
                 var formName = childForm.GetType().Name;
@@ -163,7 +172,10 @@ namespace HOTEL_MINI
 
         private void btnRoom_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new frmBooking(), sender);
+            // Mở frmBooking và truyền user đang đăng nhập
+            OpenChildForm(new frmBooking(_currentUser), sender);
+            // Hoặc chỉ truyền ID:
+            // OpenChildForm(new frmBooking(_currentUser?.UserID ?? 0), sender);
         }
 
         private void btnService_Click(object sender, EventArgs e)
