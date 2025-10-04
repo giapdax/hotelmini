@@ -313,7 +313,7 @@
             // 
             this.cboGender.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cboGender.FormattingEnabled = true;
-            this.cboGender.Location = new System.Drawing.Point(161, 64);
+            this.cboGender.Location = new System.Drawing.Point(161, 65);
             this.cboGender.Name = "cboGender";
             this.cboGender.Size = new System.Drawing.Size(166, 30);
             this.cboGender.TabIndex = 23;

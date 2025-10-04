@@ -1,5 +1,4 @@
-﻿// File: ServicesRepository.cs
-using HOTEL_MINI.Common;
+﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;

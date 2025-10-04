@@ -64,7 +64,7 @@ namespace HOTEL_MINI.Forms
                     return;
                 }
 
-                if (checkoutTime > DateTime.Now.AddHours(1)) // Không cho chọn giờ trong tương lai xa
+                if (checkoutTime > DateTime.Now.AddHours(2)) // Không cho chọn giờ trong tương lai xa
                 {
                     MessageBox.Show("Giờ trả phòng không hợp lệ!",
                                   "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);

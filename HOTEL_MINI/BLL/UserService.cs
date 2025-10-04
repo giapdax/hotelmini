@@ -18,7 +18,7 @@ namespace HOTEL_MINI.BLL
         }
 
         public List<User> GetAllUsers() => _userRepository.GetAllUsers();
-        public User GetByUsername(string username) => _userRepository.GetUserByUsername(username);
+
         public User GetById(int userId) => _userRepository.GetUserById(userId);
 
 
@@ -153,6 +153,5 @@ namespace HOTEL_MINI.BLL
                 throw;
             }
         }
-        public void CreateAdminUserIfNotExist() { _userRepository.CreateAdminUserIfNotExist(); }
     }
 }

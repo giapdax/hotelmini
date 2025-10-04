@@ -1,5 +1,4 @@
-﻿// File: frmLogin.cs
-using HOTEL_MINI.BLL;
+﻿using HOTEL_MINI.BLL;
 using HOTEL_MINI.Model.Response;
 using System;
 using System.Windows.Forms;

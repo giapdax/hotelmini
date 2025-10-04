@@ -142,9 +142,9 @@ namespace HOTEL_MINI.Forms
             this.btnBookConfirm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.btnBookConfirm.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBookConfirm.ForeColor = System.Drawing.Color.White;
-            this.btnBookConfirm.Location = new System.Drawing.Point(345, 499);
+            this.btnBookConfirm.Location = new System.Drawing.Point(332, 499);
             this.btnBookConfirm.Name = "btnBookConfirm";
-            this.btnBookConfirm.Size = new System.Drawing.Size(101, 32);
+            this.btnBookConfirm.Size = new System.Drawing.Size(129, 32);
             this.btnBookConfirm.TabIndex = 21;
             this.btnBookConfirm.Text = "Xác nhận";
             this.btnBookConfirm.UseVisualStyleBackColor = false;
@@ -157,7 +157,7 @@ namespace HOTEL_MINI.Forms
             this.btnCancel.ForeColor = System.Drawing.Color.White;
             this.btnCancel.Location = new System.Drawing.Point(181, 499);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(71, 32);
+            this.btnCancel.Size = new System.Drawing.Size(79, 32);
             this.btnCancel.TabIndex = 20;
             this.btnCancel.Text = "Hủy";
             this.btnCancel.UseVisualStyleBackColor = false;

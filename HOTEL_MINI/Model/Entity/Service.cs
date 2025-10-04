@@ -1,5 +1,4 @@
-﻿// File: Service.cs
-using System;
+﻿using System;
 
 namespace HOTEL_MINI.Model.Entity
 {

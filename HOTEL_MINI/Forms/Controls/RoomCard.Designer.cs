@@ -56,9 +56,9 @@
             // 
             // btnBook
             // 
-            this.btnBook.Location = new System.Drawing.Point(20, 3);
+            this.btnBook.Location = new System.Drawing.Point(24, 3);
             this.btnBook.Name = "btnBook";
-            this.btnBook.Size = new System.Drawing.Size(59, 40);
+            this.btnBook.Size = new System.Drawing.Size(71, 40);
             this.btnBook.TabIndex = 1;
             this.btnBook.Text = "Đặt";
             this.btnBook.UseVisualStyleBackColor = true;
@@ -66,7 +66,7 @@
             // 
             // btnDetails
             // 
-            this.btnDetails.Location = new System.Drawing.Point(94, 3);
+            this.btnDetails.Location = new System.Drawing.Point(109, 3);
             this.btnDetails.Name = "btnDetails";
             this.btnDetails.Size = new System.Drawing.Size(75, 40);
             this.btnDetails.TabIndex = 2;
@@ -126,11 +126,11 @@
             this.tableLayoutPanel2.ColumnCount = 5;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21.2963F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 78.7037F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 9F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 106F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 91F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Controls.Add(this.btnDetails, 3, 0);
             this.tableLayoutPanel2.Controls.Add(this.btnBook, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnDetails, 3, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 134);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";

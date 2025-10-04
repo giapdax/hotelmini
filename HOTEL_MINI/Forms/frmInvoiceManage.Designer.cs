@@ -32,6 +32,7 @@
             this.dgvBookings = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtCustomerID = new System.Windows.Forms.TextBox();
             this.lblNumberID = new System.Windows.Forms.Label();
@@ -49,7 +50,7 @@
             this.lblDiachi = new System.Windows.Forms.Label();
             this.txtCountBookingByNumberID = new System.Windows.Forms.TextBox();
             this.lblCountBookingByNumberID = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.btnReset = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBookings)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -84,6 +85,7 @@
             this.dgvBookings.RowTemplate.Height = 28;
             this.dgvBookings.Size = new System.Drawing.Size(675, 540);
             this.dgvBookings.TabIndex = 0;
+            this.dgvBookings.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBookings_CellContentClick);
             this.dgvBookings.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBookings_CellDoubleClick);
             // 
             // tableLayoutPanel2
@@ -106,6 +108,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
+            this.panel1.Controls.Add(this.btnReset);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.btnSearch);
             this.panel1.Controls.Add(this.txtCustomerID);
@@ -116,11 +119,21 @@
             this.panel1.Size = new System.Drawing.Size(355, 145);
             this.panel1.TabIndex = 0;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(61, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(209, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Nhập CCCD để tìm hóa đơn:";
+            // 
             // btnSearch
             // 
             this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSearch.ForeColor = System.Drawing.Color.Brown;
-            this.btnSearch.Location = new System.Drawing.Point(212, 96);
+            this.btnSearch.Location = new System.Drawing.Point(221, 96);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(107, 37);
             this.btnSearch.TabIndex = 2;
@@ -312,15 +325,17 @@
             this.lblCountBookingByNumberID.Text = "Số lần book phòng";
             this.lblCountBookingByNumberID.Visible = false;
             // 
-            // label1
+            // btnReset
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(61, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(209, 20);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Nhập CCCD để tìm hóa đơn:";
+            this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReset.ForeColor = System.Drawing.Color.Brown;
+            this.btnReset.Location = new System.Drawing.Point(96, 96);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(107, 37);
+            this.btnReset.TabIndex = 4;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // frmInvoiceManage
             // 
@@ -331,6 +346,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "frmInvoiceManage";
             this.Text = "Quản lý hóa đơn";
+            this.Load += new System.EventHandler(this.frmInvoiceManage_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvBookings)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -368,5 +384,6 @@
         private System.Windows.Forms.Label lblCountBookingByNumberID;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnReset;
     }
 }

@@ -67,7 +67,7 @@ namespace HOTEL_MINI.DAL
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    if (reader.Read())   // chỉ cần gọi 1 lần
+                    if (reader.Read())  
                     {
                         return new Customer
                         {
@@ -95,7 +95,7 @@ namespace HOTEL_MINI.DAL
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    if (reader.Read())   // chỉ cần gọi 1 lần
+                    if (reader.Read()) 
                     {
                         return new Customer
                         {
@@ -113,34 +113,7 @@ namespace HOTEL_MINI.DAL
                 return null;
             }
         }
-        public Customer GetCustomerByNumberID(string numberID)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Customers WHERE IDNumber = @IDNumber", conn);
-                cmd.Parameters.AddWithValue("@IDNumber", numberID);
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())   // chỉ cần gọi 1 lần
-                    {
-                        return new Customer
-                        {
-                            CustomerID = (int)reader["CustomerID"],
-                            FullName = reader["FullName"].ToString(),
-                            Gender = reader["Gender"].ToString(),
-                            Email = reader["Email"].ToString(),
-                            Phone = reader["Phone"].ToString(),
-                            Address = reader["Address"].ToString(),
-                            IDNumber = reader["IDNumber"].ToString(),
-                            CreatedAt = (DateTime)reader["CreatedAt"]
-                        };
-                    }
-                }
-                return null;
-            }
-        }
-
+        
         public bool checkExistNumberID(string idNumber)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))

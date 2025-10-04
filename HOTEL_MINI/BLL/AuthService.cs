@@ -10,6 +10,8 @@ namespace HOTEL_MINI.BLL
         private readonly UserRepository _userRepository;
 
         public AuthService()
+
+
         {
             _userRepository = new UserRepository();
         }

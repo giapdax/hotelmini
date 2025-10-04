@@ -1,5 +1,4 @@
-﻿// File: RoomTypeService.cs
-using HOTEL_MINI.DAL;
+﻿using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using MiniHotel.Models;
 using System;

@@ -108,9 +108,9 @@
             this.btnHuy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(48)))), ((int)(((byte)(86)))));
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic);
             this.btnHuy.ForeColor = System.Drawing.SystemColors.Control;
-            this.btnHuy.Location = new System.Drawing.Point(332, 594);
+            this.btnHuy.Location = new System.Drawing.Point(316, 594);
             this.btnHuy.Name = "btnHuy";
-            this.btnHuy.Size = new System.Drawing.Size(123, 35);
+            this.btnHuy.Size = new System.Drawing.Size(139, 35);
             this.btnHuy.TabIndex = 22;
             this.btnHuy.Text = "Hủy đặt phòng";
             this.btnHuy.UseVisualStyleBackColor = false;

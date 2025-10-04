@@ -1,5 +1,4 @@
-﻿// File: HOTEL_MINI/BLL/RoomPricingService.cs
-using HOTEL_MINI.DAL;
+﻿using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
@@ -9,9 +8,6 @@ namespace HOTEL_MINI.BLL
     public class RoomPricingService
     {
         private readonly RoomPricingRepository _repo = new RoomPricingRepository();
-
-        public List<RoomPricing> GetAll() => _repo.GetAll();
-        public RoomPricing GetById(int id) => _repo.GetPricingTypeById(id);
         public List<string> GetPricingTypes() => _repo.GetPricingTypes();
         public RoomPricing GetByRoomTypeAndType(int roomTypeId, string pricingType) => _repo.GetByRoomTypeAndType(roomTypeId, pricingType);
 

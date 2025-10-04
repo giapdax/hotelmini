@@ -247,7 +247,7 @@ namespace HOTEL_MINI.Forms
             var customer = _customerService.getCustomerByIDNumber(ccccd);
             if (customer != null)
             {
-                MessageBox.Show($"Khach tồn tại và tự đọng động fill {customer.FullName} {customer.Email}  {customer.Email}");
+                MessageBox.Show($"Khach tồn tại và tự đọng động điền");
                 _customer = customer;
                 Accessible();
                 IDNumberExistUI(customer);

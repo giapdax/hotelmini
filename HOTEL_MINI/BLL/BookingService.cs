@@ -25,10 +25,12 @@ namespace HOTEL_MINI.BLL
             _paymentRepository = new PaymentRepository();
             _roomRepository = new RoomRepository();
         }
+
         public Booking AddBooking(Booking booking)
         {
             return _bookingRepository.AddBooking(booking);
         }
+        public List<BookingDisplay> GetTop20LatestBookingDisplays() => _bookingRepository.GetTop20LatestBookingDisplays();
         public Booking GetLatestBookingByRoomId(int roomId) => _bookingRepository.GetLatestBookingByRoomId(roomId);
         public Booking GetBookingById(int bookingId)
         {
@@ -108,7 +110,8 @@ namespace HOTEL_MINI.BLL
                         IssuedAt = DateTime.Now,
                         IssuedBy = currentUserID,
                         Status = "Paid",
-                        Note = $"Checkout completed at {DateTime.Now:yyyy-MM-dd HH:mm:ss}"
+                        //Note = $"Checkout completed at {DateTime.Now:yyyy-MM-dd HH:mm:ss}"
+                        Note = $"Checkout completed at {booking.CheckOutDate}!"
                     };
 
                     int invoiceID = _invoiceRepository.AddInvoice(invoice);

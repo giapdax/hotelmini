@@ -109,7 +109,7 @@ namespace HOTEL_MINI.Forms
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            if (btnSave.Enabled) return;
+            if (btnSave.Enabled) return; // nếu đang ở chế độ chỉnh sửa thì return và không đổi fill
             FillFromGrid();
             SetButtons(viewMode: true);
         }
@@ -148,7 +148,7 @@ namespace HOTEL_MINI.Forms
             FillFromGrid();
             txtPassword.Text = "********";
             SetButtons(viewMode: false);
-            txtFullName.Focus();
+            txtFullName.Focus(); 
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

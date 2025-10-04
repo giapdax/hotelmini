@@ -31,6 +31,28 @@ namespace HOTEL_MINI.Forms
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            //if (string.IsNullOrWhiteSpace(txtCustomerID.Text))
+            //{
+            //    MessageBox.Show("Vui lòng nhập ID khách hàng");
+            //    return;
+            //}
+
+            //if (!int.TryParse(txtCustomerID.Text, out int customerId))
+            //{
+            //    MessageBox.Show("ID khách hàng phải là số");
+            //    return;
+            //}
+            //var customer = _customerService.GetCustomerByNumberID(txtCustomerID.Text);
+
+            //if (customer == null)
+            //{
+            //    MessageBox.Show("Không tìm thấy khách hàng với ID đã nhập");
+            //    return;
+            //}
+            //_currentCustomer = customer;
+            //LoadCustomerInfo(customer);
+
+            //LoadCustomerBookings(txtCustomerID.Text);
             if (string.IsNullOrWhiteSpace(txtCustomerID.Text))
             {
                 MessageBox.Show("Vui lòng nhập ID khách hàng");
@@ -42,16 +64,17 @@ namespace HOTEL_MINI.Forms
                 MessageBox.Show("ID khách hàng phải là số");
                 return;
             }
+
             var customer = _customerService.GetCustomerByNumberID(txtCustomerID.Text);
-            
+
             if (customer == null)
             {
                 MessageBox.Show("Không tìm thấy khách hàng với ID đã nhập");
                 return;
             }
+
             _currentCustomer = customer;
             LoadCustomerInfo(customer);
-
             LoadCustomerBookings(txtCustomerID.Text);
         }
         public void LoadCustomerInfo(Customer customer)
@@ -150,15 +173,32 @@ namespace HOTEL_MINI.Forms
 
             // Lấy BookingID từ hidden column
             var bookingId = (int)dgvBookings.Rows[e.RowIndex].Cells["BookingID"].Value;
+
+            // Lấy booking đầy đủ từ service
+            var booking = _bookingService.GetBookingById(bookingId);
+            if (booking == null)
+            {
+                MessageBox.Show("Không tìm thấy booking");
+                return;
+            }
+
+            // Lấy thông tin customer từ booking
+            var customer = _customerService.getCustomerByCustomerID(booking.CustomerID);
+            if (customer != null)
+            {
+                _currentCustomer = customer;
+                LoadCustomerInfo(customer); // fill vào textbox
+            }
+
+            // Lấy RoomNumber để truyền xuống
             var roomNumber = dgvBookings.Rows[e.RowIndex].Cells["RoomNumber"].Value.ToString();
 
-            // Lấy thông tin đầy đủ từ service
-            var booking = _bookingService.GetBookingById(bookingId);
-            if (booking != null)
-            {
-                ShowInvoiceDetails(booking, roomNumber);
-            }
+           
+
+            // Show invoice details
+            ShowInvoiceDetails(booking, roomNumber);
         }
+
         private void ShowInvoiceDetails(Booking booking, string roomNumber)
         {
             try
@@ -171,12 +211,12 @@ namespace HOTEL_MINI.Forms
                     MessageBox.Show("Không tìm thấy hóa đơn cho booking này");
                     return;
                 }
-                //if (_currentCustomer == null)
-                //{
-                //    MessageBox.Show("Không có thông tin khách hàng hiện tại");
-                //    return;
-                //}
-                //MessageBox.Show($"{_currentCustomer.FullName}");
+                if (_currentCustomer == null)
+                {
+                    MessageBox.Show("Không có thông tin khách hàng hiện tại");
+                    return;
+                }
+                MessageBox.Show($"{_currentCustomer.FullName}");
                 // Tạo và hiển thị UC Invoice
                 var invoiceControl = new UcInvoice(booking, roomNumber, invoice, _currentCustomer.FullName, _currentCustomer.IDNumber);
 
@@ -197,6 +237,47 @@ namespace HOTEL_MINI.Forms
             {
                 MessageBox.Show($"Lỗi khi hiển thị hóa đơn: {ex.Message}");
             }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            LoadTop20Bookings();
+        }
+
+        private void dgvBookings_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+        private void LoadTop20Bookings()
+        {
+            try
+            {
+                //var bookingDisplays = _bookingService.GetTop20LatestBookingDisplays()
+                //    .Where(b => b.Status == "CheckedOut")
+                //    .OrderByDescending(b => b.CheckOutDate) // mới nhất trước
+                //    .Take(20)
+                //    .ToList();
+                var bookingDisplays = _bookingService.GetTop20LatestBookingDisplays();
+
+                dgvBookings.DataSource = bookingDisplays;
+                dgvBookings.AutoGenerateColumns = false;
+                ConfigureDataGridView();
+
+                // reset current customer
+                _currentCustomer = null;
+
+                // clear thông tin khách hàng
+                txtName.Text = txtGender.Text = txtPhone.Text = txtEmail.Text = txtDiachi.Text = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải top 20 booking: {ex.Message}");
+            }
+        }
+
+        private void frmInvoiceManage_Load(object sender, EventArgs e)
+        {
+            LoadTop20Bookings();
         }
     }
 }

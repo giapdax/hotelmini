@@ -1,5 +1,4 @@
-﻿// File: RoomTypeRepository.cs
-using HOTEL_MINI.Common;
+﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
 using MiniHotel.Models;
 using System.Collections.Generic;

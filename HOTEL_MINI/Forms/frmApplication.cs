@@ -163,7 +163,7 @@ namespace HOTEL_MINI
 
         private void btnRoom_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new frmRoom(this), sender);
+            OpenChildForm(new frmBooking(), sender);
         }
 
         private void btnService_Click(object sender, EventArgs e)

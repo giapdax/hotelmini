@@ -18,6 +18,49 @@ namespace HOTEL_MINI.DAL
         {
             _stringConnection = ConfigHelper.GetConnectionString();
         }
+        public List<BookingDisplay> GetTop20LatestBookingDisplays()
+        {
+            var list = new List<BookingDisplay>();
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                string sql = @"SELECT TOP 20 
+                            b.BookingID,
+                            r.RoomNumber,
+                            u.FullName as EmployeeName,
+                            b.BookingDate,
+                            b.CheckInDate,
+                            b.CheckOutDate,
+                            b.Notes,
+                            b.Status
+                       FROM Bookings b
+                       INNER JOIN Rooms r ON b.RoomID = r.RoomID
+                       INNER JOIN Users u ON b.CreatedBy = u.UserID
+                        WHERE b.Status = 'CheckedOut'   
+                       ORDER BY b.BookingDate DESC";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new BookingDisplay
+                        {
+                            BookingID = (int)reader["BookingID"],
+                            RoomNumber = reader["RoomNumber"].ToString(),
+                            EmployeeName = reader["EmployeeName"].ToString(),
+                            BookingDate = (DateTime)reader["BookingDate"],
+                            CheckInDate = reader["CheckInDate"] == DBNull.Value ? null : (DateTime?)reader["CheckInDate"],
+                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
+                            Notes = reader["Notes"].ToString(),
+                            Status = reader["Status"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
         public List<BookingDisplay> GetBookingDisplaysByCustomerNumber(string numberID)
         {
             var list = new List<BookingDisplay>();

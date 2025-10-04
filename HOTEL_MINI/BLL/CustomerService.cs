@@ -23,10 +23,6 @@ namespace HOTEL_MINI.BLL
         {
             return _customerRepository.AddNewCustomer(customer);
         }
-        public bool checkExistNumberID(string idNumber)
-        {
-            return _customerRepository.checkExistNumberID(idNumber);
-        }
         public Customer getCustomerByCustomerID(int customerID)
         {
             return _customerRepository.GetCustomerByCustomerID(customerID);

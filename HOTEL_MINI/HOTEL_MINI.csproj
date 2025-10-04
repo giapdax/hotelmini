@@ -60,6 +60,9 @@
     <Reference Include="BCrypt.Net-Next, Version=4.0.3.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
       <HintPath>..\packages\BCrypt.Net-Next.4.0.3\lib\net472\BCrypt.Net-Next.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.NetCore.2.2.1\lib\net45\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
@@ -148,11 +151,29 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Controls\UcBookRoom.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\UcBookRoom.Designer.cs">
+      <DependentUpon>UcBookRoom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Controls\UcBookingRoom.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\UcBookingRoom.Designer.cs">
+      <DependentUpon>UcBookingRoom.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Controls\UcInvoice.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\Controls\UcInvoice.Designer.cs">
       <DependentUpon>UcInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Controls\UcInvoice1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\UcInvoice1.Designer.cs">
+      <DependentUpon>UcInvoice1.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Controls\UcRevenue.cs">
       <SubType>UserControl</SubType>
@@ -196,11 +217,23 @@
     <Compile Include="Forms\frmBookedRoomInfor.Designer.cs">
       <DependentUpon>frmBookedRoomInfor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmBooking.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmBooking.Designer.cs">
+      <DependentUpon>frmBooking.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmBookingDetail.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmBookingDetail.Designer.cs">
       <DependentUpon>frmBookingDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmBookingDetail1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmBookingDetail1.Designer.cs">
+      <DependentUpon>frmBookingDetail1.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmBookingPopup.cs">
       <SubType>Form</SubType>
@@ -306,8 +339,17 @@
     <Compile Include="Model\Response\UsedServiceDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\Controls\UcBookRoom.resx">
+      <DependentUpon>UcBookRoom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Controls\UcBookingRoom.resx">
+      <DependentUpon>UcBookingRoom.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcInvoice.resx">
       <DependentUpon>UcInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Controls\UcInvoice1.resx">
+      <DependentUpon>UcInvoice1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcRevenue.resx">
       <DependentUpon>UcRevenue.cs</DependentUpon>
@@ -330,8 +372,14 @@
     <EmbeddedResource Include="Forms\frmBookedRoomInfor.resx">
       <DependentUpon>frmBookedRoomInfor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBooking.resx">
+      <DependentUpon>frmBooking.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmBookingDetail.resx">
       <DependentUpon>frmBookingDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBookingDetail1.resx">
+      <DependentUpon>frmBookingDetail1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmBookingPopup.resx">
       <DependentUpon>frmBookingPopup.cs</DependentUpon>
