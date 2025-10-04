@@ -108,6 +108,16 @@ namespace HOTEL_MINI.BLL
             if (duplicated)
                 throw new ArgumentException("Phòng đã tồn tại (trùng số phòng).");
         }
-
+        public List<RoomBrowsePriceItem> SearchRoomsWithPrices(int? roomTypeId, string status)
+        {
+            return roomRepository.SearchRoomsWithPrices(roomTypeId, status);
+        }
+        public List<RoomBrowsePriceItem> SearchRoomsWithPrices(DateTime from, DateTime to, int? roomTypeId, string status)
+        {
+            return roomRepository.SearchRoomsWithPrices(from, to, roomTypeId, status);
+        }
+        public bool IsRoomAvailable(int roomId, DateTime from, DateTime to)
+            => roomRepository.IsRoomAvailable(roomId, from, to);
     }
+
 }

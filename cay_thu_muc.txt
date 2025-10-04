@@ -1,0 +1,863 @@
+Folder PATH listing
+Volume serial number is B29C-49EF
+C:.
+|   .gitignore
+|   cay_thu_muc.txt
+|   HOTEL_MINI.sln
+|   README.md
+|   
++---HOTEL_MINI
+|   |   App.config
+|   |   DataSet1.Designer.cs
+|   |   DataSet1.xsc
+|   |   DataSet1.xsd
+|   |   DataSet1.xss
+|   |   HOTEL_MINI.csproj
+|   |   HOTEL_MINI.csproj.user
+|   |   packages.config
+|   |   Program.cs
+|   |   
+|   +---bin
+|   |   +---Debug
+|   |   |   |   BCrypt.Net-Core.dll
+|   |   |   |   BCrypt.Net-Core.pdb
+|   |   |   |   BouncyCastle.Crypto.dll
+|   |   |   |   BouncyCastle.Crypto.xml
+|   |   |   |   BouncyCastle.Cryptography.dll
+|   |   |   |   BouncyCastle.Cryptography.xml
+|   |   |   |   EnvDTE.dll
+|   |   |   |   HOTEL_MINI.exe
+|   |   |   |   HOTEL_MINI.exe.config
+|   |   |   |   HOTEL_MINI.pdb
+|   |   |   |   itextsharp.dll
+|   |   |   |   itextsharp.xml
+|   |   |   |   Microsoft.ReportViewer.Common.dll
+|   |   |   |   Microsoft.ReportViewer.DataVisualization.dll
+|   |   |   |   Microsoft.ReportViewer.Design.dll
+|   |   |   |   Microsoft.ReportViewer.ProcessingObjectModel.dll
+|   |   |   |   Microsoft.ReportViewer.WinForms.dll
+|   |   |   |   Microsoft.SqlServer.Types.dll
+|   |   |   |   stdole.dll
+|   |   |   |   System.Numerics.Vectors.dll
+|   |   |   |   
+|   |   |   +---de
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---es
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---Fonts
+|   |   |   |       TAHOMA.TTF
+|   |   |   |       TAHOMABD.TTF
+|   |   |   |       
+|   |   |   +---fr
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---it
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---ja
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---ko
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---pt
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---ru
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   +---x64
+|   |   |   |       SqlServerSpatial160.dll
+|   |   |   |       
+|   |   |   +---x86
+|   |   |   |       SqlServerSpatial160.dll
+|   |   |   |       
+|   |   |   +---zh-CHS
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       
+|   |   |   +---zh-CHT
+|   |   |   |       Microsoft.ReportViewer.Common.resources.dll
+|   |   |   |       Microsoft.ReportViewer.DataVisualization.resources.dll
+|   |   |   |       Microsoft.ReportViewer.Design.resources.dll
+|   |   |   |       Microsoft.ReportViewer.WinForms.resources.dll
+|   |   |   |       
+|   |   |   +---zh-Hans
+|   |   |   |       Microsoft.SqlServer.Types.resources.dll
+|   |   |   |       
+|   |   |   \---zh-Hant
+|   |   |           Microsoft.SqlServer.Types.resources.dll
+|   |   |           
+|   |   \---Release
+|   +---BLL
+|   |       AuthService.cs
+|   |       BookingService.cs
+|   |       CheckoutService.cs
+|   |       CustomerService.cs
+|   |       InvoiceService.cs
+|   |       PaymentService.cs
+|   |       PdfExportService.cs
+|   |       RoleService.cs
+|   |       RoomPricingService.cs
+|   |       RoomService.cs
+|   |       RoomTypeService.cs
+|   |       ServicesService.cs
+|   |       UserService.cs
+|   |       
+|   +---Common
+|   |       ConfigHelper.cs
+|   |       PasswordHelper.cs
+|   |       
+|   +---DAL
+|   |       BookingRepository.cs
+|   |       CustomerRepository.cs
+|   |       InvoiceRepository.cs
+|   |       PaymentRepository.cs
+|   |       RoleRepository.cs
+|   |       RoomPricingRepository.cs
+|   |       RoomRepository.cs
+|   |       RoomTypeRepository.cs
+|   |       ServicesRepository.cs
+|   |       UserRepository.cs
+|   |       
+|   +---Forms
+|   |   |   BookingDetail.cs
+|   |   |   BookingDetail.Designer.cs
+|   |   |   BookingDetail.resx
+|   |   |   BookingPopupForm.cs
+|   |   |   BookingPopupForm.Designer.cs
+|   |   |   BookingPopupForm.resx
+|   |   |   frmApplication.cs
+|   |   |   frmApplication.Designer.cs
+|   |   |   frmApplication.resx
+|   |   |   frmBookedRoomInfor.cs
+|   |   |   frmBookedRoomInfor.Designer.cs
+|   |   |   frmBookedRoomInfor.resx
+|   |   |   frmBooking.cs
+|   |   |   frmBooking.Designer.cs
+|   |   |   frmBooking.resx
+|   |   |   frmBookingDetail.cs
+|   |   |   frmBookingDetail.Designer.cs
+|   |   |   frmBookingDetail.resx
+|   |   |   frmBookingDetail1.cs
+|   |   |   frmBookingDetail1.Designer.cs
+|   |   |   frmBookingDetail1.resx
+|   |   |   frmBookingPopup.cs
+|   |   |   frmBookingPopup.Designer.cs
+|   |   |   frmBookingPopup.resx
+|   |   |   FrmChangePass.cs
+|   |   |   FrmChangePass.Designer.cs
+|   |   |   FrmChangePass.resx
+|   |   |   frmCheckout.cs
+|   |   |   frmCheckout.Designer.cs
+|   |   |   frmCheckout.resx
+|   |   |   frmCustomer.cs
+|   |   |   frmCustomer.Designer.cs
+|   |   |   frmCustomer.resx
+|   |   |   frmInvoiceManage.cs
+|   |   |   frmInvoiceManage.Designer.cs
+|   |   |   frmInvoiceManage.resx
+|   |   |   frmLogin.cs
+|   |   |   frmLogin.Designer.cs
+|   |   |   frmLogin.resx
+|   |   |   frmProfile.cs
+|   |   |   frmProfile.Designer.cs
+|   |   |   frmProfile.resx
+|   |   |   frmReport.cs
+|   |   |   frmReport.Designer.cs
+|   |   |   frmReport.resx
+|   |   |   frmRoom.cs
+|   |   |   frmRoom.Designer.cs
+|   |   |   frmRoom.resx
+|   |   |   frmRoomManager.cs
+|   |   |   frmRoomManager.Designer.cs
+|   |   |   frmRoomManager.resx
+|   |   |   frmSelectCheckoutTime.cs
+|   |   |   frmSelectCheckoutTime.Designer.cs
+|   |   |   frmSelectCheckoutTime.resx
+|   |   |   frmService.cs
+|   |   |   frmService.Designer.cs
+|   |   |   frmService.resx
+|   |   |   frmStatistical.cs
+|   |   |   frmStatistical.Designer.cs
+|   |   |   frmStatistical.resx
+|   |   |   frmUser.cs
+|   |   |   frmUser.Designer.cs
+|   |   |   frmUser.resx
+|   |   |   
+|   |   +---Controls
+|   |   |       RoomCard.cs
+|   |   |       RoomCard.Designer.cs
+|   |   |       RoomCard.resx
+|   |   |       UcBookingRoom.cs
+|   |   |       UcBookingRoom.Designer.cs
+|   |   |       UcBookingRoom.resx
+|   |   |       UcBookRoom.cs
+|   |   |       UcBookRoom.Designer.cs
+|   |   |       UcBookRoom.resx
+|   |   |       UcInvoice.cs
+|   |   |       UcInvoice.Designer.cs
+|   |   |       UcInvoice.resx
+|   |   |       UcInvoice1.cs
+|   |   |       UcInvoice1.Designer.cs
+|   |   |       UcInvoice1.resx
+|   |   |       UcRevenue.cs
+|   |   |       UcRevenue.Designer.cs
+|   |   |       UcRevenue.resx
+|   |   |       UcRoom.cs
+|   |   |       UcRoom.Designer.cs
+|   |   |       UcRoom.resx
+|   |   |       UcRoomStatiscal.cs
+|   |   |       UcRoomStatiscal.Designer.cs
+|   |   |       UcRoomStatiscal.resx
+|   |   |       UcRoomType_Pricing.cs
+|   |   |       UcRoomType_Pricing.Designer.cs
+|   |   |       UcRoomType_Pricing.resx
+|   |   |       
+|   |   \---Dialogs
+|   |           dlgRoomTime.cs
+|   |           dlgRoomTime.Designer.cs
+|   |           
+|   +---Model
+|   |   +---Entity
+|   |   |       Booking.cs
+|   |   |       BookingServiceDetail.cs
+|   |   |       Customer.cs
+|   |   |       Invoice.cs
+|   |   |       Payment.cs
+|   |   |       Role.cs
+|   |   |       Room.cs
+|   |   |       RoomPricing.cs
+|   |   |       RoomTypes.cs
+|   |   |       Service.cs
+|   |   |       Services.cs
+|   |   |       User.cs
+|   |   |       
+|   |   \---Response
+|   |           BookingDisplay.cs
+|   |           LoginResult.cs
+|   |           public class InvoiceDisplay.cs
+|   |           RevenueSummary.cs
+|   |           RevenuRoomDTO.cs
+|   |           RoomBrowseItem.cs
+|   |           RoomBrowsePriceItem.cs
+|   |           RoomStatistics.cs
+|   |           SelectedRoomWithTime.cs
+|   |           ServiceMenuItem.cs
+|   |           UsedServiceDto.cs
+|   |           
+|   +---obj
+|   |   +---Debug
+|   |   |   |   .NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+|   |   |   |   DesignTimeResolveAssemblyReferences.cache
+|   |   |   |   DesignTimeResolveAssemblyReferencesInput.cache
+|   |   |   |   HOTEL_MINI.csproj.AssemblyReference.cache
+|   |   |   |   HOTEL_MINI.csproj.CoreCompileInputs.cache
+|   |   |   |   HOTEL_MINI.csproj.FileListAbsolute.txt
+|   |   |   |   HOTEL_MINI.csproj.GenerateResource.cache
+|   |   |   |   HOTEL_MINI.csproj.Up2Date
+|   |   |   |   HOTEL_MINI.exe
+|   |   |   |   HOTEL_MINI.exe.config
+|   |   |   |   HOTEL_MINI.Forms.Controls.RoomCard.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcBookingRoom.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcBookRoom.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcInvoice.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcInvoice1.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcRevenue.resources
+|   |   |   |   HOTEL_MINI.Forms.Controls.UcRoomStatiscal.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookedRoomInfor.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBooking.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookingDetail.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookingDetail1.resources
+|   |   |   |   HOTEL_MINI.Forms.frmBookingPopup.resources
+|   |   |   |   HOTEL_MINI.Forms.FrmChangePass.resources
+|   |   |   |   HOTEL_MINI.Forms.frmCheckout.resources
+|   |   |   |   HOTEL_MINI.Forms.frmCustomer.resources
+|   |   |   |   HOTEL_MINI.Forms.frmInvoiceManage.resources
+|   |   |   |   HOTEL_MINI.Forms.frmLogin.resources
+|   |   |   |   HOTEL_MINI.Forms.frmProfile.resources
+|   |   |   |   HOTEL_MINI.Forms.frmReport.resources
+|   |   |   |   HOTEL_MINI.Forms.frmRoom.resources
+|   |   |   |   HOTEL_MINI.Forms.frmRoomManager.resources
+|   |   |   |   HOTEL_MINI.Forms.frmSelectCheckoutTime.resources
+|   |   |   |   HOTEL_MINI.Forms.frmService.resources
+|   |   |   |   HOTEL_MINI.Forms.frmStatistical.resources
+|   |   |   |   HOTEL_MINI.Forms.frmUser.resources
+|   |   |   |   HOTEL_MINI.Forms.UcRoom.resources
+|   |   |   |   HOTEL_MINI.Forms.UcRoomType_Pricing.resources
+|   |   |   |   HOTEL_MINI.frmApplication.resources
+|   |   |   |   HOTEL_MINI.pdb
+|   |   |   |   HOTEL_MINI.Properties.Resources.resources
+|   |   |   |   HOTEL_MINI_MarkupCompile.i.cache
+|   |   |   |   
+|   |   |   +---Forms
+|   |   |   |   \---Controls
+|   |   |   |           UcRoopType_Pricing.g.i.cs
+|   |   |   |           
+|   |   |   \---TempPE
+|   |   |           DataSet1.Designer.cs.dll
+|   |   |           Properties.Resources.Designer.cs.dll
+|   |   |           
+|   |   \---Release
+|   |           .NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+|   |           HOTEL_MINI.csproj.AssemblyReference.cache
+|   |           
+|   +---Properties
+|   |   |   AssemblyInfo.cs
+|   |   |   Resources.Designer.cs
+|   |   |   Resources.resx
+|   |   |   Settings.Designer.cs
+|   |   |   Settings.settings
+|   |   |   
+|   |   \---DataSources
+|   |           HOTEL_MINI.Model.Entity.Customer.datasource
+|   |           HOTEL_MINI.Model.Entity.Invoice.datasource
+|   |           HOTEL_MINI.Model.Response.BookingDisplay.datasource
+|   |           HOTEL_MINI.Model.Response.LoginResult.datasource
+|   |           HOTEL_MINI.Model.Response.RevenueRoomDTO.datasource
+|   |           HOTEL_MINI.Model.Response.RevenueSummary.datasource
+|   |           HOTEL_MINI.Model.Response.RoomStatistics.datasource
+|   |           HOTEL_MINI.Model.Response.UsedServiceDto.datasource
+|   |           
+|   +---Report
+|   |       ReportCustomer.rdlc
+|   |       ReportInvoice.rdlc
+|   |       ReportRevenuRoom.rdlc
+|   |       
+|   \---Resources
+|           about (1).png
+|           bed.png
+|           changepass.png
+|           cleaning (1).png
+|           cleaning.png
+|           dashboard (3).png
+|           division.png
+|           exit.png
+|           eye.png
+|           eye_slash.png
+|           help.png
+|           home.png
+|           hotel (1).png
+|           hotel.png
+|           icons8-customer-32.png
+|           icons8-double-bed-32 (1).png
+|           icons8-double-bed-32 (2).png
+|           icons8-double-bed-32.png
+|           icons8-invoice-32.png
+|           icons8-password-32.png
+|           logout.png
+|           menus.png
+|           online-booking.png
+|           power-off (1).png
+|           report.png
+|           reporting (1).png
+|           reporting.png
+|           reporting1.png
+|           room (1).png
+|           room-service.png
+|           room.png
+|           search (1).png
+|           search.png
+|           setting.png
+|           settings (1).png
+|           settings.png
+|           user (1).png
+|           user (2).png
+|           user.png
+|           
+\---packages
+    +---BCrypt.Net-Core.1.6.0
+    |   |   .signature.p7s
+    |   |   BCrypt.Net-Core.1.6.0.nupkg
+    |   |   
+    |   \---lib
+    |       +---net40
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---net45
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---net451
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---net452
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       +---netstandard1.3
+    |       |       BCrypt.Net-Core.dll
+    |       |       BCrypt.Net-Core.pdb
+    |       |       
+    |       \---netstandard2.0
+    |               BCrypt.Net-Core.dll
+    |               BCrypt.Net-Core.pdb
+    |               
+    +---BCrypt.Net-Next.4.0.3
+    |   |   .signature.p7s
+    |   |   BCrypt.Net-Next.4.0.3.nupkg
+    |   |   ico.png
+    |   |   readme.md
+    |   |   
+    |   \---lib
+    |       +---net20
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net35
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net462
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net472
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net48
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net5.0
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---net6.0
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       BCrypt.Net-Next.xml
+    |       |       
+    |       \---netstandard2.1
+    |               BCrypt.Net-Next.xml
+    |               
+    +---BouncyCastle.1.8.9
+    |   |   .signature.p7s
+    |   |   BouncyCastle.1.8.9.nupkg
+    |   |   README.md
+    |   |   
+    |   \---lib
+    |           BouncyCastle.Crypto.dll
+    |           
+    +---BouncyCastle.Cryptography.2.6.2
+    |   |   .signature.p7s
+    |   |   BouncyCastle.Cryptography.2.6.2.nupkg
+    |   |   LICENSE.md
+    |   |   packageIcon.png
+    |   |   README.md
+    |   |   
+    |   \---lib
+    |       +---net461
+    |       |       BouncyCastle.Cryptography.dll
+    |       |       BouncyCastle.Cryptography.xml
+    |       |       
+    |       +---net6.0
+    |       |       BouncyCastle.Cryptography.dll
+    |       |       BouncyCastle.Cryptography.xml
+    |       |       
+    |       \---netstandard2.0
+    |               BouncyCastle.Cryptography.dll
+    |               BouncyCastle.Cryptography.xml
+    |               
+    +---BouncyCastle.NetCore.2.2.1
+    |   |   .signature.p7s
+    |   |   BouncyCastle.NetCore.2.2.1.nupkg
+    |   |   
+    |   \---lib
+    |       +---net45
+    |       |       BouncyCastle.Crypto.dll
+    |       |       BouncyCastle.Crypto.xml
+    |       |       
+    |       \---netstandard2.0
+    |               BouncyCastle.Crypto.dll
+    |               BouncyCastle.Crypto.xml
+    |               
+    +---iTextSharp.5.5.13.4
+    |   |   .signature.p7s
+    |   |   gnu-agpl-v3.0.md
+    |   |   iTextSharp.5.5.13.4.nupkg
+    |   |   LICENSE.md
+    |   |   notice.txt
+    |   |   
+    |   \---lib
+    |       \---net461
+    |               itextsharp.dll
+    |               iTextSharp.xml
+    |               
+    +---Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0
+    |   |   .signature.p7s
+    |   |   Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0.nupkg
+    |   |   
+    |   +---lib
+    |   |   \---net40
+    |   |       |   Microsoft.ReportViewer.Common.dll
+    |   |       |   Microsoft.ReportViewer.Common.resources.dll
+    |   |       |   Microsoft.ReportViewer.DataVisualization.dll
+    |   |       |   Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |   Microsoft.ReportViewer.Design.dll
+    |   |       |   Microsoft.ReportViewer.Design.resources.dll
+    |   |       |   Microsoft.ReportViewer.ProcessingObjectModel.dll
+    |   |       |   Microsoft.ReportViewer.WinForms.dll
+    |   |       |   Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |   
+    |   |       +---de
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---es
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---fr
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---it
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---ja
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---ko
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---pt
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---ru
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       +---zh-CHS
+    |   |       |       Microsoft.ReportViewer.Common.resources.dll
+    |   |       |       Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |       |       Microsoft.ReportViewer.Design.resources.dll
+    |   |       |       Microsoft.ReportViewer.WinForms.resources.dll
+    |   |       |       
+    |   |       \---zh-CHT
+    |   |               Microsoft.ReportViewer.Common.resources.dll
+    |   |               Microsoft.ReportViewer.DataVisualization.resources.dll
+    |   |               Microsoft.ReportViewer.Design.resources.dll
+    |   |               Microsoft.ReportViewer.WinForms.resources.dll
+    |   |               
+    |   \---license
+    |           License_ReportViewer.rtf
+    |           ThirdPartyNotices_ReportViewer.txt
+    |           
+    +---Microsoft.SqlServer.Types.160.1000.6
+    |   |   .signature.p7s
+    |   |   license.md
+    |   |   Microsoft.SqlServer.Types.160.1000.6.nupkg
+    |   |   
+    |   +---build
+    |   |   \---net462
+    |   |           Microsoft.SqlServer.Types.props
+    |   |           
+    |   +---lib
+    |   |   +---net462
+    |   |   |   |   Microsoft.SqlServer.Types.dll
+    |   |   |   |   
+    |   |   |   +---de
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---es
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---fr
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---it
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---ja
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---ko
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---pt
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---ru
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   +---zh-Hans
+    |   |   |   |       Microsoft.SqlServer.Types.resources.dll
+    |   |   |   |       
+    |   |   |   \---zh-Hant
+    |   |   |           Microsoft.SqlServer.Types.resources.dll
+    |   |   |           
+    |   |   \---netstandard2.1
+    |   |       |   Microsoft.SqlServer.Types.dll
+    |   |       |   
+    |   |       +---de
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---es
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---fr
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---it
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---ja
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---ko
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---pt-BR
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---ru
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       +---zh-Hans
+    |   |       |       Microsoft.SqlServer.Types.resources.dll
+    |   |       |       
+    |   |       \---zh-Hant
+    |   |               Microsoft.SqlServer.Types.resources.dll
+    |   |               
+    |   \---runtimes
+    |       +---win-x64
+    |       |   \---native
+    |       |           SqlServerSpatial160.dll
+    |       |           
+    |       \---win-x86
+    |           \---native
+    |                   SqlServerSpatial160.dll
+    |                   
+    +---System.Buffers.4.5.1
+    |   |   .signature.p7s
+    |   |   LICENSE.TXT
+    |   |   System.Buffers.4.5.1.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   version.txt
+    |   |   
+    |   +---lib
+    |   |   +---net461
+    |   |   |       System.Buffers.xml
+    |   |   |       
+    |   |   +---netcoreapp2.0
+    |   |   |       _._
+    |   |   |       
+    |   |   +---netstandard1.1
+    |   |   |       System.Buffers.xml
+    |   |   |       
+    |   |   +---netstandard2.0
+    |   |   |       System.Buffers.xml
+    |   |   |       
+    |   |   \---uap10.0.16299
+    |   |           _._
+    |   |           
+    |   \---ref
+    |       +---net45
+    |       |       System.Buffers.xml
+    |       |       
+    |       +---netcoreapp2.0
+    |       |       _._
+    |       |       
+    |       +---netstandard1.1
+    |       |       System.Buffers.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       System.Buffers.xml
+    |       |       
+    |       \---uap10.0.16299
+    |               _._
+    |               
+    +---System.Memory.4.5.4
+    |   |   .signature.p7s
+    |   |   LICENSE.TXT
+    |   |   System.Memory.4.5.4.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   version.txt
+    |   |   
+    |   +---lib
+    |   |   +---net461
+    |   |   |       System.Memory.xml
+    |   |   |       
+    |   |   +---netcoreapp2.1
+    |   |   |       _._
+    |   |   |       
+    |   |   +---netstandard1.1
+    |   |   |       System.Memory.xml
+    |   |   |       
+    |   |   \---netstandard2.0
+    |   |           System.Memory.xml
+    |   |           
+    |   \---ref
+    |       \---netcoreapp2.1
+    |               _._
+    |               
+    +---System.Numerics.Vectors.4.5.0
+    |   |   .signature.p7s
+    |   |   LICENSE.TXT
+    |   |   System.Numerics.Vectors.4.5.0.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   version.txt
+    |   |   
+    |   +---lib
+    |   |   +---MonoAndroid10
+    |   |   |       _._
+    |   |   |       
+    |   |   +---MonoTouch10
+    |   |   |       _._
+    |   |   |       
+    |   |   +---net46
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---netcoreapp2.0
+    |   |   |       _._
+    |   |   |       
+    |   |   +---netstandard1.0
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---netstandard2.0
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---portable-net45+win8+wp8+wpa81
+    |   |   |       System.Numerics.Vectors.xml
+    |   |   |       
+    |   |   +---uap10.0.16299
+    |   |   |       _._
+    |   |   |       
+    |   |   +---xamarinios10
+    |   |   |       _._
+    |   |   |       
+    |   |   +---xamarinmac20
+    |   |   |       _._
+    |   |   |       
+    |   |   +---xamarintvos10
+    |   |   |       _._
+    |   |   |       
+    |   |   \---xamarinwatchos10
+    |   |           _._
+    |   |           
+    |   \---ref
+    |       +---MonoAndroid10
+    |       |       _._
+    |       |       
+    |       +---MonoTouch10
+    |       |       _._
+    |       |       
+    |       +---net45
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---net46
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---netcoreapp2.0
+    |       |       _._
+    |       |       
+    |       +---netstandard1.0
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---uap10.0.16299
+    |       |       _._
+    |       |       
+    |       +---xamarinios10
+    |       |       _._
+    |       |       
+    |       +---xamarinmac20
+    |       |       _._
+    |       |       
+    |       +---xamarintvos10
+    |       |       _._
+    |       |       
+    |       \---xamarinwatchos10
+    |               _._
+    |               
+    \---System.Runtime.CompilerServices.Unsafe.4.5.3
+        |   .signature.p7s
+        |   LICENSE.TXT
+        |   System.Runtime.CompilerServices.Unsafe.4.5.3.nupkg
+        |   THIRD-PARTY-NOTICES.TXT
+        |   useSharedDesignerContext.txt
+        |   version.txt
+        |   
+        +---lib
+        |   +---net461
+        |   |       System.Runtime.CompilerServices.Unsafe.xml
+        |   |       
+        |   +---netcoreapp2.0
+        |   |       System.Runtime.CompilerServices.Unsafe.xml
+        |   |       
+        |   +---netstandard1.0
+        |   |       System.Runtime.CompilerServices.Unsafe.xml
+        |   |       
+        |   \---netstandard2.0
+        |           System.Runtime.CompilerServices.Unsafe.xml
+        |           
+        \---ref
+            +---net461
+            |       System.Runtime.CompilerServices.Unsafe.xml
+            |       
+            +---netstandard1.0
+            |       System.Runtime.CompilerServices.Unsafe.xml
+            |       
+            \---netstandard2.0
+                    System.Runtime.CompilerServices.Unsafe.xml
+                    

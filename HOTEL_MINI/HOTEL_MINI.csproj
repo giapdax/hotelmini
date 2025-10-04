@@ -199,6 +199,12 @@
     <Compile Include="Forms\Controls\UcRoomType_Pricing.Designer.cs">
       <DependentUpon>UcRoomType_Pricing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Dialogs\dlgRoomTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dialogs\dlgRoomTime.Designer.cs">
+      <DependentUpon>dlgRoomTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -320,6 +326,9 @@
       <DependentUpon>frmUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Entity\Booking.cs" />
+    <Compile Include="Model\Entity\BookingHeader.cs" />
+    <Compile Include="Model\Entity\BookingRoom.cs" />
+    <Compile Include="Model\Entity\BookingRoomService.cs" />
     <Compile Include="Model\Entity\BookingServiceDetail.cs" />
     <Compile Include="Model\Entity\Customer.cs" />
     <Compile Include="Model\Entity\Invoice.cs" />
@@ -335,7 +344,11 @@
     <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Model\Response\RevenuRoomDTO.cs" />
+    <Compile Include="Model\Response\RoomBrowseItem.cs" />
+    <Compile Include="Model\Response\RoomBrowsePriceItem.cs" />
     <Compile Include="Model\Response\RoomStatistics.cs" />
+    <Compile Include="Model\Response\SelectedRoomWithTime.cs" />
+    <Compile Include="Model\Response\ServiceMenuItem.cs" />
     <Compile Include="Model\Response\UsedServiceDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

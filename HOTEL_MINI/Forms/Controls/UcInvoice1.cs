@@ -16,5 +16,15 @@ namespace HOTEL_MINI.Forms.Controls
         {
             InitializeComponent();
         }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

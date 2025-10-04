@@ -3,57 +3,83 @@ using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace HOTEL_MINI.DAL
 {
+    /// <summary>
+    /// Repository: chỉ thao tác DB, KHÔNG hiển thị MessageBox và KHÔNG nuốt Exception.
+    /// </summary>
     public class BookingRepository
     {
-        private readonly string _stringConnection;
+        private readonly string _cs;
         public BookingRepository()
         {
-            _stringConnection = ConfigHelper.GetConnectionString();
+            _cs = ConfigHelper.GetConnectionString();
         }
+
+        // ----------------- Utilities -----------------
+        public bool IsRoomOverlapped(int roomId, DateTime checkIn, DateTime checkOut)
+        {
+            const string sql = @"
+SELECT COUNT(1)
+FROM BookingRooms br WITH (NOLOCK)
+WHERE br.RoomID = @RoomID
+  AND br.Status IN ('Booked','CheckedIn')
+  AND br.CheckInDate < @To
+  AND @From < br.CheckOutDate";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@RoomID", roomId);
+                cmd.Parameters.AddWithValue("@From", checkIn);
+                cmd.Parameters.AddWithValue("@To", checkOut);
+                conn.Open();
+                var n = (int)cmd.ExecuteScalar();
+                return n > 0;
+            }
+        }
+
+        // ----------------- Queries -----------------
         public List<BookingDisplay> GetTop20LatestBookingDisplays()
         {
             var list = new List<BookingDisplay>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            const string sql = @"
+SELECT TOP 20 
+    br.BookingRoomID AS BookingID,
+    r.RoomNumber,
+    u.FullName AS EmployeeName,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    ISNULL(br.Note, b.Notes) AS Notes,
+    br.Status
+FROM BookingRooms br
+JOIN Bookings b  ON b.BookingID = br.BookingID
+JOIN Rooms r     ON r.RoomID = br.RoomID
+JOIN Users u     ON u.UserID  = b.CreatedBy
+WHERE br.Status = 'CheckedOut'
+ORDER BY br.CheckOutDate DESC, b.BookingDate DESC";
+
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
             {
                 conn.Open();
-                string sql = @"SELECT TOP 20 
-                            b.BookingID,
-                            r.RoomNumber,
-                            u.FullName as EmployeeName,
-                            b.BookingDate,
-                            b.CheckInDate,
-                            b.CheckOutDate,
-                            b.Notes,
-                            b.Status
-                       FROM Bookings b
-                       INNER JOIN Rooms r ON b.RoomID = r.RoomID
-                       INNER JOIN Users u ON b.CreatedBy = u.UserID
-                        WHERE b.Status = 'CheckedOut'   
-                       ORDER BY b.BookingDate DESC";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    while (rd.Read())
                     {
                         list.Add(new BookingDisplay
                         {
-                            BookingID = (int)reader["BookingID"],
-                            RoomNumber = reader["RoomNumber"].ToString(),
-                            EmployeeName = reader["EmployeeName"].ToString(),
-                            BookingDate = (DateTime)reader["BookingDate"],
-                            CheckInDate = reader["CheckInDate"] == DBNull.Value ? null : (DateTime?)reader["CheckInDate"],
-                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
-                            Notes = reader["Notes"].ToString(),
-                            Status = reader["Status"].ToString()
+                            BookingID = rd.GetInt32(0),
+                            RoomNumber = rd.GetString(1),
+                            EmployeeName = rd.GetString(2),
+                            BookingDate = rd.GetDateTime(3),
+                            CheckInDate = rd.IsDBNull(4) ? (DateTime?)null : rd.GetDateTime(4),
+                            CheckOutDate = rd.IsDBNull(5) ? (DateTime?)null : rd.GetDateTime(5),
+                            Notes = rd.IsDBNull(6) ? null : rd.GetString(6),
+                            Status = rd.GetString(7)
                         });
                     }
                 }
@@ -64,305 +90,484 @@ namespace HOTEL_MINI.DAL
         public List<BookingDisplay> GetBookingDisplaysByCustomerNumber(string numberID)
         {
             var list = new List<BookingDisplay>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            const string sql = @"
+SELECT 
+    br.BookingRoomID AS BookingID,
+    r.RoomNumber,
+    u.FullName AS EmployeeName,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    ISNULL(br.Note, b.Notes) AS Notes,
+    br.Status
+FROM Customers c
+JOIN Bookings b       ON b.CustomerID = c.CustomerID
+JOIN BookingRooms br  ON br.BookingID = b.BookingID
+JOIN Rooms r          ON r.RoomID = br.RoomID
+JOIN Users u          ON u.UserID = b.CreatedBy
+WHERE c.IDNumber = @NumberID
+ORDER BY b.BookingDate DESC, br.CheckInDate DESC";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
             {
                 conn.Open();
-                string sql = @"SELECT 
-                        b.BookingID,
-                        r.RoomNumber,
-                        u.FullName as EmployeeName,
-                        b.BookingDate,
-                        b.CheckInDate,
-                        b.CheckOutDate,
-                        b.Notes,
-                        b.Status
-                    FROM Bookings b
-                    INNER JOIN Customers c ON b.CustomerID = c.CustomerID
-                    INNER JOIN Rooms r ON b.RoomID = r.RoomID
-                    INNER JOIN Users u ON b.CreatedBy = u.UserID
-                    WHERE c.IDNumber = @NumberID
-                    ORDER BY b.BookingDate DESC";
-
-                SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@NumberID", numberID);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    while (rd.Read())
                     {
                         list.Add(new BookingDisplay
                         {
-                            BookingID = (int)reader["BookingID"],
-                            RoomNumber = reader["RoomNumber"].ToString(),
-                            EmployeeName = reader["EmployeeName"].ToString(),
-                            BookingDate = (DateTime)reader["BookingDate"],
-                            CheckInDate = reader["CheckInDate"] == DBNull.Value ? null : (DateTime?)reader["CheckInDate"],
-                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
-                            Notes = reader["Notes"].ToString(),
-                            Status = reader["Status"].ToString()
+                            BookingID = rd.GetInt32(0),
+                            RoomNumber = rd.GetString(1),
+                            EmployeeName = rd.GetString(2),
+                            BookingDate = rd.GetDateTime(3),
+                            CheckInDate = rd.IsDBNull(4) ? (DateTime?)null : rd.GetDateTime(4),
+                            CheckOutDate = rd.IsDBNull(5) ? (DateTime?)null : rd.GetDateTime(5),
+                            Notes = rd.IsDBNull(6) ? null : rd.GetString(6),
+                            Status = rd.GetString(7)
                         });
                     }
                 }
             }
             return list;
         }
-        public bool UpdateCheckOutDate(int bookingId, DateTime checkOutDate)
-        {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                string sql = @"UPDATE Bookings 
-                      SET CheckOutDate = @CheckOutDate,
-                          Status = 'CheckedOut'
-                      WHERE BookingID = @BookingID";
 
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@CheckOutDate", checkOutDate);
-                cmd.Parameters.AddWithValue("@BookingID", bookingId);
-
-                int rowsAffected = cmd.ExecuteNonQuery();
-                return rowsAffected > 0;
-            }
-        }
         public List<Booking> getBookingsByCustomerNumber(string numberID)
         {
             var list = new List<Booking>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            const string sql = @"
+SELECT 
+    br.BookingRoomID AS BookingID,
+    b.CustomerID,
+    br.RoomID,
+    br.PricingID,
+    b.CreatedBy,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    br.Status,
+    ISNULL(br.Note, b.Notes) AS Notes
+FROM Customers c
+JOIN Bookings b       ON b.CustomerID = c.CustomerID
+JOIN BookingRooms br  ON br.BookingID = b.BookingID
+WHERE c.IDNumber = @NumberID
+ORDER BY b.BookingDate DESC, br.CheckInDate DESC";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
             {
                 conn.Open();
-                string sql = @"SELECT b.* FROM Bookings b
-                               INNER JOIN Customers c ON b.CustomerID = c.CustomerID
-                               WHERE c.IDNumber = @NumberID";
-                SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@NumberID", numberID);
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    while (rd.Read())
                     {
                         list.Add(new Booking
                         {
-                            BookingID = (int)reader["BookingID"],
-                            RoomID = (int)reader["RoomID"],
-                            CustomerID = (int)reader["CustomerID"],
-                            PricingID = (int)reader["PricingID"],
-                            CreatedBy = (int)reader["CreatedBy"],
-                            BookingDate = (DateTime)reader["BookingDate"],
-                            CheckInDate = (DateTime)reader["CheckInDate"],
-                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
-                            Status = reader["Status"].ToString(),
-                            Notes = reader["Notes"].ToString()
+                            BookingID = rd.GetInt32(0),
+                            CustomerID = rd.GetInt32(1),
+                            RoomID = rd.GetInt32(2),
+                            PricingID = rd.GetInt32(3),
+                            CreatedBy = rd.GetInt32(4),
+                            BookingDate = rd.GetDateTime(5),
+                            CheckInDate = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                            CheckOutDate = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
+                            Status = rd.GetString(8),
+                            Notes = rd.IsDBNull(9) ? null : rd.GetString(9)
                         });
                     }
                 }
             }
             return list;
         }
-        public Booking AddBooking(Booking booking)
+
+        public Booking GetLatestBookingByRoomId(int roomId)
         {
-            using(SqlConnection conn = new SqlConnection(_stringConnection))
+            const string sql = @"
+SELECT TOP 1
+    br.BookingRoomID AS BookingID,
+    b.CustomerID,
+    br.RoomID,
+    br.PricingID,
+    b.CreatedBy,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    br.Status,
+    ISNULL(br.Note, b.Notes) AS Notes
+FROM BookingRooms br
+JOIN Bookings b ON b.BookingID = br.BookingID
+WHERE br.RoomID = @RoomID
+ORDER BY b.BookingDate DESC, br.CheckInDate DESC";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
             {
+                cmd.Parameters.AddWithValue("@RoomID", roomId);
                 conn.Open();
-                string sql = @"INSERT INTO Bookings (CustomerID, RoomID, PricingID, CreatedBy, BookingDate, CheckInDate, CheckOutDate, Status, Notes)
-                               VALUES (@CustomerID, @RoomID, @PricingID, @CreatedBy, @BookingDate, @CheckInDate, @CheckOutDate, @Status, @Notes);
-                               SELECT SCOPE_IDENTITY();"; // Lấy ID của bản ghi vừa chèn
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@CustomerID", booking.CustomerID);
-                cmd.Parameters.AddWithValue("@RoomID", booking.RoomID);
-                cmd.Parameters.AddWithValue("@PricingID", booking.PricingID);
-                cmd.Parameters.AddWithValue("@CreatedBy", booking.CreatedBy);
-                cmd.Parameters.AddWithValue("@BookingDate", booking.BookingDate);
-                cmd.Parameters.AddWithValue("@CheckInDate", (object)booking.CheckInDate ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@CheckOutDate", (object)booking.CheckOutDate ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Status", booking.Status);
-                cmd.Parameters.AddWithValue("@Notes", booking.Notes ?? (object)DBNull.Value);
-                // Thực thi lệnh và lấy ID của bản ghi vừa chèn
-                var result = cmd.ExecuteScalar();
-                if (result != null && int.TryParse(result.ToString(), out int newBookingId))
+                using (var rd = cmd.ExecuteReader())
                 {
-                    booking.BookingID = newBookingId;
-                    return booking;
-                }
-                else
-                {
-                    //throw new Exception("Failed to retrieve the new Booking ID.");
-                    MessageBox.Show("Không thể tạo Booking mới. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return null;
+                    if (!rd.Read()) return null;
+                    return new Booking
+                    {
+                        BookingID = rd.GetInt32(0),
+                        CustomerID = rd.GetInt32(1),
+                        RoomID = rd.GetInt32(2),
+                        PricingID = rd.GetInt32(3),
+                        CreatedBy = rd.GetInt32(4),
+                        BookingDate = rd.GetDateTime(5),
+                        CheckInDate = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                        CheckOutDate = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
+                        Status = rd.GetString(8),
+                        Notes = rd.IsDBNull(9) ? null : rd.GetString(9)
+                    };
                 }
             }
         }
-        public Booking GetLatestBookingByRoomId(int roomId)
-        {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                string sql = @"SELECT TOP 1 * FROM Bookings 
-                           WHERE RoomID = @RoomID 
-                           ORDER BY BookingDate DESC";
 
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+        public Booking GetBookingById(int bookingId)
+        {
+            const string sql = @"
+SELECT 
+    br.BookingRoomID AS BookingID,
+    b.CustomerID,
+    br.RoomID,
+    br.PricingID,
+    b.CreatedBy,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    br.Status,
+    ISNULL(br.Note, b.Notes) AS Notes
+FROM BookingRooms br
+JOIN Bookings b ON b.BookingID = br.BookingID
+WHERE br.BookingRoomID = @Id";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", bookingId);
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.AddWithValue("@RoomID", roomId);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    if (!rd.Read()) return null;
+                    return new Booking
                     {
-                        if (reader.Read())
-                        {
-                            return new Booking
-                            {
-                                BookingID = (int)reader["BookingID"],
-                                RoomID = (int)reader["RoomID"],
-                                CustomerID = (int)reader["CustomerID"],
-                                PricingID = (int)reader["PricingID"],
-                                CreatedBy = (int)reader["CreatedBy"],
-                                BookingDate = (DateTime)reader["BookingDate"],
-                                CheckInDate = (DateTime)reader["CheckInDate"],
-                                CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
-                                Status = reader["Status"].ToString(),
-                                Notes = reader["Notes"].ToString()
-                            };
-                        }
-                    }
+                        BookingID = rd.GetInt32(0),
+                        CustomerID = rd.GetInt32(1),
+                        RoomID = rd.GetInt32(2),
+                        PricingID = rd.GetInt32(3),
+                        CreatedBy = rd.GetInt32(4),
+                        BookingDate = rd.GetDateTime(5),
+                        CheckInDate = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                        CheckOutDate = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
+                        Status = rd.GetString(8),
+                        Notes = rd.IsDBNull(9) ? null : rd.GetString(9)
+                    };
                 }
             }
-            return null;
+        }
+
+        // ----------------- Mutations -----------------
+
+        /// <summary>
+        /// Tạo header + 1 BookingRoom. Trả về Booking với BookingID = BookingRoomID.
+        /// </summary>
+        public Booking AddBooking(Booking booking)
+        {
+            using (var conn = new SqlConnection(_cs))
+            {
+                conn.Open();
+                using (var tran = conn.BeginTransaction())
+                {
+                    // KHÔNG catch nuốt lỗi. Để exception bubble lên Service/UI.
+                    const string sqlHeader = @"
+INSERT INTO Bookings(CustomerID, CreatedBy, BookingDate, Status, Notes)
+VALUES(@CustomerID, @CreatedBy, @BookingDate, @Status, @Notes);
+SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                    int headerId;
+                    using (var cmd = new SqlCommand(sqlHeader, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@CustomerID", booking.CustomerID);
+                        cmd.Parameters.AddWithValue("@CreatedBy", booking.CreatedBy);
+                        cmd.Parameters.AddWithValue("@BookingDate", booking.BookingDate);
+                        cmd.Parameters.AddWithValue("@Status", booking.Status ?? "Booked");
+                        cmd.Parameters.AddWithValue("@Notes", (object)booking.Notes ?? DBNull.Value);
+                        headerId = (int)cmd.ExecuteScalar();
+                    }
+
+                    const string sqlRoom = @"
+INSERT INTO BookingRooms(BookingID, RoomID, PricingID, CheckInDate, CheckOutDate, Status, Note)
+VALUES(@BookingID, @RoomID, @PricingID, @CheckInDate, @CheckOutDate, @Status, @Note);
+SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                    int bookingRoomId;
+                    using (var cmd = new SqlCommand(sqlRoom, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@BookingID", headerId);
+                        cmd.Parameters.AddWithValue("@RoomID", booking.RoomID);
+                        cmd.Parameters.AddWithValue("@PricingID", booking.PricingID);
+                        cmd.Parameters.AddWithValue("@CheckInDate", (object)booking.CheckInDate ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@CheckOutDate", (object)booking.CheckOutDate ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Status", booking.Status ?? "Booked");
+                        cmd.Parameters.AddWithValue("@Note", (object)booking.Notes ?? DBNull.Value);
+                        bookingRoomId = (int)cmd.ExecuteScalar();
+                    }
+
+                    // (tuỳ bạn) cập nhật trạng thái phòng
+                    using (var cmd2 = new SqlCommand("UPDATE Rooms SET Status = 'Booked' WHERE RoomID=@RoomID", conn, tran))
+                    {
+                        cmd2.Parameters.AddWithValue("@RoomID", booking.RoomID);
+                        cmd2.ExecuteNonQuery();
+                    }
+
+                    tran.Commit();
+
+                    booking.BookingID = bookingRoomId;
+                    booking.BookingDate = booking.BookingDate == default ? DateTime.Now : booking.BookingDate;
+                    return booking;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Đặt nhiều phòng trong cùng 1 header.
+        /// </summary>
+        public Dictionary<int, int> AddMultiRoomsBooking(
+            int customerId,
+            int createdBy,
+            DateTime bookingDate,
+            string status,
+            List<Booking> roomBookings,
+            DataTable usedServices)
+        {
+            var map = new Dictionary<int, int>();
+
+            using (var conn = new SqlConnection(_cs))
+            {
+                conn.Open();
+                using (var tran = conn.BeginTransaction())
+                {
+                    // 1) Header
+                    int headerId;
+                    using (var cmd = new SqlCommand(@"
+INSERT INTO Bookings(CustomerID, CreatedBy, BookingDate, Status, Notes)
+VALUES(@CustomerID, @CreatedBy, @BookingDate, @Status, @Notes);
+SELECT CAST(SCOPE_IDENTITY() AS INT);", conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@CustomerID", customerId);
+                        cmd.Parameters.AddWithValue("@CreatedBy", createdBy);
+                        cmd.Parameters.AddWithValue("@BookingDate", bookingDate);
+                        cmd.Parameters.AddWithValue("@Status", status ?? "Booked");
+                        cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
+                        headerId = (int)cmd.ExecuteScalar();
+                    }
+
+                    // 2) Từng phòng
+                    foreach (var b in roomBookings)
+                    {
+                        int bookingRoomId;
+                        using (var cmdR = new SqlCommand(@"
+INSERT INTO BookingRooms(BookingID, RoomID, PricingID, CheckInDate, CheckOutDate, Status, Note)
+VALUES(@BookingID, @RoomID, @PricingID, @CheckInDate, @CheckOutDate, @Status, @Note);
+SELECT CAST(SCOPE_IDENTITY() AS INT);", conn, tran))
+                        {
+                            cmdR.Parameters.AddWithValue("@BookingID", headerId);
+                            cmdR.Parameters.AddWithValue("@RoomID", b.RoomID);
+                            cmdR.Parameters.AddWithValue("@PricingID", b.PricingID);
+                            cmdR.Parameters.AddWithValue("@CheckInDate", (object)b.CheckInDate ?? DBNull.Value);
+                            cmdR.Parameters.AddWithValue("@CheckOutDate", (object)b.CheckOutDate ?? DBNull.Value);
+                            cmdR.Parameters.AddWithValue("@Status", b.Status ?? "Booked");
+                            cmdR.Parameters.AddWithValue("@Note", (object)b.Notes ?? DBNull.Value);
+                            bookingRoomId = (int)cmdR.ExecuteScalar();
+                        }
+
+                        using (var cmdU = new SqlCommand("UPDATE Rooms SET Status='Booked' WHERE RoomID=@RoomID", conn, tran))
+                        {
+                            cmdU.Parameters.AddWithValue("@RoomID", b.RoomID);
+                            cmdU.ExecuteNonQuery();
+                        }
+
+                        map[b.RoomID] = bookingRoomId;
+                    }
+
+                    // 3) Dịch vụ kèm theo (nếu có)
+                    if (usedServices != null && usedServices.Rows.Count > 0)
+                    {
+                        foreach (DataRow r in usedServices.Rows)
+                        {
+                            int roomId = r.Field<int>("RoomID");
+                            if (!map.TryGetValue(roomId, out var bookingRoomId)) continue;
+
+                            int serviceId = r.Field<int>("ServiceID");
+                            int qty = r.Field<int>("Quantity");
+
+                            using (var cmdS = new SqlCommand(@"
+MERGE BookingRoomServices AS T
+USING (SELECT @BID AS BookingRoomID, @SID AS ServiceID) AS S
+ON (T.BookingRoomID = S.BookingRoomID AND T.ServiceID = S.ServiceID)
+WHEN MATCHED THEN UPDATE SET Quantity = T.Quantity + @Q
+WHEN NOT MATCHED THEN INSERT(BookingRoomID, ServiceID, Quantity) VALUES(@BID, @SID, @Q);", conn, tran))
+                            {
+                                cmdS.Parameters.AddWithValue("@BID", bookingRoomId);
+                                cmdS.Parameters.AddWithValue("@SID", serviceId);
+                                cmdS.Parameters.AddWithValue("@Q", qty);
+                                cmdS.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+                    tran.Commit();
+                }
+            }
+
+            return map;
         }
 
         public bool Update(Booking booking)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            const string sql = @"
+UPDATE BookingRooms
+SET Status = @Status,
+    CheckOutDate = @CheckOutDate,
+    Note = @Note
+WHERE BookingRoomID = @Id";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
             {
+                cmd.Parameters.AddWithValue("@Id", booking.BookingID);
+                cmd.Parameters.AddWithValue("@Status", booking.Status ?? "Booked");
+                cmd.Parameters.AddWithValue("@CheckOutDate", (object)booking.CheckOutDate ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Note", (object)booking.Notes ?? DBNull.Value);
                 conn.Open();
-                string sql = @"UPDATE Bookings 
-                       SET Status = @Status,
-                           CheckOutDate = @CheckOutDate,
-                           Notes = @Notes
-                       WHERE BookingID = @BookingID";
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@BookingID", booking.BookingID);
-                    cmd.Parameters.AddWithValue("@Status", booking.Status);
-
-                    if (booking.CheckOutDate.HasValue)
-                        cmd.Parameters.AddWithValue("@CheckOutDate", booking.CheckOutDate.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@CheckOutDate", DBNull.Value);
-
-                    if (string.IsNullOrEmpty(booking.Notes))
-                        cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@Notes", booking.Notes);
-
-                    return cmd.ExecuteNonQuery() > 0;
-                }
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
+
+        public bool UpdateBookingStatusAndCheckOut(int bookingID, string status, DateTime checkoutDate)
+        {
+            const string sql = @"UPDATE BookingRooms 
+                                 SET Status = @Status, CheckOutDate = @CheckOutDate
+                                 WHERE BookingRoomID = @Id";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@CheckOutDate", checkoutDate);
+                cmd.Parameters.AddWithValue("@Id", bookingID);
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool CancelBooking(int bookingID)
+        {
+            const string sql = @"UPDATE BookingRooms SET Status = 'Cancelled' WHERE BookingRoomID = @Id";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", bookingID);
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // ----------------- Services (attach/detach) -----------------
+
         public List<UsedServiceDto> GetUsedServicesByBookingID(int bookingID)
         {
             var list = new List<UsedServiceDto>();
-
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            const string sql = @"
+SELECT brs.BookingRoomServiceID, brs.BookingRoomID AS BookingID, s.ServiceID,
+       s.ServiceName, s.Price, brs.Quantity
+FROM BookingRoomServices brs
+JOIN Services s ON s.ServiceID = brs.ServiceID
+WHERE brs.BookingRoomID = @Id";
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(sql, conn))
             {
+                cmd.Parameters.AddWithValue("@Id", bookingID);
                 conn.Open();
-
-                string sql = @"
-            SELECT bs.BookingServiceID, bs.BookingID, s.ServiceID, 
-                   s.ServiceName, s.Price, bs.Quantity
-            FROM BookingServices bs
-            INNER JOIN Services s ON bs.ServiceID = s.ServiceID
-            WHERE bs.BookingID = @BookingID";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@BookingID", bookingID);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    while (rd.Read())
                     {
                         list.Add(new UsedServiceDto
                         {
-                            BookingServiceID = (int)reader["BookingServiceID"],
-                            BookingID = (int)reader["BookingID"],
-                            ServiceID = (int)reader["ServiceID"],
-                            ServiceName = reader["ServiceName"].ToString(),
-                            Price = (decimal)reader["Price"],
-                            Quantity = (int)reader["Quantity"]
+                            BookingServiceID = rd.GetInt32(0),
+                            BookingID = rd.GetInt32(1),
+                            ServiceID = rd.GetInt32(2),
+                            ServiceName = rd.GetString(3),
+                            Price = rd.GetDecimal(4),
+                            Quantity = rd.GetInt32(5)
                         });
                     }
                 }
             }
             return list;
         }
+
         public bool AddOrUpdateServiceForBooking(int bookingID, int serviceID, int quantity)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_cs))
             {
                 conn.Open();
 
-                // Kiểm tra xem Service đã tồn tại trong Booking chưa
-                string checkSql = "SELECT Quantity FROM BookingServices WHERE BookingID = @BookingID AND ServiceID = @ServiceID";
-                SqlCommand checkCmd = new SqlCommand(checkSql, conn);
-                checkCmd.Parameters.AddWithValue("@BookingID", bookingID);
-                checkCmd.Parameters.AddWithValue("@ServiceID", serviceID);
-
-                object result = checkCmd.ExecuteScalar();
-
-                if (result != null) // đã tồn tại → UPDATE
+                const string checkSql = @"SELECT Quantity 
+                                          FROM BookingRoomServices 
+                                          WHERE BookingRoomID = @BID AND ServiceID = @SID";
+                using (var checkCmd = new SqlCommand(checkSql, conn))
                 {
-                    int currentQuantity = Convert.ToInt32(result);
-                    int newQuantity = currentQuantity + quantity;
+                    checkCmd.Parameters.AddWithValue("@BID", bookingID);
+                    checkCmd.Parameters.AddWithValue("@SID", serviceID);
+                    object obj = checkCmd.ExecuteScalar();
 
-                    string updateSql = "UPDATE BookingServices SET Quantity = @Quantity WHERE BookingID = @BookingID AND ServiceID = @ServiceID";
-                    SqlCommand updateCmd = new SqlCommand(updateSql, conn);
-                    updateCmd.Parameters.AddWithValue("@Quantity", newQuantity);
-                    updateCmd.Parameters.AddWithValue("@BookingID", bookingID);
-                    updateCmd.Parameters.AddWithValue("@ServiceID", serviceID);
+                    if (obj != null)
+                    {
+                        int cur = Convert.ToInt32(obj);
+                        int newQty = cur + quantity;
 
-                    return updateCmd.ExecuteNonQuery() > 0;
-                }
-                else // chưa tồn tại → INSERT
-                {
-                    string insertSql = @"INSERT INTO BookingServices (BookingID, ServiceID, Quantity)
-                                 VALUES (@BookingID, @ServiceID, @Quantity)";
-                    SqlCommand insertCmd = new SqlCommand(insertSql, conn);
-                    insertCmd.Parameters.AddWithValue("@BookingID", bookingID);
-                    insertCmd.Parameters.AddWithValue("@ServiceID", serviceID);
-                    insertCmd.Parameters.AddWithValue("@Quantity", quantity);
-
-                    return insertCmd.ExecuteNonQuery() > 0;
+                        const string upSql = @"UPDATE BookingRoomServices 
+                                               SET Quantity = @Q 
+                                               WHERE BookingRoomID = @BID AND ServiceID = @SID";
+                        using (var upCmd = new SqlCommand(upSql, conn))
+                        {
+                            upCmd.Parameters.AddWithValue("@Q", newQty);
+                            upCmd.Parameters.AddWithValue("@BID", bookingID);
+                            upCmd.Parameters.AddWithValue("@SID", serviceID);
+                            return upCmd.ExecuteNonQuery() > 0;
+                        }
+                    }
+                    else
+                    {
+                        const string insSql = @"INSERT INTO BookingRoomServices(BookingRoomID, ServiceID, Quantity)
+                                                VALUES(@BID, @SID, @QTY)";
+                        using (var insCmd = new SqlCommand(insSql, conn))
+                        {
+                            insCmd.Parameters.AddWithValue("@BID", bookingID);
+                            insCmd.Parameters.AddWithValue("@SID", serviceID);
+                            insCmd.Parameters.AddWithValue("@QTY", quantity);
+                            return insCmd.ExecuteNonQuery() > 0;
+                        }
+                    }
                 }
             }
         }
-        public bool UpdateBookingStatusAndCheckOut(int bookingID, string status, DateTime checkoutDate)
-        {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                string sql = @"UPDATE Bookings 
-                          SET Status = @Status ,
-                          CheckOutDate = @CheckOutDate
-                          WHERE BookingID = @BookingID";
 
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@BookingID", bookingID);
-                cmd.Parameters.AddWithValue("@CheckOutDate", checkoutDate);
-
-                return cmd.ExecuteNonQuery() > 0;
-            }
-        }
         public void RemoveServiceFromBooking(int bookingServiceId)
         {
-            using (var conn = new SqlConnection(_stringConnection))
-            using (var cmd = new SqlCommand("DELETE FROM BookingServices WHERE BookingServiceID = @id", conn))
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand("DELETE FROM BookingRoomServices WHERE BookingRoomServiceID = @id", conn))
             {
                 cmd.Parameters.AddWithValue("@id", bookingServiceId);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
         }
+
         public void UpdateServiceQuantity(int bookingServiceId, int newQuantity)
         {
-            using (var conn = new SqlConnection(_stringConnection))
-            using (var cmd = new SqlCommand("UPDATE BookingServices SET Quantity = @qty WHERE BookingServiceID = @id", conn))
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand("UPDATE BookingRoomServices SET Quantity = @qty WHERE BookingRoomServiceID = @id", conn))
             {
                 cmd.Parameters.AddWithValue("@qty", newQuantity);
                 cmd.Parameters.AddWithValue("@id", bookingServiceId);
@@ -370,70 +575,20 @@ namespace HOTEL_MINI.DAL
                 cmd.ExecuteNonQuery();
             }
         }
+
         public List<string> getPaymentMethods()
         {
             var list = new List<string>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(@"SELECT Value FROM PaymentMethodEnum", conn))
             {
                 conn.Open();
-                string sql = @"SELECT * FROM PaymentMethodEnum";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
-                    {
-                        list.Add(reader["Value"].ToString());
-                    }
+                    while (rd.Read()) list.Add(rd.GetString(0));
                 }
             }
             return list;
-        }
-        public Booking GetBookingById(int bookingId)
-        {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                string sql = "SELECT * FROM Bookings WHERE BookingID = @BookingID";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@BookingID", bookingId);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return new Booking
-                        {
-                            BookingID = (int)reader["BookingID"],
-                            RoomID = (int)reader["RoomID"],
-                            CustomerID = (int)reader["CustomerID"],
-                            PricingID = (int)reader["PricingID"],
-                            CreatedBy = (int)reader["CreatedBy"],
-                            BookingDate = (DateTime)reader["BookingDate"],
-                            CheckInDate = (DateTime)reader["CheckInDate"],
-                            CheckOutDate = reader["CheckOutDate"] == DBNull.Value ? null : (DateTime?)reader["CheckOutDate"],
-                            Status = reader["Status"].ToString(),
-                            Notes = reader["Notes"].ToString()
-                        };
-                    }
-                }
-            }
-            return null;
-        }
-
-        public bool CancelBooking(int bookingID)
-        {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                string sql = @"UPDATE Bookings 
-                      SET Status = 'Cancelled' 
-                      WHERE BookingID = @BookingID";
-
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@BookingID", bookingID);
-
-                return cmd.ExecuteNonQuery() > 0;
-            }
         }
     }
 }

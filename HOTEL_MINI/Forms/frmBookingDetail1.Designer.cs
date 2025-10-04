@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnTraphong = new System.Windows.Forms.Button();
+            this.btnDatphong = new System.Windows.Forms.Button();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblBookingID = new System.Windows.Forms.Label();
@@ -45,21 +45,12 @@
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.lblNote = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
-            this.dtpCheckinTime = new System.Windows.Forms.DateTimePicker();
-            this.txtPricingType = new System.Windows.Forms.TextBox();
-            this.txtTen = new System.Windows.Forms.TextBox();
-            this.txtGender = new System.Windows.Forms.TextBox();
             this.lblDiachi = new System.Windows.Forms.Label();
-            this.txtCCCD = new System.Windows.Forms.TextBox();
-            this.txtDiachi = new System.Windows.Forms.TextBox();
-            this.txtEmail = new System.Windows.Forms.TextBox();
             this.lblSDT = new System.Windows.Forms.Label();
             this.lblKieuThue = new System.Windows.Forms.Label();
-            this.txtSDT = new System.Windows.Forms.TextBox();
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblCCCD = new System.Windows.Forms.Label();
             this.lblSex = new System.Windows.Forms.Label();
-            this.txtNote = new System.Windows.Forms.TextBox();
             this.gbxUsedServices = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -77,9 +68,16 @@
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
             this.grbRoom = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.lblCHECKOUT = new System.Windows.Forms.Label();
-            this.lblCHECKIN = new System.Windows.Forms.Label();
-            this.dtpCheckoutTime = new System.Windows.Forms.DateTimePicker();
+            this.txtNote = new System.Windows.Forms.TextBox();
+            this.txtSDT = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.txtDiachi = new System.Windows.Forms.TextBox();
+            this.txtCCCD = new System.Windows.Forms.TextBox();
+            this.txtGender = new System.Windows.Forms.TextBox();
+            this.txtTen = new System.Windows.Forms.TextBox();
+            this.txtPricingType = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnCheck = new System.Windows.Forms.Button();
             this.tableLayoutPanel8.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
@@ -99,6 +97,7 @@
             this.tableLayoutPanel10.SuspendLayout();
             this.grbRoom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tableLayoutPanel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel8
@@ -126,7 +125,7 @@
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.5F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.5F));
-            this.tableLayoutPanel9.Controls.Add(this.btnTraphong, 2, 0);
+            this.tableLayoutPanel9.Controls.Add(this.btnDatphong, 2, 0);
             this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel9.Location = new System.Drawing.Point(3, 499);
             this.tableLayoutPanel9.Name = "tableLayoutPanel9";
@@ -135,17 +134,17 @@
             this.tableLayoutPanel9.Size = new System.Drawing.Size(1042, 44);
             this.tableLayoutPanel9.TabIndex = 14;
             // 
-            // btnTraphong
+            // btnDatphong
             // 
-            this.btnTraphong.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.btnTraphong.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTraphong.ForeColor = System.Drawing.Color.White;
-            this.btnTraphong.Location = new System.Drawing.Point(471, 3);
-            this.btnTraphong.Name = "btnTraphong";
-            this.btnTraphong.Size = new System.Drawing.Size(98, 38);
-            this.btnTraphong.TabIndex = 0;
-            this.btnTraphong.Text = "Trả Phòng";
-            this.btnTraphong.UseVisualStyleBackColor = false;
+            this.btnDatphong.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btnDatphong.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDatphong.ForeColor = System.Drawing.Color.White;
+            this.btnDatphong.Location = new System.Drawing.Point(471, 3);
+            this.btnDatphong.Name = "btnDatphong";
+            this.btnDatphong.Size = new System.Drawing.Size(98, 38);
+            this.btnDatphong.TabIndex = 0;
+            this.btnDatphong.Text = "Đặt phòng";
+            this.btnDatphong.UseVisualStyleBackColor = false;
             // 
             // tableLayoutPanel7
             // 
@@ -190,12 +189,10 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 43.95393F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.74472F));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.06334F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 72.93666F));
             this.tableLayoutPanel1.Controls.Add(this.gbxRoomInfor, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.gbxServicesMenu, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel10, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 64);
@@ -208,12 +205,15 @@
             // gbxRoomInfor
             // 
             this.gbxRoomInfor.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.gbxRoomInfor.Controls.Add(this.btnCheck);
             this.gbxRoomInfor.Controls.Add(this.tableLayoutPanel5);
+            this.gbxRoomInfor.Controls.Add(this.lblCCCD);
+            this.gbxRoomInfor.Controls.Add(this.txtCCCD);
             this.gbxRoomInfor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbxRoomInfor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbxRoomInfor.Location = new System.Drawing.Point(3, 3);
             this.gbxRoomInfor.Name = "gbxRoomInfor";
-            this.gbxRoomInfor.Size = new System.Drawing.Size(341, 423);
+            this.gbxRoomInfor.Size = new System.Drawing.Size(276, 423);
             this.gbxRoomInfor.TabIndex = 5;
             this.gbxRoomInfor.TabStop = false;
             this.gbxRoomInfor.Text = "Thông tin ";
@@ -221,32 +221,25 @@
             // tableLayoutPanel5
             // 
             this.tableLayoutPanel5.ColumnCount = 2;
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.Controls.Add(this.lblNote, 0, 9);
-            this.tableLayoutPanel5.Controls.Add(this.lblTen, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.dtpCheckoutTime, 1, 8);
-            this.tableLayoutPanel5.Controls.Add(this.lblCHECKIN, 0, 7);
-            this.tableLayoutPanel5.Controls.Add(this.dtpCheckinTime, 1, 7);
-            this.tableLayoutPanel5.Controls.Add(this.txtPricingType, 1, 6);
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.34343F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65.65656F));
             this.tableLayoutPanel5.Controls.Add(this.txtTen, 1, 0);
-            this.tableLayoutPanel5.Controls.Add(this.txtGender, 1, 5);
             this.tableLayoutPanel5.Controls.Add(this.lblDiachi, 0, 1);
-            this.tableLayoutPanel5.Controls.Add(this.txtCCCD, 1, 4);
             this.tableLayoutPanel5.Controls.Add(this.txtDiachi, 1, 1);
             this.tableLayoutPanel5.Controls.Add(this.txtEmail, 1, 3);
             this.tableLayoutPanel5.Controls.Add(this.lblSDT, 0, 2);
-            this.tableLayoutPanel5.Controls.Add(this.lblKieuThue, 0, 6);
             this.tableLayoutPanel5.Controls.Add(this.txtSDT, 1, 2);
             this.tableLayoutPanel5.Controls.Add(this.lblEmail, 0, 3);
-            this.tableLayoutPanel5.Controls.Add(this.lblCCCD, 0, 4);
-            this.tableLayoutPanel5.Controls.Add(this.lblSex, 0, 5);
-            this.tableLayoutPanel5.Controls.Add(this.lblCHECKOUT, 0, 8);
-            this.tableLayoutPanel5.Controls.Add(this.txtNote, 1, 9);
-            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 22);
+            this.tableLayoutPanel5.Controls.Add(this.lblTen, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.lblSex, 0, 4);
+            this.tableLayoutPanel5.Controls.Add(this.txtGender, 1, 4);
+            this.tableLayoutPanel5.Controls.Add(this.lblKieuThue, 0, 5);
+            this.tableLayoutPanel5.Controls.Add(this.txtPricingType, 1, 5);
+            this.tableLayoutPanel5.Controls.Add(this.lblNote, 0, 6);
+            this.tableLayoutPanel5.Controls.Add(this.txtNote, 1, 6);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 90);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 10;
+            this.tableLayoutPanel5.RowCount = 7;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
@@ -254,191 +247,104 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(335, 398);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(270, 296);
             this.tableLayoutPanel5.TabIndex = 21;
             // 
             // lblNote
             // 
+            this.lblNote.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNote.AutoSize = true;
-            this.lblNote.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.Location = new System.Drawing.Point(3, 351);
+            this.lblNote.Location = new System.Drawing.Point(21, 264);
             this.lblNote.Name = "lblNote";
-            this.lblNote.Size = new System.Drawing.Size(161, 47);
+            this.lblNote.Size = new System.Drawing.Size(68, 20);
             this.lblNote.TabIndex = 13;
             this.lblNote.Text = "Ghi chú:";
             this.lblNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblTen
             // 
+            this.lblTen.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTen.AutoSize = true;
-            this.lblTen.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTen.Location = new System.Drawing.Point(3, 0);
+            this.lblTen.Location = new System.Drawing.Point(49, 11);
             this.lblTen.Name = "lblTen";
-            this.lblTen.Size = new System.Drawing.Size(161, 39);
+            this.lblTen.Size = new System.Drawing.Size(40, 20);
             this.lblTen.TabIndex = 0;
             this.lblTen.Text = "Tên:";
             this.lblTen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // dtpCheckinTime
-            // 
-            this.dtpCheckinTime.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpCheckinTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dtpCheckinTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpCheckinTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpCheckinTime.Location = new System.Drawing.Point(170, 276);
-            this.dtpCheckinTime.Name = "dtpCheckinTime";
-            this.dtpCheckinTime.Size = new System.Drawing.Size(162, 26);
-            this.dtpCheckinTime.TabIndex = 10;
-            // 
-            // txtPricingType
-            // 
-            this.txtPricingType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPricingType.Location = new System.Drawing.Point(170, 237);
-            this.txtPricingType.Name = "txtPricingType";
-            this.txtPricingType.Size = new System.Drawing.Size(162, 26);
-            this.txtPricingType.TabIndex = 20;
-            // 
-            // txtTen
-            // 
-            this.txtTen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTen.Location = new System.Drawing.Point(170, 3);
-            this.txtTen.Name = "txtTen";
-            this.txtTen.Size = new System.Drawing.Size(162, 26);
-            this.txtTen.TabIndex = 14;
-            // 
-            // txtGender
-            // 
-            this.txtGender.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGender.Location = new System.Drawing.Point(170, 198);
-            this.txtGender.Name = "txtGender";
-            this.txtGender.Size = new System.Drawing.Size(162, 26);
-            this.txtGender.TabIndex = 19;
-            // 
             // lblDiachi
             // 
+            this.lblDiachi.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDiachi.AutoSize = true;
-            this.lblDiachi.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDiachi.Location = new System.Drawing.Point(3, 39);
+            this.lblDiachi.Location = new System.Drawing.Point(28, 53);
             this.lblDiachi.Name = "lblDiachi";
-            this.lblDiachi.Size = new System.Drawing.Size(161, 39);
+            this.lblDiachi.Size = new System.Drawing.Size(61, 20);
             this.lblDiachi.TabIndex = 1;
             this.lblDiachi.Text = "Địa chỉ:";
             this.lblDiachi.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // txtCCCD
-            // 
-            this.txtCCCD.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCCCD.Location = new System.Drawing.Point(170, 159);
-            this.txtCCCD.Name = "txtCCCD";
-            this.txtCCCD.Size = new System.Drawing.Size(162, 26);
-            this.txtCCCD.TabIndex = 18;
-            // 
-            // txtDiachi
-            // 
-            this.txtDiachi.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDiachi.Location = new System.Drawing.Point(170, 42);
-            this.txtDiachi.Name = "txtDiachi";
-            this.txtDiachi.Size = new System.Drawing.Size(162, 26);
-            this.txtDiachi.TabIndex = 15;
-            // 
-            // txtEmail
-            // 
-            this.txtEmail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmail.Location = new System.Drawing.Point(170, 120);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(162, 26);
-            this.txtEmail.TabIndex = 17;
-            // 
             // lblSDT
             // 
+            this.lblSDT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSDT.AutoSize = true;
-            this.lblSDT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSDT.Location = new System.Drawing.Point(3, 78);
+            this.lblSDT.Location = new System.Drawing.Point(40, 95);
             this.lblSDT.Name = "lblSDT";
-            this.lblSDT.Size = new System.Drawing.Size(161, 39);
+            this.lblSDT.Size = new System.Drawing.Size(49, 20);
             this.lblSDT.TabIndex = 2;
             this.lblSDT.Text = "SĐT: ";
             this.lblSDT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblKieuThue
             // 
+            this.lblKieuThue.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKieuThue.AutoSize = true;
-            this.lblKieuThue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblKieuThue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKieuThue.Location = new System.Drawing.Point(3, 234);
+            this.lblKieuThue.Location = new System.Drawing.Point(13, 221);
             this.lblKieuThue.Name = "lblKieuThue";
-            this.lblKieuThue.Size = new System.Drawing.Size(161, 39);
+            this.lblKieuThue.Size = new System.Drawing.Size(76, 20);
             this.lblKieuThue.TabIndex = 7;
             this.lblKieuThue.Text = "Kiểu thuê";
             this.lblKieuThue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // txtSDT
-            // 
-            this.txtSDT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSDT.Location = new System.Drawing.Point(170, 81);
-            this.txtSDT.Name = "txtSDT";
-            this.txtSDT.Size = new System.Drawing.Size(162, 26);
-            this.txtSDT.TabIndex = 16;
-            // 
             // lblEmail
             // 
+            this.lblEmail.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEmail.AutoSize = true;
-            this.lblEmail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmail.Location = new System.Drawing.Point(3, 117);
+            this.lblEmail.Location = new System.Drawing.Point(37, 137);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(161, 39);
+            this.lblEmail.Size = new System.Drawing.Size(52, 20);
             this.lblEmail.TabIndex = 3;
             this.lblEmail.Text = "Email:";
             this.lblEmail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblCCCD
             // 
+            this.lblCCCD.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCCCD.AutoSize = true;
-            this.lblCCCD.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCCCD.Location = new System.Drawing.Point(3, 156);
+            this.lblCCCD.Location = new System.Drawing.Point(21, 25);
             this.lblCCCD.Name = "lblCCCD";
-            this.lblCCCD.Size = new System.Drawing.Size(161, 39);
+            this.lblCCCD.Size = new System.Drawing.Size(58, 20);
             this.lblCCCD.TabIndex = 4;
             this.lblCCCD.Text = "CCCD:";
             this.lblCCCD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblSex
             // 
+            this.lblSex.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSex.AutoSize = true;
-            this.lblSex.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblSex.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSex.Location = new System.Drawing.Point(3, 195);
+            this.lblSex.Location = new System.Drawing.Point(18, 179);
             this.lblSex.Name = "lblSex";
-            this.lblSex.Size = new System.Drawing.Size(161, 39);
+            this.lblSex.Size = new System.Drawing.Size(71, 20);
             this.lblSex.TabIndex = 5;
             this.lblSex.Text = "Giới tính:";
             this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtNote
-            // 
-            this.txtNote.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNote.Location = new System.Drawing.Point(170, 354);
-            this.txtNote.Multiline = true;
-            this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(162, 41);
-            this.txtNote.TabIndex = 12;
             // 
             // gbxUsedServices
             // 
@@ -446,9 +352,9 @@
             this.gbxUsedServices.Controls.Add(this.tableLayoutPanel4);
             this.gbxUsedServices.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbxUsedServices.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbxUsedServices.Location = new System.Drawing.Point(3, 210);
+            this.gbxUsedServices.Location = new System.Drawing.Point(3, 3);
             this.gbxUsedServices.Name = "gbxUsedServices";
-            this.gbxUsedServices.Size = new System.Drawing.Size(445, 210);
+            this.gbxUsedServices.Size = new System.Drawing.Size(368, 204);
             this.gbxUsedServices.TabIndex = 6;
             this.gbxUsedServices.TabStop = false;
             this.gbxUsedServices.Text = "Dịch vụ đang dùng";
@@ -463,9 +369,9 @@
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 22);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 2;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 78.45304F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 21.54696F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(439, 185);
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 74.30167F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.69832F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(362, 179);
             this.tableLayoutPanel4.TabIndex = 23;
             // 
             // tableLayoutPanel3
@@ -478,11 +384,11 @@
             this.tableLayoutPanel3.Controls.Add(this.lblReduceQuantity, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.nbrReduce, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 148);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 136);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(433, 34);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(356, 40);
             this.tableLayoutPanel3.TabIndex = 23;
             // 
             // btnReduce
@@ -491,9 +397,9 @@
             this.btnReduce.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.btnReduce.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReduce.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnReduce.Location = new System.Drawing.Point(308, 3);
+            this.btnReduce.Location = new System.Drawing.Point(243, 3);
             this.btnReduce.Name = "btnReduce";
-            this.btnReduce.Size = new System.Drawing.Size(105, 28);
+            this.btnReduce.Size = new System.Drawing.Size(105, 34);
             this.btnReduce.TabIndex = 19;
             this.btnReduce.Text = "Bớt";
             this.btnReduce.UseVisualStyleBackColor = false;
@@ -503,7 +409,7 @@
             this.lblReduceQuantity.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblReduceQuantity.AutoSize = true;
             this.lblReduceQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblReduceQuantity.Location = new System.Drawing.Point(69, 7);
+            this.lblReduceQuantity.Location = new System.Drawing.Point(43, 10);
             this.lblReduceQuantity.Name = "lblReduceQuantity";
             this.lblReduceQuantity.Size = new System.Drawing.Size(72, 20);
             this.lblReduceQuantity.TabIndex = 17;
@@ -513,76 +419,13 @@
             // 
             this.nbrReduce.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.nbrReduce.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nbrReduce.Location = new System.Drawing.Point(164, 3);
+            this.nbrReduce.Location = new System.Drawing.Point(125, 3);
             this.nbrReduce.Name = "nbrReduce";
             this.nbrReduce.Size = new System.Drawing.Size(103, 35);
             this.nbrReduce.TabIndex = 18;
             this.nbrReduce.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // dgvUsedServices
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvUsedServices.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvUsedServices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvUsedServices.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvUsedServices.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvUsedServices.Location = new System.Drawing.Point(3, 3);
-            this.dgvUsedServices.Name = "dgvUsedServices";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvUsedServices.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            this.dgvUsedServices.RowHeadersWidth = 62;
-            this.dgvUsedServices.RowTemplate.Height = 28;
-            this.dgvUsedServices.Size = new System.Drawing.Size(433, 139);
-            this.dgvUsedServices.TabIndex = 22;
-            // 
-            // gbxServicesMenu
-            // 
-            this.gbxServicesMenu.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.gbxServicesMenu.Controls.Add(this.tableLayoutPanel6);
-            this.gbxServicesMenu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbxServicesMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbxServicesMenu.Location = new System.Drawing.Point(807, 3);
-            this.gbxServicesMenu.Name = "gbxServicesMenu";
-            this.gbxServicesMenu.Size = new System.Drawing.Size(232, 423);
-            this.gbxServicesMenu.TabIndex = 9;
-            this.gbxServicesMenu.TabStop = false;
-            this.gbxServicesMenu.Text = "Menu dịch vụ";
-            // 
-            // tableLayoutPanel6
-            // 
-            this.tableLayoutPanel6.ColumnCount = 1;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Controls.Add(this.dgvHotelServices, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.tableLayoutPanel2, 0, 1);
-            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 22);
-            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 2;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 85F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(226, 398);
-            this.tableLayoutPanel6.TabIndex = 23;
-            // 
-            // dgvHotelServices
             // 
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -591,8 +434,8 @@
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvHotelServices.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvHotelServices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsedServices.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvUsedServices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -600,10 +443,10 @@
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvHotelServices.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvHotelServices.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHotelServices.Location = new System.Drawing.Point(3, 3);
-            this.dgvHotelServices.Name = "dgvHotelServices";
+            this.dgvUsedServices.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvUsedServices.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUsedServices.Location = new System.Drawing.Point(3, 3);
+            this.dgvUsedServices.Name = "dgvUsedServices";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -611,10 +454,73 @@
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvHotelServices.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvUsedServices.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvUsedServices.RowHeadersWidth = 62;
+            this.dgvUsedServices.RowTemplate.Height = 28;
+            this.dgvUsedServices.Size = new System.Drawing.Size(356, 127);
+            this.dgvUsedServices.TabIndex = 22;
+            // 
+            // gbxServicesMenu
+            // 
+            this.gbxServicesMenu.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.gbxServicesMenu.Controls.Add(this.tableLayoutPanel6);
+            this.gbxServicesMenu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbxServicesMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbxServicesMenu.Location = new System.Drawing.Point(377, 3);
+            this.gbxServicesMenu.Name = "gbxServicesMenu";
+            this.gbxServicesMenu.Size = new System.Drawing.Size(368, 204);
+            this.gbxServicesMenu.TabIndex = 9;
+            this.gbxServicesMenu.TabStop = false;
+            this.gbxServicesMenu.Text = "Menu dịch vụ";
+            // 
+            // tableLayoutPanel6
+            // 
+            this.tableLayoutPanel6.ColumnCount = 1;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.Controls.Add(this.tableLayoutPanel2, 0, 1);
+            this.tableLayoutPanel6.Controls.Add(this.dgvHotelServices, 0, 0);
+            this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 22);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 2;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 77.65363F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.34637F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(362, 179);
+            this.tableLayoutPanel6.TabIndex = 23;
+            // 
+            // dgvHotelServices
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvHotelServices.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvHotelServices.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvHotelServices.DefaultCellStyle = dataGridViewCellStyle5;
+            this.dgvHotelServices.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvHotelServices.Location = new System.Drawing.Point(3, 3);
+            this.dgvHotelServices.Name = "dgvHotelServices";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvHotelServices.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.dgvHotelServices.RowHeadersWidth = 62;
             this.dgvHotelServices.RowTemplate.Height = 28;
-            this.dgvHotelServices.Size = new System.Drawing.Size(220, 332);
+            this.dgvHotelServices.Size = new System.Drawing.Size(356, 133);
             this.dgvHotelServices.TabIndex = 21;
             // 
             // tableLayoutPanel2
@@ -627,11 +533,11 @@
             this.tableLayoutPanel2.Controls.Add(this.nbrIncrease, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.lblAddQuantity, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 341);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 142);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(220, 54);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(356, 34);
             this.tableLayoutPanel2.TabIndex = 22;
             // 
             // btnIncrease
@@ -640,9 +546,9 @@
             this.btnIncrease.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnIncrease.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnIncrease.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnIncrease.Location = new System.Drawing.Point(149, 3);
+            this.btnIncrease.Location = new System.Drawing.Point(239, 3);
             this.btnIncrease.Name = "btnIncrease";
-            this.btnIncrease.Size = new System.Drawing.Size(68, 48);
+            this.btnIncrease.Size = new System.Drawing.Size(114, 28);
             this.btnIncrease.TabIndex = 19;
             this.btnIncrease.Text = "Thêm";
             this.btnIncrease.UseVisualStyleBackColor = false;
@@ -651,9 +557,9 @@
             // 
             this.nbrIncrease.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nbrIncrease.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nbrIncrease.Location = new System.Drawing.Point(76, 3);
+            this.nbrIncrease.Location = new System.Drawing.Point(121, 3);
             this.nbrIncrease.Name = "nbrIncrease";
-            this.nbrIncrease.Size = new System.Drawing.Size(67, 35);
+            this.nbrIncrease.Size = new System.Drawing.Size(112, 35);
             this.nbrIncrease.TabIndex = 18;
             this.nbrIncrease.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -664,7 +570,7 @@
             this.lblAddQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAddQuantity.Location = new System.Drawing.Point(3, 0);
             this.lblAddQuantity.Name = "lblAddQuantity";
-            this.lblAddQuantity.Size = new System.Drawing.Size(67, 54);
+            this.lblAddQuantity.Size = new System.Drawing.Size(112, 34);
             this.lblAddQuantity.TabIndex = 17;
             this.lblAddQuantity.Text = "Số lượng";
             // 
@@ -673,15 +579,15 @@
             this.tableLayoutPanel10.ColumnCount = 1;
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel10.Controls.Add(this.gbxUsedServices, 0, 1);
             this.tableLayoutPanel10.Controls.Add(this.grbRoom, 0, 0);
+            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel11, 0, 1);
             this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel10.Location = new System.Drawing.Point(350, 3);
+            this.tableLayoutPanel10.Location = new System.Drawing.Point(285, 3);
             this.tableLayoutPanel10.Name = "tableLayoutPanel10";
             this.tableLayoutPanel10.RowCount = 2;
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.93617F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.06383F));
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(451, 423);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(754, 423);
             this.tableLayoutPanel10.TabIndex = 10;
             // 
             // grbRoom
@@ -690,7 +596,7 @@
             this.grbRoom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grbRoom.Location = new System.Drawing.Point(3, 3);
             this.grbRoom.Name = "grbRoom";
-            this.grbRoom.Size = new System.Drawing.Size(445, 201);
+            this.grbRoom.Size = new System.Drawing.Size(748, 201);
             this.grbRoom.TabIndex = 7;
             this.grbRoom.TabStop = false;
             this.grbRoom.Text = "Phòng sử dụng";
@@ -703,43 +609,106 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 28;
-            this.dataGridView1.Size = new System.Drawing.Size(439, 176);
+            this.dataGridView1.Size = new System.Drawing.Size(742, 176);
             this.dataGridView1.TabIndex = 0;
             // 
-            // lblCHECKOUT
+            // txtNote
             // 
-            this.lblCHECKOUT.AutoSize = true;
-            this.lblCHECKOUT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCHECKOUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKOUT.Location = new System.Drawing.Point(3, 312);
-            this.lblCHECKOUT.Name = "lblCHECKOUT";
-            this.lblCHECKOUT.Size = new System.Drawing.Size(161, 39);
-            this.lblCHECKOUT.TabIndex = 9;
-            this.lblCHECKOUT.Text = "Check-out Time:";
-            this.lblCHECKOUT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNote.Location = new System.Drawing.Point(95, 257);
+            this.txtNote.Multiline = true;
+            this.txtNote.Name = "txtNote";
+            this.txtNote.Size = new System.Drawing.Size(172, 33);
+            this.txtNote.TabIndex = 12;
             // 
-            // lblCHECKIN
+            // txtSDT
             // 
-            this.lblCHECKIN.AutoSize = true;
-            this.lblCHECKIN.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCHECKIN.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHECKIN.Location = new System.Drawing.Point(3, 273);
-            this.lblCHECKIN.Name = "lblCHECKIN";
-            this.lblCHECKIN.Size = new System.Drawing.Size(161, 39);
-            this.lblCHECKIN.TabIndex = 8;
-            this.lblCHECKIN.Text = "Check-in Time:";
-            this.lblCHECKIN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtSDT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSDT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSDT.Location = new System.Drawing.Point(95, 92);
+            this.txtSDT.Name = "txtSDT";
+            this.txtSDT.Size = new System.Drawing.Size(172, 26);
+            this.txtSDT.TabIndex = 16;
             // 
-            // dtpCheckoutTime
+            // txtEmail
             // 
-            this.dtpCheckoutTime.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpCheckoutTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dtpCheckoutTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpCheckoutTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpCheckoutTime.Location = new System.Drawing.Point(170, 315);
-            this.dtpCheckoutTime.Name = "dtpCheckoutTime";
-            this.dtpCheckoutTime.Size = new System.Drawing.Size(162, 26);
-            this.dtpCheckoutTime.TabIndex = 11;
+            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEmail.Location = new System.Drawing.Point(95, 134);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(172, 26);
+            this.txtEmail.TabIndex = 17;
+            // 
+            // txtDiachi
+            // 
+            this.txtDiachi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDiachi.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDiachi.Location = new System.Drawing.Point(95, 50);
+            this.txtDiachi.Name = "txtDiachi";
+            this.txtDiachi.Size = new System.Drawing.Size(172, 26);
+            this.txtDiachi.TabIndex = 15;
+            // 
+            // txtCCCD
+            // 
+            this.txtCCCD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCCCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCCCD.Location = new System.Drawing.Point(85, 25);
+            this.txtCCCD.Name = "txtCCCD";
+            this.txtCCCD.Size = new System.Drawing.Size(172, 26);
+            this.txtCCCD.TabIndex = 18;
+            // 
+            // txtGender
+            // 
+            this.txtGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtGender.Location = new System.Drawing.Point(95, 176);
+            this.txtGender.Name = "txtGender";
+            this.txtGender.Size = new System.Drawing.Size(172, 26);
+            this.txtGender.TabIndex = 19;
+            // 
+            // txtTen
+            // 
+            this.txtTen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTen.Location = new System.Drawing.Point(95, 8);
+            this.txtTen.Name = "txtTen";
+            this.txtTen.Size = new System.Drawing.Size(172, 26);
+            this.txtTen.TabIndex = 14;
+            // 
+            // txtPricingType
+            // 
+            this.txtPricingType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPricingType.Location = new System.Drawing.Point(95, 218);
+            this.txtPricingType.Name = "txtPricingType";
+            this.txtPricingType.Size = new System.Drawing.Size(172, 26);
+            this.txtPricingType.TabIndex = 20;
+            // 
+            // tableLayoutPanel11
+            // 
+            this.tableLayoutPanel11.ColumnCount = 2;
+            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.Controls.Add(this.gbxUsedServices, 0, 0);
+            this.tableLayoutPanel11.Controls.Add(this.gbxServicesMenu, 1, 0);
+            this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 210);
+            this.tableLayoutPanel11.Name = "tableLayoutPanel11";
+            this.tableLayoutPanel11.RowCount = 1;
+            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel11.Size = new System.Drawing.Size(748, 210);
+            this.tableLayoutPanel11.TabIndex = 1;
+            // 
+            // btnCheck
+            // 
+            this.btnCheck.Location = new System.Drawing.Point(131, 53);
+            this.btnCheck.Name = "btnCheck";
+            this.btnCheck.Size = new System.Drawing.Size(86, 31);
+            this.btnCheck.TabIndex = 22;
+            this.btnCheck.Text = "Kiểm tra";
+            this.btnCheck.UseVisualStyleBackColor = true;
             // 
             // frmBookingDetail1
             // 
@@ -754,6 +723,7 @@
             this.tableLayoutPanel7.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.gbxRoomInfor.ResumeLayout(false);
+            this.gbxRoomInfor.PerformLayout();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
             this.gbxUsedServices.ResumeLayout(false);
@@ -771,6 +741,7 @@
             this.tableLayoutPanel10.ResumeLayout(false);
             this.grbRoom.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tableLayoutPanel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -779,7 +750,7 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
-        private System.Windows.Forms.Button btnTraphong;
+        private System.Windows.Forms.Button btnDatphong;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblBookingID;
@@ -788,21 +759,12 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.Label lblNote;
         private System.Windows.Forms.Label lblTen;
-        private System.Windows.Forms.DateTimePicker dtpCheckinTime;
-        private System.Windows.Forms.TextBox txtPricingType;
-        private System.Windows.Forms.TextBox txtTen;
-        private System.Windows.Forms.TextBox txtGender;
         private System.Windows.Forms.Label lblDiachi;
-        private System.Windows.Forms.TextBox txtCCCD;
-        private System.Windows.Forms.TextBox txtDiachi;
-        private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label lblSDT;
         private System.Windows.Forms.Label lblKieuThue;
-        private System.Windows.Forms.TextBox txtSDT;
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.Label lblCCCD;
         private System.Windows.Forms.Label lblSex;
-        private System.Windows.Forms.TextBox txtNote;
         private System.Windows.Forms.GroupBox gbxUsedServices;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
@@ -820,8 +782,15 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
         private System.Windows.Forms.GroupBox grbRoom;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Label lblCHECKIN;
-        private System.Windows.Forms.Label lblCHECKOUT;
-        private System.Windows.Forms.DateTimePicker dtpCheckoutTime;
+        private System.Windows.Forms.TextBox txtPricingType;
+        private System.Windows.Forms.TextBox txtTen;
+        private System.Windows.Forms.TextBox txtGender;
+        private System.Windows.Forms.TextBox txtCCCD;
+        private System.Windows.Forms.TextBox txtDiachi;
+        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.TextBox txtSDT;
+        private System.Windows.Forms.TextBox txtNote;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel11;
+        private System.Windows.Forms.Button btnCheck;
     }
 }
