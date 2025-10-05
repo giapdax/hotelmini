@@ -20,6 +20,8 @@ namespace HOTEL_MINI.Forms.Dialogs
         public string PricingType { get; private set; }
         public decimal? UnitPrice { get; private set; }
         public decimal CalculatedCost { get; private set; }
+        public bool IsReceiveNow { get; private set; } = true; // mặc định Nhận ngay
+
 
         public dlgRoomTime(int roomTypeId, DateTime baseIn, DateTime baseOut, string title = null)
         {
@@ -71,31 +73,155 @@ namespace HOTEL_MINI.Forms.Dialogs
             }
         }
 
+        //private void ApplyTypePresetAndRecalc()
+        //{
+        //    var type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString() : null;
+
+        //    if (string.Equals(type, "Nightly", StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        // Preset 1 đêm: 21:00 -> 07:00 hôm sau
+        //        var dIn = dtpIn.Value.Date;
+        //        var inTime = new DateTime(dIn.Year, dIn.Month, dIn.Day, 21, 0, 0);
+        //        var outTime = inTime.AddDays(1).Date.AddHours(7);
+
+        //        dtpIn.Value = inTime;
+        //        dtpOut.Value = outTime;
+
+        //        dtpIn.ShowUpDown = true;
+        //        dtpOut.ShowUpDown = true;
+        //    }
+        //    else
+        //    {
+        //        dtpIn.ShowUpDown = false;
+        //        dtpOut.ShowUpDown = false;
+        //    }
+
+        //    Recalc();
+        //}
         private void ApplyTypePresetAndRecalc()
         {
+            dtpIn.ValueChanged -= DtpIn_Weekly_ValueChanged;
             var type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString() : null;
 
-            if (string.Equals(type, "Nightly", StringComparison.OrdinalIgnoreCase))
+            dtpIn.ShowUpDown = false;
+            dtpOut.ShowUpDown = false;
+            dtpIn.Enabled = true;
+            dtpOut.Enabled = true;
+
+            if (string.Equals(type, "Daily", StringComparison.OrdinalIgnoreCase))
             {
-                // Preset 1 đêm: 21:00 -> 07:00 hôm sau
-                var dIn = dtpIn.Value.Date;
+                // Cố định 14:00 -> 12:00 hôm sau
+                var date = DateTime.Now.Date;
+                var inTime = new DateTime(date.Year, date.Month, date.Day, 14, 0, 0);
+                var outTime = inTime.AddDays(1).Date.AddHours(12);
+
+                dtpIn.Value = inTime;
+                dtpOut.Value = outTime;
+
+                // Chỉ cho chỉnh ngày, không cho chỉnh giờ
+                dtpIn.ShowUpDown = false;
+                dtpOut.ShowUpDown = false;
+                dtpIn.CustomFormat = "dd/MM/yyyy";
+                dtpOut.CustomFormat = "dd/MM/yyyy";
+            }
+            else if (string.Equals(type, "Nightly", StringComparison.OrdinalIgnoreCase))
+            {
+                // Cố định 21:00 -> 07:00 hôm sau
+                var dIn = DateTime.Now.Date;
                 var inTime = new DateTime(dIn.Year, dIn.Month, dIn.Day, 21, 0, 0);
                 var outTime = inTime.AddDays(1).Date.AddHours(7);
 
                 dtpIn.Value = inTime;
                 dtpOut.Value = outTime;
 
-                dtpIn.ShowUpDown = true;
-                dtpOut.ShowUpDown = true;
-            }
-            else
-            {
+                // ❌ Không cho chỉnh giờ phút, chỉ hiển thị ngày
                 dtpIn.ShowUpDown = false;
                 dtpOut.ShowUpDown = false;
+                dtpIn.CustomFormat = "dd/MM/yyyy";
+                dtpOut.CustomFormat = "dd/MM/yyyy";
+
+                // Có thể cho chỉnh ngày nếu muốn đặt cho hôm khác
+                dtpIn.Enabled = true;
+                dtpOut.Enabled = true;
             }
+
+            else if (string.Equals(type, "Weekly", StringComparison.OrdinalIgnoreCase))
+            {
+                // Check-in chỉnh được ngày + giờ
+                dtpIn.Enabled = true;
+                dtpIn.ShowUpDown = false;
+                dtpIn.CustomFormat = "dd/MM/yyyy HH:mm";
+
+                // Check-out luôn = Check-in + 7 ngày, không chỉnh được
+                dtpOut.Enabled = false;
+                dtpOut.ShowUpDown = false;
+                dtpOut.CustomFormat = "dd/MM/yyyy HH:mm";
+
+                var ci = DateTime.Now;
+                dtpIn.Value = ci;
+                dtpOut.Value = ci.AddDays(7);
+
+                // khi người dùng đổi check-in => cập nhật check-out
+                dtpIn.ValueChanged -= DtpIn_Weekly_ValueChanged;
+                dtpIn.ValueChanged += DtpIn_Weekly_ValueChanged;
+            }
+
+
+            else if (string.Equals(type, "Hourly", StringComparison.OrdinalIgnoreCase))
+            {
+                var now = DateTime.Now;
+                dtpIn.Value = now;
+                dtpOut.Value = now.AddHours(1);
+
+                // Cho chỉnh cả ngày + giờ
+                dtpIn.ShowUpDown = false;    // show lịch chọn ngày
+                dtpOut.ShowUpDown = false;
+
+                dtpIn.CustomFormat = "dd/MM/yyyy HH:mm";
+                dtpOut.CustomFormat = "dd/MM/yyyy HH:mm";
+
+                dtpIn.Enabled = true;
+                dtpOut.Enabled = true;
+            }
+
 
             Recalc();
         }
+        private void DtpIn_Weekly_ValueChanged(object sender, EventArgs e)
+        {
+            // cập nhật checkout = checkin + 7 ngày
+            dtpOut.Value = dtpIn.Value.AddDays(7);
+        }
+
+
+        
+
+        private void DtpDaily_ValueChanged(object sender, EventArgs e)
+        {
+            var picker = (DateTimePicker)sender;
+            if (string.Equals(cboType.SelectedItem?.ToString(), "Daily", StringComparison.OrdinalIgnoreCase))
+            {
+                if (picker == dtpIn)
+                {
+                    // Giữ nguyên ngày, reset giờ về 14:00
+                    var d = dtpIn.Value.Date;
+                    if (dtpIn.Value.Hour != 14 || dtpIn.Value.Minute != 0)
+                        dtpIn.Value = new DateTime(d.Year, d.Month, d.Day, 14, 0, 0);
+
+                    // Cập nhật checkout = hôm sau 12:00
+                    dtpOut.Value = dtpIn.Value.Date.AddDays(1).AddHours(12);
+                }
+                else if (picker == dtpOut)
+                {
+                    // Giữ nguyên ngày, reset giờ về 12:00
+                    var d = dtpOut.Value.Date;
+                    if (dtpOut.Value.Hour != 12 || dtpOut.Value.Minute != 0)
+                        dtpOut.Value = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0);
+                }
+            }
+        }
+
+
 
         private static int CeilToInt(double v)
         {
@@ -155,20 +281,59 @@ namespace HOTEL_MINI.Forms.Dialogs
             lblCost.Text = $"Tạm tính: {cost:N0}";
         }
 
+        //private void BtnOK_Click(object sender, EventArgs e)
+        //{
+        //    var ci = dtpIn.Value;
+        //    var co = dtpOut.Value;
+
+        //    if (co <= ci)
+        //    {
+        //        MessageBox.Show("Thời gian trả phòng phải lớn hơn nhận phòng.", "Lỗi",
+        //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    if (string.Equals(PricingType, "Nightly", StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        var okIn = ci.Hour == 21 && ci.Minute == 0;
+        //        var okOut = co.Hour == 7 && co.Minute == 0 && co.Date == ci.Date.AddDays(1);
+        //        if (!okIn || !okOut)
+        //        {
+        //            MessageBox.Show("Thuê theo ĐÊM chỉ cho phép 21:00 → 07:00 (1 đêm).", "Lỗi",
+        //                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            return;
+        //        }
+        //    }
+
+        //    CheckIn = ci;
+        //    CheckOut = co;
+        //    IsReceiveNow = rdoReceiveNow.Checked;
+        //    this.DialogResult = DialogResult.OK;
+        //}
         private void BtnOK_Click(object sender, EventArgs e)
         {
             var ci = dtpIn.Value;
             var co = dtpOut.Value;
 
+            // ❌ Không cho nhận phòng ở quá khứ
+            //if (ci < DateTime.Now.AddMinutes(-1))
+            //{
+            //    MessageBox.Show("Không thể chọn thời gian nhận phòng trong quá khứ.", "Lỗi",
+            //        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
+
+            // ❌ Check-out phải sau check-in
             if (co <= ci)
             {
-                MessageBox.Show("Thời gian trả phòng phải lớn hơn nhận phòng.", "Lỗi",
+                MessageBox.Show("Thời gian trả phòng phải lớn hơn thời gian nhận phòng.", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (string.Equals(PricingType, "Nightly", StringComparison.OrdinalIgnoreCase))
             {
+                // Chỉ cho phép đúng 1 đêm: 21:00 -> 07:00 hôm sau
                 var okIn = ci.Hour == 21 && ci.Minute == 0;
                 var okOut = co.Hour == 7 && co.Minute == 0 && co.Date == ci.Date.AddDays(1);
                 if (!okIn || !okOut)
@@ -178,10 +343,31 @@ namespace HOTEL_MINI.Forms.Dialogs
                     return;
                 }
             }
+            else if (string.Equals(PricingType, "Weekly", StringComparison.OrdinalIgnoreCase))
+            {
+                // Phải đúng 7 ngày
+                if ((co - ci).TotalDays < 7 - 0.01 || (co - ci).TotalDays > 7.01)
+                {
+                    MessageBox.Show("Thuê theo TUẦN phải đúng 7 ngày.", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
 
             CheckIn = ci;
             CheckOut = co;
+            IsReceiveNow = rdoReceiveNow.Checked;
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnOK_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

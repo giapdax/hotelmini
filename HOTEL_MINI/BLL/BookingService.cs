@@ -184,7 +184,7 @@ namespace HOTEL_MINI.BLL
                 customerId: customerId,
                 createdBy: createdBy,
                 bookingDate: DateTime.Now,
-                status: "Booked",
+                status: "CheckedIn",
                 notes: notesHeader
             );
 

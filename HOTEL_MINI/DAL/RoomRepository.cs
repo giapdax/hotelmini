@@ -426,27 +426,38 @@ SELECT
     r.RoomID,
     r.RoomNumber,
     r.RoomTypeID,
-    rt.TypeName,
-    r.Status,
-    r.Note,
-    CAST(CASE 
+    rt.TypeName AS RoomTypeName,
+    CASE 
+        WHEN r.Status = 'Maintenance' THEN 'Maintenance'
         WHEN EXISTS (
-            SELECT 1 
-            FROM BookingRooms br
+            SELECT 1 FROM BookingRooms br
             WHERE br.RoomID = r.RoomID
-              AND br.Status IN ('Booked','CheckedIn')
+              AND br.Status = 'CheckedIn'
               AND br.CheckInDate < @To
               AND @From < br.CheckOutDate
-        ) THEN 0 ELSE 1 
-    END AS bit) AS AvailableAtRange
+        ) THEN 'Occupied'
+        WHEN EXISTS (
+            SELECT 1 FROM BookingRooms br
+            WHERE br.RoomID = r.RoomID
+              AND br.Status = 'Booked'
+              AND br.CheckInDate < @To
+              AND @From < br.CheckOutDate
+        ) THEN 'Booked'
+        ELSE 'Available'
+    END AS StatusAtRange,
+    r.Note
 FROM Rooms r
 JOIN RoomTypes rt ON rt.RoomTypeID = r.RoomTypeID
 WHERE 1=1
 ");
+
+                // filter theo loại phòng
                 if (roomTypeId.HasValue && roomTypeId.Value > 0)
                     sql.Append(" AND r.RoomTypeID = @RoomTypeID ");
+
+                // filter theo trạng thái (nhưng phải so với StatusAtRange chứ không phải r.Status)
                 if (!string.IsNullOrWhiteSpace(status) && !status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase))
-                    sql.Append(" AND r.Status = @Status ");
+                    sql.Append(" HAVING StatusAtRange = @Status ");
 
                 sql.Append(" ORDER BY r.RoomNumber ");
 
@@ -454,8 +465,10 @@ WHERE 1=1
                 {
                     cmd.Parameters.AddWithValue("@From", from);
                     cmd.Parameters.AddWithValue("@To", to);
+
                     if (roomTypeId.HasValue && roomTypeId.Value > 0)
                         cmd.Parameters.AddWithValue("@RoomTypeID", roomTypeId.Value);
+
                     if (!string.IsNullOrWhiteSpace(status) && !status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase))
                         cmd.Parameters.AddWithValue("@Status", status);
 
@@ -465,13 +478,13 @@ WHERE 1=1
                         {
                             result.Add(new RoomBrowseItem
                             {
-                                RoomID = rd.GetInt32(0),
-                                RoomNumber = rd.GetString(1),
-                                RoomTypeID = rd.GetInt32(2),
-                                RoomTypeName = rd.GetString(3),
-                                Status = rd.GetString(4),
-                                Note = rd.IsDBNull(5) ? "" : rd.GetString(5),
-                                AvailableAtRange = rd.GetBoolean(6)
+                                RoomID = (int)rd["RoomID"],
+                                RoomNumber = rd["RoomNumber"].ToString(),
+                                RoomTypeID = (int)rd["RoomTypeID"],
+                                RoomTypeName = rd["RoomTypeName"].ToString(),
+                                Status = rd["StatusAtRange"].ToString(),
+                                Note = rd["Note"].ToString(),
+                                AvailableAtRange = rd["StatusAtRange"].ToString() == "Available"
                             });
                         }
                     }

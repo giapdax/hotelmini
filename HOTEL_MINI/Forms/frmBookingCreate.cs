@@ -765,6 +765,7 @@ namespace HOTEL_MINI.Forms
             public string PricingType { get; set; }
             public decimal? UnitPrice { get; set; }
             public decimal CalculatedCost { get; set; }
+            public bool IsReceiveNow { get; set; } = true; // mặc định nhận phòng ngay
         }
     }
 }
