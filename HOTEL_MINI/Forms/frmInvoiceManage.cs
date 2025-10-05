@@ -1,6 +1,8 @@
 ﻿using HOTEL_MINI.BLL;
+using HOTEL_MINI.DAL;
 using HOTEL_MINI.Forms.Controls;
 using HOTEL_MINI.Model.Entity;
+using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,50 +17,237 @@ namespace HOTEL_MINI.Forms
         private readonly BookingService _bookingService;
         private readonly InvoiceService _invoiceService;
         private readonly frmApplication _mainForm;
+
         private Customer _currentCustomer = null;
 
         public frmInvoiceManage(frmApplication mainForm)
         {
             InitializeComponent();
+
             _mainForm = mainForm;
             _customerService = new CustomerService();
             _bookingService = new BookingService();
             _invoiceService = new InvoiceService();
 
-            // nếu Designer chưa wire, đảm bảo vẫn có:
             this.Load += frmInvoiceManage_Load;
             dgvBookings.CellDoubleClick += dgvBookings_CellDoubleClick;
+            dgvBookings.CellContentClick += dgvBookings_CellContentClick;
+            btnSearch.Click += btnSearch_Click;
+            btnReset.Click += btnReset_Click;
+        }
 
-            // nếu Designer có wire CellContentClick tới method cũ -> ở dưới mình có stub.
+        // ========================= Events =========================
+
+        private void frmInvoiceManage_Load(object sender, EventArgs e)
+        {
+            LoadTop20Bookings();
+            StyleSearchPanel();
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtCustomerID.Text))
+            var cccd = (txtCustomerID.Text ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(cccd))
             {
-                MessageBox.Show("Vui lòng nhập ID khách hàng");
+                MessageBox.Show("Vui lòng nhập CCCD/ID để tìm hóa đơn.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!int.TryParse(txtCustomerID.Text, out int _))
-            {
-                MessageBox.Show("ID khách hàng phải là số");
-                return;
-            }
-
-            var customer = _customerService.GetCustomerByNumberID(txtCustomerID.Text);
+            var customer = _customerService.GetCustomerByNumberID(cccd);
             if (customer == null)
             {
-                MessageBox.Show("Không tìm thấy khách hàng với ID đã nhập");
+                MessageBox.Show("Không tìm thấy khách hàng với CCCD/ID này.", "Không có dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             _currentCustomer = customer;
             LoadCustomerInfo(customer);
-            LoadCustomerBookings(txtCustomerID.Text);
+            LoadCustomerBookings(cccd);
         }
 
-        public void LoadCustomerInfo(Customer customer)
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            LoadTop20Bookings();
+        }
+
+        private void dgvBookings_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var row = dgvBookings.Rows[e.RowIndex];
+            var idObj = row.Cells["BookingID"].Value;
+            if (idObj == null) return;
+
+            int bookingRoomId = Convert.ToInt32(idObj);
+            var roomNumber = row.Cells["RoomNumber"].Value?.ToString() ?? "";
+            OpenInvoiceByBookingRoomId(bookingRoomId, roomNumber);
+        }
+
+        private void dgvBookings_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+            if (dgvBookings.Columns[e.ColumnIndex].Name != "colViewInvoice") return;
+
+            var row = dgvBookings.Rows[e.RowIndex];
+            var idObj = row.Cells["BookingID"].Value;
+            if (idObj == null)
+            {
+                MessageBox.Show("Thiếu BookingID.", "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int bookingRoomId = Convert.ToInt32(idObj);
+            var roomNumber = row.Cells["RoomNumber"].Value?.ToString() ?? "";
+            OpenInvoiceByBookingRoomId(bookingRoomId, roomNumber);
+        }
+
+        // ========================= UI Helpers =========================
+
+        private void StyleSearchPanel()
+        {
+            label1.Font = new Font("Segoe UI Semibold", 11f, FontStyle.Bold);
+            txtCustomerID.Font = new Font("Segoe UI", 11f, FontStyle.Bold);
+            btnSearch.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+            btnReset.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+        }
+
+        private void ConfigureDataGridView()
+        {
+            var gv = dgvBookings;
+
+            gv.AutoGenerateColumns = false;
+            gv.ReadOnly = true;
+            gv.MultiSelect = false;
+            gv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            gv.RowHeadersVisible = false;
+            gv.AllowUserToAddRows = false;
+            gv.AllowUserToDeleteRows = false;
+            gv.BackgroundColor = Color.White;
+            gv.BorderStyle = BorderStyle.None;
+            gv.EnableHeadersVisualStyles = false;
+            gv.GridColor = Color.Gainsboro;
+
+            gv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(3, 76, 95);
+            gv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            gv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            gv.ColumnHeadersHeight = 36;
+
+            gv.DefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+            gv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(230, 243, 246);
+            gv.DefaultCellStyle.SelectionForeColor = Color.Black;
+            gv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 251);
+
+            gv.Columns.Clear();
+
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "BookingID",
+                Name = "BookingID",
+                HeaderText = "BookingID",
+                Width = 110
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "RoomNumber",
+                HeaderText = "Phòng",
+                Width = 90
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "EmployeeName",
+                HeaderText = "Nhân viên",
+                Width = 140
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "BookingDateDisplay",
+                HeaderText = "Ngày book",
+                Width = 130
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "CheckInDateDisplay",
+                HeaderText = "Check-in",
+                Width = 130
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "CheckOutDateDisplay",
+                HeaderText = "Check-out",
+                Width = 130
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Status",
+                HeaderText = "Trạng thái",
+                Width = 110
+            });
+            gv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Notes",
+                HeaderText = "Ghi chú",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            });
+
+            var btnCol = new DataGridViewButtonColumn
+            {
+                Name = "colViewInvoice",
+                HeaderText = "",
+                Text = "Xem hóa đơn",
+                UseColumnTextForButtonValue = true,
+                Width = 130,
+                FlatStyle = FlatStyle.Popup
+            };
+            gv.Columns.Add(btnCol);
+        }
+
+        // ========================= Data Loads =========================
+
+        private void LoadTop20Bookings()
+        {
+            try
+            {
+                // Nếu bạn có overload onlyCheckedOut thì dùng, không có thì lấy top 20 bình thường rồi lọc CheckedOut.
+                var list = _bookingService.GetTop20LatestBookingDisplays(onlyCheckedOut: true) ?? new List<BookingDisplay>();
+                dgvBookings.DataSource = list;
+                ConfigureDataGridView();
+
+                _currentCustomer = null;
+                txtName.Clear();
+                txtGender.Clear();
+                txtPhone.Clear();
+                txtEmail.Clear();
+                txtDiachi.Clear();
+                txtCountBookingByNumberID.Clear();
+                txtCustomerID.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải top booking: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadCustomerBookings(string customerId)
+        {
+            try
+            {
+                var list = _bookingService
+                    .GetBookingDisplaysByCustomerNumber(customerId)
+                    .Where(b => string.Equals(b.Status, "CheckedOut", StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(b => b.CheckOutDate)
+                    .ToList();
+
+                dgvBookings.DataSource = list;
+                ConfigureDataGridView();
+
+                txtCountBookingByNumberID.Text = list.Count.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải booking: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadCustomerInfo(Customer customer)
         {
             if (customer == null) return;
 
@@ -69,215 +258,115 @@ namespace HOTEL_MINI.Forms
             txtDiachi.Text = customer.Address ?? "";
         }
 
-        private void LoadCustomerBookings(string customerId)
+        // ========================= Open Invoice =========================
+
+        private void OpenInvoiceByBookingRoomId(int bookingRoomId, string roomNumber)
         {
             try
             {
-                var bookingDisplays = _bookingService.GetBookingDisplaysByCustomerNumber(customerId)
-                    .Where(b => string.Equals(b.Status, "CheckedOut", StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                var booking = _bookingService.GetBookingById(bookingRoomId);
+                if (booking == null)
+                {
+                    MessageBox.Show("Không tìm thấy booking.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                dgvBookings.DataSource = bookingDisplays;
-                dgvBookings.AutoGenerateColumns = false;
-                ConfigureDataGridView();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải booking: {ex.Message}");
-            }
-        }
+                var customer = _customerService.getCustomerByCustomerID(booking.CustomerID);
+                if (customer != null)
+                {
+                    _currentCustomer = customer;
+                    LoadCustomerInfo(customer);
+                }
+                else if (_currentCustomer == null)
+                {
+                    MessageBox.Show("Thiếu thông tin khách hàng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-        private void ConfigureDataGridView()
-        {
-            dgvBookings.Columns.Clear();
-
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "RoomNumber",
-                Name = "RoomNumber",
-                HeaderText = "Phòng",
-                Width = 80
-            });
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "EmployeeName",
-                HeaderText = "Nhân viên",
-                Width = 120
-            });
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "BookingDateDisplay",
-                HeaderText = "Ngày book",
-                Width = 120
-            });
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "CheckInDateDisplay",
-                HeaderText = "Check-in",
-                Width = 120
-            });
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "CheckOutDateDisplay",
-                HeaderText = "Check-out",
-                Width = 120
-            });
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Notes",
-                HeaderText = "Ghi chú",
-                Width = 150
-            });
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Status",
-                HeaderText = "Trạng thái",
-                Width = 100
-            });
-
-            // Ẩn BookingID nhưng vẫn giữ để truy vấn
-            dgvBookings.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "BookingID",
-                Name = "BookingID",
-                HeaderText = "BookingID",
-                Visible = false
-            });
-        }
-
-        private void dgvBookings_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-
-            var bookingRoomIdObj = dgvBookings.Rows[e.RowIndex].Cells["BookingID"].Value;
-            if (bookingRoomIdObj == null) return;
-
-            var bookingRoomId = Convert.ToInt32(bookingRoomIdObj);
-
-            var booking = _bookingService.GetBookingById(bookingRoomId);
-            if (booking == null)
-            {
-                MessageBox.Show("Không tìm thấy booking");
-                return;
-            }
-
-            var customer = _customerService.getCustomerByCustomerID(booking.CustomerID);
-            if (customer != null)
-            {
-                _currentCustomer = customer;
-                LoadCustomerInfo(customer);
-            }
-
-            var roomNumber = dgvBookings.Rows[e.RowIndex].Cells["RoomNumber"].Value?.ToString() ?? "";
-            ShowInvoiceDetails(booking, roomNumber);
-        }
-
-        private void ShowInvoiceDetails(Booking booking, string roomNumber)
-        {
-            try
-            {
-                var invoice = _invoiceService.GetInvoiceByBookingID(booking.BookingID);
+                var invoice = _invoiceService.GetInvoiceByBookingID(bookingRoomId);
                 if (invoice == null)
                 {
-                    MessageBox.Show("Không tìm thấy hóa đơn cho booking này");
-                    return;
-                }
-                if (_currentCustomer == null)
-                {
-                    MessageBox.Show("Không có thông tin khách hàng hiện tại");
+                    MessageBox.Show("Không tìm thấy hóa đơn cho booking này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // ==== Chuẩn UI: tạo VM & bind vào UcInvoice (không dùng ctor 5 tham số) ====
-                var vm = new UcInvoice.InvoiceVm
-                {
-                    CustomerName = _currentCustomer.FullName ?? "",
-                    CustomerIdNumber = _currentCustomer.IDNumber ?? "",
-                    CheckIn = booking.CheckInDate ?? default,
-                    CheckOut = booking.CheckOutDate ?? default,
-
-                    // Tuỳ entity Invoice của bạn, nếu có các field này thì gán; nếu không, để 0/"" là OK
-                    RoomCharge = 0m,
-                    ServiceCharge = 0m,
-                    Discount = 0m,
-                    Surcharge = 0m,
-                    Total = 0m,
-                    EmployeeName = "",    // có thể lấy từ invoice hoặc user hiện tại
-                    PaymentMethod = "",    // nếu invoice có thì gán
-                    Note = booking.Notes ?? ""
-                };
-
-                var roomRows = new List<UcInvoice.RoomRow>
-                {
-                    new UcInvoice.RoomRow
+                var usedSvcs = _bookingService.GetUsedServicesByBookingID(bookingRoomId) ?? new List<UsedServiceDto>();
+                var serviceRows = usedSvcs
+                    .GroupBy(x => new { x.ServiceName, x.Price })
+                    .Select(g => new frmInvoice.InvoiceServiceRow
                     {
-                        RoomNumber = roomNumber,
-                        PricingType = "", // nếu muốn thì tra qua PricingRepository rồi gán
-                        CheckIn = booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "",
+                        ServiceName = g.Key.ServiceName,
+                        Price = g.Key.Price,
+                        Quantity = g.Sum(x => x.Quantity)
+                    })
+                    .OrderBy(x => x.ServiceName)
+                    .ToList();
+
+                string pricingType = "";
+                try { pricingType = new RoomPricingRepository().GetPricingTypeById(booking.PricingID)?.PricingType ?? ""; } catch { }
+
+                var resolvedRoom = !string.IsNullOrWhiteSpace(roomNumber)
+                    ? roomNumber
+                    : new BookingRepository().GetRoomNumberById(booking.RoomID);
+
+                var roomRows = new List<frmInvoice.RoomRow>
+                {
+                    new frmInvoice.RoomRow
+                    {
+                        RoomNumber = resolvedRoom,
+                        PricingType = pricingType,
+                        CheckIn  = booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "",
                         CheckOut = booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? ""
                     }
                 };
 
-                // Nếu muốn hiển thị dịch vụ đã dùng, map từ DTO của bạn tại đây
-                var serviceRows = new List<UcInvoice.InvoiceServiceRow>();
-                // Ví dụ (nếu có BLL method):
-                // var used = _bookingService.GetUsedServicesByBookingID(booking.BookingID);
-                // foreach (var s in used) serviceRows.Add(new UcInvoice.InvoiceServiceRow { ServiceName = s.ServiceName, Price = s.UnitPrice, Quantity = s.Quantity });
+                decimal roomCharge = 0m;
+                try { roomCharge = _bookingService.GetRoomCharge(booking); } catch { }
+                decimal serviceCharge = serviceRows.Sum(x => x.Total);
 
-                var payRows = new List<Payment>(); // nếu có lịch sử thanh toán thì fill
+                decimal discount = invoice.Discount;
+                decimal surcharge = invoice.Surcharge;
+                decimal total = invoice.TotalAmount > 0 ? invoice.TotalAmount : (roomCharge + serviceCharge + surcharge - discount);
 
-                var invoiceControl = new UcInvoice();
-                invoiceControl.BindFrom(vm, serviceRows, roomRows, payRows);
-
-                var popupForm = new Form
+                string employeeName = "";
+                try
                 {
-                    Text = $"Hóa đơn - Phòng {roomNumber}",
-                    Size = new Size(648, 1116),
-                    StartPosition = FormStartPosition.CenterScreen
+                    var full = _invoiceService.GetFullNameByInvoiceID(invoice.InvoiceID);
+                    employeeName = string.IsNullOrWhiteSpace(full) ? "" : full;
+                }
+                catch { }
+
+                var payments = _invoiceService.GetPaymentsByInvoiceId(invoice.InvoiceID) ?? new List<Payment>();
+                var lastMethod = payments.LastOrDefault()?.Method ?? "";
+
+                var vm = new frmInvoice.InvoiceVm
+                {
+                    CustomerName = _currentCustomer?.FullName ?? "",
+                    CustomerIdNumber = _currentCustomer?.IDNumber ?? "",
+                    CheckIn = booking.CheckInDate ?? default,
+                    CheckOut = booking.CheckOutDate ?? default,
+                    RoomCharge = roomCharge,
+                    ServiceCharge = serviceCharge,
+                    Discount = discount,
+                    Surcharge = surcharge,
+                    Total = total,
+                    EmployeeName = string.IsNullOrWhiteSpace(employeeName) ? "—" : employeeName,
+                    PaymentMethod = string.IsNullOrWhiteSpace(lastMethod) ? "—" : lastMethod,
+                    Note = booking.Notes ?? ""
                 };
 
-                popupForm.Controls.Add(invoiceControl);
-                invoiceControl.Dock = DockStyle.Fill;
-                popupForm.ShowDialog();
+                var f = new frmInvoice
+                {
+                    StartPosition = FormStartPosition.CenterParent,
+                    Text = $"Hóa đơn - Phòng {resolvedRoom}"
+                };
+                f.BindFrom(vm, serviceRows, roomRows, payments);
+                f.ShowDialog(this);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi hiển thị hóa đơn: {ex.Message}");
+                MessageBox.Show($"Lỗi hiển thị hóa đơn: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            LoadTop20Bookings();
-        }
-
-        private void LoadTop20Bookings()
-        {
-            try
-            {
-                var bookingDisplays = _bookingService.GetTop20LatestBookingDisplays();
-                dgvBookings.DataSource = bookingDisplays;
-                dgvBookings.AutoGenerateColumns = false;
-                ConfigureDataGridView();
-
-                _currentCustomer = null;
-                txtName.Text = txtGender.Text = txtPhone.Text = txtEmail.Text = txtDiachi.Text = "";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải top 20 booking: {ex.Message}");
-            }
-        }
-
-        private void frmInvoiceManage_Load(object sender, EventArgs e)
-        {
-            LoadTop20Bookings();
-        }
-
-        // ===== Stub handler để khớp với Designer nếu đã wire =====
-        private void dgvBookings_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // không làm gì; để tránh lỗi compile nếu Designer đã đăng ký event này
         }
     }
 }

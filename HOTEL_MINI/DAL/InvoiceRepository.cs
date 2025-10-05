@@ -11,8 +11,6 @@ namespace HOTEL_MINI.DAL
     public class InvoiceRepository
     {
         private readonly string _stringConnection;
-
-        // Chuẩn tiền tệ: DECIMAL(18,2)
         private const byte PRECISION = 18;
         private const byte SCALE = 2;
 
@@ -21,7 +19,6 @@ namespace HOTEL_MINI.DAL
             _stringConnection = ConfigHelper.GetConnectionString();
         }
 
-        // ---- helpers ----
         private static void AddDec(SqlCommand cmd, string name, decimal value)
         {
             var p = cmd.Parameters.Add(name, SqlDbType.Decimal);
@@ -37,8 +34,7 @@ namespace HOTEL_MINI.DAL
                 cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
                 var o = cmd.ExecuteScalar();
                 if (o == null || o == DBNull.Value) return false;
-                var n = Convert.ToInt32(o);
-                return n > 0;
+                return Convert.ToInt32(o) > 0;
             }
         }
 
@@ -68,10 +64,6 @@ namespace HOTEL_MINI.DAL
                 return (o == null || o == DBNull.Value) ? 0 : Convert.ToInt32(o);
             }
         }
-
-        // ============================================================
-        //                          REPORTS
-        // ============================================================
 
         public List<RevenueRoomDTO> GetRevenueByRoom(int month, int year)
         {
@@ -259,10 +251,6 @@ WHERE Status IN ('Paid', 'PartiallyPaid')
             return dt;
         }
 
-        // ============================================================
-        //                            CRUD
-        // ============================================================
-
         public List<Invoice> getAllInvoices()
         {
             var list = new List<Invoice>();
@@ -302,7 +290,6 @@ FROM Invoices", conn))
             {
                 conn.Open();
 
-                // validate trước khi insert để không nổ FK/UNIQUE
                 EnsureBookingExists(conn, invoice.BookingID);
                 EnsureUserExists(conn, invoice.IssuedBy);
                 if (InvoiceExistsForBooking(conn, invoice.BookingID))
@@ -431,7 +418,6 @@ FROM Invoices WHERE BookingID=@id ORDER BY InvoiceID DESC", conn))
                 var existed = GetInvoiceByHeaderBookingID(header.BookingID);
                 if (existed == null)
                 {
-                    // chọn IssuedBy nếu thiếu
                     var issuer = header.IssuedBy > 0 ? header.IssuedBy : GetBookingCreatedBy(conn, header.BookingID);
                     if (issuer <= 0) issuer = 1;
                     EnsureUserExists(conn, issuer);
@@ -473,10 +459,6 @@ WHERE InvoiceID = @Id", conn))
             }
         }
 
-        // ============================================================
-        //                     Totals / Status helpers
-        // ============================================================
-
         public decimal GetPaidAmount(int invoiceId)
         {
             using (var conn = new SqlConnection(_stringConnection))
@@ -503,44 +485,43 @@ WHERE InvoiceID = @Id", conn))
         }
 
         public int CreateOrGetOpenInvoice(
-            int bookingHeaderId, decimal roomCharge, decimal serviceCharge,
-            decimal discount, decimal surcharge, int issuedByUserIfPaid = 0)
+            int bookingId,
+            decimal roomCharge,
+            decimal serviceCharge,
+            decimal discount,
+            decimal surcharge,
+            int issuedByUserIfPaid = 0)
         {
             using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
+                bookingId = ResolveHeaderBookingId(conn, bookingId);
+                EnsureBookingExists(conn, bookingId);
 
-                // Validate booking tồn tại
-                EnsureBookingExists(conn, bookingHeaderId);
-
-                // Nếu đã có invoice cho booking (bất cứ trạng thái) → dùng lại
                 using (var findAny = new SqlCommand(
                     "SELECT TOP 1 InvoiceID FROM Invoices WITH (UPDLOCK, ROWLOCK) WHERE BookingID=@B ORDER BY InvoiceID DESC",
                     conn))
                 {
-                    findAny.Parameters.Add("@B", SqlDbType.Int).Value = bookingHeaderId;
+                    findAny.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
                     var any = findAny.ExecuteScalar();
                     if (any != null && any != DBNull.Value)
                         return Convert.ToInt32(any);
                 }
 
-                // Tính tổng
                 var total = roomCharge + serviceCharge + surcharge - discount;
                 if (total < 0) total = 0;
 
-                // IssuedBy
-                var issuer = issuedByUserIfPaid > 0 ? issuedByUserIfPaid : GetBookingCreatedBy(conn, bookingHeaderId);
+                var issuer = issuedByUserIfPaid > 0 ? issuedByUserIfPaid : GetBookingCreatedBy(conn, bookingId);
                 if (issuer <= 0) issuer = 1;
                 EnsureUserExists(conn, issuer);
 
-                // Tạo invoice mới
                 using (var insert = new SqlCommand(@"
 INSERT INTO Invoices
 (BookingID, RoomCharge, ServiceCharge, Discount, Surcharge, TotalAmount, IssuedAt, IssuedBy, Status, Note)
 OUTPUT INSERTED.InvoiceID
 VALUES(@B, @RC, @SC, @D, @S, @T, GETDATE(), @U, 'Unpaid', NULL);", conn))
                 {
-                    insert.Parameters.Add("@B", SqlDbType.Int).Value = bookingHeaderId;
+                    insert.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
                     AddDec(insert, "@RC", roomCharge);
                     AddDec(insert, "@SC", serviceCharge);
                     AddDec(insert, "@D", discount);
@@ -626,6 +607,7 @@ GROUP BY i.TotalAmount", conn))
                 }
             }
         }
+
         public List<Payment> GetPaymentsByInvoiceId(int invoiceId)
         {
             var list = new List<Payment>();
@@ -655,6 +637,166 @@ ORDER BY PaymentDate DESC, PaymentID DESC", conn))
                 }
             }
             return list;
+        }
+
+        public class InvoiceListItem
+        {
+            public int InvoiceID { get; set; }
+            public int BookingID { get; set; }
+            public decimal RoomCharge { get; set; }
+            public decimal ServiceCharge { get; set; }
+            public decimal Surcharge { get; set; }
+            public decimal Discount { get; set; }
+            public decimal TotalAmount { get; set; }
+            public DateTime IssuedAt { get; set; }
+            public int IssuedBy { get; set; }
+            public string Status { get; set; }
+            public string Note { get; set; }
+            public string CustomerName { get; set; }
+            public string CustomerIDNumber { get; set; }
+        }
+
+        public List<InvoiceListItem> GetAllInvoicesWithCustomer()
+        {
+            const string sql = @"
+SELECT 
+    i.InvoiceID, i.BookingID, i.RoomCharge, i.ServiceCharge, i.Surcharge, i.Discount, i.TotalAmount,
+    i.IssuedAt, i.IssuedBy, i.Status, i.Note,
+    c.FullName AS CustomerName, c.IDNumber AS CustomerIDNumber
+FROM Invoices i
+JOIN Bookings b  ON b.BookingID = i.BookingID
+JOIN Customers c ON c.CustomerID = b.CustomerID
+ORDER BY i.InvoiceID DESC;";
+
+            var list = new List<InvoiceListItem>();
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new InvoiceListItem
+                        {
+                            InvoiceID = rd.GetInt32(0),
+                            BookingID = rd.GetInt32(1),
+                            RoomCharge = rd.GetDecimal(2),
+                            ServiceCharge = rd.GetDecimal(3),
+                            Surcharge = rd.GetDecimal(4),
+                            Discount = rd.GetDecimal(5),
+                            TotalAmount = rd.GetDecimal(6),
+                            IssuedAt = rd.GetDateTime(7),
+                            IssuedBy = rd.GetInt32(8),
+                            Status = rd.IsDBNull(9) ? "" : rd.GetString(9),
+                            Note = rd.IsDBNull(10) ? null : rd.GetString(10),
+                            CustomerName = rd.IsDBNull(11) ? "" : rd.GetString(11),
+                            CustomerIDNumber = rd.IsDBNull(12) ? "" : rd.GetString(12),
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        public List<InvoiceListItem> GetInvoicesByCustomerNumber(string idNumber)
+        {
+            const string sql = @"
+SELECT 
+    i.InvoiceID, i.BookingID, i.RoomCharge, i.ServiceCharge, i.Surcharge, i.Discount, i.TotalAmount,
+    i.IssuedAt, i.IssuedBy, i.Status, i.Note,
+    c.FullName AS CustomerName, c.IDNumber AS CustomerIDNumber
+FROM Customers c
+JOIN Bookings b  ON b.CustomerID = c.CustomerID
+JOIN Invoices i  ON i.BookingID = b.BookingID
+WHERE c.IDNumber = @ID
+ORDER BY i.InvoiceID DESC;";
+
+            var list = new List<InvoiceListItem>();
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.Add("@ID", SqlDbType.NVarChar, 50).Value = (object)idNumber ?? DBNull.Value;
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new InvoiceListItem
+                        {
+                            InvoiceID = rd.GetInt32(0),
+                            BookingID = rd.GetInt32(1),
+                            RoomCharge = rd.GetDecimal(2),
+                            ServiceCharge = rd.GetDecimal(3),
+                            Surcharge = rd.GetDecimal(4),
+                            Discount = rd.GetDecimal(5),
+                            TotalAmount = rd.GetDecimal(6),
+                            IssuedAt = rd.GetDateTime(7),
+                            IssuedBy = rd.GetInt32(8),
+                            Status = rd.IsDBNull(9) ? "" : rd.GetString(9),
+                            Note = rd.IsDBNull(10) ? null : rd.GetString(10),
+                            CustomerName = rd.IsDBNull(11) ? "" : rd.GetString(11),
+                            CustomerIDNumber = rd.IsDBNull(12) ? "" : rd.GetString(12),
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+        private static int ResolveHeaderBookingId(SqlConnection conn, int maybeHeaderOrLineId)
+        {
+            using (var c1 = new SqlCommand("SELECT COUNT(1) FROM Bookings WHERE BookingID=@id", conn))
+            {
+                c1.Parameters.Add("@id", SqlDbType.Int).Value = maybeHeaderOrLineId;
+                if (Convert.ToInt32(c1.ExecuteScalar() ?? 0) > 0) return maybeHeaderOrLineId;
+            }
+            using (var c2 = new SqlCommand("SELECT BookingID FROM BookingRooms WHERE BookingRoomID=@id", conn))
+            {
+                c2.Parameters.Add("@id", SqlDbType.Int).Value = maybeHeaderOrLineId;
+                var o = c2.ExecuteScalar();
+                if (o != null && o != DBNull.Value) return Convert.ToInt32(o);
+            }
+            throw new InvalidOperationException($"ID {maybeHeaderOrLineId} không tồn tại ở Bookings/BookingRooms.");
+        }
+        public InvoiceListItem GetInvoiceWithCustomerByInvoiceId(int invoiceId)
+        {
+            const string sql = @"
+SELECT 
+    i.InvoiceID, i.BookingID, i.RoomCharge, i.ServiceCharge, i.Surcharge, i.Discount, i.TotalAmount,
+    i.IssuedAt, i.IssuedBy, i.Status, i.Note,
+    c.FullName AS CustomerName, c.IDNumber AS CustomerIDNumber
+FROM Invoices i
+JOIN Bookings b  ON b.BookingID = i.BookingID
+JOIN Customers c ON c.CustomerID = b.CustomerID
+WHERE i.InvoiceID = @I;";
+
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    if (!rd.Read()) return null;
+
+                    return new InvoiceListItem
+                    {
+                        InvoiceID = rd.GetInt32(0),
+                        BookingID = rd.GetInt32(1),
+                        RoomCharge = rd.GetDecimal(2),
+                        ServiceCharge = rd.GetDecimal(3),
+                        Surcharge = rd.GetDecimal(4),
+                        Discount = rd.GetDecimal(5),
+                        TotalAmount = rd.GetDecimal(6),
+                        IssuedAt = rd.GetDateTime(7),
+                        IssuedBy = rd.GetInt32(8),
+                        Status = rd.IsDBNull(9) ? "" : rd.GetString(9),
+                        Note = rd.IsDBNull(10) ? null : rd.GetString(10),
+                        CustomerName = rd.IsDBNull(11) ? "" : rd.GetString(11),
+                        CustomerIDNumber = rd.IsDBNull(12) ? "" : rd.GetString(12),
+                    };
+                }
+            }
         }
     }
 }

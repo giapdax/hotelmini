@@ -167,12 +167,6 @@
     <Compile Include="Forms\Controls\UcBookingRoom.Designer.cs">
       <DependentUpon>UcBookingRoom.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Controls\UcInvoice.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\UcInvoice.Designer.cs">
-      <DependentUpon>UcInvoice.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Controls\UcRevenue.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -245,6 +239,12 @@
     <Compile Include="Forms\frmCustomer.Designer.cs">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmInvoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmInvoice.Designer.cs">
+      <DependentUpon>frmInvoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmInvoiceManage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -314,6 +314,7 @@
     <Compile Include="Model\Entity\Service.cs" />
     <Compile Include="Model\Entity\User.cs" />
     <Compile Include="Model\Response\BookingDisplay.cs" />
+    <Compile Include="Model\Response\BookingFlatDisplay.cs" />
     <Compile Include="Model\Response\public class InvoiceDisplay.cs" />
     <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
@@ -331,9 +332,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcBookingRoom.resx">
       <DependentUpon>UcBookingRoom.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Controls\UcInvoice.resx">
-      <DependentUpon>UcInvoice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Controls\UcRevenue.resx">
       <DependentUpon>UcRevenue.cs</DependentUpon>

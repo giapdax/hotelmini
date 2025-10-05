@@ -1,16 +1,15 @@
-﻿namespace HOTEL_MINI.Forms.Controls
+﻿namespace HOTEL_MINI.Forms
 {
-    partial class UcInvoice
+    partial class frmInvoice
     {
         private System.ComponentModel.IContainer components = null;
-
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
+        #region Windows Form Designer generated code
         private void InitializeComponent()
         {
             this.lblCusName = new System.Windows.Forms.Label();
@@ -28,6 +27,8 @@
             this.groupTotals = new System.Windows.Forms.GroupBox();
             this.lblRoomCharge = new System.Windows.Forms.Label();
             this.txtRoomCharge = new System.Windows.Forms.TextBox();
+            this.lblServiceTotal = new System.Windows.Forms.Label();
+            this.txtServiceCharge = new System.Windows.Forms.TextBox();
             this.lblSurcharge = new System.Windows.Forms.Label();
             this.txtSurcharge = new System.Windows.Forms.TextBox();
             this.lblDiscount = new System.Windows.Forms.Label();
@@ -44,13 +45,18 @@
             this.btnExportInvoice = new System.Windows.Forms.Button();
             this.labelPayments = new System.Windows.Forms.Label();
             this.dgvPayments = new System.Windows.Forms.DataGridView();
-            this.lblServiceTotal = new System.Windows.Forms.Label();
-            this.txtServiceCharge = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsedService)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRooms)).BeginInit();
             this.groupTotals.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPayments)).BeginInit();
             this.SuspendLayout();
+            // 
+            // frmInvoice
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(730, 840);
+            this.Name = "frmInvoice";
+            this.Text = "Hóa đơn";
             // 
             // lblCusName
             // 
@@ -84,7 +90,7 @@
             this.txtCusId.Size = new System.Drawing.Size(170, 26);
             this.txtCusId.TabIndex = 3;
             // 
-            // label2 (Check-in)
+            // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(16, 50);
@@ -100,7 +106,7 @@
             this.txtCheckin.Size = new System.Drawing.Size(200, 26);
             this.txtCheckin.TabIndex = 5;
             // 
-            // label3 (Checkout)
+            // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(340, 50);
@@ -136,7 +142,7 @@
             this.dgvUsedService.Size = new System.Drawing.Size(690, 160);
             this.dgvUsedService.TabIndex = 9;
             // 
-            // label4 (Rooms)
+            // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(16, 285);
@@ -343,10 +349,8 @@
             this.dgvPayments.Size = new System.Drawing.Size(690, 130);
             this.dgvPayments.TabIndex = 22;
             // 
-            // UcInvoice1
+            // add controls
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvPayments);
             this.Controls.Add(this.labelPayments);
             this.Controls.Add(this.btnExportInvoice);
@@ -370,8 +374,9 @@
             this.Controls.Add(this.lblIdNumber);
             this.Controls.Add(this.txtCusName);
             this.Controls.Add(this.lblCusName);
-            this.Name = "UcInvoice1";
-            this.Size = new System.Drawing.Size(730, 840);
+            // 
+            // end
+            // 
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsedService)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRooms)).EndInit();
             this.groupTotals.ResumeLayout(false);
@@ -390,13 +395,10 @@
         private System.Windows.Forms.TextBox txtCheckin;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtCheckout;
-
         private System.Windows.Forms.Label lblServiceChange;
         private System.Windows.Forms.DataGridView dgvUsedService;
-
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView dgvRooms;
-
         private System.Windows.Forms.GroupBox groupTotals;
         private System.Windows.Forms.Label lblRoomCharge;
         private System.Windows.Forms.TextBox txtRoomCharge;
@@ -408,17 +410,14 @@
         private System.Windows.Forms.TextBox txtDiscount;
         private System.Windows.Forms.Label lblTotalAmount;
         private System.Windows.Forms.TextBox txtTotalAmount;
-
         private System.Windows.Forms.Label lblIssuedBy;
         private System.Windows.Forms.TextBox txtEmployeeName;
         private System.Windows.Forms.Label lblPaymentMethod;
         private System.Windows.Forms.TextBox txtPaymentMethod;
         private System.Windows.Forms.Label lblNote;
         private System.Windows.Forms.TextBox txtNote;
-
         private System.Windows.Forms.Button btnBack;
         private System.Windows.Forms.Button btnExportInvoice;
-
         private System.Windows.Forms.Label labelPayments;
         private System.Windows.Forms.DataGridView dgvPayments;
     }

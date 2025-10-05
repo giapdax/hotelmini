@@ -1,9 +1,11 @@
-﻿using HOTEL_MINI.DAL;
+﻿using HOTEL_MINI.Common;
+using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace HOTEL_MINI.BLL
 {
@@ -199,6 +201,36 @@ namespace HOTEL_MINI.BLL
             }
 
             return mapRoomToLine;
+        }
+        public List<BookingFlatDisplay> GetAllBookingFlatDisplays()
+        {
+            return _bookingRepo.GetAllBookingFlatDisplays();
+        }
+        public List<int> GetBookingRoomIdsByHeader(int headerBookingId)
+    {
+            Ensure(headerBookingId > 0, "Header BookingID không hợp lệ.");
+            return _bookingRepo.GetBookingRoomIdsByHeader(headerBookingId);
+        }
+        public int CreateInvoiceFromRoomLine(int bookingRoomId, int issuedBy)
+        {
+            using (var conn = new SqlConnection(ConfigHelper.GetConnectionString()))
+            {
+                conn.Open();
+                int bookingId;
+                using (var cmd = new SqlCommand(
+                    "SELECT BookingID FROM BookingRooms WHERE BookingRoomID=@id", conn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = bookingRoomId;
+                    var o = cmd.ExecuteScalar();
+                    if (o == null) throw new InvalidOperationException($"BookingRoomID {bookingRoomId} không tồn tại.");
+                    bookingId = Convert.ToInt32(o);
+                }
+
+                // gọi repo theo BookingID (header)
+                var invRepo = new InvoiceRepository();
+                return invRepo.CreateOrGetOpenInvoice(
+                    bookingId, 0m, 0m, 0m, 0m, issuedBy);
+            }
         }
     }
 }

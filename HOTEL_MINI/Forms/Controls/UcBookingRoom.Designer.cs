@@ -21,7 +21,7 @@ namespace HOTEL_MINI.Forms.Controls
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtCCCD = new System.Windows.Forms.TextBox();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             this.cboStatusBooking = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -82,12 +82,12 @@ namespace HOTEL_MINI.Forms.Controls
             // tableLayoutPanel5
             // 
             this.tableLayoutPanel5.ColumnCount = 3;
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 243F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
             this.tableLayoutPanel5.Controls.Add(this.label3, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.txtCCCD, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.cboStatusBooking, 2, 0);
+            this.tableLayoutPanel5.Controls.Add(this.txtSearch, 1, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 29);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -100,29 +100,29 @@ namespace HOTEL_MINI.Forms.Controls
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 3);
+            this.label3.Location = new System.Drawing.Point(57, 3);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 20);
+            this.label3.Size = new System.Drawing.Size(183, 20);
             this.label3.TabIndex = 0;
-            this.label3.Text = "Nhập CCCD:";
+            this.label3.Text = "Nhập thông tin tìm kiếm: ";
             // 
-            // txtCCCD
+            // txtSearch
             // 
-            this.txtCCCD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCCCD.Location = new System.Drawing.Point(113, 0);
-            this.txtCCCD.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.txtCCCD.Name = "txtCCCD";
-            this.txtCCCD.Size = new System.Drawing.Size(792, 26);
-            this.txtCCCD.TabIndex = 1;
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(246, 0);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(583, 26);
+            this.txtSearch.TabIndex = 1;
             // 
             // cboStatusBooking
             // 
             this.cboStatusBooking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboStatusBooking.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboStatusBooking.Location = new System.Drawing.Point(911, 0);
+            this.cboStatusBooking.Location = new System.Drawing.Point(835, 0);
             this.cboStatusBooking.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cboStatusBooking.Name = "cboStatusBooking";
-            this.cboStatusBooking.Size = new System.Drawing.Size(114, 28);
+            this.cboStatusBooking.Size = new System.Drawing.Size(190, 28);
             this.cboStatusBooking.TabIndex = 2;
             // 
             // tableLayoutPanel3
@@ -221,7 +221,7 @@ namespace HOTEL_MINI.Forms.Controls
         private Label label1;
         private TableLayoutPanel tableLayoutPanel5;
         private Label label3;
-        private TextBox txtCCCD;
+        private TextBox txtSearch;
         private ComboBox cboStatusBooking;
         private TableLayoutPanel tableLayoutPanel3;
         private DataGridView dataGridView1;

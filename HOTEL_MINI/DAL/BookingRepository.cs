@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 
 namespace HOTEL_MINI.DAL
 {
@@ -291,7 +292,65 @@ VALUES(@I, @A, @D, @M, @S);";
                 cmd.ExecuteNonQuery();
             }
         }
+        // DAL
+        public List<BookingFlatDisplay> GetAllBookingFlatDisplays()
+        {
+            const string sql = @"
+SELECT 
+    b.BookingID AS HeaderBookingID,
+    br.BookingRoomID,
+    c.IDNumber AS CustomerIDNumber,
+    r.RoomNumber,
+    u.FullName AS EmployeeName,
+    b.BookingDate,
+    br.CheckInDate,
+    br.CheckOutDate,
+    ISNULL(br.Note, b.Notes) AS Notes,
+    br.Status
+FROM Bookings b
+JOIN Customers c ON c.CustomerID = b.CustomerID
+JOIN BookingRooms br ON br.BookingID = b.BookingID
+JOIN Rooms r ON r.RoomID = br.RoomID
+LEFT JOIN Users u ON u.UserID = b.CreatedBy
+ORDER BY b.BookingDate DESC;";
 
+            return QueryList(_cs, sql, null, rd => new BookingFlatDisplay
+            {
+                HeaderBookingID = rd.GetInt32(0),
+                BookingRoomID = rd.GetInt32(1),
+                CustomerIDNumber = rd.GetString(2),
+                RoomNumber = rd.GetString(3),
+                EmployeeName = rd.IsDBNull(4) ? "" : rd.GetString(4),
+                BookingDate = rd.GetDateTime(5),
+                CheckInDate = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                CheckOutDate = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
+                Notes = rd.IsDBNull(8) ? "" : rd.GetString(8),
+                Status = rd.IsDBNull(9) ? "" : rd.GetString(9)
+            });
+        }
+        public List<int> GetBookingRoomIdsByHeader(int headerBookingId)
+        {
+            const string sql = @"
+SELECT br.BookingRoomID
+FROM   BookingRooms br
+WHERE  br.BookingID = @H
+ORDER BY br.BookingRoomID;";
+
+            return QueryList(_cs, sql,
+                cmd => cmd.Parameters.AddWithValue("@H", headerBookingId),
+                rd => rd.GetInt32(0));
+        }
+        public int GetBookingIdByBookingRoomId(int bookingRoomId)
+        {
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand("SELECT BookingID FROM BookingRooms WHERE BookingRoomID=@id", conn))
+            {
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = bookingRoomId;
+                conn.Open();
+                var o = cmd.ExecuteScalar();
+                return (o == null || o == DBNull.Value) ? 0 : Convert.ToInt32(o);
+            }
+        }
         // --------------- Tiện ích khác ---------------
         public List<string> GetPaymentMethods()
         {

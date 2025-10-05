@@ -1,4 +1,4 @@
-﻿using HOTEL_MINI.Model.Entity; // Payment entity
+﻿using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,15 +6,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace HOTEL_MINI.Forms.Controls
+namespace HOTEL_MINI.Forms
 {
-    /// <summary>
-    /// UserControl hiển thị hoá đơn (read-only) + export PNG.
-    /// Nhận dữ liệu ViewModel từ tầng BLL/Service/Forms.
-    /// </summary>
-    public partial class UcInvoice : UserControl
+    public partial class frmInvoice : Form
     {
-        // ===== View models (UI only) =====
         public class InvoiceServiceRow
         {
             public string ServiceName { get; set; }
@@ -31,7 +26,6 @@ namespace HOTEL_MINI.Forms.Controls
             public string CheckOut { get; set; }
         }
 
-        // map từ Entity Payment để hiển thị lịch sử thanh toán
         public class PaymentRow
         {
             public DateTime PaymentDate { get; set; }
@@ -56,118 +50,50 @@ namespace HOTEL_MINI.Forms.Controls
             public string Note { get; set; }
         }
 
-        public UcInvoice()
+        public frmInvoice()
         {
             InitializeComponent();
             WireUp();
             SetupGrids();
             MakeReadonlyFields();
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Hóa đơn";
         }
 
         private void WireUp()
         {
-            btnBack.Click += delegate { var f = FindForm(); if (f != null) f.Close(); };
+            btnBack.Click += (s, e) => Close();
             btnExportInvoice.Click += btnExportInvoice_Click;
         }
 
         private void SetupGrids()
         {
-            // ===== Grid dịch vụ
             dgvUsedService.AutoGenerateColumns = false;
             dgvUsedService.AllowUserToAddRows = false;
             dgvUsedService.ReadOnly = true;
             dgvUsedService.Columns.Clear();
+            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServiceName", HeaderText = "Dịch vụ", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Price", HeaderText = "Đơn giá", Width = 110, DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" } });
+            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quantity", HeaderText = "SL", Width = 70 });
+            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Total", HeaderText = "Thành tiền", Width = 130, DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" } });
 
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ServiceName",
-                HeaderText = "Dịch vụ",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Price",
-                HeaderText = "Đơn giá",
-                Width = 110,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
-            });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Quantity",
-                HeaderText = "SL",
-                Width = 70
-            });
-            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Total",
-                HeaderText = "Thành tiền",
-                Width = 130,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
-            });
-
-            // ===== Grid phòng
             dgvRooms.AutoGenerateColumns = false;
             dgvRooms.AllowUserToAddRows = false;
             dgvRooms.ReadOnly = true;
             dgvRooms.Columns.Clear();
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "RoomNumber", HeaderText = "Phòng", Width = 90 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "PricingType", HeaderText = "Giá theo", Width = 120 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "CheckIn", HeaderText = "Check-in", Width = 160 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "CheckOut", HeaderText = "Check-out", Width = 160 });
 
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "RoomNumber",
-                HeaderText = "Phòng",
-                Width = 90
-            });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "PricingType",
-                HeaderText = "Giá theo",
-                Width = 120
-            });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "CheckIn",
-                HeaderText = "Check-in",
-                Width = 160
-            });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "CheckOut",
-                HeaderText = "Check-out",
-                Width = 160
-            });
-
-            // ===== Grid lịch sử thanh toán
             dgvPayments.AutoGenerateColumns = false;
             dgvPayments.AllowUserToAddRows = false;
             dgvPayments.ReadOnly = true;
             dgvPayments.Columns.Clear();
-
-            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "PaymentDate",
-                HeaderText = "Ngày",
-                Width = 170,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" }
-            });
-            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Method",
-                HeaderText = "Hình thức",
-                Width = 140
-            });
-            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Amount",
-                HeaderText = "Số tiền",
-                Width = 140,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
-            });
-            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Status",
-                HeaderText = "Trạng thái",
-                Width = 120
-            });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "PaymentDate", HeaderText = "Ngày", Width = 170, DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" } });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Method", HeaderText = "Hình thức", Width = 140 });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Amount", HeaderText = "Số tiền", Width = 140, DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" } });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Status", HeaderText = "Trạng thái", Width = 120 });
         }
 
         private void MakeReadonlyFields()
@@ -179,7 +105,6 @@ namespace HOTEL_MINI.Forms.Controls
             { tb.ReadOnly = true; tb.TabStop = false; }
         }
 
-        /// <summary>Bind tất cả dữ liệu cho control. `payments` dùng đúng entity Payment.</summary>
         public void BindFrom(
             InvoiceVm vm,
             IEnumerable<InvoiceServiceRow> services,
@@ -188,30 +113,23 @@ namespace HOTEL_MINI.Forms.Controls
         {
             if (vm == null) vm = new InvoiceVm();
 
-            // Header
             txtCusName.Text = vm.CustomerName ?? string.Empty;
             txtCusId.Text = vm.CustomerIdNumber ?? string.Empty;
-            txtCheckin.Text = vm.CheckIn == default(DateTime) ? "" : vm.CheckIn.ToString("dd/MM/yyyy HH:mm");
-            txtCheckout.Text = vm.CheckOut == default(DateTime) ? "" : vm.CheckOut.ToString("dd/MM/yyyy HH:mm");
+            txtCheckin.Text = vm.CheckIn == default ? "" : vm.CheckIn.ToString("dd/MM/yyyy HH:mm");
+            txtCheckout.Text = vm.CheckOut == default ? "" : vm.CheckOut.ToString("dd/MM/yyyy HH:mm");
 
-            // Tiền
             txtRoomCharge.Text = vm.RoomCharge.ToString("N0");
             txtServiceCharge.Text = vm.ServiceCharge.ToString("N0");
             txtSurcharge.Text = vm.Surcharge.ToString("N0");
             txtDiscount.Text = vm.Discount.ToString("N0");
             txtTotalAmount.Text = vm.Total.ToString("N0");
 
-            // Khác
             txtEmployeeName.Text = vm.EmployeeName ?? string.Empty;
             txtPaymentMethod.Text = vm.PaymentMethod ?? string.Empty;
             txtNote.Text = vm.Note ?? string.Empty;
 
-            // Grids
-            dgvUsedService.DataSource =
-                new BindingList<InvoiceServiceRow>((services ?? Enumerable.Empty<InvoiceServiceRow>()).ToList());
-
-            dgvRooms.DataSource =
-                new BindingList<RoomRow>((rooms ?? Enumerable.Empty<RoomRow>()).ToList());
+            dgvUsedService.DataSource = new BindingList<InvoiceServiceRow>((services ?? Enumerable.Empty<InvoiceServiceRow>()).ToList());
+            dgvRooms.DataSource = new BindingList<RoomRow>((rooms ?? Enumerable.Empty<RoomRow>()).ToList());
 
             var payRows = (payments ?? Enumerable.Empty<Payment>())
                 .Select(p => new PaymentRow
@@ -221,7 +139,6 @@ namespace HOTEL_MINI.Forms.Controls
                     Amount = p.Amount,
                     Status = p.Status
                 }).ToList();
-
             dgvPayments.DataSource = new BindingList<PaymentRow>(payRows);
         }
 
@@ -233,15 +150,14 @@ namespace HOTEL_MINI.Forms.Controls
                 FileName = "Invoice_" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".png"
             })
             {
-                if (sfd.ShowDialog() == DialogResult.OK)
+                if (sfd.ShowDialog(this) == DialogResult.OK)
                 {
                     using (var bmp = new Bitmap(Width, Height))
                     {
                         DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
                         bmp.Save(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
                     }
-                    MessageBox.Show("Đã xuất hóa đơn.", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this, "Đã xuất hóa đơn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }

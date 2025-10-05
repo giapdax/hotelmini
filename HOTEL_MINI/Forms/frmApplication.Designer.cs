@@ -393,7 +393,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.On;
             this.MaximumSize = new System.Drawing.Size(1918, 1018);
-            this.MinimumSize = new System.Drawing.Size(1918, 1018);
+            this.MinimumSize = new System.Drawing.Size(1918, 956);
             this.Name = "frmApplication";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ỨNG DỤNG QUẢN LÝ HOTEL MINI";
