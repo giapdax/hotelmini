@@ -2,6 +2,7 @@
 using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace HOTEL_MINI.DAL
@@ -47,7 +48,6 @@ namespace HOTEL_MINI.DAL
 
         public bool AddService(Service service)
         {
-            // thêm Quantity luôn cho nhất quán (giả sử cột có default 0 cũng ok)
             const string query =
                 "INSERT INTO Services (ServiceName, Price, IsActive, Quantity) " +
                 "VALUES (@ServiceName, @Price, @IsActive, @Quantity)";
@@ -55,10 +55,10 @@ namespace HOTEL_MINI.DAL
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
-                command.Parameters.AddWithValue("@Price", service.Price);
-                command.Parameters.AddWithValue("@IsActive", service.IsActive);
-                command.Parameters.AddWithValue("@Quantity", service.Quantity);
+                command.Parameters.Add("@ServiceName", SqlDbType.NVarChar, 100).Value = service.ServiceName;
+                command.Parameters.Add("@Price", SqlDbType.Decimal).Value = service.Price;
+                command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = service.IsActive;
+                command.Parameters.Add("@Quantity", SqlDbType.Int).Value = service.Quantity;
 
                 connection.Open();
                 return command.ExecuteNonQuery() > 0;
@@ -74,11 +74,11 @@ namespace HOTEL_MINI.DAL
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@ServiceID", service.ServiceID);
-                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
-                command.Parameters.AddWithValue("@Price", service.Price);
-                command.Parameters.AddWithValue("@IsActive", service.IsActive);
-                command.Parameters.AddWithValue("@Quantity", service.Quantity);
+                command.Parameters.Add("@ServiceID", SqlDbType.Int).Value = service.ServiceID;
+                command.Parameters.Add("@ServiceName", SqlDbType.NVarChar, 100).Value = service.ServiceName;
+                command.Parameters.Add("@Price", SqlDbType.Decimal).Value = service.Price;
+                command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = service.IsActive;
+                command.Parameters.Add("@Quantity", SqlDbType.Int).Value = service.Quantity;
 
                 connection.Open();
                 return command.ExecuteNonQuery() > 0;
@@ -93,8 +93,8 @@ namespace HOTEL_MINI.DAL
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@ServiceID", serviceId);
-                command.Parameters.AddWithValue("@Quantity", quantity);
+                command.Parameters.Add("@ServiceID", SqlDbType.Int).Value = serviceId;
+                command.Parameters.Add("@Quantity", SqlDbType.Int).Value = quantity;
 
                 connection.Open();
                 return command.ExecuteNonQuery() > 0;
@@ -108,7 +108,7 @@ namespace HOTEL_MINI.DAL
             using (var connection = CreateConnection())
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@ServiceID", serviceId);
+                command.Parameters.Add("@ServiceID", SqlDbType.Int).Value = serviceId;
 
                 connection.Open();
                 return command.ExecuteNonQuery() > 0;
@@ -117,13 +117,30 @@ namespace HOTEL_MINI.DAL
 
         public int GetQuantity(int serviceId)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var conn = CreateConnection())
             using (var cmd = new SqlCommand(
                 "SELECT Quantity FROM Services WHERE ServiceID=@id", conn))
             {
-                cmd.Parameters.AddWithValue("@id", serviceId);
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = serviceId;
                 conn.Open();
-                return (int)(cmd.ExecuteScalar() ?? 0);
+                return Convert.ToInt32(cmd.ExecuteScalar() ?? 0);
+            }
+        }
+
+        // ====== OPTIONAL cho UI: tồn còn lại = stock - used ======
+        public int GetAvailableQuantity(int serviceId)
+        {
+            using (var conn = CreateConnection())
+            using (var cmd = new SqlCommand(@"
+SELECT s.Quantity - ISNULL((SELECT SUM(Quantity) 
+                            FROM BookingRoomServices 
+                            WHERE ServiceID=@sid), 0)
+FROM Services s WHERE s.ServiceID=@sid", conn))
+            {
+                cmd.Parameters.Add("@sid", SqlDbType.Int).Value = serviceId;
+                conn.Open();
+                var o = cmd.ExecuteScalar();
+                return o == null || o == DBNull.Value ? 0 : Math.Max(0, Convert.ToInt32(o));
             }
         }
     }
