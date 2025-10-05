@@ -259,6 +259,12 @@
     <Compile Include="Forms\frmCheckout.Designer.cs">
       <DependentUpon>frmCheckout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmCheckout1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmCheckout1.Designer.cs">
+      <DependentUpon>frmCheckout1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmCustomer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -405,6 +411,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmCheckout.resx">
       <DependentUpon>frmCheckout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmCheckout1.resx">
+      <DependentUpon>frmCheckout1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmCustomer.resx">
       <DependentUpon>frmCustomer.cs</DependentUpon>

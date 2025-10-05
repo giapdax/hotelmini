@@ -330,5 +330,95 @@ namespace HOTEL_MINI.DAL
                 return result?.ToString() ?? "N/A";
             }
         }
+        public Invoice GetInvoiceByHeaderBookingID(int headerBookingId)
+        {
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand("SELECT TOP 1 * FROM Invoices WHERE BookingID=@id", conn))
+            {
+                cmd.Parameters.AddWithValue("@id", headerBookingId);
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    if (!rd.Read()) return null;
+                    return new Invoice
+                    {
+                        InvoiceID = (int)rd["InvoiceID"],
+                        BookingID = (int)rd["BookingID"],
+                        RoomCharge = (decimal)rd["RoomCharge"],
+                        ServiceCharge = (decimal)rd["ServiceCharge"],
+                        Discount = (decimal)rd["Discount"],
+                        Surcharge = (decimal)rd["Surcharge"],
+                        TotalAmount = (decimal)rd["TotalAmount"],
+                        IssuedAt = (DateTime)rd["IssuedAt"],
+                        IssuedBy = (int)rd["IssuedBy"],
+                        Status = rd["Status"].ToString(),
+                        Note = rd["Note"] == DBNull.Value ? null : rd["Note"].ToString()
+                    };
+                }
+            }
+        }
+
+        public int UpsertInvoiceTotals(Invoice header)
+        {
+            // Nếu chưa có -> tạo mới; nếu có -> cập nhật tổng.
+            var existed = GetInvoiceByHeaderBookingID(header.BookingID);
+            if (existed == null)
+            {
+                return AddInvoice(new Invoice
+                {
+                    BookingID = header.BookingID,
+                    RoomCharge = header.RoomCharge,
+                    ServiceCharge = header.ServiceCharge,
+                    Discount = header.Discount,
+                    Surcharge = header.Surcharge,
+                    TotalAmount = header.TotalAmount,
+                    IssuedBy = header.IssuedBy,
+                    IssuedAt = header.IssuedAt == default ? DateTime.Now : header.IssuedAt,
+                    Status = string.IsNullOrWhiteSpace(header.Status) ? "Issued" : header.Status,
+                    Note = header.Note
+                });
+            }
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(@"
+UPDATE Invoices SET 
+    RoomCharge=@RoomCharge, ServiceCharge=@ServiceCharge,
+    Discount=@Discount, Surcharge=@Surcharge, TotalAmount=@TotalAmount
+WHERE InvoiceID=@Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@RoomCharge", header.RoomCharge);
+                cmd.Parameters.AddWithValue("@ServiceCharge", header.ServiceCharge);
+                cmd.Parameters.AddWithValue("@Discount", header.Discount);
+                cmd.Parameters.AddWithValue("@Surcharge", header.Surcharge);
+                cmd.Parameters.AddWithValue("@TotalAmount", header.TotalAmount);
+                cmd.Parameters.AddWithValue("@Id", existed.InvoiceID);
+                conn.Open(); cmd.ExecuteNonQuery();
+                return existed.InvoiceID;
+            }
+        }
+
+        public decimal GetPaidAmount(int invoiceId)
+        {
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(
+                "SELECT ISNULL(SUM(Amount),0) FROM Payments WHERE InvoiceID=@id AND Status IN ('Completed','Success')", conn))
+            {
+                cmd.Parameters.AddWithValue("@id", invoiceId);
+                conn.Open();
+                var o = cmd.ExecuteScalar();
+                return o == null || o == DBNull.Value ? 0m : Convert.ToDecimal(o);
+            }
+        }
+
+        public void UpdateInvoiceStatus(int invoiceId, string status)
+        {
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand("UPDATE Invoices SET Status=@s WHERE InvoiceID=@id", conn))
+            {
+                cmd.Parameters.AddWithValue("@s", status);
+                cmd.Parameters.AddWithValue("@id", invoiceId);
+                conn.Open(); cmd.ExecuteNonQuery();
+            }
+        }
+
     }
 }

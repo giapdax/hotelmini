@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HOTEL_MINI.Model.Response
 {
@@ -17,7 +13,10 @@ namespace HOTEL_MINI.Model.Response
         public string Notes { get; set; }           // Ghi chú
         public string Status { get; set; }          // Trạng thái
 
-        // Format lại cho đẹp khi hiển thị
+        // CCCD/CMND khách (QUAN TRỌNG: phải SELECT trong query)
+        public string CustomerIDNumber { get; set; }
+
+        // Format cho UI nếu bạn muốn xài dạng text thay vì DefaultCellStyle
         public string BookingDateDisplay => BookingDate.ToString("dd/MM/yyyy HH:mm");
         public string CheckInDateDisplay => CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
         public string CheckOutDateDisplay => CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
