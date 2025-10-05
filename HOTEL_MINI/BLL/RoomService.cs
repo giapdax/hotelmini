@@ -118,6 +118,18 @@ namespace HOTEL_MINI.BLL
         }
         public bool IsRoomAvailable(int roomId, DateTime from, DateTime to)
             => roomRepository.IsRoomAvailable(roomId, from, to);
-    }
+        public Room GetRoomById(int roomId)
+        {
+            if (roomId <= 0) throw new ArgumentException("roomId không hợp lệ");
+            return roomRepository.getRoomById(roomId);
+        }
 
+        public string GetRoomNumberById(int roomId)
+        {
+            if (roomId <= 0) return string.Empty;
+            return roomRepository.getRoomNumberById(roomId);
+
+        }
+
+    }
 }

@@ -1,14 +1,15 @@
-﻿using HOTEL_MINI.BLL;
-using HOTEL_MINI.DAL;
-using HOTEL_MINI.Forms.Dialogs;
-using HOTEL_MINI.Model.Response;
-using MiniHotel.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HOTEL_MINI.BLL;
+using HOTEL_MINI.DAL;
+using HOTEL_MINI.Forms;                 // <-- thêm để dùng frmBookingCreate
+using HOTEL_MINI.Forms.Dialogs;
+using HOTEL_MINI.Model.Response;
+using MiniHotel.Models;
 
 namespace HOTEL_MINI.Forms.Controls
 {
@@ -67,12 +68,11 @@ namespace HOTEL_MINI.Forms.Controls
             cboStatus.DataSource = statuses;
             cboStatus.SelectedIndex = 0;
 
-            var types = _rtSvc.GetAllRoomTypes() ?? new List<MiniHotel.Models.RoomTypes>();
-            types.Insert(0, new MiniHotel.Models.RoomTypes { RoomTypeID = 0, TypeName = "(Tất cả loại)" });
+            var types = _rtSvc.GetAllRoomTypes() ?? new List<RoomTypes>();
+            types.Insert(0, new RoomTypes { RoomTypeID = 0, TypeName = "(Tất cả loại)" });
             cboRoomType.DataSource = types;
-            cboRoomType.DisplayMember = nameof(MiniHotel.Models.RoomTypes.TypeName);
-            cboRoomType.ValueMember = nameof(MiniHotel.Models.RoomTypes.RoomTypeID);
-            cboRoomType.SelectedIndex = 0;
+            cboRoomType.DisplayMember = nameof(RoomTypes.TypeName);
+            cboRoomType.ValueMember = nameof(RoomTypes.RoomTypeID);
 
             var today = DateTime.Today;
             dtpFrom.Format = DateTimePickerFormat.Custom;
@@ -140,7 +140,7 @@ namespace HOTEL_MINI.Forms.Controls
         {
             // roomType filter
             int? typeId = null;
-            var rt = cboRoomType.SelectedItem as MiniHotel.Models.RoomTypes;
+            var rt = cboRoomType.SelectedItem as RoomTypes;
             if (rt != null && rt.RoomTypeID > 0) typeId = rt.RoomTypeID;
 
             // selected status from combo
@@ -246,6 +246,66 @@ namespace HOTEL_MINI.Forms.Controls
             }
         }
 
+        //private void DgvRoom_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (e.RowIndex < 0) return;
+
+        //    var item = dgvRoom.Rows[e.RowIndex].DataBoundItem as RoomBrowsePriceItem;
+        //    if (item == null) return;
+
+        //    var colName = dgvRoom.Columns[e.ColumnIndex].Name;
+
+        //    if (colName == "colTime")
+        //    {
+        //        DateTime baseIn = dtpFrom.Value, baseOut = dtpTo.Value;
+        //        Tuple<DateTime, DateTime> t;
+        //        if (_selectedTimes.TryGetValue(item.RoomID, out t)) { baseIn = t.Item1; baseOut = t.Item2; }
+
+        //        using (var dlg = new dlgRoomTime(item.RoomTypeID, baseIn, baseOut, "Phòng " + item.RoomNumber))
+        //        {
+        //            if (dlg.ShowDialog(this.FindForm()) == DialogResult.OK)
+        //            {
+        //                _selectedTimes[item.RoomID] = Tuple.Create(dlg.CheckIn, dlg.CheckOut);
+        //                _selectedPlans[item.RoomID] = new RoomPlan
+        //                {
+        //                    RoomID = item.RoomID,
+        //                    CheckIn = dlg.CheckIn,
+        //                    CheckOut = dlg.CheckOut,
+        //                    PricingType = dlg.PricingType,
+        //                    UnitPrice = dlg.UnitPrice,
+        //                    CalculatedCost = dlg.CalculatedCost,
+        //                    IsReceiveNow = dlg.IsReceiveNow
+        //                };
+        //                dgvRoom.Rows[e.RowIndex].Cells["colPlanType"].Value = dlg.PricingType;
+        //            }
+        //        }
+        //        return;
+        //    }
+
+
+        //    if (colName == "colSelect")
+        //    {
+        //        var cell = dgvRoom.Rows[e.RowIndex].Cells[e.ColumnIndex];
+        //        if (cell.ReadOnly) return;
+
+        //        dgvRoom.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        //        bool tick = cell.Value != null && (bool)cell.Value;
+
+        //        if (tick)
+        //        {
+        //            _selectedRoomIds.Add(item.RoomID);
+        //            if (!_selectedTimes.ContainsKey(item.RoomID))
+        //                _selectedTimes[item.RoomID] = Tuple.Create(dtpFrom.Value, dtpTo.Value);
+        //        }
+        //        else
+        //        {
+        //            _selectedRoomIds.Remove(item.RoomID);
+        //            _selectedTimes.Remove(item.RoomID);
+        //            _selectedPlans.Remove(item.RoomID);
+        //            dgvRoom.Rows[e.RowIndex].Cells["colPlanType"].Value = "";
+        //        }
+        //    }
+        //}
         private void DgvRoom_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -255,33 +315,70 @@ namespace HOTEL_MINI.Forms.Controls
 
             var colName = dgvRoom.Columns[e.ColumnIndex].Name;
 
+            // Xử lý khi click chọn thời gian
             if (colName == "colTime")
             {
-                DateTime baseIn = dtpFrom.Value, baseOut = dtpTo.Value;
-                Tuple<DateTime, DateTime> t;
-                if (_selectedTimes.TryGetValue(item.RoomID, out t)) { baseIn = t.Item1; baseOut = t.Item2; }
+                // Dòng chưa tick thì không được mở dlg
+                if (!_selectedRoomIds.Contains(item.RoomID))
+                {
+                    MessageBox.Show("Hãy tick chọn dòng trước khi chọn thời gian.", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                using (var dlg = new dlgRoomTime(item.RoomTypeID, baseIn, baseOut, "Phòng " + item.RoomNumber))
+                if (!_selectedRoomIds.Any()) return; // an toàn
+
+                // Lấy RoomID dòng đầu tiên tick
+                var firstSelectedRoomId = _selectedRoomIds.First();
+                var firstItem = _roomCache[firstSelectedRoomId];
+
+                // Lấy thời gian base từ kế hoạch trước đó nếu có
+                DateTime baseIn, baseOut;
+                if (_selectedTimes.TryGetValue(firstSelectedRoomId, out var t))
+                {
+                    baseIn = t.Item1;
+                    baseOut = t.Item2;
+                }
+                else
+                {
+                    baseIn = dtpFrom.Value;
+                    baseOut = dtpTo.Value;
+                }
+
+                using (var dlg = new dlgRoomTime(firstItem.RoomTypeID, baseIn, baseOut, "Phòng " + firstItem.RoomNumber))
                 {
                     if (dlg.ShowDialog(this.FindForm()) == DialogResult.OK)
                     {
-                        _selectedTimes[item.RoomID] = Tuple.Create(dlg.CheckIn, dlg.CheckOut);
-                        _selectedPlans[item.RoomID] = new RoomPlan
+                        foreach (var roomId in _selectedRoomIds)
                         {
-                            RoomID = item.RoomID,
-                            CheckIn = dlg.CheckIn,
-                            CheckOut = dlg.CheckOut,
-                            PricingType = dlg.PricingType,
-                            UnitPrice = dlg.UnitPrice,
-                            CalculatedCost = dlg.CalculatedCost,
-                            IsReceiveNow = dlg.IsReceiveNow
-                        };
-                        dgvRoom.Rows[e.RowIndex].Cells["colPlanType"].Value = dlg.PricingType;
+                            // Cập nhật thời gian và kế hoạch cho tất cả dòng tick
+                            _selectedTimes[roomId] = Tuple.Create(dlg.CheckIn, dlg.CheckOut);
+                            _selectedPlans[roomId] = new RoomPlan
+                            {
+                                RoomID = roomId,
+                                CheckIn = dlg.CheckIn,
+                                CheckOut = dlg.CheckOut,
+                                PricingType = dlg.PricingType,
+                                UnitPrice = dlg.UnitPrice,
+                                CalculatedCost = dlg.CalculatedCost,
+                                IsReceiveNow = dlg.IsReceiveNow
+                            };
+
+                            // Cập nhật hiển thị trên grid
+                            var row = dgvRoom.Rows
+                                .Cast<DataGridViewRow>()
+                                .FirstOrDefault(r => ((RoomBrowsePriceItem)r.DataBoundItem).RoomID == roomId);
+
+                            if (row != null)
+                                row.Cells["colPlanType"].Value = dlg.PricingType;
+                        }
                     }
                 }
+
                 return;
             }
 
+            // Xử lý khi tick chọn/deselect
             if (colName == "colSelect")
             {
                 var cell = dgvRoom.Rows[e.RowIndex].Cells[e.ColumnIndex];
@@ -292,12 +389,16 @@ namespace HOTEL_MINI.Forms.Controls
 
                 if (tick)
                 {
+                    // Thêm phòng vào danh sách
                     _selectedRoomIds.Add(item.RoomID);
+
+                    // Khởi tạo thời gian mặc định nếu chưa có
                     if (!_selectedTimes.ContainsKey(item.RoomID))
                         _selectedTimes[item.RoomID] = Tuple.Create(dtpFrom.Value, dtpTo.Value);
                 }
                 else
                 {
+                    // Bỏ phòng khỏi danh sách và xóa dữ liệu liên quan
                     _selectedRoomIds.Remove(item.RoomID);
                     _selectedTimes.Remove(item.RoomID);
                     _selectedPlans.Remove(item.RoomID);
@@ -305,6 +406,7 @@ namespace HOTEL_MINI.Forms.Controls
                 }
             }
         }
+
 
         private void BtnDetail_Click(object sender, EventArgs e)
         {
@@ -373,12 +475,13 @@ namespace HOTEL_MINI.Forms.Controls
                 })
                 .ToList();
 
-            var plans = new Dictionary<int, frmBookingDetail1.RoomPlan>();
+            // Map kế hoạch nội bộ -> kế hoạch của frmBookingCreate
+            var plans = new Dictionary<int, frmBookingCreate.RoomPlan>();
             foreach (var kv in _selectedPlans)
             {
                 if (!_selectedRoomIds.Contains(kv.Key)) continue;
                 var p = kv.Value;
-                plans[kv.Key] = new frmBookingDetail1.RoomPlan
+                plans[kv.Key] = new frmBookingCreate.RoomPlan
                 {
                     RoomID = p.RoomID,
                     CheckIn = p.CheckIn,
@@ -390,7 +493,8 @@ namespace HOTEL_MINI.Forms.Controls
                 };
             }
 
-            using (var f = new frmBookingDetail1(selected, plans, 0, "", CurrentUserId))
+            // MỞ ĐÚNG FORM ĐẶT PHÒNG
+            using (var f = new frmBookingCreate(selected, plans, _currentCustomerId, _currentIdNumber, CurrentUserId))
             {
                 f.StartPosition = FormStartPosition.CenterParent;
                 var rs = f.ShowDialog(this.FindForm());

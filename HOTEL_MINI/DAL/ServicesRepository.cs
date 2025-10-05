@@ -7,140 +7,146 @@ using System.Data.SqlClient;
 
 namespace HOTEL_MINI.DAL
 {
-    internal class ServicesRepository
+    /// <summary>
+    /// Quản lý bảng Services: CRUD + thao tác tồn kho.
+    /// KHÔNG chứa nghiệp vụ "thêm dịch vụ cho phòng".
+    /// </summary>
+    public class ServicesRepository
     {
-        private readonly string _connectionString;
+        private readonly string _cs;
+        public ServicesRepository() { _cs = ConfigHelper.GetConnectionString(); }
+        private SqlConnection Conn() => new SqlConnection(_cs);
 
-        public ServicesRepository()
-        {
-            _connectionString = ConfigHelper.GetConnectionString();
-        }
-
-        private SqlConnection CreateConnection() => new SqlConnection(_connectionString);
-
+        // ===== CRUD nhẹ nhàng =====
         public List<Service> GetAllServices()
         {
-            var services = new List<Service>();
-            const string query =
-                "SELECT ServiceID, ServiceName, Price, IsActive, Quantity FROM Services";
-
-            using (var connection = CreateConnection())
-            using (var command = new SqlCommand(query, connection))
+            var list = new List<Service>();
+            const string sql = "SELECT ServiceID, ServiceName, Price, IsActive, Quantity FROM Services";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                connection.Open();
-                using (var reader = command.ExecuteReader())
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    while (rd.Read())
                     {
-                        services.Add(new Service
+                        list.Add(new Service
                         {
-                            ServiceID = reader.GetInt32(0),
-                            ServiceName = reader.GetString(1),
-                            Price = reader.GetDecimal(2),
-                            IsActive = reader.GetBoolean(3),
-                            Quantity = reader.IsDBNull(4) ? 0 : reader.GetInt32(4)
+                            ServiceID = rd.GetInt32(0),
+                            ServiceName = rd.GetString(1),
+                            Price = rd.GetDecimal(2),
+                            IsActive = rd.GetBoolean(3),
+                            Quantity = rd.IsDBNull(4) ? 0 : rd.GetInt32(4)
                         });
                     }
                 }
             }
-            return services;
+            return list;
         }
 
-        public bool AddService(Service service)
+        public bool AddService(Service s)
         {
-            const string query =
-                "INSERT INTO Services (ServiceName, Price, IsActive, Quantity) " +
-                "VALUES (@ServiceName, @Price, @IsActive, @Quantity)";
-
-            using (var connection = CreateConnection())
-            using (var command = new SqlCommand(query, connection))
+            const string sql = @"
+INSERT INTO Services(ServiceName, Price, IsActive, Quantity)
+VALUES (@Name,@Price,@Active,@Qty);";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                command.Parameters.Add("@ServiceName", SqlDbType.NVarChar, 100).Value = service.ServiceName;
-                command.Parameters.Add("@Price", SqlDbType.Decimal).Value = service.Price;
-                command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = service.IsActive;
-                command.Parameters.Add("@Quantity", SqlDbType.Int).Value = service.Quantity;
-
-                connection.Open();
-                return command.ExecuteNonQuery() > 0;
+                cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = s.ServiceName ?? "";
+                cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = s.Price;
+                cmd.Parameters.Add("@Active", SqlDbType.Bit).Value = s.IsActive;
+                cmd.Parameters.Add("@Qty", SqlDbType.Int).Value = s.Quantity;
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
 
-        public bool UpdateService(Service service)
+        public bool UpdateService(Service s)
         {
-            const string query =
-                "UPDATE Services SET ServiceName=@ServiceName, Price=@Price, " +
-                "IsActive=@IsActive, Quantity=@Quantity WHERE ServiceID=@ServiceID";
-
-            using (var connection = CreateConnection())
-            using (var command = new SqlCommand(query, connection))
+            const string sql = @"
+UPDATE Services
+SET ServiceName=@Name, Price=@Price, IsActive=@Active, Quantity=@Qty
+WHERE ServiceID=@Id;";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                command.Parameters.Add("@ServiceID", SqlDbType.Int).Value = service.ServiceID;
-                command.Parameters.Add("@ServiceName", SqlDbType.NVarChar, 100).Value = service.ServiceName;
-                command.Parameters.Add("@Price", SqlDbType.Decimal).Value = service.Price;
-                command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = service.IsActive;
-                command.Parameters.Add("@Quantity", SqlDbType.Int).Value = service.Quantity;
-
-                connection.Open();
-                return command.ExecuteNonQuery() > 0;
-            }
-        }
-
-        public bool UpdateServiceQuantity(int serviceId, int quantity)
-        {
-            const string query =
-                "UPDATE Services SET Quantity=@Quantity WHERE ServiceID=@ServiceID";
-
-            using (var connection = CreateConnection())
-            using (var command = new SqlCommand(query, connection))
-            {
-                command.Parameters.Add("@ServiceID", SqlDbType.Int).Value = serviceId;
-                command.Parameters.Add("@Quantity", SqlDbType.Int).Value = quantity;
-
-                connection.Open();
-                return command.ExecuteNonQuery() > 0;
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = s.ServiceID;
+                cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = s.ServiceName ?? "";
+                cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = s.Price;
+                cmd.Parameters.Add("@Active", SqlDbType.Bit).Value = s.IsActive;
+                cmd.Parameters.Add("@Qty", SqlDbType.Int).Value = s.Quantity;
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
 
         public bool DeleteService(int serviceId)
         {
-            const string query = "DELETE FROM Services WHERE ServiceID=@ServiceID";
-
-            using (var connection = CreateConnection())
-            using (var command = new SqlCommand(query, connection))
+            const string sql = "DELETE FROM Services WHERE ServiceID=@Id;";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                command.Parameters.Add("@ServiceID", SqlDbType.Int).Value = serviceId;
-
-                connection.Open();
-                return command.ExecuteNonQuery() > 0;
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
 
         public int GetQuantity(int serviceId)
         {
-            using (var conn = CreateConnection())
-            using (var cmd = new SqlCommand(
-                "SELECT Quantity FROM Services WHERE ServiceID=@id", conn))
+            const string sql = "SELECT Quantity FROM Services WHERE ServiceID=@Id;";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.Add("@id", SqlDbType.Int).Value = serviceId;
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
                 conn.Open();
-                return Convert.ToInt32(cmd.ExecuteScalar() ?? 0);
+                var o = cmd.ExecuteScalar();
+                return (o == null || o == DBNull.Value) ? 0 : Convert.ToInt32(o);
             }
         }
 
-        // ====== OPTIONAL cho UI: tồn còn lại = stock - used ======
+        // ===== Tồn khả dụng (chỉ để tham khảo UI) =====
         public int GetAvailableQuantity(int serviceId)
         {
-            using (var conn = CreateConnection())
-            using (var cmd = new SqlCommand(@"
-SELECT s.Quantity - ISNULL((SELECT SUM(Quantity) 
-                            FROM BookingRoomServices 
-                            WHERE ServiceID=@sid), 0)
-FROM Services s WHERE s.ServiceID=@sid", conn))
+            const string sql = @"
+SELECT s.Quantity - ISNULL((SELECT SUM(Quantity) FROM BookingRoomServices WHERE ServiceID=@S),0)
+FROM Services s WHERE s.ServiceID=@S;";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.Add("@sid", SqlDbType.Int).Value = serviceId;
+                cmd.Parameters.Add("@S", SqlDbType.Int).Value = serviceId;
                 conn.Open();
                 var o = cmd.ExecuteScalar();
-                return o == null || o == DBNull.Value ? 0 : Math.Max(0, Convert.ToInt32(o));
+                return (o == null || o == DBNull.Value) ? 0 : Math.Max(0, Convert.ToInt32(o));
+            }
+        }
+
+        // ======== Stock helpers dùng trong TRANSACTION CHA ========
+
+        /// <summary> Cố gắng trừ kho (atomic). Thành công trả true. </summary>
+        public bool TryReserveStock(SqlConnection extConn, SqlTransaction extTran, int serviceId, int amount)
+        {
+            const string sql = @"
+UPDATE Services
+SET Quantity = Quantity - @Amt
+WHERE ServiceID=@Id AND Quantity >= @Amt;";
+            using (var cmd = new SqlCommand(sql, extConn, extTran))
+            {
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
+                cmd.Parameters.Add("@Amt", SqlDbType.Int).Value = amount;
+                return cmd.ExecuteNonQuery() == 1;
+            }
+        }
+
+        /// <summary> Hoàn kho (khi bớt dịch vụ/rollback). </summary>
+        public void ReleaseStock(SqlConnection extConn, SqlTransaction extTran, int serviceId, int amount)
+        {
+            const string sql = @"UPDATE Services SET Quantity = Quantity + @Amt WHERE ServiceID=@Id;";
+            using (var cmd = new SqlCommand(sql, extConn, extTran))
+            {
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
+                cmd.Parameters.Add("@Amt", SqlDbType.Int).Value = amount;
+                cmd.ExecuteNonQuery();
             }
         }
     }

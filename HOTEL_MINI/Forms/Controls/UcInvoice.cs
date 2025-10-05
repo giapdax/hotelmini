@@ -1,158 +1,249 @@
-﻿using HOTEL_MINI.BLL;
-using HOTEL_MINI.Model.Entity;
+﻿using HOTEL_MINI.Model.Entity; // Payment entity
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HOTEL_MINI.Forms.Controls
 {
+    /// <summary>
+    /// UserControl hiển thị hoá đơn (read-only) + export PNG.
+    /// Nhận dữ liệu ViewModel từ tầng BLL/Service/Forms.
+    /// </summary>
     public partial class UcInvoice : UserControl
     {
-        public readonly Booking _booking;
-        public readonly string _roomNumber;
-        public readonly Invoice _invoice;
-        private readonly BookingService _bookingService;
-        private readonly RoomService _roomService;
-        private readonly InvoiceService _invoiceService;
-        private readonly PdfExportService _pdfExportService;
-        private readonly string _customerName;
-        private readonly string _customerID;
+        // ===== View models (UI only) =====
+        public class InvoiceServiceRow
+        {
+            public string ServiceName { get; set; }
+            public decimal Price { get; set; }
+            public int Quantity { get; set; }
+            public decimal Total => Price * Quantity;
+        }
 
-        public UcInvoice(Booking booking, string roomNumber, Invoice invoice, string customerName, string customerID)
+        public class RoomRow
+        {
+            public string RoomNumber { get; set; }
+            public string PricingType { get; set; }
+            public string CheckIn { get; set; }
+            public string CheckOut { get; set; }
+        }
+
+        // map từ Entity Payment để hiển thị lịch sử thanh toán
+        public class PaymentRow
+        {
+            public DateTime PaymentDate { get; set; }
+            public string Method { get; set; }
+            public decimal Amount { get; set; }
+            public string Status { get; set; }
+        }
+
+        public class InvoiceVm
+        {
+            public string CustomerName { get; set; }
+            public string CustomerIdNumber { get; set; }
+            public DateTime CheckIn { get; set; }
+            public DateTime CheckOut { get; set; }
+            public decimal RoomCharge { get; set; }
+            public decimal ServiceCharge { get; set; }
+            public decimal Discount { get; set; }
+            public decimal Surcharge { get; set; }
+            public decimal Total { get; set; }
+            public string EmployeeName { get; set; }
+            public string PaymentMethod { get; set; }
+            public string Note { get; set; }
+        }
+
+        public UcInvoice()
         {
             InitializeComponent();
-
-            _booking = booking;
-            _roomNumber = roomNumber;
-            _invoice = invoice;
-            _customerName = customerName;
-            _customerID = customerID;
-
-            _bookingService = new BookingService();
-            _roomService = new RoomService();
-            _invoiceService = new InvoiceService();
-            _pdfExportService = new PdfExportService(customerName, customerID);
-            LoadInvoiceData();
-            SetupEvents();
-            
+            WireUp();
+            SetupGrids();
+            MakeReadonlyFields();
         }
 
-        private void LoadInvoiceData()
+        private void WireUp()
         {
-            try
-            {
-                // Hiển thị thông tin cơ bản
-                label4.Text = $"Phòng {_roomNumber}";
-                txtCusName.Text = _customerName;
-                txtCusId.Text = _customerID;
-                txtCheckin.Text = _booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
-                txtCheckout.Text = _booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
-
-                // Hiển thị chi phí
-                txtRoomCharge.Text = _invoice.RoomCharge.ToString("N0") + " đ";
-                txtServiceCharge.Text = _invoice.ServiceCharge.ToString("N0") + " đ";
-                txtSurcharge.Text = _invoice.Surcharge.ToString("N0") + " đ";
-                txtDiscount.Text = _invoice.Discount.ToString("N0") + " đ";
-                txtTotalAmount.Text = _invoice.TotalAmount.ToString("N0") + " đ";
-
-                // Hiển thị thông tin thanh toán
-                txtPaymentMethod.Text = _invoiceService.GetPaymentByInvoiceID(_invoice.InvoiceID);
-                txtEmployeeName.Text = _invoiceService.getFullNameByInvoiceID(_invoice.InvoiceID); // Có thể lấy tên từ UserService
-                txtNote.Text = _invoice.Note;
-
-                // Load dịch vụ đã sử dụng
-                LoadUsedServices();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải hóa đơn: {ex.Message}");
-            }
+            btnBack.Click += delegate { var f = FindForm(); if (f != null) f.Close(); };
+            btnExportInvoice.Click += btnExportInvoice_Click;
         }
 
-        private void LoadUsedServices()
+        private void SetupGrids()
         {
-            var usedServices = _bookingService.GetUsedServicesByBookingID(_booking.BookingID);
-            dgvUsedService.DataSource = null;
+            // ===== Grid dịch vụ
             dgvUsedService.AutoGenerateColumns = false;
+            dgvUsedService.AllowUserToAddRows = false;
+            dgvUsedService.ReadOnly = true;
             dgvUsedService.Columns.Clear();
 
-            // Tên dịch vụ
             dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "ServiceName",
-                HeaderText = "Tên dịch vụ"
+                HeaderText = "Dịch vụ",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             });
-
-            // Số lượng
+            dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Price",
+                HeaderText = "Đơn giá",
+                Width = 110,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
+            });
             dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "Quantity",
-                HeaderText = "Số lượng"
+                HeaderText = "SL",
+                Width = 70
             });
-
-            // Tổng tiền
             dgvUsedService.Columns.Add(new DataGridViewTextBoxColumn
             {
-                DataPropertyName = "TotalFormatted",
-                HeaderText = "Thành tiền"
+                DataPropertyName = "Total",
+                HeaderText = "Thành tiền",
+                Width = 130,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
             });
 
-            dgvUsedService.DataSource = usedServices;
+            // ===== Grid phòng
+            dgvRooms.AutoGenerateColumns = false;
+            dgvRooms.AllowUserToAddRows = false;
+            dgvRooms.ReadOnly = true;
+            dgvRooms.Columns.Clear();
+
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "RoomNumber",
+                HeaderText = "Phòng",
+                Width = 90
+            });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "PricingType",
+                HeaderText = "Giá theo",
+                Width = 120
+            });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "CheckIn",
+                HeaderText = "Check-in",
+                Width = 160
+            });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "CheckOut",
+                HeaderText = "Check-out",
+                Width = 160
+            });
+
+            // ===== Grid lịch sử thanh toán
+            dgvPayments.AutoGenerateColumns = false;
+            dgvPayments.AllowUserToAddRows = false;
+            dgvPayments.ReadOnly = true;
+            dgvPayments.Columns.Clear();
+
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "PaymentDate",
+                HeaderText = "Ngày",
+                Width = 170,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" }
+            });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Method",
+                HeaderText = "Hình thức",
+                Width = 140
+            });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Amount",
+                HeaderText = "Số tiền",
+                Width = 140,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
+            });
+            dgvPayments.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Status",
+                HeaderText = "Trạng thái",
+                Width = 120
+            });
         }
 
-        private void SetupEvents()
+        private void MakeReadonlyFields()
         {
-            btnBack.Click += (s, e) =>
-            {
-                // Tìm form cha và đóng nó
-                var parentForm = this.Parent as Form;
-                parentForm?.Close();
-            };
+            foreach (var tb in new[] { txtRoomCharge, txtServiceCharge, txtSurcharge, txtDiscount, txtTotalAmount })
+            { tb.ReadOnly = true; tb.TabStop = false; }
 
-            btnExportInvoice.Click += (s, e) => ExportInvoice();
+            foreach (var tb in new[] { txtCusName, txtCusId, txtCheckin, txtCheckout, txtEmployeeName, txtPaymentMethod, txtNote })
+            { tb.ReadOnly = true; tb.TabStop = false; }
         }
 
-        private void ExportInvoice()
+        /// <summary>Bind tất cả dữ liệu cho control. `payments` dùng đúng entity Payment.</summary>
+        public void BindFrom(
+            InvoiceVm vm,
+            IEnumerable<InvoiceServiceRow> services,
+            IEnumerable<RoomRow> rooms,
+            IEnumerable<Payment> payments)
         {
-            try
+            if (vm == null) vm = new InvoiceVm();
+
+            // Header
+            txtCusName.Text = vm.CustomerName ?? string.Empty;
+            txtCusId.Text = vm.CustomerIdNumber ?? string.Empty;
+            txtCheckin.Text = vm.CheckIn == default(DateTime) ? "" : vm.CheckIn.ToString("dd/MM/yyyy HH:mm");
+            txtCheckout.Text = vm.CheckOut == default(DateTime) ? "" : vm.CheckOut.ToString("dd/MM/yyyy HH:mm");
+
+            // Tiền
+            txtRoomCharge.Text = vm.RoomCharge.ToString("N0");
+            txtServiceCharge.Text = vm.ServiceCharge.ToString("N0");
+            txtSurcharge.Text = vm.Surcharge.ToString("N0");
+            txtDiscount.Text = vm.Discount.ToString("N0");
+            txtTotalAmount.Text = vm.Total.ToString("N0");
+
+            // Khác
+            txtEmployeeName.Text = vm.EmployeeName ?? string.Empty;
+            txtPaymentMethod.Text = vm.PaymentMethod ?? string.Empty;
+            txtNote.Text = vm.Note ?? string.Empty;
+
+            // Grids
+            dgvUsedService.DataSource =
+                new BindingList<InvoiceServiceRow>((services ?? Enumerable.Empty<InvoiceServiceRow>()).ToList());
+
+            dgvRooms.DataSource =
+                new BindingList<RoomRow>((rooms ?? Enumerable.Empty<RoomRow>()).ToList());
+
+            var payRows = (payments ?? Enumerable.Empty<Payment>())
+                .Select(p => new PaymentRow
+                {
+                    PaymentDate = p.PaymentDate,
+                    Method = p.Method,
+                    Amount = p.Amount,
+                    Status = p.Status
+                }).ToList();
+
+            dgvPayments.DataSource = new BindingList<PaymentRow>(payRows);
+        }
+
+        private void btnExportInvoice_Click(object sender, EventArgs e)
+        {
+            using (var sfd = new SaveFileDialog
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog
+                Filter = "PNG Image|*.png",
+                FileName = "Invoice_" + DateTime.Now.ToString("yyyyMMdd_HHmm") + ".png"
+            })
+            {
+                if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    Filter = "PDF Files|*.pdf",
-                    FileName = $"HoaDon_{_roomNumber}_{_invoice.InvoiceID}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
-                };
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Lấy danh sách dịch vụ đã sử dụng
-                    var usedServices = _bookingService.GetUsedServicesByBookingID(_booking.BookingID);
-
-                    // Export PDF
-                    _pdfExportService.ExportInvoiceToPdf(_invoice, _booking, _roomNumber, usedServices, saveFileDialog.FileName);
-
-                    MessageBox.Show("Xuất hóa đơn thành công!", "Thông báo",
+                    using (var bmp = new Bitmap(Width, Height))
+                    {
+                        DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
+                        bmp.Save(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                    MessageBox.Show("Đã xuất hóa đơn.", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Mở file sau khi export (tuỳ chọn)
-                    System.Diagnostics.Process.Start(saveFileDialog.FileName);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi xuất hóa đơn: {ex.Message}", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void lblCusName_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

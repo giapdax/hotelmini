@@ -190,7 +190,7 @@ namespace HOTEL_MINI.Forms.Controls
 
             IEnumerable<BookingDisplay> q = _cache ?? Enumerable.Empty<BookingDisplay>();
 
-            // Nếu có nhập CCCD: query bổ sung theo CCCD và gộp (tránh trùng)
+            // Nếu có CCCD: query bổ sung theo CCCD và gộp (tránh trùng)
             if (!string.IsNullOrEmpty(cccd))
             {
                 try
@@ -200,7 +200,7 @@ namespace HOTEL_MINI.Forms.Controls
                 }
                 catch
                 {
-                    // ignore soft error để UI vẫn chạy
+                    // ignore soft error
                 }
             }
 
@@ -304,7 +304,9 @@ namespace HOTEL_MINI.Forms.Controls
             {
                 try
                 {
-                    if (_svc.CheckInBooking(r.BookingID)) ok++;
+                    // Nếu BookingService của bạn là CheckInBookingRoom (đã chuẩn hoá), dùng dòng dưới.
+                    // Nếu vẫn còn hàm CheckInBooking cũ, giữ nguyên theo project của bạn.
+                    if (_svc.CheckInBookingRoom(r.BookingID)) ok++;
                     else fail++;
                 }
                 catch
@@ -341,6 +343,7 @@ namespace HOTEL_MINI.Forms.Controls
             {
                 try
                 {
+                    // Giữ theo service của bạn (CancelBooking hoặc tương đương)
                     if (_svc.CancelBooking(r.BookingID)) ok++;
                     else fail++;
                 }
@@ -369,7 +372,8 @@ namespace HOTEL_MINI.Forms.Controls
 
             try
             {
-                using (var dlg = new frmBookingDetail1(ids, CurrentUserId))
+                // SỬA: mở đúng frmBookingDetail
+                using (var dlg = new frmBookingDetail(ids, CurrentUserId))
                 {
                     dlg.StartPosition = FormStartPosition.CenterParent;
                     var rs = dlg.ShowDialog(FindForm());
@@ -381,7 +385,7 @@ namespace HOTEL_MINI.Forms.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không mở được màn hình trả phòng (BookingDetail1): " + ex.Message,
+                MessageBox.Show("Không mở được màn hình trả phòng (frmBookingDetail): " + ex.Message,
                     "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

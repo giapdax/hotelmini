@@ -4,9 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 using HOTEL_MINI.Forms.Controls;
 using HOTEL_MINI.Model.Entity;
-using HOTEL_MINI.BLL;
-using HOTEL_MINI.DAL;
-using HOTEL_MINI.Model.Response;
 
 namespace HOTEL_MINI.Forms
 {
@@ -64,8 +61,9 @@ namespace HOTEL_MINI.Forms
 
         // =========================================================
         // Load nội dung cho từng Tab (lazy)
-        //  - btnBookRoom: chứa UcBookRoom
-        //  - btnBookingRoom: chứa UcBookingRoom (quản lý/ check-in/ check-out)
+        //  - btnBookRoom: chứa UcBookRoom (UC này sẽ tự mở frmBookingCreate)
+        //  - btnBookingRoom: chứa UcBookingRoom (UC này có thể tự mở frmBookingDetail
+        //    hoặc bắn event để form cha mở — ta hỗ trợ cả hai)
         // =========================================================
         private void EnsureTabContent()
         {
@@ -98,10 +96,10 @@ namespace HOTEL_MINI.Forms
                     _ucBookingRoom = new UcBookingRoom
                     {
                         Dock = DockStyle.Fill,
-                        CurrentUserId = _currentUserId // để fallback mở frmCheckout1 khi cha không gắn handler
+                        CurrentUserId = _currentUserId // fallback nếu UC bắn event
                     };
 
-                    // GẮN 2 handler để bắt nút "Trả phòng" trong control con
+                    // GẮN 2 handler để bắt “Trả phòng” nếu UC chọn chế độ bắn event
                     _ucBookingRoom.RequestCheckout += OnRequestCheckout;           // một phòng
                     _ucBookingRoom.RequestCheckoutMany += OnRequestCheckoutMany;   // nhiều phòng
 
@@ -116,7 +114,7 @@ namespace HOTEL_MINI.Forms
         }
 
         // =========================================================
-        // HANDLERS từ UcBookingRoom
+        // HANDLERS từ UcBookingRoom (nếu UC bắn event)
         // =========================================================
 
         // Người dùng chọn 1 BookingRoomID để trả phòng
@@ -133,24 +131,24 @@ namespace HOTEL_MINI.Forms
         }
 
         // =========================================================
-        // Mở flow "Chi tiết trả phòng" (frmBookingDetail1)
-        //   - Form này sẽ load khách, phòng, dịch vụ
-        //   - Nhấn "Trả phòng" trong đó => mở frmCheckout1
-        //   - Khi thanh toán đủ, frmCheckout1 -> DialogResult.OK -> frmBookingDetail1.OK
+        // Mở flow “Chi tiết trả phòng” (frmBookingDetail)
+        //   - Form này load khách/phòng/dịch vụ
+        //   - Nhấn “Trả phòng” trong đó => mở frmCheckout1
+        //   - Khi thanh toán đủ, frmCheckout1.OK -> frmBookingDetail.OK
         //   - Ở đây nhận OK và reload lại UC
         // =========================================================
         private void OpenCheckout(List<int> bookingRoomIds)
         {
             try
             {
-                using (var f = new frmBookingDetail1(bookingRoomIds, _currentUserId))
+                using (var f = new frmBookingDetail(bookingRoomIds, _currentUserId))
                 {
                     f.StartPosition = FormStartPosition.CenterParent;
                     var rs = f.ShowDialog(this);
 
                     if (rs == DialogResult.OK)
                     {
-                        // Reload lại danh sách booking (đúng yêu cầu: thanh toán đủ thì load lại UC)
+                        // Reload lại danh sách booking (thanh toán đủ thì load lại UC)
                         _ucBookingRoom?.ReloadData();
                     }
                 }
