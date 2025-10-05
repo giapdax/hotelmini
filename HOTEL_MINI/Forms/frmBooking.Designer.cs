@@ -72,7 +72,7 @@
             this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.tabBooking);
             this.Name = "frmBooking";
-            this.Text = "frmBooking";
+            this.Text = "Quản lý đặt phòng và đơn đặt phòng";
             this.tabBooking.ResumeLayout(false);
             this.ResumeLayout(false);
 

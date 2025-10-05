@@ -198,6 +198,7 @@ WHERE  InvoiceID = @I AND Status='Paid';", conn))
         ///  - Nếu hóa đơn đã trả đủ: Checkout booking, set BookingRooms='CheckedOut',
         ///    trả phòng về 'Available' nếu không còn booking khác chiếm chỗ, và Booking.Status='CheckedOut'.
         /// </summary>
+        // PaymentRepository.cs
         public int AddPaymentSafe(int invoiceId, decimal amount, string method, string status, int issuedByIfPaid)
         {
             if (amount <= 0) throw new Exception("Số tiền phải > 0.");
@@ -207,38 +208,38 @@ WHERE  InvoiceID = @I AND Status='Paid';", conn))
                 conn.Open();
                 using (var tran = conn.BeginTransaction())
                 {
-                    // 1) Khóa + lấy tổng tiền & đã trả
-                    decimal total, paid;
-                    using (var cmd = new SqlCommand(@"
-SELECT  i.TotalAmount,
-        ISNULL(SUM(CASE WHEN p.Status='Paid' THEN p.Amount ELSE 0 END), 0)
-FROM    Invoices i WITH (UPDLOCK, ROWLOCK)
-LEFT JOIN Payments p ON p.InvoiceID = i.InvoiceID
-WHERE   i.InvoiceID = @I
-GROUP BY i.TotalAmount", conn, tran))
+                    // 0) Chỉ cho phép 1 payment/invoice
+                    using (var chk = new SqlCommand("SELECT COUNT(1) FROM Payments WHERE InvoiceID=@I", conn, tran))
                     {
-                        cmd.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
-                        using (var rd = cmd.ExecuteReader())
-                        {
-                            if (!rd.Read()) throw new Exception("Invoice không tồn tại.");
-                            total = rd.GetDecimal(0);
-                            paid = rd.GetDecimal(1);
-                        }
+                        chk.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
+                        if (Convert.ToInt32(chk.ExecuteScalar() ?? 0) > 0)
+                            throw new Exception("Hóa đơn đã có thanh toán trước. Hệ thống chỉ cho phép thanh toán một lần.");
                     }
 
-                    var remain = total - paid;
-                    if (amount > remain + 0.0001m)
-                        throw new Exception("Số tiền thanh toán vượt quá số còn lại.");
+                    // 1) Khóa + lấy tổng tiền
+                    decimal total;
+                    using (var cmd = new SqlCommand(
+                        "SELECT TotalAmount FROM Invoices WITH (UPDLOCK, ROWLOCK) WHERE InvoiceID=@I", conn, tran))
+                    {
+                        cmd.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
+                        var o = cmd.ExecuteScalar();
+                        if (o == null || o == DBNull.Value) throw new Exception("Invoice không tồn tại.");
+                        total = Convert.ToDecimal(o);
+                    }
+
+                    // 1.1) Không cho partial — phải bằng tổng
+                    if (Math.Abs(amount - total) > 0.0001m)
+                        throw new Exception("Số tiền phải đúng bằng tổng hóa đơn (chỉ cho phép thanh toán 1 lần).");
 
                     var normMethod = NormalizeMethod(method);
-                    var normStatus = NormalizeStatus(status);
+                    var normStatus = NormalizeStatus(status); // "Completed" → "Paid"
 
-                    // 2) Ghi nhận payment
+                    // 2) Ghi nhận payment (không dùng OUTPUT để tránh lỗi trigger)
                     int paymentId;
                     using (var ins = new SqlCommand(@"
-INSERT INTO Payments(InvoiceID, Amount, PaymentDate, Method, Status)
-OUTPUT INSERTED.PaymentID
-VALUES (@I, @A, GETDATE(), @M, @S);", conn, tran))
+                INSERT INTO Payments(InvoiceID, Amount, PaymentDate, Method, Status)
+                VALUES (@I, @A, GETDATE(), @M, @S);
+                SELECT CAST(SCOPE_IDENTITY() AS INT);", conn, tran))
                     {
                         ins.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
                         AddDec(ins, "@A", amount);
@@ -247,75 +248,53 @@ VALUES (@I, @A, GETDATE(), @M, @S);", conn, tran))
                         paymentId = Convert.ToInt32(ins.ExecuteScalar());
                     }
 
-                    // 3) Cập nhật trạng thái hóa đơn
-                    decimal newPaid = paid;
-                    if (string.Equals(normStatus, "Paid", StringComparison.OrdinalIgnoreCase))
-                        newPaid += amount;
-
-                    var newRemain = Math.Max(0m, total - newPaid);
-                    var newStatus = (newPaid <= 0m) ? "Unpaid"
-                                   : (newRemain > 0m ? "PartiallyPaid" : "Paid");
-
+                    // 3) Cập nhật trạng thái hóa đơn → Paid + set IssuedBy/IssuedAt
                     using (var upd = new SqlCommand(
-                        (newStatus == "Paid")
-                            ? "UPDATE Invoices SET Status=@S, IssuedAt=GETDATE(), IssuedBy=@U WHERE InvoiceID=@I"
-                            : "UPDATE Invoices SET Status=@S WHERE InvoiceID=@I",
-                        conn, tran))
+                        "UPDATE Invoices SET Status='Paid', IssuedAt=GETDATE(), IssuedBy=@U WHERE InvoiceID=@I", conn, tran))
                     {
-                        upd.Parameters.Add("@S", SqlDbType.VarChar, 20).Value = newStatus;
+                        upd.Parameters.Add("@U", SqlDbType.Int).Value = issuedByIfPaid;
                         upd.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
-                        if (newStatus == "Paid")
-                            upd.Parameters.Add("@U", SqlDbType.Int).Value = issuedByIfPaid;
                         upd.ExecuteNonQuery();
                     }
 
-                    // 4) Nếu đã thanh toán đủ → checkout booking + trả phòng
-                    if (newStatus == "Paid")
+                    // 4) Checkout booking + trả phòng (giữ nguyên như trước)
+                    int bookingId;
+                    using (var g = new SqlCommand("SELECT BookingID FROM Invoices WHERE InvoiceID=@I", conn, tran))
                     {
-                        // Lấy BookingID
-                        int bookingId;
-                        using (var g = new SqlCommand(
-                            "SELECT BookingID FROM Invoices WHERE InvoiceID=@I", conn, tran))
-                        {
-                            g.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
-                            bookingId = Convert.ToInt32(g.ExecuteScalar());
-                        }
+                        g.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
+                        bookingId = Convert.ToInt32(g.ExecuteScalar());
+                    }
 
-                        // a) Checkout các dòng phòng còn Booked/CheckedIn
-                        using (var br = new SqlCommand(@"
-UPDATE BookingRooms
-   SET Status='CheckedOut',
-       CheckOutDate = ISNULL(CheckOutDate, GETDATE())
-WHERE BookingID=@B AND Status IN ('CheckedIn','Booked');", conn, tran))
-                        {
-                            br.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
-                            br.ExecuteNonQuery();
-                        }
+                    using (var br = new SqlCommand(@"
+                UPDATE BookingRooms
+                   SET Status='CheckedOut',
+                       CheckOutDate = ISNULL(CheckOutDate, GETDATE())
+                WHERE BookingID=@B AND Status IN ('CheckedIn','Booked');", conn, tran))
+                    {
+                        br.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
+                        br.ExecuteNonQuery();
+                    }
 
-                        // b) Trả trạng thái phòng về Available nếu không còn booking khác chiếm
-                        using (var r = new SqlCommand(@"
-UPDATE r SET r.Status = 'Available'
-FROM Rooms r
-JOIN BookingRooms br ON br.RoomID = r.RoomID
-WHERE br.BookingID = @B
-  AND NOT EXISTS (
-      SELECT 1 FROM BookingRooms x
-      WHERE x.RoomID = r.RoomID
-        AND x.Status IN ('Booked','CheckedIn')
-        AND x.BookingID <> @B
-  );", conn, tran))
-                        {
-                            r.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
-                            r.ExecuteNonQuery();
-                        }
+                    using (var r = new SqlCommand(@"
+                UPDATE r SET r.Status = 'Available'
+                FROM Rooms r
+                JOIN BookingRooms br ON br.RoomID = r.RoomID
+                WHERE br.BookingID = @B
+                  AND NOT EXISTS (
+                      SELECT 1 FROM BookingRooms x
+                      WHERE x.RoomID = r.RoomID
+                        AND x.Status IN ('Booked','CheckedIn')
+                        AND x.BookingID <> @B
+                );", conn, tran))
+                    {
+                        r.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
+                        r.ExecuteNonQuery();
+                    }
 
-                        // c) Đặt Booking header = CheckedOut
-                        using (var b = new SqlCommand(
-                            "UPDATE Bookings SET Status='CheckedOut' WHERE BookingID=@B;", conn, tran))
-                        {
-                            b.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
-                            b.ExecuteNonQuery();
-                        }
+                    using (var b = new SqlCommand("UPDATE Bookings SET Status='CheckedOut' WHERE BookingID=@B;", conn, tran))
+                    {
+                        b.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
+                        b.ExecuteNonQuery();
                     }
 
                     tran.Commit();
@@ -323,5 +302,6 @@ WHERE br.BookingID = @B
                 }
             }
         }
+
     }
 }

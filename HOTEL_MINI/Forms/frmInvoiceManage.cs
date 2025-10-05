@@ -260,18 +260,20 @@ namespace HOTEL_MINI.Forms
 
         // ========================= Open Invoice =========================
 
-        private void OpenInvoiceByBookingRoomId(int bookingRoomId, string roomNumber)
+        private void OpenInvoiceByBookingRoomId(int bookingRoomId, string roomNumberHint)
         {
             try
             {
-                var booking = _bookingService.GetBookingById(bookingRoomId);
-                if (booking == null)
+                // 1) Resolve Header BookingID từ BookingRoomID
+                var headerBookingId = new BookingRepository().GetBookingIdByBookingRoomId(bookingRoomId);
+                if (headerBookingId <= 0)
                 {
-                    MessageBox.Show("Không tìm thấy booking.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Không tìm thấy Header BookingID từ BookingRoomID.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                var customer = _customerService.getCustomerByCustomerID(booking.CustomerID);
+                // 2) Lấy thông tin khách theo Header
+                var customer = _bookingService.GetCustomerByHeaderId(headerBookingId);
                 if (customer != null)
                 {
                     _currentCustomer = customer;
@@ -283,13 +285,23 @@ namespace HOTEL_MINI.Forms
                     return;
                 }
 
-                var invoice = _invoiceService.GetInvoiceByBookingID(bookingRoomId);
+                // 3) Lấy thông tin line (RoomID, PricingID, CheckIn/Out, Status)
+                var line = new BookingRoomRepository().GetBookingRoomById(bookingRoomId); // trả về DTO Booking (line) trong repo
+                if (line == null)
+                {
+                    MessageBox.Show("Không tìm thấy booking line.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 4) Lấy hóa đơn theo Header BookingID
+                var invoice = _invoiceService.GetInvoiceByBookingID(headerBookingId);
                 if (invoice == null)
                 {
                     MessageBox.Show("Không tìm thấy hóa đơn cho booking này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
+                // 5) Ghép dịch vụ đã dùng theo line
                 var usedSvcs = _bookingService.GetUsedServicesByBookingID(bookingRoomId) ?? new List<UsedServiceDto>();
                 var serviceRows = usedSvcs
                     .GroupBy(x => new { x.ServiceName, x.Price })
@@ -302,32 +314,35 @@ namespace HOTEL_MINI.Forms
                     .OrderBy(x => x.ServiceName)
                     .ToList();
 
+                // 6) Thông tin phòng/đơn giá/giờ
                 string pricingType = "";
-                try { pricingType = new RoomPricingRepository().GetPricingTypeById(booking.PricingID)?.PricingType ?? ""; } catch { }
+                try { pricingType = new RoomPricingRepository().GetPricingTypeById(line.PricingID)?.PricingType ?? ""; } catch { }
 
-                var resolvedRoom = !string.IsNullOrWhiteSpace(roomNumber)
-                    ? roomNumber
-                    : new BookingRepository().GetRoomNumberById(booking.RoomID);
+                var resolvedRoom = !string.IsNullOrWhiteSpace(roomNumberHint)
+                    ? roomNumberHint
+                    : new BookingRepository().GetRoomNumberById(line.RoomID);
 
                 var roomRows = new List<frmInvoice.RoomRow>
-                {
-                    new frmInvoice.RoomRow
-                    {
-                        RoomNumber = resolvedRoom,
-                        PricingType = pricingType,
-                        CheckIn  = booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "",
-                        CheckOut = booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? ""
-                    }
-                };
+        {
+            new frmInvoice.RoomRow
+            {
+                RoomNumber = resolvedRoom,
+                PricingType = pricingType,
+                CheckIn  = line.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "",
+                CheckOut = line.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? ""
+            }
+        };
 
+                // 7) Tính tiền phòng/dịch vụ (line-level)
                 decimal roomCharge = 0m;
-                try { roomCharge = _bookingService.GetRoomCharge(booking); } catch { }
+                try { roomCharge = _bookingService.GetRoomCharge(line); } catch { }
                 decimal serviceCharge = serviceRows.Sum(x => x.Total);
 
                 decimal discount = invoice.Discount;
                 decimal surcharge = invoice.Surcharge;
                 decimal total = invoice.TotalAmount > 0 ? invoice.TotalAmount : (roomCharge + serviceCharge + surcharge - discount);
 
+                // 8) Nhân viên và payments
                 string employeeName = "";
                 try
                 {
@@ -339,12 +354,13 @@ namespace HOTEL_MINI.Forms
                 var payments = _invoiceService.GetPaymentsByInvoiceId(invoice.InvoiceID) ?? new List<Payment>();
                 var lastMethod = payments.LastOrDefault()?.Method ?? "";
 
+                // 9) ViewModel cho form hóa đơn
                 var vm = new frmInvoice.InvoiceVm
                 {
                     CustomerName = _currentCustomer?.FullName ?? "",
                     CustomerIdNumber = _currentCustomer?.IDNumber ?? "",
-                    CheckIn = booking.CheckInDate ?? default,
-                    CheckOut = booking.CheckOutDate ?? default,
+                    CheckIn = line.CheckInDate ?? default,
+                    CheckOut = line.CheckOutDate ?? default,
                     RoomCharge = roomCharge,
                     ServiceCharge = serviceCharge,
                     Discount = discount,
@@ -352,9 +368,11 @@ namespace HOTEL_MINI.Forms
                     Total = total,
                     EmployeeName = string.IsNullOrWhiteSpace(employeeName) ? "—" : employeeName,
                     PaymentMethod = string.IsNullOrWhiteSpace(lastMethod) ? "—" : lastMethod,
-                    Note = booking.Notes ?? ""
+                    // BookingRoom entity của bạn không có Notes -> dùng note của invoice (nếu muốn), còn không để rỗng
+                    Note = invoice.Note ?? ""
                 };
 
+                // 10) Hiển thị
                 var f = new frmInvoice
                 {
                     StartPosition = FormStartPosition.CenterParent,
@@ -368,5 +386,6 @@ namespace HOTEL_MINI.Forms
                 MessageBox.Show($"Lỗi hiển thị hóa đơn: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }

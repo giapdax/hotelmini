@@ -21,14 +21,14 @@ namespace HOTEL_MINI.Forms.Controls
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.cboStatusBooking = new System.Windows.Forms.ComboBox();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnNhanphong = new System.Windows.Forms.Button();
+            this.btnTraphong = new System.Windows.Forms.Button();
+            this.btnHuydat = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -106,15 +106,6 @@ namespace HOTEL_MINI.Forms.Controls
             this.label3.TabIndex = 0;
             this.label3.Text = "Nhập thông tin tìm kiếm: ";
             // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(246, 0);
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(583, 26);
-            this.txtSearch.TabIndex = 1;
-            // 
             // cboStatusBooking
             // 
             this.cboStatusBooking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -124,6 +115,16 @@ namespace HOTEL_MINI.Forms.Controls
             this.cboStatusBooking.Name = "cboStatusBooking";
             this.cboStatusBooking.Size = new System.Drawing.Size(190, 28);
             this.cboStatusBooking.TabIndex = 2;
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(246, 0);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(583, 26);
+            this.txtSearch.TabIndex = 1;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // tableLayoutPanel3
             // 
@@ -157,9 +158,9 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63636F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.63636F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.54545F));
-            this.tableLayoutPanel4.Controls.Add(this.button1, 1, 0);
-            this.tableLayoutPanel4.Controls.Add(this.button2, 2, 0);
-            this.tableLayoutPanel4.Controls.Add(this.button3, 3, 0);
+            this.tableLayoutPanel4.Controls.Add(this.btnNhanphong, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.btnTraphong, 2, 0);
+            this.tableLayoutPanel4.Controls.Add(this.btnHuydat, 3, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 470);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -168,32 +169,35 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel4.Size = new System.Drawing.Size(1034, 40);
             this.tableLayoutPanel4.TabIndex = 2;
             // 
-            // button1
+            // btnNhanphong
             // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button1.Location = new System.Drawing.Point(323, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(105, 32);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Nhận phòng";
+            this.btnNhanphong.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnNhanphong.Location = new System.Drawing.Point(323, 3);
+            this.btnNhanphong.Name = "btnNhanphong";
+            this.btnNhanphong.Size = new System.Drawing.Size(105, 32);
+            this.btnNhanphong.TabIndex = 0;
+            this.btnNhanphong.Text = "Nhận phòng";
+            this.btnNhanphong.Click += new System.EventHandler(this.btnNhanphong_Click);
             // 
-            // button2
+            // btnTraphong
             // 
-            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button2.Location = new System.Drawing.Point(464, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(105, 32);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Trả phòng";
+            this.btnTraphong.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnTraphong.Location = new System.Drawing.Point(464, 3);
+            this.btnTraphong.Name = "btnTraphong";
+            this.btnTraphong.Size = new System.Drawing.Size(105, 32);
+            this.btnTraphong.TabIndex = 1;
+            this.btnTraphong.Text = "Trả phòng";
+            this.btnTraphong.Click += new System.EventHandler(this.btnTraphong_Click);
             // 
-            // button3
+            // btnHuydat
             // 
-            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button3.Location = new System.Drawing.Point(605, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(105, 32);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "Hủy đặt phòng";
+            this.btnHuydat.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnHuydat.Location = new System.Drawing.Point(605, 3);
+            this.btnHuydat.Name = "btnHuydat";
+            this.btnHuydat.Size = new System.Drawing.Size(105, 32);
+            this.btnHuydat.TabIndex = 2;
+            this.btnHuydat.Text = "Hủy đặt phòng";
+            this.btnHuydat.Click += new System.EventHandler(this.btnHuydat_Click);
             // 
             // UcBookingRoom
             // 
@@ -226,8 +230,8 @@ namespace HOTEL_MINI.Forms.Controls
         private TableLayoutPanel tableLayoutPanel3;
         private DataGridView dataGridView1;
         private TableLayoutPanel tableLayoutPanel4;
-        private Button button1;
-        private Button button2;
-        private Button button3;
+        private Button btnNhanphong;
+        private Button btnTraphong;
+        private Button btnHuydat;
     }
 }

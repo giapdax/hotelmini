@@ -45,13 +45,7 @@ namespace HOTEL_MINI.Forms.Controls
             cboStatusBooking.Items.AddRange(new object[] { ST_ALL, ST_BOOKED, ST_OCCUPIED, ST_CANCELLED, ST_COMPLETED });
             cboStatusBooking.SelectedIndex = 0;
             cboStatusBooking.SelectedIndexChanged += (s, e) => ApplyFilter();
-            txtSearch.TextChanged += (s, e) => ApplyFilter();
-            button1.Text = "Nhận phòng";
-            button2.Text = "Trả phòng";
-            button3.Text = "Hủy đặt phòng";
-            button1.Click += BtnNhan_Click;
-            button2.Click += BtnTra_Click;
-            button3.Click += BtnHuy_Click;
+
         }
 
         private void InitGrid()
@@ -93,7 +87,6 @@ namespace HOTEL_MINI.Forms.Controls
                 var item = gv.Rows[e.RowIndex].DataBoundItem as BookingFlatDisplay;
                 if (item == null) return;
 
-                // Mở checkout cho header và 1 phòng đang double-click
                 using (var dlg = new frmCheckout(item.HeaderBookingID, new List<int> { item.BookingRoomID }, CurrentUserId))
                 {
                     dlg.StartPosition = FormStartPosition.CenterParent;
@@ -197,20 +190,68 @@ namespace HOTEL_MINI.Forms.Controls
         private void UpdateButtons()
         {
             var sel = GetChecked();
-            button1.Enabled = button2.Enabled = button3.Enabled = false;
+            btnNhanphong.Enabled = btnTraphong.Enabled = btnHuydat.Enabled = false;
             if (sel.Count == 0) return;
 
             bool allBooked = sel.All(x => IsBooked(x.Status));
             bool allOcc = sel.All(x => IsOccupied(x.Status));
 
-            if (allBooked) { button1.Enabled = true; button3.Enabled = true; }
-            else if (allOcc) { button2.Enabled = true; }
+            if (allBooked) { btnNhanphong.Enabled = true; btnHuydat.Enabled = true; }
+            else if (allOcc) { btnTraphong.Enabled = true; }
         }
 
-        private void BtnNhan_Click(object sender, EventArgs e)
+        private void EnsureCommitEdits()
         {
+            if (dataGridView1.IsCurrentCellDirty) dataGridView1.EndEdit();
+            dataGridView1.EndEdit();
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void btnHuydat_Click(object sender, EventArgs e)
+        {
+            EnsureCommitEdits();
+
             var sel = GetChecked();
             if (sel.Count == 0) return;
+
+            if (!sel.All(x => IsBooked(x.Status)))
+            {
+                MessageBox.Show("Chỉ hủy được đơn đang 'Booked'.");
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"Bạn có chắc muốn hủy {sel.Count} booking này?",
+                "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes) return;
+
+            int ok = 0, fail = 0;
+            foreach (var item in sel)
+            {
+                try
+                {
+                    if (_svc.CancelBooking(item.BookingRoomID)) ok++;
+                    else fail++;
+                }
+                catch { fail++; }
+            }
+
+            MessageBox.Show($"Hủy đặt phòng: {ok} thành công, {fail} thất bại.");
+            LoadData();
+        }
+
+        private void btnNhanphong_Click(object sender, EventArgs e)
+        {
+            EnsureCommitEdits();
+
+            var sel = GetChecked();
+            if (sel.Count == 0) return;
+
             if (!sel.All(x => IsBooked(x.Status)))
             {
                 MessageBox.Show("Chỉ nhận phòng cho đơn đang 'Booked'.");
@@ -232,36 +273,10 @@ namespace HOTEL_MINI.Forms.Controls
             LoadData();
         }
 
-        private void BtnHuy_Click(object sender, EventArgs e)
+        private void btnTraphong_Click(object sender, EventArgs e)
         {
-            var sel = GetChecked();
-            if (sel.Count == 0) return;
-            if (!sel.All(x => IsBooked(x.Status)))
-            {
-                MessageBox.Show("Chỉ hủy được đơn đang 'Booked'.");
-                return;
-            }
+            EnsureCommitEdits();
 
-            var confirm = MessageBox.Show($"Bạn có chắc muốn hủy {sel.Count} booking này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (confirm != DialogResult.Yes) return;
-
-            int ok = 0, fail = 0;
-            foreach (var item in sel)
-            {
-                try
-                {
-                    if (_svc.CancelBooking(item.BookingRoomID)) ok++;
-                    else fail++;
-                }
-                catch { fail++; }
-            }
-
-            MessageBox.Show($"Hủy đặt phòng: {ok} thành công, {fail} thất bại.");
-            LoadData();
-        }
-
-        private void BtnTra_Click(object sender, EventArgs e)
-        {
             var sel = GetChecked();
             if (sel.Count == 0)
             {
@@ -279,46 +294,25 @@ namespace HOTEL_MINI.Forms.Controls
 
             bool needReload = false;
 
-            // Nhóm theo Booking (header), mỗi header mở một frmBookingDetail với list line/phòng
             var groups = sel.GroupBy(x => x.HeaderBookingID);
             foreach (var g in groups)
             {
                 var lineIds = g.Select(x => x.BookingRoomID).Distinct().ToList();
                 if (lineIds.Count == 0) continue;
-
-                using (var dlg = new frmBookingDetail(lineIds, CurrentUserId))
+                var app = this.TopLevelControl as frmApplication;
+                if (app != null)
                 {
-                    dlg.StartPosition = FormStartPosition.CenterParent;
-                    var rs = dlg.ShowDialog(FindForm());
-                    if (rs == DialogResult.OK) needReload = true;
+                    app.OpenChildForm(new frmBookingDetail(lineIds, CurrentUserId), null);
                 }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy frmApplication để mở màn hình con.", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                
             }
 
             if (needReload) LoadData();
-        }
-
-
-
-        private void OpenLines(List<int> bookingRoomIds)
-        {
-            if (bookingRoomIds == null || bookingRoomIds.Count == 0)
-            {
-                MessageBox.Show("Không tìm thấy phòng trong lựa chọn.");
-                return;
-            }
-
-            try
-            {
-                using (var dlg = new frmBookingDetail(bookingRoomIds, CurrentUserId))
-                {
-                    dlg.StartPosition = FormStartPosition.CenterParent;
-                    if (dlg.ShowDialog(FindForm()) == DialogResult.OK) LoadData();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không mở được chi tiết: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
     }
 }

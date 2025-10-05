@@ -108,7 +108,7 @@ namespace HOTEL_MINI.Forms
                                  .Distinct()
                                  .Where(x => !string.IsNullOrWhiteSpace(x)));
 
-                lblBookingID.Text = "Trả phòng - " + _checkoutRows.Count + " phòng";
+                lblBookingID.Text = "Phòng " + _checkoutRows.Count + " phòng";
             }
             catch (Exception ex)
             {
@@ -452,27 +452,72 @@ namespace HOTEL_MINI.Forms
 
         private void BtnCheckout_Click(object sender, EventArgs e)
         {
-            var picks = _checkoutRows.Where(x => x.Pick).ToList();
-            if (picks.Count == 0)
+            // Commit mọi thay đổi checkbox trước khi đọc
+            if (dataGridView1.IsCurrentCellDirty) dataGridView1.EndEdit();
+            dataGridView1.EndEdit();
+
+            var picked = (_checkoutRows ?? new BindingList<CheckoutRow>())
+                         .Where(x => x.Pick)
+                         .ToList();
+
+            if (picked.Count == 0)
             {
                 MessageBox.Show("Chọn ít nhất 1 phòng để trả.", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            // truyền danh sách line-id (đang là BookingID) sang form checkout
-            var lineIds = picks.Select(x => x.BookingRoomID).Distinct().ToList();
+            // Lấy list line-id (BookingRoomID hiện tại = BookingID của line)
+            var lineIds = picked.Select(x => x.BookingRoomID)
+                                .Distinct()
+                                .ToList();
 
-            using (var f = new frmCheckout(lineIds, _currentUserId))
+            try
             {
-                f.StartPosition = FormStartPosition.CenterParent;
-                var rs = f.ShowDialog(this);
-                if (rs == DialogResult.OK)
+                // Resolve header từ line đầu tiên
+                int? headerIdOpt = _bookingSvc.GetHeaderIdByBookingRoomId(lineIds[0]);
+                if (!headerIdOpt.HasValue)
                 {
-                    DialogResult = DialogResult.OK;
-                    Close();
+                    MessageBox.Show("Không xác định được đơn đặt phòng (header).", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                int headerId = headerIdOpt.Value;
+
+                // Đảm bảo tất cả line đều cùng 1 header
+                foreach (var id in lineIds)
+                {
+                    var h = _bookingSvc.GetHeaderIdByBookingRoomId(id);
+                    if (!h.HasValue || h.Value != headerId)
+                    {
+                        MessageBox.Show("Các phòng được chọn không thuộc cùng một Booking.", "Cảnh báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+
+                // Mở form Checkout: (headerId, roomLineIds, currentUserId)
+                using (var f = new frmCheckout(headerId, lineIds, _currentUserId))
+                {
+                    f.StartPosition = FormStartPosition.CenterParent;
+                    var rs = f.ShowDialog(this);
+                    if (rs == DialogResult.OK)
+                    {
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể mở màn hình trả phòng: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+           this.Close();
         }
     }
 }

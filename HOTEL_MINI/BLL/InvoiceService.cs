@@ -1,72 +1,71 @@
 ﻿using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace HOTEL_MINI.BLL
 {
+    /// <summary>
+    /// Nghiệp vụ hóa đơn + thanh toán (1–1).
+    /// </summary>
     public class InvoiceService
     {
-        private readonly InvoiceRepository _invoiceRepo;
+        private readonly InvoiceRepository _repo;
 
         public InvoiceService()
         {
-            _invoiceRepo = new InvoiceRepository();
+            _repo = new InvoiceRepository();
         }
 
-        // ====================== Reports ======================
-        public DataTable GetRevenueLast6Months() => _invoiceRepo.GetRevenueLast6Months();
-        public DataTable GetRevenueByMonth(int year) => _invoiceRepo.GetRevenueByMonth(year);
-        public DataTable GetRevenueByWeek() => _invoiceRepo.GetRevenueByCurrentWeek();
-        public RevenueSummary GetRevenueSummary() => _invoiceRepo.GetRevenueSummary();
+        // ======== Reports ========
+        public DataTable GetRevenueLast6Months() => _repo.GetRevenueLast6Months();
+        public DataTable GetRevenueByMonth(int year) => _repo.GetRevenueByMonth(year);
+        public DataTable GetRevenueByWeek() => _repo.GetRevenueByCurrentWeek();
+        public RevenueSummary GetRevenueSummary() => _repo.GetRevenueSummary();
         public List<RevenueRoomDTO> GetRevenueByRoom(int month, int year)
-            => _invoiceRepo.GetRevenueByRoom(month, year) ?? new List<RevenueRoomDTO>();
+            => _repo.GetRevenueByRoom(month, year) ?? new List<RevenueRoomDTO>();
 
-        // ====================== Basic Queries ======================
-        public List<Invoice> GetAllInvoices() => _invoiceRepo.getAllInvoices();
-        public Invoice GetInvoiceByBookingID(int bookingID) => _invoiceRepo.GetInvoiceByBookingID(bookingID);
-        public string GetPaymentByInvoiceID(int invoiceID) => _invoiceRepo.GetPaymentByInvoice(invoiceID);
-        public string GetFullNameByInvoiceID(int invoiceID) => _invoiceRepo.getFullNameByInvoiceID(invoiceID);
+        // ======== Invoices ========
+        public int CreateInvoice(Invoice inv) => _repo.AddInvoice(inv);
+        public bool UpdateInvoiceTotals(Invoice inv) => _repo.UpdateInvoiceTotals(inv);
+        public void UpdateStatus(int invoiceId, string status, int? issuedByIfPaid = null)
+            => _repo.UpdateInvoiceStatus(invoiceId, status, issuedByIfPaid);
+        public Invoice GetInvoice(int invoiceId) => _repo.GetInvoiceById(invoiceId);
+        public Invoice GetLatestInvoiceByBooking(int bookingId) => _repo.GetLatestInvoiceByBookingID(bookingId);
+        public List<Invoice> GetAllInvoices() => _repo.GetAllInvoices();
 
-        // ====================== Totals / Status / Payments ======================
-        public int UpsertInvoiceTotals(Invoice header) => _invoiceRepo.UpsertInvoiceTotals(header);
+        // ======== Payment (1–1 với Invoice) ========
+        public Payment GetPaymentForInvoice(int invoiceId) => _repo.GetPaymentForInvoice(invoiceId);
 
-        public int CreateOrGetOpenInvoice(
-            int bookingHeaderId,
-            decimal roomCharge,
-            decimal serviceCharge,
-            decimal discount,
-            decimal surcharge,
-            int issuedByUserIfPaid = 0)
-            => _invoiceRepo.CreateOrGetOpenInvoice(bookingHeaderId, roomCharge, serviceCharge, discount, surcharge, issuedByUserIfPaid);
+        /// <summary>
+        /// Upsert payment (1–1). Mặc định bắt buộc thanh toán đủ tiền (allowPartial=false).
+        /// </summary>
+        public int UpsertPayment(int invoiceId, decimal amount, DateTime paidAt, string method = "Cash", string status = "Paid", bool allowPartial = false)
+            => _repo.UpsertPaymentForInvoice(invoiceId, amount, paidAt, method, status, allowPartial);
 
-        public (decimal Total, decimal Paid, decimal Remain, string Status) GetInvoiceTotals(int invoiceId)
-            => _invoiceRepo.GetInvoiceTotals(invoiceId);
+        public void DeletePayment(int invoiceId) => _repo.DeletePaymentForInvoice(invoiceId);
 
-        public void UpdateInvoiceStatusIfNeeded(int invoiceId, int issuedByUserIdIfPaid = 0)
-            => _invoiceRepo.UpdateInvoiceStatusIfNeeded(invoiceId, issuedByUserIdIfPaid);
+        public void RefreshInvoiceStatusFromPayment(int invoiceId, int? issuedByIfPaid = null)
+            => _repo.RefreshInvoiceStatusFromPayment(invoiceId, issuedByIfPaid);
 
-        public decimal GetPaidAmount(int invoiceId) => _invoiceRepo.GetPaidAmount(invoiceId);
-
-        public void UpdateStatus(int invoiceId, string status) => _invoiceRepo.UpdateInvoiceStatus(invoiceId, status);
-
-        public List<Payment> GetPaymentsByInvoiceId(int invoiceId)
-            => _invoiceRepo.GetPaymentsByInvoiceId(invoiceId) ?? new List<Payment>();
-
-        // ====================== Invoices + Customer (JOIN) ======================
+        // ======== Joins for lists ========
         public List<InvoiceRepository.InvoiceListItem> GetAllInvoicesWithCustomer()
-            => _invoiceRepo.GetAllInvoicesWithCustomer() ?? new List<InvoiceRepository.InvoiceListItem>();
+            => _repo.GetAllInvoicesWithCustomer() ?? new List<InvoiceRepository.InvoiceListItem>();
 
         public List<InvoiceRepository.InvoiceListItem> GetInvoicesByCustomerNumber(string idNumber)
-            => _invoiceRepo.GetInvoicesByCustomerNumber(idNumber) ?? new List<InvoiceRepository.InvoiceListItem>();
+            => _repo.GetInvoicesByCustomerNumber(idNumber) ?? new List<InvoiceRepository.InvoiceListItem>();
 
         public InvoiceRepository.InvoiceListItem GetInvoiceWithCustomerByInvoiceId(int invoiceId)
-            => _invoiceRepo.GetInvoiceWithCustomerByInvoiceId(invoiceId);
-        public int CreateOrGetOpenInvoiceByBooking(
-    int bookingId, decimal roomCharge, decimal serviceCharge,
-    decimal discount, decimal surcharge, int issuedByUserIfPaid = 0)
-    => _invoiceRepo.CreateOrGetOpenInvoice(bookingId, roomCharge, serviceCharge, discount, surcharge, issuedByUserIfPaid);
+            => _repo.GetInvoiceWithCustomerByInvoiceId(invoiceId);
+        public Invoice GetInvoiceByBookingID(int bookingID)
+    => _repo.GetInvoiceByBookingID(bookingID);
 
+        public string GetFullNameByInvoiceID(int invoiceID)
+            => _repo.getFullNameByInvoiceID(invoiceID);
+
+        public List<Payment> GetPaymentsByInvoiceId(int invoiceId)
+            => _repo.GetPaymentsByInvoiceId(invoiceId) ?? new List<Payment>();
     }
 }

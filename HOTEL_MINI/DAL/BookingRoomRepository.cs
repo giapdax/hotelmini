@@ -1,6 +1,6 @@
 ﻿using HOTEL_MINI.Common;
 using HOTEL_MINI.Model.Entity;
-using HOTEL_MINI.Model.Response; // BookingDisplay, UsedServiceDto nếu cần
+using HOTEL_MINI.Model.Response; // BookingDisplay
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,10 +9,10 @@ using System.Data.SqlClient;
 namespace HOTEL_MINI.DAL
 {
     /// <summary>
-    /// LINES:
-    /// - Quản lý BookingRooms (display, overlap, CRUD line, checkin/checkout line).
-    /// - KHÔNG xử lý enum/payment; KHÔNG ghi vào Bookings (trừ khi cần đọc join).
-    /// - Dịch vụ (BookingRoomServices) để ở BookingRoomServiceRepository.
+    /// LINES (BookingRooms):
+    /// - Display, overlap, CRUD line, checkin/checkout/cancel.
+    /// - KHÔNG đụng đến Invoices/Payments.
+    /// - Services (BookingRoomServices) xử lý ở repo khác.
     /// </summary>
     public class BookingRoomRepository
     {
@@ -25,9 +25,7 @@ namespace HOTEL_MINI.DAL
 
         // ---------------- Helpers ----------------
         private static T SafeGet<T>(SqlDataReader rd, int ordinal)
-        {
-            return rd.IsDBNull(ordinal) ? default(T) : (T)rd.GetValue(ordinal);
-        }
+            => rd.IsDBNull(ordinal) ? default : (T)rd.GetValue(ordinal);
 
         private static List<T> QueryList<T>(string cs, string sql, Action<SqlCommand> onParam, Func<SqlDataReader, T> map)
         {
@@ -39,8 +37,7 @@ namespace HOTEL_MINI.DAL
                 conn.Open();
                 using (var rd = cmd.ExecuteReader())
                 {
-                    while (rd.Read())
-                        list.Add(map(rd));
+                    while (rd.Read()) list.Add(map(rd));
                 }
             }
             return list;
@@ -61,20 +58,19 @@ namespace HOTEL_MINI.DAL
             }
         }
 
-        private static Booking MapBooking(SqlDataReader rd)
+        private static BookingRoom MapBookingRoom(SqlDataReader rd)
         {
-            return new Booking
+            return new BookingRoom
             {
-                BookingID = rd.GetInt32(0),
-                CustomerID = rd.GetInt32(1),
+                BookingRoomID = rd.GetInt32(0),
+                BookingID = rd.GetInt32(1),                // header id
                 RoomID = rd.GetInt32(2),
                 PricingID = rd.GetInt32(3),
-                CreatedBy = rd.GetInt32(4),
-                BookingDate = rd.GetDateTime(5),
-                CheckInDate = SafeGet<DateTime?>(rd, 6),
-                CheckOutDate = SafeGet<DateTime?>(rd, 7),
-                Status = rd.GetString(8),
-                Notes = SafeGet<string>(rd, 9)
+                CheckInDate = SafeGet<DateTime?>(rd, 4),
+                CheckOutDate = SafeGet<DateTime?>(rd, 5),
+                Status = rd.GetString(6),
+                // Nếu entity có thuộc tính Note thì map, còn không thì bỏ qua
+                // Note       = SafeGet<string>(rd, 7)
             };
         }
 
@@ -82,9 +78,9 @@ namespace HOTEL_MINI.DAL
         {
             return new BookingDisplay
             {
-                BookingID = rd.GetInt32(0),
+                BookingID = rd.GetInt32(0),             // line id
                 RoomNumber = rd.GetString(1),
-                EmployeeName = rd.GetString(2),
+                EmployeeName = rd.IsDBNull(2) ? "" : rd.GetString(2),
                 BookingDate = rd.GetDateTime(3),
                 CheckInDate = SafeGet<DateTime?>(rd, 4),
                 CheckOutDate = SafeGet<DateTime?>(rd, 5),
@@ -98,25 +94,53 @@ namespace HOTEL_MINI.DAL
         public bool IsRoomOverlapped(int roomId, DateTime checkIn, DateTime checkOut)
         {
             const string sql = @"
-SELECT  COUNT(1)
-FROM    BookingRooms br WITH (NOLOCK)
-WHERE   br.RoomID = @RoomID
-    AND br.Status IN ('Booked','CheckedIn')
-    AND br.CheckInDate < @To
-    AND @From < br.CheckOutDate";
+SELECT COUNT(1)
+FROM   BookingRooms br
+WHERE  br.RoomID = @RoomID
+   AND br.Status IN ('Booked','CheckedIn')
+   AND br.CheckInDate < @To
+   AND @From < br.CheckOutDate;";
             using (var conn = new SqlConnection(_cs))
             using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@RoomID", roomId);
-                cmd.Parameters.AddWithValue("@From", checkIn);
-                cmd.Parameters.AddWithValue("@To", checkOut);
+                cmd.Parameters.Add("@RoomID", SqlDbType.Int).Value = roomId;
+                cmd.Parameters.Add("@From", SqlDbType.DateTime).Value = checkIn;
+                cmd.Parameters.Add("@To", SqlDbType.DateTime).Value = checkOut;
                 conn.Open();
-                var n = Convert.ToInt32(cmd.ExecuteScalar());
-                return n > 0;
+                return Convert.ToInt32(cmd.ExecuteScalar() ?? 0) > 0;
             }
         }
 
-        // ---------------- DISPLAY queries ----------------
+        // Ưu tiên: còn CheckedIn → Rooms.Status = Occupied;
+        // nếu không, còn Booked → Booked; ngược lại → Available
+        private static void RecalcRoomStatus(SqlConnection conn, SqlTransaction tran, int roomId)
+        {
+            bool anyIn = false, anyBooked = false;
+
+            using (var c1 = new SqlCommand("SELECT TOP 1 1 FROM BookingRooms WHERE RoomID=@R AND Status='CheckedIn';", conn, tran))
+            {
+                c1.Parameters.Add("@R", SqlDbType.Int).Value = roomId;
+                anyIn = Convert.ToInt32(c1.ExecuteScalar() ?? 0) == 1;
+            }
+            if (!anyIn)
+            {
+                using (var c2 = new SqlCommand("SELECT TOP 1 1 FROM BookingRooms WHERE RoomID=@R AND Status='Booked';", conn, tran))
+                {
+                    c2.Parameters.Add("@R", SqlDbType.Int).Value = roomId;
+                    anyBooked = Convert.ToInt32(c2.ExecuteScalar() ?? 0) == 1;
+                }
+            }
+
+            var status = anyIn ? "Occupied" : (anyBooked ? "Booked" : "Available");
+            using (var upd = new SqlCommand("UPDATE Rooms SET Status=@S WHERE RoomID=@R;", conn, tran))
+            {
+                upd.Parameters.Add("@S", SqlDbType.VarChar, 20).Value = status;
+                upd.Parameters.Add("@R", SqlDbType.Int).Value = roomId;
+                upd.ExecuteNonQuery();
+            }
+        }
+
+        // ---------------- DISPLAY ----------------
         public List<BookingDisplay> GetActiveBookingDisplays()
         {
             const string sql = @"
@@ -133,10 +157,10 @@ SELECT
 FROM BookingRooms br
 JOIN Bookings  b ON b.BookingID  = br.BookingID
 JOIN Rooms     r ON r.RoomID     = br.RoomID
-JOIN Users     u ON u.UserID     = b.CreatedBy
+LEFT JOIN Users u ON u.UserID    = b.CreatedBy
 JOIN Customers c ON c.CustomerID = b.CustomerID
 WHERE br.Status IN ('Booked','CheckedIn')
-ORDER BY b.BookingDate DESC, br.CheckInDate DESC;";
+ORDER BY b.BookingDate DESC, ISNULL(br.CheckInDate, b.BookingDate) DESC;";
             return QueryList(_cs, sql, null, MapBookingDisplay);
         }
 
@@ -154,10 +178,10 @@ SELECT TOP 20
     br.Status,
     c.IDNumber                 AS CustomerIDNumber
 FROM BookingRooms br
-JOIN Bookings     b  ON b.BookingID  = br.BookingID
-JOIN Rooms        r  ON r.RoomID     = br.RoomID
-JOIN Users        u  ON u.UserID     = b.CreatedBy
-JOIN Customers    c  ON c.CustomerID = b.CustomerID
+JOIN Bookings  b ON b.BookingID  = br.BookingID
+JOIN Rooms     r ON r.RoomID     = br.RoomID
+LEFT JOIN Users u ON u.UserID    = b.CreatedBy
+JOIN Customers c ON c.CustomerID = b.CustomerID
 WHERE br.Status = 'CheckedOut'
 ORDER BY br.CheckOutDate DESC, b.BookingDate DESC;";
             return QueryList(_cs, sql, null, MapBookingDisplay);
@@ -180,180 +204,120 @@ FROM Customers c
 JOIN Bookings b      ON b.CustomerID  = c.CustomerID
 JOIN BookingRooms br ON br.BookingID  = b.BookingID
 JOIN Rooms r         ON r.RoomID      = br.RoomID
-JOIN Users u         ON u.UserID      = b.CreatedBy
+LEFT JOIN Users u    ON u.UserID      = b.CreatedBy
 WHERE c.IDNumber = @N
-ORDER BY b.BookingDate DESC, br.CheckInDate DESC;";
-            return QueryList(_cs, sql, cmd => cmd.Parameters.AddWithValue("@N", idNumber), MapBookingDisplay);
+ORDER BY b.BookingDate DESC, ISNULL(br.CheckInDate, b.BookingDate) DESC;";
+            return QueryList(_cs, sql, cmd => cmd.Parameters.Add("@N", SqlDbType.NVarChar, 50).Value = idNumber, MapBookingDisplay);
         }
 
-        // ---------------- Booking entity queries ----------------
-        public List<Booking> GetBookingsByCustomerNumber(string numberID)
+        // ---------------- LINE QUERIES (BookingRoom) ----------------
+        public List<BookingRoom> GetBookingsByCustomerNumber(string idNumber)
         {
             const string sql = @"
 SELECT
-    br.BookingRoomID           AS BookingID,
-    b.CustomerID,
-    br.RoomID,
-    br.PricingID,
-    b.CreatedBy,
-    b.BookingDate,
-    br.CheckInDate,
-    br.CheckOutDate,
-    br.Status,
-    ISNULL(br.Note, b.Notes)   AS Notes
-FROM Customers     c
-JOIN Bookings      b   ON b.CustomerID  = c.CustomerID
-JOIN BookingRooms  br  ON br.BookingID  = b.BookingID
-WHERE c.IDNumber = @NumberID
-ORDER BY b.BookingDate DESC, br.CheckInDate DESC;";
-            return QueryList(_cs, sql, cmd => cmd.Parameters.AddWithValue("@NumberID", numberID), MapBooking);
+    br.BookingRoomID, br.BookingID, br.RoomID, br.PricingID,
+    br.CheckInDate, br.CheckOutDate, br.Status
+FROM Customers c
+JOIN Bookings b      ON b.CustomerID = c.CustomerID
+JOIN BookingRooms br ON br.BookingID = b.BookingID
+WHERE c.IDNumber = @ID
+ORDER BY b.BookingDate DESC, ISNULL(br.CheckInDate, b.BookingDate) DESC;";
+            return QueryList(_cs, sql,
+                cmd => cmd.Parameters.Add("@ID", SqlDbType.NVarChar, 50).Value = idNumber,
+                MapBookingRoom);
         }
 
-        // alias để giữ tương thích cũ
-        public List<Booking> getBookingsByCustomerNumber(string numberID) => GetBookingsByCustomerNumber(numberID);
-
-        public Booking GetLatestBookingByRoomId(int roomId)
+        public BookingRoom GetLatestBookingByRoomId(int roomId)
         {
             const string sql = @"
 SELECT TOP 1
-    br.BookingRoomID           AS BookingID,
-    b.CustomerID,
-    br.RoomID,
-    br.PricingID,
-    b.CreatedBy,
-    b.BookingDate,
-    br.CheckInDate,
-    br.CheckOutDate,
-    br.Status,
-    ISNULL(br.Note, b.Notes)   AS Notes
+    br.BookingRoomID, br.BookingID, br.RoomID, br.PricingID,
+    br.CheckInDate, br.CheckOutDate, br.Status
 FROM BookingRooms br
-JOIN Bookings     b ON b.BookingID = br.BookingID
+JOIN Bookings b ON b.BookingID = br.BookingID
 WHERE br.RoomID = @RoomID
-ORDER BY b.BookingDate DESC, br.CheckInDate DESC;";
-            return QuerySingle(_cs, sql, cmd => cmd.Parameters.AddWithValue("@RoomID", roomId), MapBooking);
+ORDER BY b.BookingDate DESC, ISNULL(br.CheckInDate, b.BookingDate) DESC;";
+            return QuerySingle(_cs, sql, cmd => cmd.Parameters.Add("@RoomID", SqlDbType.Int).Value = roomId, MapBookingRoom);
         }
 
-        public Booking GetBookingById(int bookingId)
+        public BookingRoom GetBookingById(int bookingRoomId)
         {
             const string sql = @"
-SELECT
-    br.BookingRoomID           AS BookingID,
-    b.CustomerID,
-    br.RoomID,
-    br.PricingID,
-    b.CreatedBy,
-    b.BookingDate,
-    br.CheckInDate,
-    br.CheckOutDate,
-    br.Status,
-    ISNULL(br.Note, b.Notes)   AS Notes
+SELECT br.BookingRoomID, br.BookingID, br.RoomID, br.PricingID,
+       br.CheckInDate, br.CheckOutDate, br.Status
 FROM BookingRooms br
-JOIN Bookings     b ON b.BookingID = br.BookingID
 WHERE br.BookingRoomID = @Id;";
-            return QuerySingle(_cs, sql, cmd => cmd.Parameters.AddWithValue("@Id", bookingId), MapBooking);
+            return QuerySingle(_cs, sql, cmd => cmd.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId, MapBookingRoom);
         }
 
-        public Booking GetBookingRoomById(int bookingRoomId)
-        {
-            const string sql = @"
-SELECT
-    br.BookingRoomID AS BookingID,
-    br.RoomID,
-    br.PricingID,
-    br.CheckInDate,
-    br.CheckOutDate,
-    br.Status,
-    b.CustomerID,
-    b.CreatedBy,
-    b.BookingDate,
-    b.Notes
-FROM BookingRooms br
-JOIN Bookings     b ON b.BookingID = br.BookingID
-WHERE br.BookingRoomID = @Id;";
-            using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@Id", bookingRoomId);
-                conn.Open();
-                using (var rd = cmd.ExecuteReader())
-                {
-                    if (!rd.Read()) return null;
-                    return new Booking
-                    {
-                        BookingID = rd.GetInt32(0),
-                        RoomID = rd.GetInt32(1),
-                        PricingID = rd.GetInt32(2),
-                        CheckInDate = SafeGet<DateTime?>(rd, 3),
-                        CheckOutDate = SafeGet<DateTime?>(rd, 4),
-                        Status = rd.GetString(5),
-                        CustomerID = rd.GetInt32(6),
-                        CreatedBy = rd.GetInt32(7),
-                        BookingDate = rd.GetDateTime(8),
-                        Notes = SafeGet<string>(rd, 9)
-                    };
-                }
-            }
-        }
+        public BookingRoom GetBookingRoomById(int bookingRoomId) => GetBookingById(bookingRoomId);
 
-        public Booking GetActiveBookingByRoomId(int roomId)
+        public BookingRoom GetActiveBookingByRoomId(int roomId)
         {
             const string sql = @"
 SELECT TOP 1
-    br.BookingRoomID AS BookingID,
-    b.CustomerID,
-    br.RoomID,
-    br.PricingID,
-    b.CreatedBy,
-    b.BookingDate,
-    br.CheckInDate,
-    br.CheckOutDate,
-    br.Status,
-    ISNULL(br.Note, b.Notes) AS Notes
+    br.BookingRoomID, br.BookingID, br.RoomID, br.PricingID,
+    br.CheckInDate, br.CheckOutDate, br.Status
 FROM BookingRooms br
 JOIN Bookings b ON b.BookingID = br.BookingID
 WHERE br.RoomID = @RoomID
   AND br.Status IN ('Booked','CheckedIn')
 ORDER BY ISNULL(br.CheckInDate, b.BookingDate) DESC;";
-            return QuerySingle(_cs, sql, cmd => cmd.Parameters.AddWithValue("@RoomID", roomId), MapBooking);
+            return QuerySingle(_cs, sql, cmd => cmd.Parameters.Add("@RoomID", SqlDbType.Int).Value = roomId, MapBookingRoom);
+        }
+
+        public List<BookingRoom> GetBookingsByHeaderId(int headerBookingId)
+        {
+            const string sql = @"
+SELECT br.BookingRoomID, br.BookingID, br.RoomID, br.PricingID,
+       br.CheckInDate, br.CheckOutDate, br.Status
+FROM BookingRooms br
+WHERE br.BookingID = @HID
+ORDER BY ISNULL(br.CheckInDate, GETDATE()) DESC;";
+            return QueryList(_cs, sql, cmd => cmd.Parameters.Add("@HID", SqlDbType.Int).Value = headerBookingId, MapBookingRoom);
         }
 
         // ---------------- Mutations (line-level) ----------------
-
-        /// <summary>Thêm 1 line vào header có sẵn. Trả về BookingRoomID (line id).</summary>
-        public int AddLineForHeader(int headerBookingId, Booking line)
+        public int AddLineForHeader(int headerBookingId, BookingRoom line)
         {
-            const string sql = @"
+            const string sqlInsert = @"
 INSERT INTO BookingRooms (BookingID, RoomID, PricingID, CheckInDate, CheckOutDate, Status, Note)
 VALUES (@BID, @RoomID, @PricingID, @CI, @CO, @S, @Note);
 SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@BID", headerBookingId);
-                cmd.Parameters.AddWithValue("@RoomID", line.RoomID);
-                cmd.Parameters.AddWithValue("@PricingID", line.PricingID);
-                cmd.Parameters.AddWithValue("@CI", (object)line.CheckInDate ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@CO", (object)line.CheckOutDate ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@S", string.IsNullOrWhiteSpace(line.Status) ? "Booked" : line.Status);
-                cmd.Parameters.AddWithValue("@Note", (object)line.Notes ?? DBNull.Value);
                 conn.Open();
-                var lineId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                // cập nhật trạng thái phòng
-                using (var upd = new SqlCommand("UPDATE Rooms SET Status = 'Booked' WHERE RoomID = @R", conn))
+                using (var tran = conn.BeginTransaction())
                 {
-                    upd.Parameters.AddWithValue("@R", line.RoomID);
-                    upd.ExecuteNonQuery();
-                }
+                    int lineId;
+                    using (var cmd = new SqlCommand(sqlInsert, conn, tran))
+                    {
+                        cmd.Parameters.Add("@BID", SqlDbType.Int).Value = headerBookingId;
+                        cmd.Parameters.Add("@RoomID", SqlDbType.Int).Value = line.RoomID;
+                        cmd.Parameters.Add("@PricingID", SqlDbType.Int).Value = line.PricingID;
+                        cmd.Parameters.Add("@CI", SqlDbType.DateTime).Value = (object)line.CheckInDate ?? DBNull.Value;
+                        cmd.Parameters.Add("@CO", SqlDbType.DateTime).Value = (object)line.CheckOutDate ?? DBNull.Value;
+                        cmd.Parameters.Add("@S", SqlDbType.VarChar, 20).Value = string.IsNullOrWhiteSpace(line.Status) ? "Booked" : line.Status.Trim();
+                        cmd.Parameters.Add("@Note", SqlDbType.NVarChar, -1).Value = DBNull.Value; // nếu có line.Note thì đổi ở đây
+                        lineId = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
 
-                return lineId;
+                    RecalcRoomStatus(conn, tran, line.RoomID);
+                    tran.Commit();
+                    return lineId;
+                }
             }
         }
 
-        /// <summary>Thêm nhiều line cho 1 header. Trả về map RoomID -> BookingRoomID.</summary>
-        public Dictionary<int, int> AddLinesForHeader(int headerBookingId, List<Booking> roomBookings)
+        public Dictionary<int, int> AddLinesForHeader(int headerBookingId, List<BookingRoom> roomBookings)
         {
             var map = new Dictionary<int, int>();
+            const string sqlInsert = @"
+INSERT INTO BookingRooms (BookingID, RoomID, PricingID, CheckInDate, CheckOutDate, Status, Note)
+VALUES (@BID, @RID, @PID, @CI, @CO, @S, @N);
+SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
             using (var conn = new SqlConnection(_cs))
             {
                 conn.Open();
@@ -361,136 +325,221 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 {
                     foreach (var b in roomBookings)
                     {
-                        int bookingRoomId;
-                        using (var cmd = new SqlCommand(@"
-INSERT INTO BookingRooms (BookingID, RoomID, PricingID, CheckInDate, CheckOutDate, Status, Note)
-VALUES (@BID, @RID, @PID, @CI, @CO, @S, @N);
-SELECT CAST(SCOPE_IDENTITY() AS INT);", conn, tran))
+                        int lineId;
+                        using (var cmd = new SqlCommand(sqlInsert, conn, tran))
                         {
-                            cmd.Parameters.AddWithValue("@BID", headerBookingId);
-                            cmd.Parameters.AddWithValue("@RID", b.RoomID);
-                            cmd.Parameters.AddWithValue("@PID", b.PricingID);
-                            cmd.Parameters.AddWithValue("@CI", (object)b.CheckInDate ?? DBNull.Value);
-                            cmd.Parameters.AddWithValue("@CO", (object)b.CheckOutDate ?? DBNull.Value);
-                            cmd.Parameters.AddWithValue("@S", string.IsNullOrWhiteSpace(b.Status) ? "Booked" : b.Status);
-                            cmd.Parameters.AddWithValue("@N", (object)b.Notes ?? DBNull.Value);
-                            bookingRoomId = Convert.ToInt32(cmd.ExecuteScalar());
+                            cmd.Parameters.Add("@BID", SqlDbType.Int).Value = headerBookingId;
+                            cmd.Parameters.Add("@RID", SqlDbType.Int).Value = b.RoomID;
+                            cmd.Parameters.Add("@PID", SqlDbType.Int).Value = b.PricingID;
+                            cmd.Parameters.Add("@CI", SqlDbType.DateTime).Value = (object)b.CheckInDate ?? DBNull.Value;
+                            cmd.Parameters.Add("@CO", SqlDbType.DateTime).Value = (object)b.CheckOutDate ?? DBNull.Value;
+                            cmd.Parameters.Add("@S", SqlDbType.VarChar, 20).Value = string.IsNullOrWhiteSpace(b.Status) ? "Booked" : b.Status.Trim();
+                            cmd.Parameters.Add("@N", SqlDbType.NVarChar, -1).Value = DBNull.Value; // nếu có b.Note thì set
+                            lineId = Convert.ToInt32(cmd.ExecuteScalar());
                         }
-
-                        using (var cmdU = new SqlCommand("UPDATE Rooms SET Status = 'Booked' WHERE RoomID = @R", conn, tran))
-                        {
-                            cmdU.Parameters.AddWithValue("@R", b.RoomID);
-                            cmdU.ExecuteNonQuery();
-                        }
-
-                        map[b.RoomID] = bookingRoomId;
+                        RecalcRoomStatus(conn, tran, b.RoomID);
+                        map[b.RoomID] = lineId;
                     }
-
                     tran.Commit();
                 }
             }
             return map;
         }
 
-        public bool Update(Booking booking)
+        public bool Update(BookingRoom booking)
         {
             const string sql = @"
-UPDATE  BookingRooms
-SET     Status       = @Status,
-        CheckOutDate = @CheckOutDate,
-        Note         = @Note
-WHERE   BookingRoomID = @Id;";
+UPDATE BookingRooms
+SET    Status=@S, CheckOutDate=@CO, Note=@N
+WHERE  BookingRoomID=@Id;";
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@Id", booking.BookingID);
-                cmd.Parameters.AddWithValue("@Status", string.IsNullOrWhiteSpace(booking.Status) ? "Booked" : booking.Status);
-                cmd.Parameters.AddWithValue("@CheckOutDate", (object)booking.CheckOutDate ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Note", (object)booking.Notes ?? DBNull.Value);
                 conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                int roomId;
+                using (var getR = new SqlCommand("SELECT RoomID FROM BookingRooms WHERE BookingRoomID=@Id", conn))
+                {
+                    getR.Parameters.Add("@Id", SqlDbType.Int).Value = booking.BookingRoomID;
+                    var o = getR.ExecuteScalar();
+                    if (o == null || o == DBNull.Value) return false;
+                    roomId = Convert.ToInt32(o);
+                }
+
+                using (var tran = conn.BeginTransaction())
+                {
+                    using (var cmd = new SqlCommand(sql, conn, tran))
+                    {
+                        cmd.Parameters.Add("@S", SqlDbType.VarChar, 20).Value = string.IsNullOrWhiteSpace(booking.Status) ? "Booked" : booking.Status.Trim();
+                        cmd.Parameters.Add("@CO", SqlDbType.DateTime).Value = (object)booking.CheckOutDate ?? DBNull.Value;
+                        cmd.Parameters.Add("@N", SqlDbType.NVarChar, -1).Value = DBNull.Value; // nếu có booking.Note thì đổi ở đây
+                        cmd.Parameters.Add("@Id", SqlDbType.Int).Value = booking.BookingRoomID;
+                        if (cmd.ExecuteNonQuery() <= 0) { tran.Rollback(); return false; }
+                    }
+
+                    RecalcRoomStatus(conn, tran, roomId);
+                    tran.Commit();
+                }
+                return true;
             }
         }
 
-        public bool UpdateBookingStatusAndCheckOut(int bookingID, string status, DateTime checkoutDate)
+        public bool UpdateBookingStatusAndCheckOut(int bookingRoomId, string status, DateTime checkoutDate)
         {
-            const string sql = @"
-UPDATE  BookingRooms
-SET     Status = @Status,
-        CheckOutDate = @CheckOutDate
-WHERE   BookingRoomID = @Id;";
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@Status", status);
-                cmd.Parameters.AddWithValue("@CheckOutDate", checkoutDate);
-                cmd.Parameters.AddWithValue("@Id", bookingID);
                 conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                int roomId;
+                using (var g = new SqlCommand("SELECT RoomID FROM BookingRooms WHERE BookingRoomID=@Id", conn))
+                {
+                    g.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId;
+                    var o = g.ExecuteScalar();
+                    if (o == null || o == DBNull.Value) return false;
+                    roomId = Convert.ToInt32(o);
+                }
+
+                using (var tran = conn.BeginTransaction())
+                {
+                    using (var cmd = new SqlCommand(@"
+UPDATE BookingRooms 
+SET Status=@S, CheckOutDate=@CO 
+WHERE BookingRoomID=@Id;", conn, tran))
+                    {
+                        cmd.Parameters.Add("@S", SqlDbType.VarChar, 20).Value = status;
+                        cmd.Parameters.Add("@CO", SqlDbType.DateTime).Value = checkoutDate;
+                        cmd.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId;
+                        if (cmd.ExecuteNonQuery() <= 0) { tran.Rollback(); return false; }
+                    }
+
+                    RecalcRoomStatus(conn, tran, roomId);
+                    tran.Commit();
+                }
+                return true;
             }
         }
 
-        public bool CancelBooking(int bookingID)
+        public bool CancelBooking(int bookingRoomId)
         {
-            const string sql = @"
-UPDATE  BookingRooms
-SET     Status = 'Cancelled'
-WHERE   BookingRoomID = @Id;";
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@Id", bookingID);
                 conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                int roomId;
+                using (var g = new SqlCommand("SELECT RoomID FROM BookingRooms WHERE BookingRoomID=@Id", conn))
+                {
+                    g.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId;
+                    var o = g.ExecuteScalar();
+                    if (o == null || o == DBNull.Value) return false;
+                    roomId = Convert.ToInt32(o);
+                }
+
+                using (var tran = conn.BeginTransaction())
+                {
+                    using (var cmd = new SqlCommand("UPDATE BookingRooms SET Status='Cancelled' WHERE BookingRoomID=@Id;", conn, tran))
+                    {
+                        cmd.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId;
+                        if (cmd.ExecuteNonQuery() <= 0) { tran.Rollback(); return false; }
+                    }
+
+                    RecalcRoomStatus(conn, tran, roomId);
+                    tran.Commit();
+                }
+                return true;
             }
         }
 
-        public bool CheckInBooking(int bookingID, DateTime checkInAt)
+        public bool CheckInBooking(int bookingRoomId, DateTime checkInAt)
         {
-            const string sql = @"
+            using (var conn = new SqlConnection(_cs))
+            {
+                conn.Open();
+                int roomId;
+                using (var g = new SqlCommand("SELECT RoomID FROM BookingRooms WHERE BookingRoomID=@Id", conn))
+                {
+                    g.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId;
+                    var o = g.ExecuteScalar();
+                    if (o == null || o == DBNull.Value) return false;
+                    roomId = Convert.ToInt32(o);
+                }
+
+                using (var tran = conn.BeginTransaction())
+                {
+                    using (var cmd = new SqlCommand(@"
 UPDATE br
 SET br.Status      = 'CheckedIn',
     br.CheckInDate = ISNULL(br.CheckInDate, @CheckInAt)
 FROM BookingRooms br
-WHERE br.BookingRoomID = @Id AND br.Status = 'Booked';";
+WHERE br.BookingRoomID = @Id AND br.Status = 'Booked';", conn, tran))
+                    {
+                        cmd.Parameters.Add("@Id", SqlDbType.Int).Value = bookingRoomId;
+                        cmd.Parameters.Add("@CheckInAt", SqlDbType.DateTime).Value = checkInAt;
+                        if (cmd.ExecuteNonQuery() <= 0) { tran.Rollback(); return false; }
+                    }
+
+                    RecalcRoomStatus(conn, tran, roomId);
+                    tran.Commit();
+                }
+                return true;
+            }
+        }
+        public bool SetLinesCheckedOutByHeader(int headerBookingId, DateTime checkoutAt)
+        {
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@Id", bookingID);
-                cmd.Parameters.AddWithValue("@CheckInAt", checkInAt);
                 conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                using (var tran = conn.BeginTransaction())
+                {
+                    int affected;
+
+                    // 1) Checkout tất cả lines thuộc header (nếu còn Booked/CheckedIn)
+                    using (var cmd = new SqlCommand(@"
+UPDATE br
+SET    br.Status       = 'CheckedOut',
+       br.CheckOutDate = ISNULL(br.CheckOutDate, @CO)
+FROM   BookingRooms br
+WHERE  br.BookingID = @HID
+  AND  br.Status IN ('Booked','CheckedIn');", conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@HID", headerBookingId);
+                        cmd.Parameters.AddWithValue("@CO", checkoutAt);
+                        affected = cmd.ExecuteNonQuery();
+                    }
+
+                    // 2) Trả phòng về Available nếu phòng không còn line nào active
+                    using (var cmd2 = new SqlCommand(@"
+UPDATE r
+SET    r.Status = 'Available'
+FROM   Rooms r
+WHERE  r.RoomID IN (
+         SELECT DISTINCT br.RoomID
+         FROM BookingRooms br
+         WHERE br.BookingID = @HID
+       )
+AND    NOT EXISTS (
+         SELECT 1
+         FROM   BookingRooms x
+         WHERE  x.RoomID = r.RoomID
+           AND  x.Status IN ('Booked','CheckedIn')
+       );", conn, tran))
+                    {
+                        cmd2.Parameters.AddWithValue("@HID", headerBookingId);
+                        cmd2.ExecuteNonQuery();
+                    }
+
+                    tran.Commit();
+                    return affected > 0;
+                }
             }
         }
 
-        /// <summary>Checkout toàn bộ lines dưới một header.</summary>
-        public bool SetLinesCheckedOutByHeader(int headerBookingId, DateTime checkoutAt)
-        {
-            const string sql = @"
-UPDATE  br
-SET     br.Status       = 'CheckedOut',
-        br.CheckOutDate = ISNULL(br.CheckOutDate, @CO)
-FROM    BookingRooms br
-WHERE   br.BookingID = @HID
-  AND   br.Status IN ('Booked','CheckedIn');";
-            using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@HID", headerBookingId);
-                cmd.Parameters.AddWithValue("@CO", checkoutAt);
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
-            }
-        }
+        // (tuỳ chọn) Overload cho tiện dùng nếu muốn gọi nhanh không truyền thời điểm
+        public bool SetLinesCheckedOutByHeader(int headerBookingId)
+            => SetLinesCheckedOutByHeader(headerBookingId, DateTime.Now);
 
         // ---------------- Misc ----------------
         public int? GetHeaderIdByBookingRoomId(int bookingRoomId)
         {
-            const string sql = @"SELECT BookingID FROM BookingRooms WHERE BookingRoomID = @id;";
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand(sql, conn))
+            using (var cmd = new SqlCommand("SELECT BookingID FROM BookingRooms WHERE BookingRoomID=@id;", conn))
             {
-                cmd.Parameters.AddWithValue("@id", bookingRoomId);
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = bookingRoomId;
                 conn.Open();
                 var o = cmd.ExecuteScalar();
                 return (o == null || o == DBNull.Value) ? (int?)null : Convert.ToInt32(o);
@@ -500,35 +549,13 @@ WHERE   br.BookingID = @HID
         public string GetRoomNumberById(int roomId)
         {
             using (var conn = new SqlConnection(_cs))
-            using (var cmd = new SqlCommand("SELECT RoomNumber FROM Rooms WHERE RoomID = @id;", conn))
+            using (var cmd = new SqlCommand("SELECT RoomNumber FROM Rooms WHERE RoomID=@id;", conn))
             {
-                cmd.Parameters.AddWithValue("@id", roomId);
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = roomId;
                 conn.Open();
                 var o = cmd.ExecuteScalar();
                 return o == null ? "" : o.ToString();
             }
-        }
-        public List<Booking> GetBookingsByHeaderId(int headerBookingId)
-        {
-            const string sql = @"
-SELECT
-    br.BookingRoomID           AS BookingID,
-    b.CustomerID,
-    br.RoomID,
-    br.PricingID,
-    b.CreatedBy,
-    b.BookingDate,
-    br.CheckInDate,
-    br.CheckOutDate,
-    br.Status,
-    ISNULL(br.Note, b.Notes)   AS Notes
-FROM BookingRooms br
-JOIN Bookings     b ON b.BookingID = br.BookingID
-WHERE br.BookingID = @HID
-ORDER BY ISNULL(br.CheckInDate, b.BookingDate) DESC;";
-            return QueryList(_cs, sql,
-                cmd => cmd.Parameters.AddWithValue("@HID", headerBookingId),
-                MapBooking);
         }
     }
 }

@@ -10,24 +10,22 @@ using System.Data.SqlClient;
 namespace HOTEL_MINI.BLL
 {
     /// <summary>
-    /// BLL cấp Booking (header) + các truy vấn/tác vụ line cần cho UI.
-    /// - Không truy vấn trực tiếp SQL; dùng Repository.
-    /// - Không UI/MessageBox; ném exception ra ngoài.
+    /// BLL cấp Booking (header) + các thao tác/tiện ích cho lines (BookingRooms) phục vụ UI.
+    /// - Không truy vấn trực tiếp SQL; chỉ gọi Repository.
+    /// - Không hiển thị UI; ném exception lên trên.
     /// </summary>
     public class BookingService
     {
-        private readonly BookingRepository _bookingRepo;
-        private readonly BookingRoomRepository _lineRepo;
-        private readonly RoomPricingRepository _pricingRepo;
-        private readonly RoomRepository _roomRepo;
-        private readonly BookingRoomServiceRepository _brsRepo; // đọc/ghi dịch vụ theo line
+        private readonly BookingRepository _bookingRepo;              // CRUD header, view phẳng, lookup khách
+        private readonly BookingRoomRepository _lineRepo;             // CRUD line
+        private readonly RoomPricingRepository _pricingRepo;          // tra giá
+        private readonly BookingRoomServiceRepository _brsRepo;       // dịch vụ theo line (nếu dùng)
 
         public BookingService()
         {
             _bookingRepo = new BookingRepository();
             _lineRepo = new BookingRoomRepository();
             _pricingRepo = new RoomPricingRepository();
-            _roomRepo = new RoomRepository();
             _brsRepo = new BookingRoomServiceRepository();
         }
 
@@ -36,46 +34,32 @@ namespace HOTEL_MINI.BLL
             if (!cond) throw new ArgumentException(msg);
         }
 
-        // ================= LIST/QUERY cho UIs (UcBookingRoom, UcInvoice, ...) =================
+        // ================= LIST/QUERY cho UI =================
 
         /// <summary>Danh sách booking-ROOM đang hoạt động (Booked/CheckedIn).</summary>
         public List<BookingDisplay> GetActiveBookingDisplays()
             => _lineRepo.GetActiveBookingDisplays();
 
-        /// <summary>Top-N booking gần nhất (phục vụ hoá đơn, lịch sử).</summary>
+        /// <summary>Top 20 booking gần nhất. onlyCheckedOut=true để lấy lịch sử đã trả.</summary>
         public List<BookingDisplay> GetTop20LatestBookingDisplays(bool onlyCheckedOut = false)
             => _bookingRepo.GetTopLatestBookingDisplays(20, onlyCheckedOut);
 
-        /// <summary>BookingDisplay theo CCCD/IDNumber (ghép cho filter).</summary>
+        /// <summary>BookingDisplay theo CCCD/IDNumber.</summary>
         public List<BookingDisplay> GetBookingDisplaysByCustomerNumber(string idNumber)
         {
             Ensure(!string.IsNullOrWhiteSpace(idNumber), "Thiếu CCCD/ID.");
             return _bookingRepo.GetBookingDisplaysByCustomerNumber(idNumber.Trim());
         }
 
-        // ================= Hành động line =================
-
-        public bool CheckInBookingRoom(int bookingRoomId)
+        /// <summary>Trả về tất cả dòng phòng (BookingRooms) dưới cùng một header.</summary>
+        public List<BookingRoom> GetBookingsByHeaderId(int headerBookingId)
         {
-            Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
-
-            var line = _lineRepo.GetBookingById(bookingRoomId);
-            if (line == null) throw new ArgumentException("Không tìm thấy booking.");
-            if (!string.Equals(line.Status, "Booked", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException("Chỉ nhận phòng khi line đang 'Booked'.");
-
-            return _lineRepo.CheckInBooking(bookingRoomId, DateTime.Now);
+            Ensure(headerBookingId > 0, "Header BookingID không hợp lệ.");
+            return _lineRepo.GetBookingsByHeaderId(headerBookingId);
         }
 
-        public bool CancelBooking(int bookingRoomId)
-        {
-            Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
-            return _lineRepo.CancelBooking(bookingRoomId);
-        }
-
-        // ================= Tiện ích dùng ở nhiều form =================
-
-        public Booking GetBookingById(int bookingRoomId)
+        /// <summary>Lấy 1 dòng phòng theo BookingRoomID.</summary>
+        public BookingRoom GetBookingById(int bookingRoomId)
         {
             Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
             return _lineRepo.GetBookingById(bookingRoomId);
@@ -93,38 +77,63 @@ namespace HOTEL_MINI.BLL
             return _bookingRepo.GetCustomerByHeaderId(headerBookingId);
         }
 
-        /// <summary>Trả về tất cả các line (BookingRooms) dưới cùng một header.</summary>
-        public List<Booking> GetBookingsByHeaderId(int headerBookingId)
-        {
-            Ensure(headerBookingId > 0, "Header BookingID không hợp lệ.");
-            return _bookingRepo.GetBookingsByHeaderId(headerBookingId);
-        }
-
-        /// <summary>Danh sách dịch vụ đã dùng cho một line (BookingRoomID).</summary>
         public List<UsedServiceDto> GetUsedServicesByBookingID(int bookingRoomId)
         {
             Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
             return _brsRepo.GetUsedServicesByBookingRoomId(bookingRoomId);
         }
 
-        /// <summary>Danh sách phương thức thanh toán (enum).</summary>
         public List<string> GetPaymentMethods() => _bookingRepo.GetPaymentMethods();
-
-        // Giữ thêm tên cũ để tương thích code cũ.
+        // Giữ tên cũ cho code legacy
         public List<string> getPaymentMethods() => GetPaymentMethods();
 
+        // ================= HÀNH ĐỘNG TRÊN LINE =================
+
+        public bool CheckInBookingRoom(int bookingRoomId)
+        {
+            Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
+
+            var line = _lineRepo.GetBookingById(bookingRoomId); // BookingRoom
+            if (line == null) throw new ArgumentException("Không tìm thấy booking line.");
+            if (!string.Equals(line.Status, "Booked", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Chỉ nhận phòng khi line đang 'Booked'.");
+
+            return _lineRepo.CheckInBooking(bookingRoomId, DateTime.Now);
+        }
+
+        public bool CancelBooking(int bookingRoomId)
+        {
+            Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
+            return _lineRepo.CancelBooking(bookingRoomId);
+        }
+
+        public bool UpdateLineStatusAndCheckout(int bookingRoomId, DateTime checkoutAt)
+        {
+            Ensure(bookingRoomId > 0, "BookingRoomID không hợp lệ.");
+            return _lineRepo.UpdateBookingStatusAndCheckOut(bookingRoomId, "CheckedOut", checkoutAt);
+        }
+
+        public bool SetLinesCheckedOutByHeader(int headerBookingId, DateTime? checkoutAt = null)
+        {
+            Ensure(headerBookingId > 0, "Header BookingID không hợp lệ.");
+            return _lineRepo.SetLinesCheckedOutByHeader(headerBookingId, checkoutAt ?? DateTime.Now);
+        }
+
+        // ================= TÍNH GIÁ / TẠO NHÓM BOOKING =================
+
         /// <summary>
-        /// Tính tiền phòng cho 1 line dựa theo PricingID + khoảng thời gian.
-        /// Giản lược: Hourly = ceil(hours) * unit; Daily/Nightly/Weekly = unit.
+        /// Tính tiền phòng cho 1 LINE dựa theo PricingID + khoảng thời gian.
+        /// - Hourly = ceil(hours) * unit
+        /// - Daily/Nightly/Weekly = unit (bản đơn giản)
         /// </summary>
-        public decimal GetRoomCharge(Booking line)
+        public decimal GetRoomCharge(BookingRoom line)
         {
             Ensure(line != null, "Line rỗng.");
             Ensure(line.PricingID > 0, "PricingID không hợp lệ.");
             Ensure(line.CheckInDate.HasValue, "Thiếu Check-in.");
 
             var pricing = _pricingRepo.GetPricingTypeById(line.PricingID);
-            Ensure(pricing != null, "Không thấy thông tin giá.");
+            Ensure(pricing != null, "Không thấy thông tin đơn giá.");
 
             if (pricing.PricingType.Equals("Hourly", StringComparison.OrdinalIgnoreCase))
             {
@@ -135,14 +144,17 @@ namespace HOTEL_MINI.BLL
                 return rounded * pricing.Price;
             }
 
-            // Nightly/Daily/Weekly: bản đơn giản trả về đơn giá (tùy nghiệp vụ có thể nâng cấp).
             return pricing.Price;
         }
 
+        /// <summary>
+        /// Tạo một booking header + nhiều lines.
+        /// Trả về map (RoomID -> BookingRoomID) đã tạo.
+        /// </summary>
         public Dictionary<int, int> AddBookingGroup(
             int customerId,
             int createdBy,
-            List<Booking> roomBookings,
+            List<BookingRoom> roomBookings,
             DataTable usedServices = null)
         {
             // ---- Validate ----
@@ -158,7 +170,7 @@ namespace HOTEL_MINI.BLL
                 if (b.CheckOutDate.Value <= b.CheckInDate.Value)
                     throw new ArgumentException("Check-out phải lớn hơn Check-in.");
 
-                // check overlap
+                // chặn trùng lịch
                 if (_lineRepo.IsRoomOverlapped(b.RoomID, b.CheckInDate.Value, b.CheckOutDate.Value))
                     throw new InvalidOperationException($"Phòng {b.RoomID} đã có lịch trong khoảng thời gian chọn.");
             }
@@ -166,7 +178,7 @@ namespace HOTEL_MINI.BLL
             // ---- Create header ----
             var notesHeader = "";
             foreach (var b in roomBookings)
-                if (!string.IsNullOrWhiteSpace(b.Notes)) { notesHeader = b.Notes; break; }
+                if (!string.IsNullOrWhiteSpace(b.Note)) { notesHeader = b.Note; break; }
 
             var headerId = _bookingRepo.AddHeader(
                 customerId: customerId,
@@ -177,17 +189,17 @@ namespace HOTEL_MINI.BLL
             );
 
             // ---- Normalize lines ----
-            var normalized = new List<Booking>();
+            var normalized = new List<BookingRoom>();
             foreach (var b in roomBookings)
             {
-                normalized.Add(new Booking
+                normalized.Add(new BookingRoom
                 {
                     RoomID = b.RoomID,
                     PricingID = b.PricingID,
                     CheckInDate = b.CheckInDate,
                     CheckOutDate = b.CheckOutDate,
                     Status = string.IsNullOrWhiteSpace(b.Status) ? "Booked" : b.Status,
-                    Notes = b.Notes
+                    Note = b.Note
                 });
             }
 
@@ -202,15 +214,22 @@ namespace HOTEL_MINI.BLL
 
             return mapRoomToLine;
         }
+
+        // ================= TIỆN ÍCH DÙNG CHUNG =================
+
         public List<BookingFlatDisplay> GetAllBookingFlatDisplays()
-        {
-            return _bookingRepo.GetAllBookingFlatDisplays();
-        }
+            => _bookingRepo.GetAllBookingFlatDisplays();
+
         public List<int> GetBookingRoomIdsByHeader(int headerBookingId)
-    {
+        {
             Ensure(headerBookingId > 0, "Header BookingID không hợp lệ.");
             return _bookingRepo.GetBookingRoomIdsByHeader(headerBookingId);
         }
+
+        /// <summary>
+        /// Tạo (hoặc lấy) hóa đơn mở từ 1 BookingRoomID.
+        /// Trả về InvoiceID. Chỉ resolve về BookingID (header) rồi gọi InvoiceRepository.
+        /// </summary>
         public int CreateInvoiceFromRoomLine(int bookingRoomId, int issuedBy)
         {
             using (var conn = new SqlConnection(ConfigHelper.GetConnectionString()))
@@ -226,10 +245,8 @@ namespace HOTEL_MINI.BLL
                     bookingId = Convert.ToInt32(o);
                 }
 
-                // gọi repo theo BookingID (header)
                 var invRepo = new InvoiceRepository();
-                return invRepo.CreateOrGetOpenInvoice(
-                    bookingId, 0m, 0m, 0m, 0m, issuedBy);
+                return invRepo.CreateOrGetOpenInvoice(bookingId, 0m, 0m, 0m, 0m, issuedBy);
             }
         }
     }

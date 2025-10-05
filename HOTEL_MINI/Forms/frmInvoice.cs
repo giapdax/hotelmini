@@ -101,7 +101,7 @@ namespace HOTEL_MINI.Forms
             foreach (var tb in new[] { txtRoomCharge, txtServiceCharge, txtSurcharge, txtDiscount, txtTotalAmount })
             { tb.ReadOnly = true; tb.TabStop = false; }
 
-            foreach (var tb in new[] { txtCusName, txtCusId, txtCheckin, txtCheckout, txtEmployeeName, txtPaymentMethod, txtNote })
+            foreach (var tb in new[] { txtCusName, txtCusId, txtEmployeeName, txtPaymentMethod, txtNote })
             { tb.ReadOnly = true; tb.TabStop = false; }
         }
 
@@ -115,8 +115,6 @@ namespace HOTEL_MINI.Forms
 
             txtCusName.Text = vm.CustomerName ?? string.Empty;
             txtCusId.Text = vm.CustomerIdNumber ?? string.Empty;
-            txtCheckin.Text = vm.CheckIn == default ? "" : vm.CheckIn.ToString("dd/MM/yyyy HH:mm");
-            txtCheckout.Text = vm.CheckOut == default ? "" : vm.CheckOut.ToString("dd/MM/yyyy HH:mm");
 
             txtRoomCharge.Text = vm.RoomCharge.ToString("N0");
             txtServiceCharge.Text = vm.ServiceCharge.ToString("N0");

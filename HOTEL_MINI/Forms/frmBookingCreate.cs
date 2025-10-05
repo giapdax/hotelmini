@@ -31,7 +31,7 @@ namespace HOTEL_MINI.Forms
         private readonly int _currentUserId;
 
         // ===== Dịch vụ & bảng tạm dùng dịch vụ =====
-        private BindingList<ServiceVM> _serviceVMs; // <-- thay cho BindingList<Service>
+        private BindingList<ServiceVM> _serviceVMs;
         private DataTable _usedServicesTable;
 
         // ===== Grid cols =====
@@ -86,14 +86,14 @@ namespace HOTEL_MINI.Forms
             public int ServiceID { get; set; }
             public string ServiceName { get; set; }
             public decimal Price { get; set; }
-            public int DbQuantity { get; set; } // tồn thật từ DB
-            private int _plannedDelta;          // tổng nhu cầu tạm (UI)
+            public int DbQuantity { get; set; }
+            private int _plannedDelta;
             public int PlannedDelta
             {
                 get => _plannedDelta;
                 set { if (_plannedDelta != value) { _plannedDelta = Math.Max(0, value); OnPropertyChanged(); OnPropertyChanged(nameof(DisplayQuantity)); } }
             }
-            public int DisplayQuantity => Math.Max(0, DbQuantity - PlannedDelta); // tồn hiển thị (ảo)
+            public int DisplayQuantity => Math.Max(0, DbQuantity - PlannedDelta);
 
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -108,7 +108,7 @@ namespace HOTEL_MINI.Forms
 
             SetupRoomsGrid();
             LoadRoomsGrid();
-            SetupServicesMenu();     // load _serviceVMs từ DB
+            SetupServicesMenu();
             SetupUsedServicesTable();
             BindUsedServicesGrid();
 
@@ -359,7 +359,6 @@ namespace HOTEL_MINI.Forms
         // ======================= DỊCH VỤ/KHO (UI) =======================
         private void SetupServicesMenu()
         {
-            // Load từ DB -> map thành VM
             var services = _svc.GetAllServices().Where(s => s.IsActive).ToList();
             _serviceVMs = new BindingList<ServiceVM>(
                 services.Select(s => new ServiceVM
@@ -367,8 +366,8 @@ namespace HOTEL_MINI.Forms
                     ServiceID = s.ServiceID,
                     ServiceName = s.ServiceName,
                     Price = s.Price,
-                    DbQuantity = s.Quantity,   // tồn thật tại thời điểm load
-                    PlannedDelta = 0           // nhu cầu tạm (UI)
+                    DbQuantity = s.Quantity,
+                    PlannedDelta = 0
                 }).ToList()
             );
 
@@ -382,12 +381,7 @@ namespace HOTEL_MINI.Forms
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(ServiceVM.ServiceID), HeaderText = "ID", Width = 50, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(ServiceVM.ServiceName), HeaderText = "Dịch vụ", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(ServiceVM.Price), HeaderText = "Đơn giá", Width = 90, ReadOnly = true, DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" } });
-
-            // Hiển thị TỒN ẢO = DbQuantity - PlannedDelta
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(ServiceVM.DisplayQuantity), HeaderText = "Tồn (hiển thị)", Width = 100, ReadOnly = true });
-
-            // (tuỳ thích) cột ẩn tồn thật để debug
-            // gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(ServiceVM.DbQuantity), HeaderText = "Tồn thật", Width = 80, ReadOnly = true });
 
             gv.DataSource = _serviceVMs;
         }
@@ -395,12 +389,11 @@ namespace HOTEL_MINI.Forms
         private void SetupUsedServicesTable()
         {
             _usedServicesTable = new DataTable();
-            // AddBookingGroup chỉ cần (RoomID, ServiceID, Quantity)
             _usedServicesTable.Columns.Add("RoomID", typeof(int));
-            _usedServicesTable.Columns.Add("RoomNumber", typeof(string)); // hiển thị
+            _usedServicesTable.Columns.Add("RoomNumber", typeof(string));
             _usedServicesTable.Columns.Add("ServiceID", typeof(int));
-            _usedServicesTable.Columns.Add("ServiceName", typeof(string)); // hiển thị
-            _usedServicesTable.Columns.Add("UnitPrice", typeof(decimal));  // hiển thị/tính
+            _usedServicesTable.Columns.Add("ServiceName", typeof(string));
+            _usedServicesTable.Columns.Add("UnitPrice", typeof(decimal));
             _usedServicesTable.Columns.Add("Quantity", typeof(int));
             _usedServicesTable.Columns.Add("Total", typeof(decimal), "UnitPrice * Quantity");
         }
@@ -443,9 +436,32 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
+            // Số tồn hiển thị còn lại = tồn thật lúc load - nhu cầu tạm hiện tại
+            int available = Math.Max(0, vm.DbQuantity - vm.PlannedDelta);
+            if (available <= 0)
+            {
+                MessageBox.Show($"Dịch vụ '{vm.ServiceName}' đã hết hàng.", "Hết hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             int totalNeed = qty * rooms.Count;
 
-            // (1) Cập nhật bảng tạm đã dùng theo (RoomID, ServiceID)
+            // Nếu vượt tồn, cắt xuống tối đa cho phép theo số phòng đã chọn
+            if (totalNeed > available)
+            {
+                int maxPerRoom = available / rooms.Count; // phân đều theo số phòng tick
+                if (maxPerRoom <= 0)
+                {
+                    MessageBox.Show($"Dịch vụ '{vm.ServiceName}' chỉ còn {available} – không đủ cho {rooms.Count} phòng.", "Không đủ tồn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                MessageBox.Show($"Không đủ tồn. Tự động điều chỉnh số lượng mỗi phòng xuống {maxPerRoom}.", "Điều chỉnh", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                qty = maxPerRoom;
+                totalNeed = qty * rooms.Count;
+            }
+
+            // (1) Cập nhật bảng tạm UsedServices theo (RoomID, ServiceID)
             foreach (var room in rooms)
             {
                 var existing = _usedServicesTable.AsEnumerable()
@@ -469,7 +485,7 @@ namespace HOTEL_MINI.Forms
             }
 
             // (2) Chỉ chỉnh nhu cầu tạm (UI trừ ảo), KHÔNG gọi DB
-            vm.PlannedDelta += totalNeed; // DisplayQuantity sẽ tự giảm
+            vm.PlannedDelta += totalNeed;
 
             RecalcRoomServiceTotals();
             UpdateGrandTotals();
@@ -498,12 +514,10 @@ namespace HOTEL_MINI.Forms
             if (left <= 0) _usedServicesTable.Rows.Remove(drv.Row);
             else drv.Row["Quantity"] = left;
 
-            // (2) Giảm nhu cầu tạm trên VM (trả lại tồn hiển thị), KHÔNG gọi DB
+            // (2) Giảm nhu cầu tạm (trả lại tồn hiển thị), không âm
             var vm = _serviceVMs.FirstOrDefault(x => x.ServiceID == serviceId);
             if (vm != null)
-            {
                 vm.PlannedDelta = Math.Max(0, vm.PlannedDelta - actually);
-            }
 
             RecalcRoomServiceTotals();
             UpdateGrandTotals();
@@ -553,8 +567,10 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
 
+            // Nếu đã có _customerId, coi như đã đảm bảo
             if (_customerId > 0) return true;
 
+            // Thử tìm khách có sẵn
             var existed = _customerSvc.getCustomerByIDNumber(idNumber);
             if (existed != null)
             {
@@ -563,11 +579,20 @@ namespace HOTEL_MINI.Forms
                 return true;
             }
 
+            // Khách mới: bắt buộc Tên + SĐT
             var fullName = (txtTen.Text ?? "").Trim();
+            var phone = (txtSDT.Text ?? "").Trim();
+
             if (string.IsNullOrWhiteSpace(fullName))
             {
-                MessageBox.Show("Vui lòng nhập Tên khách hàng.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Khách mới: vui lòng nhập Tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtTen.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(phone))
+            {
+                MessageBox.Show("Khách mới: vui lòng nhập SĐT.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSDT.Focus();
                 return false;
             }
 
@@ -575,7 +600,7 @@ namespace HOTEL_MINI.Forms
             {
                 FullName = fullName,
                 Gender = cboGender.SelectedItem?.ToString() ?? "",
-                Phone = (txtSDT.Text ?? "").Trim(),
+                Phone = phone,
                 Email = (txtEmail.Text ?? "").Trim(),
                 Address = (txtDiachi.Text ?? "").Trim(),
                 IDNumber = idNumber
@@ -623,7 +648,7 @@ namespace HOTEL_MINI.Forms
 
         private Dictionary<int, int> BuildPlannedServiceNeeds()
         {
-            var dict = new Dictionary<int, int>(); // serviceId -> total planned qty (từ bảng tạm)
+            var dict = new Dictionary<int, int>();
             if (_usedServicesTable == null || _usedServicesTable.Rows.Count == 0) return dict;
 
             foreach (DataRow r in _usedServicesTable.Rows)
@@ -642,14 +667,13 @@ namespace HOTEL_MINI.Forms
             var needs = BuildPlannedServiceNeeds();
             if (needs.Count == 0) return true;
 
-            // so sánh với DbQuantity (tồn thật hiện có)
             foreach (var kv in needs)
             {
                 int serviceId = kv.Key;
                 int need = kv.Value;
 
                 var vm = _serviceVMs.FirstOrDefault(x => x.ServiceID == serviceId);
-                int stockNow = vm?.DbQuantity ?? 0; // đồng bộ với DB lúc load
+                int stockNow = vm?.DbQuantity ?? 0;
                 if (need > stockNow)
                 {
                     var name = vm?.ServiceName ?? ("Service#" + serviceId);
@@ -676,15 +700,14 @@ namespace HOTEL_MINI.Forms
 
             if (!EnsureCustomerFromForm()) return;
 
-            // Preflight (dựa trên DbQuantity lúc load)
             if (!PreflightCheckStock(out var msg))
             {
                 MessageBox.Show(msg, "Thiếu hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Chuẩn bị lines
-            var requests = new List<Booking>();
+            // Chuẩn bị lines: BookingRoom (KHÔNG dùng Booking nữa)
+            var requests = new List<BookingRoom>();
             foreach (var r in _rooms)
             {
                 var plan = GetPlanOrDefault(r);
@@ -703,17 +726,14 @@ namespace HOTEL_MINI.Forms
                     return;
                 }
 
-                requests.Add(new Booking
+                requests.Add(new BookingRoom
                 {
-                    CustomerID = _customerId,
                     RoomID = r.RoomID,
                     PricingID = pr.PricingID,
-                    CreatedBy = _currentUserId,
-                    BookingDate = DateTime.Now,
                     CheckInDate = plan.CheckIn,
                     CheckOutDate = plan.CheckOut,
                     Status = "Booked",
-                    Notes = txtNote.Text != null ? txtNote.Text.Trim() : ""
+                    Note = (txtNote.Text ?? "").Trim()
                 });
             }
 
@@ -723,8 +743,8 @@ namespace HOTEL_MINI.Forms
                 var map = _bookingSvc.AddBookingGroup(_customerId, _currentUserId, requests, _usedServicesTable);
 
                 // Sau khi commit thành công: reload kho để DbQuantity khớp với DB vừa trừ
-                SetupServicesMenu(); // load lại từ DB
-                foreach (var vm in _serviceVMs) vm.PlannedDelta = 0; // clear nhu cầu tạm
+                SetupServicesMenu();
+                foreach (var vm in _serviceVMs) vm.PlannedDelta = 0;
 
                 MessageBox.Show("Đặt thành công " + map.Count + "/" + requests.Count + " phòng.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
@@ -733,7 +753,6 @@ namespace HOTEL_MINI.Forms
             catch (Exception ex)
             {
                 MessageBox.Show("Đặt phòng thất bại: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Không rollback kho UI vì UI chỉ trừ ảo (PlannedDelta) – người dùng vẫn đang thấy con số ảo đến khi đóng form.
             }
         }
 

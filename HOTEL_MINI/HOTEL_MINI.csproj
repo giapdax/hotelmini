@@ -127,6 +127,7 @@
     <Compile Include="BLL\BookingService.cs" />
     <Compile Include="BLL\CheckoutService.cs" />
     <Compile Include="BLL\CustomerService.cs" />
+    <Compile Include="BLL\InvoiceRoomService.cs" />
     <Compile Include="BLL\InvoiceService.cs" />
     <Compile Include="BLL\PaymentService.cs" />
     <Compile Include="BLL\PdfExportService.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="DAL\BookingRoomServiceRepository.cs" />
     <Compile Include="DAL\CustomerRepository.cs" />
     <Compile Include="DAL\InvoiceRepository.cs" />
+    <Compile Include="DAL\InvoiceRoomRepository.cs" />
     <Compile Include="DAL\PaymentRepository.cs" />
     <Compile Include="DAL\RoleRepository.cs" />
     <Compile Include="DAL\RoomPricingRepository.cs" />
@@ -275,12 +277,6 @@
     <Compile Include="Forms\frmRoomManager.Designer.cs">
       <DependentUpon>frmRoomManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmSelectCheckoutTime.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmSelectCheckoutTime.Designer.cs">
-      <DependentUpon>frmSelectCheckoutTime.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\frmService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -306,6 +302,7 @@
     <Compile Include="Model\Entity\BookingServiceDetail.cs" />
     <Compile Include="Model\Entity\Customer.cs" />
     <Compile Include="Model\Entity\Invoice.cs" />
+    <Compile Include="Model\Entity\InvoiceRoom.cs" />
     <Compile Include="Model\Entity\Payment.cs" />
     <Compile Include="Model\Entity\Role.cs" />
     <Compile Include="Model\Entity\Room.cs" />
@@ -366,6 +363,9 @@
     <EmbeddedResource Include="Forms\frmCustomer.resx">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmInvoice.resx">
+      <DependentUpon>frmInvoice.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmInvoiceManage.resx">
       <DependentUpon>frmInvoiceManage.cs</DependentUpon>
     </EmbeddedResource>
@@ -380,9 +380,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmRoomManager.resx">
       <DependentUpon>frmRoomManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmSelectCheckoutTime.resx">
-      <DependentUpon>frmSelectCheckoutTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmService.resx">
       <DependentUpon>frmService.cs</DependentUpon>

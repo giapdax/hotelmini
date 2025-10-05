@@ -22,7 +22,6 @@ namespace HOTEL_MINI.BLL
             try
             {
                 string fontsDirectory = Path.Combine(Application.StartupPath, "Fonts");
-
                 if (!Directory.Exists(fontsDirectory))
                 {
                     Directory.CreateDirectory(fontsDirectory);
@@ -32,7 +31,8 @@ namespace HOTEL_MINI.BLL
 
                 if (!File.Exists(fontPath))
                 {
-                    MessageBox.Show("Không tìm thấy file font tahoma.ttf trong thư mục Fonts.\nVui lòng copy font vào đó.",
+                    MessageBox.Show(
+                        "Không tìm thấy file font tahoma.ttf trong thư mục Fonts.\nVui lòng copy font vào đó.",
                         "Thiếu Font", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     string systemFont = @"C:\Windows\Fonts\arial.ttf";
@@ -43,7 +43,6 @@ namespace HOTEL_MINI.BLL
                 }
                 else
                 {
-                    // Load font từ thư mục project
                     _vietnameseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 }
             }
@@ -52,7 +51,6 @@ namespace HOTEL_MINI.BLL
                 MessageBox.Show($"Lỗi khi load font: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _vietnameseFont = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
             }
-
         }
 
         private Font GetVietnameseFont(float size, int style = Font.NORMAL)
@@ -60,8 +58,15 @@ namespace HOTEL_MINI.BLL
             return new Font(_vietnameseFont, size, style);
         }
 
-        public void ExportInvoiceToPdf(Invoice invoice, Booking booking, string roomNumber,
-                                     List<UsedServiceDto> usedServices, string filePath)
+        /// <summary>
+        /// Xuất hóa đơn: truyền vào line (BookingRoom) chứ KHÔNG phải header Booking.
+        /// </summary>
+        public void ExportInvoiceToPdf(
+            Invoice invoice,
+            BookingRoom bookingLine,
+            string roomNumber,
+            List<UsedServiceDto> usedServices,
+            string filePath)
         {
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 
@@ -83,12 +88,21 @@ namespace HOTEL_MINI.BLL
                 infoTable.SetWidths(new float[] { 30, 70 });
 
                 AddInfoRow(infoTable, "Mã hóa đơn:", invoice.InvoiceID.ToString());
-                AddInfoRow(infoTable, "Phòng:", roomNumber);
-                AddInfoRow(infoTable, "Khách hàng:", customerName);
-                AddInfoRow(infoTable, "Số CMND/CCCD:", customerID);
-                AddInfoRow(infoTable, "Ngày check-in:", booking.CheckInDate?.ToString("dd/MM/yyyy HH:mm"));
-                AddInfoRow(infoTable, "Ngày check-out:", booking.CheckOutDate?.ToString("dd/MM/yyyy HH:mm"));
-                AddInfoRow(infoTable, "Ngày xuất hóa đơn:", invoice.IssuedAt.ToString("dd/MM/yyyy HH:mm"));
+                AddInfoRow(infoTable, "Phòng:", roomNumber ?? "");
+                AddInfoRow(infoTable, "Khách hàng:", customerName ?? "");
+                AddInfoRow(infoTable, "Số CMND/CCCD:", customerID ?? "");
+
+                // format DateTime? đúng cách (không dùng ?.ToString("..."))
+                string ci = bookingLine?.CheckInDate.HasValue == true
+                    ? bookingLine.CheckInDate.Value.ToString("dd/MM/yyyy HH:mm")
+                    : "";
+                string co = bookingLine?.CheckOutDate.HasValue == true
+                    ? bookingLine.CheckOutDate.Value.ToString("dd/MM/yyyy HH:mm")
+                    : "";
+
+                AddInfoRow(infoTable, "Ngày check-in:", ci);
+                AddInfoRow(infoTable, "Ngày check-out:", co);
+                AddInfoRow(infoTable, "Ngày xuất hóa đơn:", invoice.IssuedAt.Value.ToString("dd/MM/yyyy HH:mm"));
 
                 document.Add(infoTable);
                 document.Add(new Paragraph(" "));
@@ -111,15 +125,18 @@ namespace HOTEL_MINI.BLL
 
                     foreach (var service in usedServices)
                     {
-                        AddTableRow(servicesTable, service.ServiceName);
+                        AddTableRow(servicesTable, service.ServiceName ?? "");
                         AddTableRow(servicesTable, service.Quantity.ToString());
-                        AddTableRow(servicesTable, service.Total.ToString("N0") + " đ");
+                        // nếu DTO không có Total, dùng Price*Quantity:
+                        var total = (service.Price * service.Quantity);
+                        AddTableRow(servicesTable, total.ToString("N0") + " đ");
                     }
 
                     document.Add(servicesTable);
                     document.Add(new Paragraph(" "));
                 }
 
+                // Summary
                 PdfPTable summaryTable = new PdfPTable(2)
                 {
                     WidthPercentage = 50,
@@ -136,19 +153,17 @@ namespace HOTEL_MINI.BLL
                     Border = PdfPCell.NO_BORDER,
                     HorizontalAlignment = Element.ALIGN_RIGHT
                 };
-
                 PdfPCell totalValue = new PdfPCell(new Phrase(invoice.TotalAmount.ToString("N0") + " đ", GetVietnameseFont(12, Font.BOLD)))
                 {
                     Border = PdfPCell.NO_BORDER
                 };
-
                 summaryTable.AddCell(totalLabel);
                 summaryTable.AddCell(totalValue);
 
                 document.Add(summaryTable);
                 document.Add(new Paragraph(" "));
 
-                    Paragraph footer = new Paragraph("Cảm ơn quý khách đã sử dụng dịch vụ!", GetVietnameseFont(10, Font.ITALIC))
+                Paragraph footer = new Paragraph("Cảm ơn quý khách đã sử dụng dịch vụ!", GetVietnameseFont(10, Font.ITALIC))
                 {
                     Alignment = Element.ALIGN_CENTER,
                     SpacingBefore = 20f
