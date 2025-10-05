@@ -33,7 +33,6 @@ namespace HOTEL_MINI.Forms
         private const string COL_ROOM_SVC = "colServiceTotal";
         private const string COL_ROOM_GRAND = "colGrandTotal";
 
-        // KH có thể chưa biết trước – cho phép thay đổi sau khi bấm Kiểm tra CCCD
         private int _customerId;
         private string _customerIdNumber;
         private readonly int _currentUserId;
@@ -48,7 +47,7 @@ namespace HOTEL_MINI.Forms
 
             _rooms = rooms ?? new List<SelectedRoomWithTime>();
             _plans = plans ?? new Dictionary<int, RoomPlan>();
-            _customerId = customerId;                         // có thể là 0
+            _customerId = customerId;
             _customerIdNumber = customerIdNumber ?? string.Empty;
             _currentUserId = currentUserId;
 
@@ -64,7 +63,6 @@ namespace HOTEL_MINI.Forms
             nbrReduce.Minimum = 1; nbrReduce.Maximum = 100; nbrReduce.Value = 1;
         }
 
-        // overload cũ nếu cần
         public frmBookingDetail1(List<SelectedRoomWithTime> rooms, Dictionary<int, RoomPlan> plans)
             : this(rooms, plans, 0, string.Empty, 0) { }
 
@@ -90,7 +88,7 @@ namespace HOTEL_MINI.Forms
             UpdateGrandTotals();
         }
 
-        #region Rooms grid & pricing helpers
+        #region Rooms grid & pricing
 
         private void SetupRoomsGrid()
         {
@@ -309,7 +307,7 @@ namespace HOTEL_MINI.Forms
 
         #endregion
 
-        #region Services UI
+        #region Services
 
         private void SetupServicesMenu()
         {
@@ -468,7 +466,7 @@ namespace HOTEL_MINI.Forms
 
         #endregion
 
-        #region Customer helpers
+        #region Customer
 
         private void BtnCheck_Click(object sender, EventArgs e)
         {
@@ -494,7 +492,6 @@ namespace HOTEL_MINI.Forms
             _customerId = c.CustomerID;
             _customerIdNumber = c.IDNumber ?? idNumber;
 
-            // fill form
             txtTen.Text = c.FullName ?? "";
             txtGender.Text = c.Gender ?? "";
             txtSDT.Text = c.Phone ?? "";
@@ -516,10 +513,8 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
 
-            // Nếu đã có _customerId (do kiểm tra trước đó) thì xong luôn
             if (_customerId > 0) return true;
 
-            // thử truy lại một lần nữa nếu user chưa bấm Kiểm tra
             var existed = _customerSvc.getCustomerByIDNumber(idNumber);
             if (existed != null)
             {
@@ -528,7 +523,6 @@ namespace HOTEL_MINI.Forms
                 return true;
             }
 
-            // tạo mới từ form
             var fullName = (txtTen.Text ?? "").Trim();
             if (string.IsNullOrWhiteSpace(fullName))
             {
@@ -582,7 +576,8 @@ namespace HOTEL_MINI.Forms
                 CheckOut = co,
                 PricingType = pr != null ? pr.PricingType : "Daily",
                 UnitPrice = pr != null ? (decimal?)pr.Price : null,
-                CalculatedCost = 0m
+                CalculatedCost = 0m,
+                IsReceiveNow = true
             };
         }
 
@@ -609,14 +604,12 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            // Đảm bảo có khách (tự tạo nếu chưa có)
             if (!EnsureCustomerFromForm()) return;
 
-            // Build danh sách Booking (mỗi phòng 1 BookingRooms)
             var requests = new List<Booking>();
             foreach (var r in _rooms)
             {
-                var plan = GetPlanOrDefault(r); // đã tồn tại sẵn trong file của bạn
+                var plan = GetPlanOrDefault(r);
                 if (plan.CheckOut <= plan.CheckIn)
                 {
                     MessageBox.Show($"Phòng {r.RoomNumber}: Check-out phải > Check-in.", "Lỗi",
@@ -624,7 +617,6 @@ namespace HOTEL_MINI.Forms
                     return;
                 }
 
-                // Lấy PricingID theo PricingType đã chọn
                 var pr = _pricingRepo.GetByRoomType(r.RoomTypeID)
                                      .FirstOrDefault(x => x.IsActive && string.Equals(x.PricingType, plan.PricingType, StringComparison.OrdinalIgnoreCase));
                 if (pr == null)
@@ -636,21 +628,20 @@ namespace HOTEL_MINI.Forms
 
                 requests.Add(new Booking
                 {
-                    CustomerID = _customerId,      // Service sẽ còn kiểm tra lại
+                    CustomerID = _customerId,
                     RoomID = r.RoomID,
                     PricingID = pr.PricingID,
                     CreatedBy = _currentUserId,
                     BookingDate = DateTime.Now,
                     CheckInDate = plan.CheckIn,
                     CheckOutDate = plan.CheckOut,
-                    Status = "Booked",
+                    Status = plan.IsReceiveNow ? "CheckedIn" : "Booked",
                     Notes = txtNote.Text?.Trim() ?? ""
                 });
             }
 
             try
             {
-                // Service validate toàn bộ và tạo theo group 1 header
                 var map = _bookingSvc.AddBookingGroup(_customerId, _currentUserId, requests, _usedServicesTable);
 
                 MessageBox.Show($"Đặt thành công {map.Count}/{requests.Count} phòng.",
@@ -675,6 +666,8 @@ namespace HOTEL_MINI.Forms
             public string PricingType { get; set; }
             public decimal? UnitPrice { get; set; }
             public decimal CalculatedCost { get; set; }
+            public bool IsReceiveNow { get; set; } = true; // mặc định Nhận ngay
+
         }
     }
 }

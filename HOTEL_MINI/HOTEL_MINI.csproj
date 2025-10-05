@@ -376,6 +376,9 @@
     <EmbeddedResource Include="Forms\Controls\UcRoomType_Pricing.resx">
       <DependentUpon>UcRoomType_Pricing.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dialogs\dlgRoomTime.resx">
+      <DependentUpon>dlgRoomTime.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmApplication.resx">
       <DependentUpon>frmApplication.cs</DependentUpon>
     </EmbeddedResource>

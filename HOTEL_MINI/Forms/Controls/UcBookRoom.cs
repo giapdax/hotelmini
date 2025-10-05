@@ -20,23 +20,15 @@ namespace HOTEL_MINI.Forms.Controls
 
         private BindingList<RoomBrowsePriceItem> _data = new BindingList<RoomBrowsePriceItem>();
 
-        // tick đã chọn
         private readonly HashSet<int> _selectedRoomIds = new HashSet<int>();
-        // thời gian riêng từng phòng
-        private readonly Dictionary<int, Tuple<DateTime, DateTime>> _selectedTimes
-            = new Dictionary<int, Tuple<DateTime, DateTime>>();
-        // plan thuê từng phòng
-        private readonly Dictionary<int, RoomPlan> _selectedPlans
-            = new Dictionary<int, RoomPlan>();
-        // cache phòng
-        private readonly Dictionary<int, RoomBrowsePriceItem> _roomCache
-            = new Dictionary<int, RoomBrowsePriceItem>();
+        private readonly Dictionary<int, Tuple<DateTime, DateTime>> _selectedTimes = new Dictionary<int, Tuple<DateTime, DateTime>>();
+        private readonly Dictionary<int, RoomPlan> _selectedPlans = new Dictionary<int, RoomPlan>();
+        private readonly Dictionary<int, RoomBrowsePriceItem> _roomCache = new Dictionary<int, RoomBrowsePriceItem>();
 
-        // thông tin KH (không bắt buộc set trước)
         private int _currentCustomerId;
         private string _currentIdNumber = "";
 
-        public int CurrentUserId { get; set; }  // set từ màn hình chính sau đăng nhập
+        public int CurrentUserId { get; set; }  // set từ frmBooking
 
         public UcBookRoom()
         {
@@ -44,7 +36,6 @@ namespace HOTEL_MINI.Forms.Controls
             this.Load += UcBookRoom_Load;
         }
 
-        // giữ lại API này nếu bạn muốn set sẵn khách từ màn hình khác (không bắt buộc)
         public void SetCustomer(int customerId, string idNumber)
         {
             _currentCustomerId = customerId;
@@ -53,10 +44,20 @@ namespace HOTEL_MINI.Forms.Controls
 
         private void UcBookRoom_Load(object sender, EventArgs e)
         {
-            SetupFilters();
-            SetupGrid();
-            WireEvents();
-            LoadRooms();
+            try
+            {
+                SetupFilters();
+                SetupGrid();
+                WireEvents();
+
+                // trì hoãn gọi sau khi dtp đã set giá trị mặc định xong
+                this.BeginInvoke(new Action(() => LoadRooms()));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải màn hình đặt phòng: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void SetupFilters()
@@ -64,12 +65,14 @@ namespace HOTEL_MINI.Forms.Controls
             var statuses = _roomSvc.getAllRoomStatus() ?? new List<string>();
             statuses.Insert(0, "(Tất cả)");
             cboStatus.DataSource = statuses;
+            cboStatus.SelectedIndex = 0;
 
             var types = _rtSvc.GetAllRoomTypes() ?? new List<MiniHotel.Models.RoomTypes>();
             types.Insert(0, new MiniHotel.Models.RoomTypes { RoomTypeID = 0, TypeName = "(Tất cả loại)" });
             cboRoomType.DataSource = types;
             cboRoomType.DisplayMember = nameof(MiniHotel.Models.RoomTypes.TypeName);
             cboRoomType.ValueMember = nameof(MiniHotel.Models.RoomTypes.RoomTypeID);
+            cboRoomType.SelectedIndex = 0;
 
             var today = DateTime.Today;
             dtpFrom.Format = DateTimePickerFormat.Custom;
@@ -105,52 +108,18 @@ namespace HOTEL_MINI.Forms.Controls
 
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Hình thức", Name = "colPlanType", ReadOnly = true, Width = 100 });
 
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.RoomID),
-                HeaderText = "RoomID",
-                Name = "colRoomID",
-                Visible = false
-            });
-
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.RoomNumber),
-                HeaderText = "Phòng",
-                ReadOnly = true,
-                Width = 90
-            });
-
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.RoomTypeName),
-                HeaderText = "Loại",
-                ReadOnly = true,
-                Width = 140
-            });
-
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.Status),
-                HeaderText = "Trạng thái",
-                ReadOnly = true,
-                Width = 110
-            });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.RoomID), HeaderText = "RoomID", Name = "colRoomID", Visible = false });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.RoomNumber), HeaderText = "Phòng", ReadOnly = true, Width = 90 });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.RoomTypeName), HeaderText = "Loại", ReadOnly = true, Width = 140 });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.Status), HeaderText = "Trạng thái", ReadOnly = true, Width = 110 });
 
             var money = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight };
-
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceHourly), HeaderText = "Giá/giờ", ReadOnly = true, Width = 90, DefaultCellStyle = money });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceNightly), HeaderText = "Giá/đêm", ReadOnly = true, Width = 90, DefaultCellStyle = money });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceDaily), HeaderText = "Giá/ngày", ReadOnly = true, Width = 90, DefaultCellStyle = money });
             dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.PriceWeekly), HeaderText = "Giá/tuần", ReadOnly = true, Width = 90, DefaultCellStyle = money });
 
-            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = nameof(RoomBrowsePriceItem.Note),
-                HeaderText = "Ghi chú",
-                ReadOnly = true,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
+            dgvRoom.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = nameof(RoomBrowsePriceItem.Note), HeaderText = "Ghi chú", ReadOnly = true, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
 
             dgvRoom.CellContentClick += DgvRoom_CellContentClick;
             dgvRoom.DataSource = _data;
@@ -169,48 +138,107 @@ namespace HOTEL_MINI.Forms.Controls
 
         private void LoadRooms()
         {
+            // roomType filter
             int? typeId = null;
             var rt = cboRoomType.SelectedItem as MiniHotel.Models.RoomTypes;
             if (rt != null && rt.RoomTypeID > 0) typeId = rt.RoomTypeID;
 
-            string status = cboStatus.SelectedItem != null ? cboStatus.SelectedItem.ToString() : null;
+            // selected status from combo
+            var selectedStatus = cboStatus.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(selectedStatus) || selectedStatus == "(Tất cả)")
+                selectedStatus = null;
 
-            var items = _roomSvc.SearchRoomsWithPrices(typeId, status) ?? new List<RoomBrowsePriceItem>();
-            var availList = _roomRepo.SearchRooms(dtpFrom.Value, dtpTo.Value, typeId, status) ?? new List<RoomBrowseItem>();
-            var availMap = availList.ToDictionary(x => x.RoomID, x => x.AvailableAtRange);
+            // 1) get price items (no date)
+            var items = _roomSvc.SearchRoomsWithPrices(typeId, null) ?? new List<RoomBrowsePriceItem>();
 
+            // 2) get status per room in the given date range
+            var availList = _roomRepo.SearchRooms(dtpFrom.Value, dtpTo.Value, typeId, null) ?? new List<RoomBrowseItem>();
+            var statusMap = availList.ToDictionary(x => x.RoomID, x => x);
+
+            // 3) merge: assign Status (StatusAtRange) and AvailableAtRange into price items
             foreach (var it in items)
             {
-                it.AvailableAtRange = availMap.ContainsKey(it.RoomID) && availMap[it.RoomID];
+                if (statusMap.ContainsKey(it.RoomID))
+                {
+                    var s = statusMap[it.RoomID];
+                    it.Status = s.Status; // StatusAtRange from SearchRooms
+                    it.AvailableAtRange = s.AvailableAtRange;
+                }
+                else
+                {
+                    // fallback: if repo didn't return info, assume available
+                    it.AvailableAtRange = true;
+                }
+
+                // update cache
                 _roomCache[it.RoomID] = it;
             }
 
-            _data = new BindingList<RoomBrowsePriceItem>(items.OrderBy(x => x.RoomNumber).ToList());
+            // 4) apply status filter (if any)
+            var final = items;
+            if (!string.IsNullOrWhiteSpace(selectedStatus))
+            {
+                final = final.Where(x => string.Equals(x.Status, selectedStatus, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // 5) bind
+            _data = new BindingList<RoomBrowsePriceItem>(final.OrderBy(x => x.RoomNumber).ToList());
             dgvRoom.DataSource = _data;
 
+            // 6) update rows UI: selectable, colors, tooltip, and clear selections for unavailable rooms
             foreach (DataGridViewRow row in dgvRoom.Rows)
             {
                 var it = row.DataBoundItem as RoomBrowsePriceItem;
                 if (it == null) continue;
 
                 var selCell = row.Cells["colSelect"];
-                selCell.ReadOnly = !it.AvailableAtRange;
+                // treat Maintenance as not selectable
+                bool canSelect = it.AvailableAtRange && !string.Equals(it.Status, "Maintenance", StringComparison.OrdinalIgnoreCase);
+                selCell.ReadOnly = !canSelect;
 
-                if (!it.AvailableAtRange)
+                // if previously selected but now not available -> remove selection & plans/times
+                if (!canSelect && _selectedRoomIds.Contains(it.RoomID))
                 {
-                    row.DefaultCellStyle.BackColor = Color.MistyRose;
+                    _selectedRoomIds.Remove(it.RoomID);
+                    _selectedTimes.Remove(it.RoomID);
+                    _selectedPlans.Remove(it.RoomID);
+                }
+
+                // visual
+                if (string.Equals(it.Status, "Maintenance", StringComparison.OrdinalIgnoreCase))
+                {
+                    row.DefaultCellStyle.BackColor = Color.LightGray;
                     row.DefaultCellStyle.ForeColor = Color.DarkRed;
-                    selCell.ToolTipText = "Phòng bận trong khoảng thời gian đang lọc.";
+                    selCell.ToolTipText = "Phòng đang bảo trì.";
+                }
+                else if (!it.AvailableAtRange)
+                {
+                    // Booked or Occupied in the selected interval
+                    if (string.Equals(it.Status, "Booked", StringComparison.OrdinalIgnoreCase))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.LightYellow;
+                        row.DefaultCellStyle.ForeColor = dgvRoom.DefaultCellStyle.ForeColor;
+                        selCell.ToolTipText = "Phòng đã đặt (Booked) trong khoảng thời gian đang lọc.";
+                    }
+                    else // Occupied or other non-available
+                    {
+                        row.DefaultCellStyle.BackColor = Color.MistyRose;
+                        row.DefaultCellStyle.ForeColor = Color.DarkRed;
+                        selCell.ToolTipText = "Phòng đang bận (Occupied) trong khoảng thời gian đang lọc.";
+                    }
                 }
                 else
                 {
+                    // available
                     row.DefaultCellStyle.BackColor = dgvRoom.DefaultCellStyle.BackColor;
                     row.DefaultCellStyle.ForeColor = dgvRoom.DefaultCellStyle.ForeColor;
                     selCell.ToolTipText = string.Empty;
                 }
 
+                // restore checkbox value if still selected
                 selCell.Value = _selectedRoomIds.Contains(it.RoomID);
 
+                // show plan type if any
                 RoomPlan plan;
                 row.Cells["colPlanType"].Value =
                     (_selectedPlans.TryGetValue(it.RoomID, out plan) && !string.IsNullOrWhiteSpace(plan.PricingType))
@@ -245,7 +273,8 @@ namespace HOTEL_MINI.Forms.Controls
                             CheckOut = dlg.CheckOut,
                             PricingType = dlg.PricingType,
                             UnitPrice = dlg.UnitPrice,
-                            CalculatedCost = dlg.CalculatedCost
+                            CalculatedCost = dlg.CalculatedCost,
+                            IsReceiveNow = dlg.IsReceiveNow
                         };
                         dgvRoom.Rows[e.RowIndex].Cells["colPlanType"].Value = dlg.PricingType;
                     }
@@ -315,7 +344,13 @@ namespace HOTEL_MINI.Forms.Controls
                 return;
             }
 
-            // build danh sách phòng + thời gian (KH sẽ nhập ở form tiếp theo)
+            if (CurrentUserId <= 0)
+            {
+                MessageBox.Show("Thiếu UserID đăng nhập. Hãy truyền CurrentUserId từ màn hình chính.",
+                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var selected = _selectedRoomIds
                 .Where(id => _roomCache.ContainsKey(id))
                 .Select(id =>
@@ -350,11 +385,11 @@ namespace HOTEL_MINI.Forms.Controls
                     CheckOut = p.CheckOut,
                     PricingType = p.PricingType,
                     UnitPrice = p.UnitPrice,
-                    CalculatedCost = p.CalculatedCost
+                    CalculatedCost = p.CalculatedCost,
+                    IsReceiveNow = p.IsReceiveNow
                 };
             }
 
-            // KHÔNG ép buộc phải có khách trước – truyền 0/"" để form tự xử lý CCCD
             using (var f = new frmBookingDetail1(selected, plans, 0, "", CurrentUserId))
             {
                 f.StartPosition = FormStartPosition.CenterParent;
@@ -391,6 +426,7 @@ namespace HOTEL_MINI.Forms.Controls
             public string PricingType { get; set; }   // Hourly/Nightly/Daily/Weekly
             public decimal? UnitPrice { get; set; }
             public decimal CalculatedCost { get; set; }
+            public bool IsReceiveNow { get; set; } = true;  // true = Nhận ngay, false = Nhận sau
         }
     }
 }

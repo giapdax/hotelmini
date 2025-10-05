@@ -85,7 +85,7 @@ namespace HOTEL_MINI.BLL
         {
             ValidateBookingsForGroup(customerId, createdBy, roomBookings);
             // Repository sẽ tạo header + từng BookingRooms + (nếu có) dịch vụ
-            return _bookingRepository.AddMultiRoomsBooking(customerId, createdBy, DateTime.Now, "Booked", roomBookings, usedServices);
+            return _bookingRepository.AddMultiRoomsBooking(customerId, createdBy, DateTime.Now, "CheckedIn", roomBookings, usedServices);
         }
 
         // ==================== Query / Update convenience =================
@@ -207,6 +207,22 @@ namespace HOTEL_MINI.BLL
                 scope.Complete();
             }
         }
+        public Booking GetActiveBookingByRoomId(int roomId) => _bookingRepository.GetActiveBookingByRoomId(roomId);
+
+        public bool CheckInBooking(int bookingID)
+        {
+            var bk = _bookingRepository.GetBookingById(bookingID);
+            if (bk == null) throw new ArgumentException("Không tìm thấy booking.");
+            if (!string.Equals(bk.Status, "Booked", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Chỉ có thể nhận phòng khi booking đang 'Booked'.");
+
+            var ok = _bookingRepository.CheckInBooking(bookingID, DateTime.Now);
+            if (!ok) return false;
+
+            // cập nhật trạng thái phòng sang Occupied
+            return _roomRepository.UpdateRoomStatus(bk.RoomID, "Occupied");
+        }
+
 
         public bool CancelBooking(int bookingID)
         {

@@ -20,6 +20,8 @@ namespace HOTEL_MINI.Forms.Dialogs
         public string PricingType { get; private set; }
         public decimal? UnitPrice { get; private set; }
         public decimal CalculatedCost { get; private set; }
+        public bool IsReceiveNow { get; private set; } = true; // mặc định Nhận ngay
+
 
         public dlgRoomTime(int roomTypeId, DateTime baseIn, DateTime baseOut, string title = null)
         {
@@ -181,7 +183,18 @@ namespace HOTEL_MINI.Forms.Dialogs
 
             CheckIn = ci;
             CheckOut = co;
+            IsReceiveNow = rdoReceiveNow.Checked;
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnOK_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

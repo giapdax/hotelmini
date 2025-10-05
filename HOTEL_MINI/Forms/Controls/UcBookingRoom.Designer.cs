@@ -98,7 +98,7 @@
             this.tableLayoutPanel5.ColumnCount = 3;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.50254F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.49746F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 117F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 118F));
             this.tableLayoutPanel5.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.txtCCCD, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.cboStatusBooking, 2, 0);
@@ -115,7 +115,7 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(29, 6);
+            this.label3.Location = new System.Drawing.Point(28, 6);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 20);
             this.label3.TabIndex = 0;
@@ -124,7 +124,7 @@
             // txtCCCD
             // 
             this.txtCCCD.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtCCCD.Location = new System.Drawing.Point(135, 3);
+            this.txtCCCD.Location = new System.Drawing.Point(134, 3);
             this.txtCCCD.Name = "txtCCCD";
             this.txtCCCD.Size = new System.Drawing.Size(255, 26);
             this.txtCCCD.TabIndex = 1;
@@ -132,7 +132,7 @@
             // cboStatusBooking
             // 
             this.cboStatusBooking.FormattingEnabled = true;
-            this.cboStatusBooking.Location = new System.Drawing.Point(396, 3);
+            this.cboStatusBooking.Location = new System.Drawing.Point(395, 3);
             this.cboStatusBooking.Name = "cboStatusBooking";
             this.cboStatusBooking.Size = new System.Drawing.Size(111, 28);
             this.cboStatusBooking.TabIndex = 2;
@@ -142,7 +142,7 @@
             this.tableLayoutPanel6.ColumnCount = 3;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.51572F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.48428F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 106F));
             this.tableLayoutPanel6.Controls.Add(this.label4, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.txtRoomNumber, 1, 0);
             this.tableLayoutPanel6.Controls.Add(this.cboStatusRoom, 2, 0);
@@ -159,7 +159,7 @@
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(89, 6);
+            this.label4.Location = new System.Drawing.Point(88, 6);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(121, 20);
             this.label4.TabIndex = 0;
@@ -168,7 +168,7 @@
             // txtRoomNumber
             // 
             this.txtRoomNumber.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtRoomNumber.Location = new System.Drawing.Point(216, 3);
+            this.txtRoomNumber.Location = new System.Drawing.Point(215, 3);
             this.txtRoomNumber.Name = "txtRoomNumber";
             this.txtRoomNumber.Size = new System.Drawing.Size(186, 26);
             this.txtRoomNumber.TabIndex = 1;
@@ -176,7 +176,7 @@
             // cboStatusRoom
             // 
             this.cboStatusRoom.FormattingEnabled = true;
-            this.cboStatusRoom.Location = new System.Drawing.Point(408, 3);
+            this.cboStatusRoom.Location = new System.Drawing.Point(407, 3);
             this.cboStatusRoom.Name = "cboStatusRoom";
             this.cboStatusRoom.Size = new System.Drawing.Size(99, 28);
             this.cboStatusRoom.TabIndex = 2;
