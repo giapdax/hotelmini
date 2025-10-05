@@ -732,7 +732,7 @@ namespace HOTEL_MINI.Forms
                     PricingID = pr.PricingID,
                     CheckInDate = plan.CheckIn,
                     CheckOutDate = plan.CheckOut,
-                    Status = "Booked",
+                    Status = plan.IsReceiveNow ? "CheckedIn" : "Booked",
                     Note = (txtNote.Text ?? "").Trim()
                 });
             }
