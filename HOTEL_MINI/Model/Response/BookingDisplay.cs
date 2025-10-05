@@ -4,21 +4,23 @@ namespace HOTEL_MINI.Model.Response
 {
     public class BookingDisplay
     {
-        public int BookingID { get; set; }
-        public string RoomNumber { get; set; }      // Tên phòng
-        public string EmployeeName { get; set; }    // Tên nhân viên
-        public DateTime BookingDate { get; set; }   // Ngày book
-        public DateTime? CheckInDate { get; set; }  // Ngày check-in
-        public DateTime? CheckOutDate { get; set; } // Ngày check-out
-        public string Notes { get; set; }           // Ghi chú
-        public string Status { get; set; }          // Trạng thái
+        public int BookingID { get; set; }                 // = BookingRoomID (line)
+        public string RoomNumber { get; set; } = "";
+        public string EmployeeName { get; set; } = "";
 
-        // CCCD/CMND khách (QUAN TRỌNG: phải SELECT trong query)
-        public string CustomerIDNumber { get; set; }
+        public DateTime BookingDate { get; set; }
+        public DateTime? CheckInDate { get; set; }
+        public DateTime? CheckOutDate { get; set; }
 
-        // Format cho UI nếu bạn muốn xài dạng text thay vì DefaultCellStyle
-        public string BookingDateDisplay => BookingDate.ToString("dd/MM/yyyy HH:mm");
-        public string CheckInDateDisplay => CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
-        public string CheckOutDateDisplay => CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
+        public string Notes { get; set; } = "";
+        public string Status { get; set; } = "";
+
+        // >>> THÊM: số CCCD/ID của khách
+        public string CustomerIDNumber { get; set; } = "";
+
+        // ---- Display-only (read-only) ----
+        public string BookingDateDisplay => BookingDate == default ? "" : BookingDate.ToString("dd/MM/yyyy HH:mm");
+        public string CheckInDateDisplay => CheckInDate.HasValue ? CheckInDate.Value.ToString("dd/MM/yyyy HH:mm") : "";
+        public string CheckOutDateDisplay => CheckOutDate.HasValue ? CheckOutDate.Value.ToString("dd/MM/yyyy HH:mm") : "";
     }
 }

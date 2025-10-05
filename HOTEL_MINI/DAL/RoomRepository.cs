@@ -479,5 +479,52 @@ WHERE 1=1
             }
             return result;
         }
+        // HOTEL_MINI.DAL.RoomRepository  (thêm vào class hiện có)
+
+        public Room getRoomById(int roomId)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                const string sql = @"
+            SELECT RoomID, RoomNumber, RoomTypeID, Status, Note
+            FROM Rooms WHERE RoomID = @RoomID";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", roomId);
+                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    {
+                        if (rd.Read())
+                        {
+                            return new Room
+                            {
+                                RoomID = rd.GetInt32(0),
+                                RoomNumber = rd.GetString(1),
+                                RoomTypeID = rd.GetInt32(2),
+                                RoomStatus = rd.GetString(3),
+                                Note = rd.IsDBNull(4) ? null : rd.GetString(4),
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public string getRoomNumberById(int roomId)
+        {
+            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            {
+                conn.Open();
+                const string sql = "SELECT RoomNumber FROM Rooms WHERE RoomID = @RoomID";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", roomId);
+                    object val = cmd.ExecuteScalar();
+                    return val == null ? string.Empty : val.ToString();
+                }
+            }
+        }
+
     }
 }

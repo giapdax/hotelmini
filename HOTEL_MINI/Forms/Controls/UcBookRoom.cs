@@ -1,14 +1,15 @@
-﻿using HOTEL_MINI.BLL;
-using HOTEL_MINI.DAL;
-using HOTEL_MINI.Forms.Dialogs;
-using HOTEL_MINI.Model.Response;
-using MiniHotel.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HOTEL_MINI.BLL;
+using HOTEL_MINI.DAL;
+using HOTEL_MINI.Forms;                 // <-- thêm để dùng frmBookingCreate
+using HOTEL_MINI.Forms.Dialogs;
+using HOTEL_MINI.Model.Response;
+using MiniHotel.Models;
 
 namespace HOTEL_MINI.Forms.Controls
 {
@@ -64,11 +65,11 @@ namespace HOTEL_MINI.Forms.Controls
             statuses.Insert(0, "(Tất cả)");
             cboStatus.DataSource = statuses;
 
-            var types = _rtSvc.GetAllRoomTypes() ?? new List<MiniHotel.Models.RoomTypes>();
-            types.Insert(0, new MiniHotel.Models.RoomTypes { RoomTypeID = 0, TypeName = "(Tất cả loại)" });
+            var types = _rtSvc.GetAllRoomTypes() ?? new List<RoomTypes>();
+            types.Insert(0, new RoomTypes { RoomTypeID = 0, TypeName = "(Tất cả loại)" });
             cboRoomType.DataSource = types;
-            cboRoomType.DisplayMember = nameof(MiniHotel.Models.RoomTypes.TypeName);
-            cboRoomType.ValueMember = nameof(MiniHotel.Models.RoomTypes.RoomTypeID);
+            cboRoomType.DisplayMember = nameof(RoomTypes.TypeName);
+            cboRoomType.ValueMember = nameof(RoomTypes.RoomTypeID);
 
             var today = DateTime.Today;
             dtpFrom.Format = DateTimePickerFormat.Custom;
@@ -135,7 +136,7 @@ namespace HOTEL_MINI.Forms.Controls
         private void LoadRooms()
         {
             int? typeId = null;
-            var rt = cboRoomType.SelectedItem as MiniHotel.Models.RoomTypes;
+            var rt = cboRoomType.SelectedItem as RoomTypes;
             if (rt != null && rt.RoomTypeID > 0) typeId = rt.RoomTypeID;
 
             string status = cboStatus.SelectedItem != null ? cboStatus.SelectedItem.ToString() : null;
@@ -309,12 +310,13 @@ namespace HOTEL_MINI.Forms.Controls
                 })
                 .ToList();
 
-            var plans = new Dictionary<int, frmBookingDetail1.RoomPlan>();
+            // Map kế hoạch nội bộ -> kế hoạch của frmBookingCreate
+            var plans = new Dictionary<int, frmBookingCreate.RoomPlan>();
             foreach (var kv in _selectedPlans)
             {
                 if (!_selectedRoomIds.Contains(kv.Key)) continue;
                 var p = kv.Value;
-                plans[kv.Key] = new frmBookingDetail1.RoomPlan
+                plans[kv.Key] = new frmBookingCreate.RoomPlan
                 {
                     RoomID = p.RoomID,
                     CheckIn = p.CheckIn,
@@ -325,7 +327,8 @@ namespace HOTEL_MINI.Forms.Controls
                 };
             }
 
-            using (var f = new frmBookingDetail1(selected, plans, 0, "", CurrentUserId))
+            // MỞ ĐÚNG FORM ĐẶT PHÒNG
+            using (var f = new frmBookingCreate(selected, plans, _currentCustomerId, _currentIdNumber, CurrentUserId))
             {
                 f.StartPosition = FormStartPosition.CenterParent;
                 var rs = f.ShowDialog(this.FindForm());

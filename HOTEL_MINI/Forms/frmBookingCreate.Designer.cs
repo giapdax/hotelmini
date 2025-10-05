@@ -1,6 +1,6 @@
 ﻿namespace HOTEL_MINI.Forms
 {
-    partial class frmBookingDetail
+    partial class frmBookingCreate
     {
         /// <summary>
         /// Required designer variable.
@@ -60,9 +60,6 @@
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
             this.lblSex = new System.Windows.Forms.Label();
-            this.lblKieuThue = new System.Windows.Forms.Label();
-            this.txtGender = new System.Windows.Forms.TextBox();
-            this.txtPricingType = new System.Windows.Forms.TextBox();
             this.lblCCCD = new System.Windows.Forms.Label();
             this.txtCCCD = new System.Windows.Forms.TextBox();
             this.lblNote = new System.Windows.Forms.Label();
@@ -78,6 +75,7 @@
             this.btnDatphong = new System.Windows.Forms.Button();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.cboGender = new System.Windows.Forms.ComboBox();
             this.grbRoom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tableLayoutPanel11.SuspendLayout();
@@ -462,36 +460,6 @@
             this.lblSex.Text = "Giới tính:";
             this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblKieuThue
-            // 
-            this.lblKieuThue.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKieuThue.AutoSize = true;
-            this.lblKieuThue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKieuThue.Location = new System.Drawing.Point(13, 221);
-            this.lblKieuThue.Name = "lblKieuThue";
-            this.lblKieuThue.Size = new System.Drawing.Size(76, 20);
-            this.lblKieuThue.TabIndex = 7;
-            this.lblKieuThue.Text = "Kiểu thuê";
-            this.lblKieuThue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtGender
-            // 
-            this.txtGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtGender.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGender.Location = new System.Drawing.Point(95, 176);
-            this.txtGender.Name = "txtGender";
-            this.txtGender.Size = new System.Drawing.Size(172, 26);
-            this.txtGender.TabIndex = 19;
-            // 
-            // txtPricingType
-            // 
-            this.txtPricingType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPricingType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPricingType.Location = new System.Drawing.Point(95, 218);
-            this.txtPricingType.Name = "txtPricingType";
-            this.txtPricingType.Size = new System.Drawing.Size(172, 26);
-            this.txtPricingType.TabIndex = 20;
-            // 
             // lblCCCD
             // 
             this.lblCCCD.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -558,11 +526,9 @@
             this.tableLayoutPanel5.Controls.Add(this.lblEmail, 0, 3);
             this.tableLayoutPanel5.Controls.Add(this.lblTen, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.lblSex, 0, 4);
-            this.tableLayoutPanel5.Controls.Add(this.txtGender, 1, 4);
-            this.tableLayoutPanel5.Controls.Add(this.lblKieuThue, 0, 5);
-            this.tableLayoutPanel5.Controls.Add(this.txtPricingType, 1, 5);
             this.tableLayoutPanel5.Controls.Add(this.lblNote, 0, 6);
             this.tableLayoutPanel5.Controls.Add(this.txtNote, 1, 6);
+            this.tableLayoutPanel5.Controls.Add(this.cboGender, 1, 4);
             this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 90);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 7;
@@ -710,14 +676,22 @@
             this.tableLayoutPanel8.Size = new System.Drawing.Size(1048, 546);
             this.tableLayoutPanel8.TabIndex = 15;
             // 
-            // frmBookingDetail
+            // cboGender
+            // 
+            this.cboGender.FormattingEnabled = true;
+            this.cboGender.Location = new System.Drawing.Point(95, 171);
+            this.cboGender.Name = "cboGender";
+            this.cboGender.Size = new System.Drawing.Size(121, 28);
+            this.cboGender.TabIndex = 18;
+            // 
+            // frmBookingCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1048, 546);
             this.Controls.Add(this.tableLayoutPanel8);
-            this.Name = "frmBookingDetail";
-            this.Text = "frmBookingDetail";
+            this.Name = "frmBookingCreate";
+            this.Text = "frmBookingCreate";
             this.grbRoom.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tableLayoutPanel11.ResumeLayout(false);
@@ -774,15 +748,13 @@
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.Label lblTen;
         private System.Windows.Forms.Label lblSex;
-        private System.Windows.Forms.Label lblKieuThue;
-        private System.Windows.Forms.TextBox txtGender;
-        private System.Windows.Forms.TextBox txtPricingType;
         private System.Windows.Forms.Label lblCCCD;
         private System.Windows.Forms.TextBox txtCCCD;
         private System.Windows.Forms.Label lblNote;
         private System.Windows.Forms.TextBox txtNote;
         private System.Windows.Forms.Button btnCheck;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+        private System.Windows.Forms.ComboBox cboGender;
         private System.Windows.Forms.GroupBox gbxRoomInfor;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
