@@ -66,6 +66,8 @@ namespace HOTEL_MINI.Forms
             this.txtEmployeeName = new System.Windows.Forms.TextBox();
             this.lblNote = new System.Windows.Forms.Label();
             this.txtNote = new System.Windows.Forms.TextBox();
+            this.grpPayments = new System.Windows.Forms.GroupBox();
+            this.dgvPayments = new System.Windows.Forms.DataGridView();
             this.buttonsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -82,6 +84,8 @@ namespace HOTEL_MINI.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dgvRoom)).BeginInit();
             this.grpSummary.SuspendLayout();
             this.summaryLayout.SuspendLayout();
+            this.grpPayments.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPayments)).BeginInit();
             this.buttonsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,8 +103,8 @@ namespace HOTEL_MINI.Forms
             this.mainLayout.RowCount = 3;
             this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 296F));
-            this.mainLayout.Size = new System.Drawing.Size(1120, 740);
+            this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 340F));
+            this.mainLayout.Size = new System.Drawing.Size(1120, 760);
             this.mainLayout.TabIndex = 0;
             // 
             // grpHeader
@@ -155,7 +159,6 @@ namespace HOTEL_MINI.Forms
             this.txtCusName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCusName.Location = new System.Drawing.Point(113, 5);
             this.txtCusName.Name = "txtCusName";
-            this.txtCusName.ReadOnly = true;
             this.txtCusName.Size = new System.Drawing.Size(315, 31);
             this.txtCusName.TabIndex = 1;
             // 
@@ -174,7 +177,6 @@ namespace HOTEL_MINI.Forms
             this.txtCusId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCusId.Location = new System.Drawing.Point(514, 5);
             this.txtCusId.Name = "txtCusId";
-            this.txtCusId.ReadOnly = true;
             this.txtCusId.Size = new System.Drawing.Size(154, 31);
             this.txtCusId.TabIndex = 3;
             // 
@@ -193,7 +195,6 @@ namespace HOTEL_MINI.Forms
             this.txtCheckin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCheckin.Location = new System.Drawing.Point(764, 5);
             this.txtCheckin.Name = "txtCheckin";
-            this.txtCheckin.ReadOnly = true;
             this.txtCheckin.Size = new System.Drawing.Size(317, 31);
             this.txtCheckin.TabIndex = 5;
             // 
@@ -212,7 +213,6 @@ namespace HOTEL_MINI.Forms
             this.txtCheckout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCheckout.Location = new System.Drawing.Point(764, 47);
             this.txtCheckout.Name = "txtCheckout";
-            this.txtCheckout.ReadOnly = true;
             this.txtCheckout.Size = new System.Drawing.Size(317, 31);
             this.txtCheckout.TabIndex = 7;
             // 
@@ -228,7 +228,7 @@ namespace HOTEL_MINI.Forms
             this.middleLayout.Name = "middleLayout";
             this.middleLayout.RowCount = 1;
             this.middleLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.middleLayout.Size = new System.Drawing.Size(1090, 294);
+            this.middleLayout.Size = new System.Drawing.Size(1090, 270);
             this.middleLayout.TabIndex = 1;
             // 
             // grpServices
@@ -237,7 +237,7 @@ namespace HOTEL_MINI.Forms
             this.grpServices.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpServices.Location = new System.Drawing.Point(3, 3);
             this.grpServices.Name = "grpServices";
-            this.grpServices.Size = new System.Drawing.Size(539, 288);
+            this.grpServices.Size = new System.Drawing.Size(539, 264);
             this.grpServices.TabIndex = 0;
             this.grpServices.TabStop = false;
             this.grpServices.Text = "Dịch vụ đã dùng";
@@ -255,8 +255,8 @@ namespace HOTEL_MINI.Forms
             this.serviceLayout.Name = "serviceLayout";
             this.serviceLayout.RowCount = 2;
             this.serviceLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.serviceLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.serviceLayout.Size = new System.Drawing.Size(533, 258);
+            this.serviceLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.serviceLayout.Size = new System.Drawing.Size(533, 234);
             this.serviceLayout.TabIndex = 0;
             // 
             // dgvUsedService
@@ -264,7 +264,7 @@ namespace HOTEL_MINI.Forms
             this.dgvUsedService.AllowUserToAddRows = false;
             this.dgvUsedService.AllowUserToDeleteRows = false;
             this.dgvUsedService.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvUsedService.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsedService.ColumnHeadersHeight = 34;
             this.serviceLayout.SetColumnSpan(this.dgvUsedService, 2);
             this.dgvUsedService.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvUsedService.Location = new System.Drawing.Point(3, 3);
@@ -272,15 +272,14 @@ namespace HOTEL_MINI.Forms
             this.dgvUsedService.ReadOnly = true;
             this.dgvUsedService.RowHeadersVisible = false;
             this.dgvUsedService.RowHeadersWidth = 62;
-            this.dgvUsedService.RowTemplate.Height = 28;
-            this.dgvUsedService.Size = new System.Drawing.Size(527, 216);
+            this.dgvUsedService.Size = new System.Drawing.Size(527, 196);
             this.dgvUsedService.TabIndex = 0;
             // 
             // lblServiceTotal
             // 
             this.lblServiceTotal.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblServiceTotal.AutoSize = true;
-            this.lblServiceTotal.Location = new System.Drawing.Point(284, 227);
+            this.lblServiceTotal.Location = new System.Drawing.Point(284, 205);
             this.lblServiceTotal.Name = "lblServiceTotal";
             this.lblServiceTotal.Size = new System.Drawing.Size(86, 25);
             this.lblServiceTotal.TabIndex = 1;
@@ -289,10 +288,10 @@ namespace HOTEL_MINI.Forms
             // txtServiceCharge
             // 
             this.txtServiceCharge.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtServiceCharge.Location = new System.Drawing.Point(376, 225);
+            this.txtServiceCharge.Location = new System.Drawing.Point(376, 205);
             this.txtServiceCharge.Name = "txtServiceCharge";
             this.txtServiceCharge.ReadOnly = true;
-            this.txtServiceCharge.Size = new System.Drawing.Size(117, 31);
+            this.txtServiceCharge.Size = new System.Drawing.Size(100, 31);
             this.txtServiceCharge.TabIndex = 2;
             this.txtServiceCharge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -302,7 +301,7 @@ namespace HOTEL_MINI.Forms
             this.grpRooms.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpRooms.Location = new System.Drawing.Point(548, 3);
             this.grpRooms.Name = "grpRooms";
-            this.grpRooms.Size = new System.Drawing.Size(539, 288);
+            this.grpRooms.Size = new System.Drawing.Size(539, 264);
             this.grpRooms.TabIndex = 1;
             this.grpRooms.TabStop = false;
             this.grpRooms.Text = "Phòng trong booking";
@@ -320,8 +319,8 @@ namespace HOTEL_MINI.Forms
             this.roomLayout.Name = "roomLayout";
             this.roomLayout.RowCount = 2;
             this.roomLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.roomLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.roomLayout.Size = new System.Drawing.Size(533, 258);
+            this.roomLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.roomLayout.Size = new System.Drawing.Size(533, 234);
             this.roomLayout.TabIndex = 0;
             // 
             // dgvRoom
@@ -329,7 +328,7 @@ namespace HOTEL_MINI.Forms
             this.dgvRoom.AllowUserToAddRows = false;
             this.dgvRoom.AllowUserToDeleteRows = false;
             this.dgvRoom.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvRoom.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRoom.ColumnHeadersHeight = 34;
             this.roomLayout.SetColumnSpan(this.dgvRoom, 2);
             this.dgvRoom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvRoom.Location = new System.Drawing.Point(3, 3);
@@ -337,15 +336,14 @@ namespace HOTEL_MINI.Forms
             this.dgvRoom.ReadOnly = true;
             this.dgvRoom.RowHeadersVisible = false;
             this.dgvRoom.RowHeadersWidth = 62;
-            this.dgvRoom.RowTemplate.Height = 28;
-            this.dgvRoom.Size = new System.Drawing.Size(527, 216);
+            this.dgvRoom.Size = new System.Drawing.Size(527, 196);
             this.dgvRoom.TabIndex = 0;
             // 
             // lblRoomTotal
             // 
             this.lblRoomTotal.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblRoomTotal.AutoSize = true;
-            this.lblRoomTotal.Location = new System.Drawing.Point(264, 227);
+            this.lblRoomTotal.Location = new System.Drawing.Point(264, 205);
             this.lblRoomTotal.Name = "lblRoomTotal";
             this.lblRoomTotal.Size = new System.Drawing.Size(106, 25);
             this.lblRoomTotal.TabIndex = 1;
@@ -354,10 +352,10 @@ namespace HOTEL_MINI.Forms
             // txtTongtien
             // 
             this.txtTongtien.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtTongtien.Location = new System.Drawing.Point(376, 225);
+            this.txtTongtien.Location = new System.Drawing.Point(376, 205);
             this.txtTongtien.Name = "txtTongtien";
             this.txtTongtien.ReadOnly = true;
-            this.txtTongtien.Size = new System.Drawing.Size(117, 31);
+            this.txtTongtien.Size = new System.Drawing.Size(100, 31);
             this.txtTongtien.TabIndex = 2;
             this.txtTongtien.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -365,9 +363,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.grpSummary.Controls.Add(this.summaryLayout);
             this.grpSummary.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpSummary.Location = new System.Drawing.Point(15, 435);
+            this.grpSummary.Location = new System.Drawing.Point(15, 411);
             this.grpSummary.Name = "grpSummary";
-            this.grpSummary.Size = new System.Drawing.Size(1090, 290);
+            this.grpSummary.Size = new System.Drawing.Size(1090, 334);
             this.grpSummary.TabIndex = 2;
             this.grpSummary.TabStop = false;
             this.grpSummary.Text = "Tổng kết thanh toán";
@@ -403,11 +401,12 @@ namespace HOTEL_MINI.Forms
             this.summaryLayout.Controls.Add(this.txtEmployeeName, 1, 5);
             this.summaryLayout.Controls.Add(this.lblNote, 2, 5);
             this.summaryLayout.Controls.Add(this.txtNote, 3, 5);
-            this.summaryLayout.Controls.Add(this.buttonsPanel, 0, 6);
+            this.summaryLayout.Controls.Add(this.grpPayments, 0, 6);
+            this.summaryLayout.Controls.Add(this.buttonsPanel, 0, 7);
             this.summaryLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.summaryLayout.Location = new System.Drawing.Point(3, 27);
             this.summaryLayout.Name = "summaryLayout";
-            this.summaryLayout.RowCount = 7;
+            this.summaryLayout.RowCount = 8;
             this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
@@ -415,7 +414,8 @@ namespace HOTEL_MINI.Forms
             this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.summaryLayout.Size = new System.Drawing.Size(1084, 260);
+            this.summaryLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.summaryLayout.Size = new System.Drawing.Size(1084, 304);
             this.summaryLayout.TabIndex = 0;
             // 
             // lblRoomTotal2
@@ -434,7 +434,7 @@ namespace HOTEL_MINI.Forms
             this.txtRoomTotal2.Location = new System.Drawing.Point(274, 3);
             this.txtRoomTotal2.Name = "txtRoomTotal2";
             this.txtRoomTotal2.ReadOnly = true;
-            this.txtRoomTotal2.Size = new System.Drawing.Size(160, 31);
+            this.txtRoomTotal2.Size = new System.Drawing.Size(100, 31);
             this.txtRoomTotal2.TabIndex = 1;
             this.txtRoomTotal2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -454,7 +454,7 @@ namespace HOTEL_MINI.Forms
             this.txtServiceTotal2.Location = new System.Drawing.Point(816, 3);
             this.txtServiceTotal2.Name = "txtServiceTotal2";
             this.txtServiceTotal2.ReadOnly = true;
-            this.txtServiceTotal2.Size = new System.Drawing.Size(160, 31);
+            this.txtServiceTotal2.Size = new System.Drawing.Size(100, 31);
             this.txtServiceTotal2.TabIndex = 3;
             this.txtServiceTotal2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -473,7 +473,7 @@ namespace HOTEL_MINI.Forms
             this.txtSurcharge.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtSurcharge.Location = new System.Drawing.Point(274, 39);
             this.txtSurcharge.Name = "txtSurcharge";
-            this.txtSurcharge.Size = new System.Drawing.Size(160, 31);
+            this.txtSurcharge.Size = new System.Drawing.Size(100, 31);
             this.txtSurcharge.TabIndex = 5;
             this.txtSurcharge.Text = "0";
             this.txtSurcharge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -493,7 +493,7 @@ namespace HOTEL_MINI.Forms
             this.txtDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtDiscount.Location = new System.Drawing.Point(816, 39);
             this.txtDiscount.Name = "txtDiscount";
-            this.txtDiscount.Size = new System.Drawing.Size(160, 31);
+            this.txtDiscount.Size = new System.Drawing.Size(100, 31);
             this.txtDiscount.TabIndex = 7;
             this.txtDiscount.Text = "0";
             this.txtDiscount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -514,7 +514,7 @@ namespace HOTEL_MINI.Forms
             this.txtSubtotal.Location = new System.Drawing.Point(274, 75);
             this.txtSubtotal.Name = "txtSubtotal";
             this.txtSubtotal.ReadOnly = true;
-            this.txtSubtotal.Size = new System.Drawing.Size(160, 31);
+            this.txtSubtotal.Size = new System.Drawing.Size(100, 31);
             this.txtSubtotal.TabIndex = 9;
             this.txtSubtotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -534,7 +534,7 @@ namespace HOTEL_MINI.Forms
             this.txtDaTra.Location = new System.Drawing.Point(816, 75);
             this.txtDaTra.Name = "txtDaTra";
             this.txtDaTra.ReadOnly = true;
-            this.txtDaTra.Size = new System.Drawing.Size(160, 31);
+            this.txtDaTra.Size = new System.Drawing.Size(100, 31);
             this.txtDaTra.TabIndex = 11;
             this.txtDaTra.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -554,7 +554,7 @@ namespace HOTEL_MINI.Forms
             this.txtConLai.Location = new System.Drawing.Point(274, 111);
             this.txtConLai.Name = "txtConLai";
             this.txtConLai.ReadOnly = true;
-            this.txtConLai.Size = new System.Drawing.Size(160, 31);
+            this.txtConLai.Size = new System.Drawing.Size(100, 31);
             this.txtConLai.TabIndex = 13;
             this.txtConLai.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -572,10 +572,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.cboPayOption.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboPayOption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPayOption.FormattingEnabled = true;
             this.cboPayOption.Location = new System.Drawing.Point(816, 112);
             this.cboPayOption.Name = "cboPayOption";
-            this.cboPayOption.Size = new System.Drawing.Size(160, 33);
+            this.cboPayOption.Size = new System.Drawing.Size(121, 33);
             this.cboPayOption.TabIndex = 15;
             // 
             // lblPayNow
@@ -593,7 +592,7 @@ namespace HOTEL_MINI.Forms
             this.txtPayNow.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtPayNow.Location = new System.Drawing.Point(274, 147);
             this.txtPayNow.Name = "txtPayNow";
-            this.txtPayNow.Size = new System.Drawing.Size(160, 31);
+            this.txtPayNow.Size = new System.Drawing.Size(100, 31);
             this.txtPayNow.TabIndex = 17;
             this.txtPayNow.Text = "0";
             this.txtPayNow.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -612,10 +611,9 @@ namespace HOTEL_MINI.Forms
             // 
             this.cbxPaymentMethod.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cbxPaymentMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxPaymentMethod.FormattingEnabled = true;
             this.cbxPaymentMethod.Location = new System.Drawing.Point(816, 148);
             this.cbxPaymentMethod.Name = "cbxPaymentMethod";
-            this.cbxPaymentMethod.Size = new System.Drawing.Size(160, 33);
+            this.cbxPaymentMethod.Size = new System.Drawing.Size(121, 33);
             this.cbxPaymentMethod.TabIndex = 19;
             // 
             // lblIssuedBy
@@ -634,7 +632,7 @@ namespace HOTEL_MINI.Forms
             this.txtEmployeeName.Location = new System.Drawing.Point(274, 183);
             this.txtEmployeeName.Name = "txtEmployeeName";
             this.txtEmployeeName.ReadOnly = true;
-            this.txtEmployeeName.Size = new System.Drawing.Size(160, 31);
+            this.txtEmployeeName.Size = new System.Drawing.Size(100, 31);
             this.txtEmployeeName.TabIndex = 21;
             // 
             // lblNote
@@ -652,8 +650,35 @@ namespace HOTEL_MINI.Forms
             this.txtNote.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtNote.Location = new System.Drawing.Point(816, 183);
             this.txtNote.Name = "txtNote";
-            this.txtNote.Size = new System.Drawing.Size(160, 31);
+            this.txtNote.Size = new System.Drawing.Size(100, 31);
             this.txtNote.TabIndex = 23;
+            // 
+            // grpPayments
+            // 
+            this.summaryLayout.SetColumnSpan(this.grpPayments, 4);
+            this.grpPayments.Controls.Add(this.dgvPayments);
+            this.grpPayments.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpPayments.Location = new System.Drawing.Point(3, 219);
+            this.grpPayments.Name = "grpPayments";
+            this.grpPayments.Size = new System.Drawing.Size(1078, 38);
+            this.grpPayments.TabIndex = 24;
+            this.grpPayments.TabStop = false;
+            this.grpPayments.Text = "Lịch sử thanh toán";
+            // 
+            // dgvPayments
+            // 
+            this.dgvPayments.AllowUserToAddRows = false;
+            this.dgvPayments.AllowUserToDeleteRows = false;
+            this.dgvPayments.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvPayments.ColumnHeadersHeight = 34;
+            this.dgvPayments.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvPayments.Location = new System.Drawing.Point(3, 27);
+            this.dgvPayments.Name = "dgvPayments";
+            this.dgvPayments.ReadOnly = true;
+            this.dgvPayments.RowHeadersVisible = false;
+            this.dgvPayments.RowHeadersWidth = 62;
+            this.dgvPayments.Size = new System.Drawing.Size(1072, 8);
+            this.dgvPayments.TabIndex = 0;
             // 
             // buttonsPanel
             // 
@@ -662,30 +687,30 @@ namespace HOTEL_MINI.Forms
             this.buttonsPanel.Controls.Add(this.btnCancel);
             this.buttonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.buttonsPanel.Location = new System.Drawing.Point(3, 219);
+            this.buttonsPanel.Location = new System.Drawing.Point(3, 263);
             this.buttonsPanel.Name = "buttonsPanel";
             this.buttonsPanel.Size = new System.Drawing.Size(1078, 38);
-            this.buttonsPanel.TabIndex = 24;
+            this.buttonsPanel.TabIndex = 25;
             // 
             // btnConfirm
             // 
             this.btnConfirm.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnConfirm.Location = new System.Drawing.Point(895, 4);
+            this.btnConfirm.AutoSize = true;
+            this.btnConfirm.Location = new System.Drawing.Point(964, 3);
             this.btnConfirm.Name = "btnConfirm";
-            this.btnConfirm.Size = new System.Drawing.Size(180, 36);
+            this.btnConfirm.Size = new System.Drawing.Size(111, 35);
             this.btnConfirm.TabIndex = 0;
             this.btnConfirm.Text = "Thanh toán";
-            this.btnConfirm.UseVisualStyleBackColor = true;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnCancel.Location = new System.Drawing.Point(800, 3);
+            this.btnCancel.AutoSize = true;
+            this.btnCancel.Location = new System.Drawing.Point(883, 3);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(89, 38);
+            this.btnCancel.Size = new System.Drawing.Size(75, 35);
             this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Hủy";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Text = "Đóng";
             // 
             // txtTotalAmount
             // 
@@ -700,10 +725,10 @@ namespace HOTEL_MINI.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1120, 740);
+            this.ClientSize = new System.Drawing.Size(1120, 760);
             this.Controls.Add(this.mainLayout);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.MinimumSize = new System.Drawing.Size(980, 680);
+            this.MinimumSize = new System.Drawing.Size(980, 700);
             this.Name = "frmCheckout1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Thanh toán Booking";
@@ -723,7 +748,10 @@ namespace HOTEL_MINI.Forms
             this.grpSummary.ResumeLayout(false);
             this.summaryLayout.ResumeLayout(false);
             this.summaryLayout.PerformLayout();
+            this.grpPayments.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPayments)).EndInit();
             this.buttonsPanel.ResumeLayout(false);
+            this.buttonsPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -757,6 +785,10 @@ namespace HOTEL_MINI.Forms
         private Label lblRoomTotal2, lblServiceTotal2, lblSurcharge, lblDiscount, lblSubtotal, lblDaTra, lblConLai, lblPayOption, lblPayNow, lblPaymentMethod, lblIssuedBy, lblNote;
         private TextBox txtRoomTotal2, txtServiceTotal2, txtSurcharge, txtDiscount, txtSubtotal, txtDaTra, txtConLai, txtPayNow, txtEmployeeName, txtNote, txtTotalAmount;
         private ComboBox cboPayOption, cbxPaymentMethod;
+
+        private GroupBox grpPayments;
+        private DataGridView dgvPayments;
+
         private FlowLayoutPanel buttonsPanel;
         private Button btnConfirm, btnCancel;
     }
