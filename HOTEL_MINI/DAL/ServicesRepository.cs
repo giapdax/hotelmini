@@ -39,16 +39,35 @@ namespace HOTEL_MINI.DAL
             return list;
         }
 
+        public bool ExistsByName(string name, int? excludeId)
+        {
+            const string sql = @"SELECT COUNT(1) FROM Services 
+                                 WHERE ServiceName = @Name AND (@Ex IS NULL OR ServiceID <> @Ex)";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = name?.Trim() ?? "";
+                cmd.Parameters.Add("@Ex", SqlDbType.Int).Value = (object)excludeId ?? DBNull.Value;
+                conn.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
         public bool AddService(Service s)
         {
-            const string sql = "INSERT INTO Services(ServiceName, Price, IsActive, Quantity) VALUES (@Name,@Price,@Active,@Qty)";
+            const string sql = @"INSERT INTO Services(ServiceName, Price, IsActive, Quantity)
+                                 VALUES (@Name,@Price,@Active,@Qty)";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = s.ServiceName ?? "";
-                cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = s.Price;
+
+                var p = cmd.Parameters.Add("@Price", SqlDbType.Decimal);
+                p.Precision = 18; p.Scale = 2; p.Value = s.Price;
+
                 cmd.Parameters.Add("@Active", SqlDbType.Bit).Value = s.IsActive;
                 cmd.Parameters.Add("@Qty", SqlDbType.Int).Value = s.Quantity;
+
                 conn.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -56,15 +75,47 @@ namespace HOTEL_MINI.DAL
 
         public bool UpdateService(Service s)
         {
-            const string sql = "UPDATE Services SET ServiceName=@Name, Price=@Price, IsActive=@Active, Quantity=@Qty WHERE ServiceID=@Id";
+            const string sql = @"UPDATE Services 
+                                 SET ServiceName=@Name, Price=@Price, IsActive=@Active, Quantity=@Qty 
+                                 WHERE ServiceID=@Id";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = s.ServiceID;
                 cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = s.ServiceName ?? "";
-                cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = s.Price;
+
+                var p = cmd.Parameters.Add("@Price", SqlDbType.Decimal);
+                p.Precision = 18; p.Scale = 2; p.Value = s.Price;
+
                 cmd.Parameters.Add("@Active", SqlDbType.Bit).Value = s.IsActive;
                 cmd.Parameters.Add("@Qty", SqlDbType.Int).Value = s.Quantity;
+
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool UpdateQuantity(int serviceId, int newQty)
+        {
+            const string sql = "UPDATE Services SET Quantity=@Qty WHERE ServiceID=@Id";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
+                cmd.Parameters.Add("@Qty", SqlDbType.Int).Value = newQty;
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool IncreaseQuantity(int serviceId, int add)
+        {
+            const string sql = "UPDATE Services SET Quantity = Quantity + @Add WHERE ServiceID=@Id";
+            using (var conn = Conn())
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
+                cmd.Parameters.Add("@Add", SqlDbType.Int).Value = add;
                 conn.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -95,6 +146,7 @@ namespace HOTEL_MINI.DAL
             }
         }
 
+        // Các hàm giữ nguyên:
         public bool TryReserveStock(SqlConnection extConn, SqlTransaction extTran, int serviceId, int amount)
         {
             if (amount <= 0) throw new ArgumentException("amount phải > 0", nameof(amount));

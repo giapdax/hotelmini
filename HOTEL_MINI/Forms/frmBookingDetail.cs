@@ -514,7 +514,7 @@ namespace HOTEL_MINI.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             var app = Application.OpenForms.OfType<frmApplication>().FirstOrDefault();
-            app?.ActivateBooking(goToUcBookRoom: true);
+            app?.ActivateBooking(goToUcBookRoom: false);
 
             RaiseReload();
             this.DialogResult = DialogResult.Cancel;
