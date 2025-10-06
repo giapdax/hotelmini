@@ -392,7 +392,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Report\ReportRevenuRoom.rdlc" />
     <EmbeddedResource Include="Report\ReportCustomer.rdlc" />
     <EmbeddedResource Include="Report\ReportInvoice.rdlc" />
     <None Include="DataSet1.xsc">
