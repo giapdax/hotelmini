@@ -112,17 +112,6 @@ namespace HOTEL_MINI.BLL
         {
             return roomRepository.SearchRoomsWithPrices(roomTypeId, status);
         }
-        public List<RoomBrowsePriceItem> SearchRoomsWithPrices(DateTime from, DateTime to, int? roomTypeId, string status)
-        {
-            return roomRepository.SearchRoomsWithPrices(from, to, roomTypeId, status);
-        }
-        public bool IsRoomAvailable(int roomId, DateTime from, DateTime to)
-            => roomRepository.IsRoomAvailable(roomId, from, to);
-        public Room GetRoomById(int roomId)
-        {
-            if (roomId <= 0) throw new ArgumentException("roomId không hợp lệ");
-            return roomRepository.getRoomById(roomId);
-        }
 
         public string GetRoomNumberById(int roomId)
         {
@@ -130,6 +119,14 @@ namespace HOTEL_MINI.BLL
             return roomRepository.getRoomNumberById(roomId);
 
         }
+        public List<string> GetAllRoomStatus()
+        {
+            return roomRepository.getRoomStatus();
+        }
 
+        public List<RoomBrowseItem> SearchRooms(DateTime from, DateTime to, int? roomTypeId, string status)
+        {
+            return roomRepository.SearchRooms(from, to, roomTypeId, status);
+        }
     }
 }

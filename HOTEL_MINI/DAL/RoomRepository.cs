@@ -13,52 +13,19 @@ namespace HOTEL_MINI.DAL
     public class RoomRepository
     {
         private readonly string _stringConnection;
-        public RoomRepository()
-        {
-            _stringConnection = ConfigHelper.GetConnectionString();
-        }
-
-        public List<RoomTypes> getRoomTypeList()
-        {
-            var listRoomType = new List<RoomTypes>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                const string sql = "SELECT RoomTypeID, TypeName, Description FROM RoomTypes";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                using (SqlDataReader rd = cmd.ExecuteReader())
-                {
-                    while (rd.Read())
-                    {
-                        listRoomType.Add(new RoomTypes
-                        {
-                            RoomTypeID = rd.GetInt32(0),
-                            TypeName = rd.GetString(1),
-                            Description = rd.IsDBNull(2) ? "" : rd.GetString(2),
-                        });
-                    }
-                }
-            }
-            return listRoomType;
-        }
+        public RoomRepository() { _stringConnection = ConfigHelper.GetConnectionString(); }
 
         public RoomStatistics GetRoomStatistics()
         {
-            RoomStatistics stats = new RoomStatistics();
-            const string query = @"
-                SELECT 
-                    COUNT(*) as TotalRooms,
-                    SUM(CASE WHEN Status = 'Available' THEN 1 ELSE 0 END) as AvailableRooms,
-                    SUM(CASE WHEN Status = 'Booked' THEN 1 ELSE 0 END) as BookedRooms,
-                    SUM(CASE WHEN Status = 'Occupied' THEN 1 ELSE 0 END) as OccupiedRooms,
-                    SUM(CASE WHEN Status = 'Maintenance' THEN 1 ELSE 0 END) as MaintenanceRooms
-                FROM Rooms";
-
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            var stats = new RoomStatistics();
+            const string query = "SELECT COUNT(*) TotalRooms, SUM(CASE WHEN Status='Available' THEN 1 ELSE 0 END) AvailableRooms, SUM(CASE " +
+                "WHEN Status='Booked' THEN 1 ELSE 0 END) BookedRooms, SUM(CASE WHEN Status='Occupied' " +
+                "THEN 1 ELSE 0 END) OccupiedRooms, SUM(CASE WHEN Status='Maintenance' THEN 1 ELSE 0 END) MaintenanceRooms FROM Rooms";
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (var cmd = new SqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
                     {
@@ -73,28 +40,13 @@ namespace HOTEL_MINI.DAL
             return stats;
         }
 
-        public bool UpdateRoomStatusAfterCheckout(int roomID, string status)
-        {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            {
-                conn.Open();
-                const string sql = @"UPDATE Rooms SET Status = @Status WHERE RoomID = @RoomID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Status", status);
-                    cmd.Parameters.AddWithValue("@RoomID", roomID);
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
         public bool UpdateRoomStatus(int roomID, string status)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                const string sql = "UPDATE Rooms SET Status = @Status WHERE RoomID = @RoomID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "UPDATE Rooms SET Status=@Status WHERE RoomID=@RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@Status", status);
                     cmd.Parameters.AddWithValue("@RoomID", roomID);
@@ -105,72 +57,59 @@ namespace HOTEL_MINI.DAL
 
         public List<Room> getRoomList()
         {
-            var listRoom = new List<Room>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            var list = new List<Room>();
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
                 const string sql = "SELECT RoomID, RoomNumber, RoomTypeID, Status, Note FROM Rooms";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                using (SqlDataReader rd = cmd.ExecuteReader())
+                using (var cmd = new SqlCommand(sql, conn))
+                using (var rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
-                    {
-                        listRoom.Add(new Room
-                        {
-                            RoomID = rd.GetInt32(0),
-                            RoomNumber = rd.GetString(1),
-                            RoomTypeID = rd.GetInt32(2),
-                            RoomStatus = rd.GetString(3),
-                            Note = rd.IsDBNull(4) ? null : rd.GetString(4),
-                        });
-                    }
+                        list.Add(new Room { RoomID = rd.GetInt32(0), RoomNumber = rd.GetString(1), RoomTypeID = rd.GetInt32(2), RoomStatus = rd.GetString(3), Note = rd.IsDBNull(4) ? null : rd.GetString(4) });
                 }
             }
-            return listRoom;
+            return list;
         }
 
         public List<string> getRoomStatus()
         {
-            var listStatus = new List<string>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            var list = new List<string>();
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
                 const string sql = "SELECT Value FROM RoomStatusEnum";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                using (SqlDataReader rd = cmd.ExecuteReader())
-                {
-                    while (rd.Read()) listStatus.Add(rd.GetString(0));
-                }
+                using (var cmd = new SqlCommand(sql, conn))
+                using (var rd = cmd.ExecuteReader())
+                    while (rd.Read()) list.Add(rd.GetString(0));
             }
-            return listStatus;
+            return list;
         }
 
         public List<string> getAllPricingType()
         {
             var list = new List<string>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
                 const string sql = "SELECT Value FROM PricingTypeEnum";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                using (SqlDataReader rd = cmd.ExecuteReader())
-                {
+                using (var cmd = new SqlCommand(sql, conn))
+                using (var rd = cmd.ExecuteReader())
                     while (rd.Read()) list.Add(rd.GetString(0));
-                }
             }
             return list;
         }
 
         public string getPricingTypeByID(int pricingID)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                const string sql = "SELECT PricingType FROM RoomPricing WHERE PricingID = @PricingID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "SELECT PricingType FROM RoomPricing WHERE PricingID=@PricingID";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@PricingID", pricingID);
-                    object val = cmd.ExecuteScalar();
+                    var val = cmd.ExecuteScalar();
                     return val == null ? string.Empty : val.ToString();
                 }
             }
@@ -178,29 +117,18 @@ namespace HOTEL_MINI.DAL
 
         public RoomPricing getPricingID(string pricingType, int roomType)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                const string sql = @"
-                    SELECT PricingID, Price 
-                    FROM RoomPricing 
-                    WHERE PricingType = @PricingType AND RoomTypeID = @RoomTypeID AND IsActive = 1";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "SELECT PricingID, Price FROM RoomPricing WHERE PricingType=@PricingType AND RoomTypeID=@RoomTypeID AND IsActive=1";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@PricingType", pricingType);
                     cmd.Parameters.AddWithValue("@RoomTypeID", roomType);
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    using (var rd = cmd.ExecuteReader())
                     {
                         if (rd.Read())
-                        {
-                            return new RoomPricing
-                            {
-                                PricingID = rd.GetInt32(0),
-                                RoomTypeID = roomType,
-                                PricingType = pricingType,
-                                Price = rd.GetDecimal(1)
-                            };
-                        }
+                            return new RoomPricing { PricingID = rd.GetInt32(0), RoomTypeID = roomType, PricingType = pricingType, Price = rd.GetDecimal(1) };
                     }
                 }
             }
@@ -209,30 +137,27 @@ namespace HOTEL_MINI.DAL
 
         private bool IsRoomNumberUnique(string roomNumber, int currentRoomId)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                const string sql = "SELECT COUNT(*) FROM Rooms WHERE RoomNumber = @RoomNumber AND RoomID <> @RoomID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "SELECT COUNT(*) FROM Rooms WHERE RoomNumber=@RoomNumber AND RoomID<>@RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@RoomNumber", (roomNumber ?? "").Trim());
                     cmd.Parameters.AddWithValue("@RoomID", currentRoomId);
-                    int count = (int)cmd.ExecuteScalar();
-                    return count == 0;
+                    return (int)cmd.ExecuteScalar() == 0;
                 }
             }
         }
 
         public bool AddRoom(Room room)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
                 if (!IsRoomNumberUnique(room.RoomNumber, 0)) return false;
-
-                const string sql = @"INSERT INTO Rooms (RoomNumber, RoomTypeID, Status, Note) 
-                                     VALUES (@RoomNumber, @RoomTypeID, @Status, @Note)";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "INSERT INTO Rooms(RoomNumber, RoomTypeID, Status, Note) VALUES (@RoomNumber,@RoomTypeID,@Status,@Note)";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@RoomNumber", (room.RoomNumber ?? "").Trim());
                     cmd.Parameters.AddWithValue("@RoomTypeID", room.RoomTypeID);
@@ -245,15 +170,12 @@ namespace HOTEL_MINI.DAL
 
         public bool UpdateRoom(Room room)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
                 if (!IsRoomNumberUnique(room.RoomNumber, room.RoomID)) return false;
-
-                const string sql = @"UPDATE Rooms 
-                                     SET RoomNumber=@RoomNumber, RoomTypeID=@RoomTypeID, Status=@Status, Note=@Note 
-                                     WHERE RoomID=@RoomID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "UPDATE Rooms SET RoomNumber=@RoomNumber, RoomTypeID=@RoomTypeID, Status=@Status, Note=@Note WHERE RoomID=@RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@RoomID", room.RoomID);
                     cmd.Parameters.AddWithValue("@RoomNumber", (room.RoomNumber ?? "").Trim());
@@ -268,50 +190,17 @@ namespace HOTEL_MINI.DAL
         public List<RoomBrowsePriceItem> SearchRoomsWithPrices(DateTime from, DateTime to, int? roomTypeId, string status)
         {
             var list = new List<RoomBrowsePriceItem>();
-            const string sql = @"
-SELECT 
-    r.RoomID,
-    r.RoomNumber,
-    r.RoomTypeID,
-    rt.TypeName,
-    r.Status,
-    r.Note,
-    MAX(CASE WHEN rp.PricingType = 'Hourly'  THEN rp.Price END) AS PriceHourly,
-    MAX(CASE WHEN rp.PricingType = 'Nightly' THEN rp.Price END) AS PriceNightly,
-    MAX(CASE WHEN rp.PricingType = 'Daily'   THEN rp.Price END) AS PriceDaily,
-    MAX(CASE WHEN rp.PricingType = 'Weekly'  THEN rp.Price END) AS PriceWeekly,
-    CAST(CASE 
-        WHEN EXISTS (
-            SELECT 1
-            FROM BookingRooms br
-            WHERE br.RoomID = r.RoomID
-              AND br.Status IN ('Booked','CheckedIn')
-              AND br.CheckInDate < @To
-              AND @From < br.CheckOutDate
-        ) THEN 0 ELSE 1
-    END AS bit) AS AvailableAtRange
-FROM Rooms r
-JOIN RoomTypes rt ON rt.RoomTypeID = r.RoomTypeID
-LEFT JOIN RoomPricing rp ON rp.RoomTypeID = r.RoomTypeID AND rp.IsActive = 1
-WHERE (@RoomTypeID IS NULL OR r.RoomTypeID = @RoomTypeID)
-  AND (@Status     IS NULL OR r.Status     = @Status)
-GROUP BY r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName, r.Status, r.Note
-ORDER BY r.RoomNumber;";
-
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            const string sql = "SELECT r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName, r.Status, r.Note, MAX(CASE WHEN rp.PricingType='Hourly' THEN rp.Price END) PriceHourly, MAX(CASE WHEN rp.PricingType='Nightly' THEN rp.Price END) PriceNightly, MAX(CASE WHEN rp.PricingType='Daily' THEN rp.Price END) PriceDaily, MAX(CASE WHEN rp.PricingType='Weekly' THEN rp.Price END) PriceWeekly, CAST(CASE WHEN EXISTS (SELECT 1 FROM BookingRooms br WHERE br.RoomID=r.RoomID AND br.Status IN ('Booked','CheckedIn') AND br.CheckInDate<@To AND @From<br.CheckOutDate) THEN 0 ELSE 1 END AS bit) AvailableAtRange FROM Rooms r JOIN RoomTypes rt ON rt.RoomTypeID=r.RoomTypeID LEFT JOIN RoomPricing rp ON rp.RoomTypeID=r.RoomTypeID AND rp.IsActive=1 WHERE (@RoomTypeID IS NULL OR r.RoomTypeID=@RoomTypeID) AND (@Status IS NULL OR r.Status=@Status) GROUP BY r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName, r.Status, r.Note ORDER BY r.RoomNumber";
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@From", from);
                 cmd.Parameters.AddWithValue("@To", to);
                 cmd.Parameters.AddWithValue("@RoomTypeID", (object)roomTypeId ?? DBNull.Value);
-
-                string normalizedStatus = string.IsNullOrWhiteSpace(status) ||
-                                   status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase)
-                                   ? null : status;
+                var normalizedStatus = string.IsNullOrWhiteSpace(status) || status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase) ? null : status;
                 cmd.Parameters.AddWithValue("@Status", (object)normalizedStatus ?? DBNull.Value);
-
                 conn.Open();
-                using (SqlDataReader rd = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
                     {
@@ -338,38 +227,15 @@ ORDER BY r.RoomNumber;";
         public List<RoomBrowsePriceItem> SearchRoomsWithPrices(int? roomTypeId, string status)
         {
             var list = new List<RoomBrowsePriceItem>();
-            const string sql = @"
-SELECT 
-    r.RoomID,
-    r.RoomNumber,
-    r.RoomTypeID,
-    rt.TypeName,
-    r.Status,
-    r.Note,
-    MAX(CASE WHEN rp.PricingType = 'Hourly'  THEN rp.Price END) AS PriceHourly,
-    MAX(CASE WHEN rp.PricingType = 'Nightly' THEN rp.Price END) AS PriceNightly,
-    MAX(CASE WHEN rp.PricingType = 'Daily'   THEN rp.Price END) AS PriceDaily,
-    MAX(CASE WHEN rp.PricingType = 'Weekly'  THEN rp.Price END) AS PriceWeekly
-FROM Rooms r
-JOIN RoomTypes rt ON rt.RoomTypeID = r.RoomTypeID
-LEFT JOIN RoomPricing rp ON rp.RoomTypeID = r.RoomTypeID AND rp.IsActive = 1
-WHERE (@RoomTypeID IS NULL OR r.RoomTypeID = @RoomTypeID)
-  AND (@Status     IS NULL OR r.Status     = @Status)
-GROUP BY r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName, r.Status, r.Note
-ORDER BY r.RoomNumber;";
-
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            const string sql = "SELECT r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName, r.Status, r.Note, MAX(CASE WHEN rp.PricingType='Hourly' THEN rp.Price END) PriceHourly, MAX(CASE WHEN rp.PricingType='Nightly' THEN rp.Price END) PriceNightly, MAX(CASE WHEN rp.PricingType='Daily' THEN rp.Price END) PriceDaily, MAX(CASE WHEN rp.PricingType='Weekly' THEN rp.Price END) PriceWeekly FROM Rooms r JOIN RoomTypes rt ON rt.RoomTypeID=r.RoomTypeID LEFT JOIN RoomPricing rp ON rp.RoomTypeID=r.RoomTypeID AND rp.IsActive=1 WHERE (@RoomTypeID IS NULL OR r.RoomTypeID=@RoomTypeID) AND (@Status IS NULL OR r.Status=@Status) GROUP BY r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName, r.Status, r.Note ORDER BY r.RoomNumber";
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@RoomTypeID", (object)roomTypeId ?? DBNull.Value);
-
-                string normalizedStatus = string.IsNullOrWhiteSpace(status) ||
-                                   status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase)
-                                   ? null : status;
+                var normalizedStatus = string.IsNullOrWhiteSpace(status) || status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase) ? null : status;
                 cmd.Parameters.AddWithValue("@Status", (object)normalizedStatus ?? DBNull.Value);
-
                 conn.Open();
-                using (SqlDataReader rd = cmd.ExecuteReader())
+                using (var rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
                     {
@@ -384,7 +250,7 @@ ORDER BY r.RoomNumber;";
                             PriceHourly = rd.IsDBNull(6) ? (decimal?)null : rd.GetDecimal(6),
                             PriceNightly = rd.IsDBNull(7) ? (decimal?)null : rd.GetDecimal(7),
                             PriceDaily = rd.IsDBNull(8) ? (decimal?)null : rd.GetDecimal(8),
-                            PriceWeekly = rd.IsDBNull(9) ? (decimal?)null : rd.GetDecimal(9),
+                            PriceWeekly = rd.IsDBNull(9) ? (decimal?)null : rd.GetDecimal(9)
                         });
                     }
                 }
@@ -394,85 +260,35 @@ ORDER BY r.RoomNumber;";
 
         public bool IsRoomAvailable(int roomId, DateTime from, DateTime to)
         {
-            const string sql = @"
-SELECT CASE WHEN EXISTS (
-    SELECT 1
-    FROM BookingRooms br
-    WHERE br.RoomID = @RoomID
-      AND br.Status IN ('Booked','CheckedIn')
-      AND br.CheckInDate < @To
-      AND @From < br.CheckOutDate
-) THEN 0 ELSE 1 END;";
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
-            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            const string sql = "SELECT CASE WHEN EXISTS (SELECT 1 FROM BookingRooms br WHERE br.RoomID=@RoomID AND br.Status IN ('Booked','CheckedIn') AND br.CheckInDate<@To AND @From<br.CheckOutDate) THEN 0 ELSE 1 END";
+            using (var conn = new SqlConnection(_stringConnection))
+            using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@RoomID", roomId);
                 cmd.Parameters.AddWithValue("@From", from);
                 cmd.Parameters.AddWithValue("@To", to);
                 conn.Open();
-                int val = (int)cmd.ExecuteScalar();
-                return val == 1;
+                return (int)cmd.ExecuteScalar() == 1;
             }
         }
 
         public List<RoomBrowseItem> SearchRooms(DateTime from, DateTime to, int? roomTypeId, string status)
         {
             var result = new List<RoomBrowseItem>();
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                StringBuilder sql = new StringBuilder(@"
-SELECT 
-    r.RoomID,
-    r.RoomNumber,
-    r.RoomTypeID,
-    rt.TypeName AS RoomTypeName,
-    CASE 
-        WHEN r.Status = 'Maintenance' THEN 'Maintenance'
-        WHEN EXISTS (
-            SELECT 1 FROM BookingRooms br
-            WHERE br.RoomID = r.RoomID
-              AND br.Status = 'CheckedIn'
-              AND br.CheckInDate < @To
-              AND @From < br.CheckOutDate
-        ) THEN 'Occupied'
-        WHEN EXISTS (
-            SELECT 1 FROM BookingRooms br
-            WHERE br.RoomID = r.RoomID
-              AND br.Status = 'Booked'
-              AND br.CheckInDate < @To
-              AND @From < br.CheckOutDate
-        ) THEN 'Booked'
-        ELSE 'Available'
-    END AS StatusAtRange,
-    r.Note
-FROM Rooms r
-JOIN RoomTypes rt ON rt.RoomTypeID = r.RoomTypeID
-WHERE 1=1
-");
-
-                // filter theo loại phòng
-                if (roomTypeId.HasValue && roomTypeId.Value > 0)
-                    sql.Append(" AND r.RoomTypeID = @RoomTypeID ");
-
-                // filter theo trạng thái (nhưng phải so với StatusAtRange chứ không phải r.Status)
-                if (!string.IsNullOrWhiteSpace(status) && !status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase))
-                    sql.Append(" HAVING StatusAtRange = @Status ");
-
-                sql.Append(" ORDER BY r.RoomNumber ");
-
-                using (SqlCommand cmd = new SqlCommand(sql.ToString(), conn))
+                var sql = new StringBuilder("SELECT r.RoomID, r.RoomNumber, r.RoomTypeID, rt.TypeName AS RoomTypeName, CASE WHEN r.Status='Maintenance' THEN 'Maintenance' WHEN EXISTS (SELECT 1 FROM BookingRooms br WHERE br.RoomID=r.RoomID AND br.Status='CheckedIn' AND br.CheckInDate<@To AND @From<br.CheckOutDate) THEN 'Occupied' WHEN EXISTS (SELECT 1 FROM BookingRooms br WHERE br.RoomID=r.RoomID AND br.Status='Booked' AND br.CheckInDate<@To AND @From<br.CheckOutDate) THEN 'Booked' ELSE 'Available' END AS StatusAtRange, r.Note FROM Rooms r JOIN RoomTypes rt ON rt.RoomTypeID=r.RoomTypeID WHERE 1=1");
+                if (roomTypeId.HasValue && roomTypeId.Value > 0) sql.Append(" AND r.RoomTypeID=@RoomTypeID");
+                if (!string.IsNullOrWhiteSpace(status) && !status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase)) sql.Append(" HAVING StatusAtRange=@Status");
+                sql.Append(" ORDER BY r.RoomNumber");
+                using (var cmd = new SqlCommand(sql.ToString(), conn))
                 {
                     cmd.Parameters.AddWithValue("@From", from);
                     cmd.Parameters.AddWithValue("@To", to);
-
-                    if (roomTypeId.HasValue && roomTypeId.Value > 0)
-                        cmd.Parameters.AddWithValue("@RoomTypeID", roomTypeId.Value);
-
-                    if (!string.IsNullOrWhiteSpace(status) && !status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase))
-                        cmd.Parameters.AddWithValue("@Status", status);
-
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    if (roomTypeId.HasValue && roomTypeId.Value > 0) cmd.Parameters.AddWithValue("@RoomTypeID", roomTypeId.Value);
+                    if (!string.IsNullOrWhiteSpace(status) && !status.Equals("(Tất cả)", StringComparison.OrdinalIgnoreCase)) cmd.Parameters.AddWithValue("@Status", status);
+                    using (var rd = cmd.ExecuteReader())
                     {
                         while (rd.Read())
                         {
@@ -492,32 +308,20 @@ WHERE 1=1
             }
             return result;
         }
-        // HOTEL_MINI.DAL.RoomRepository  (thêm vào class hiện có)
 
         public Room getRoomById(int roomId)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                const string sql = @"
-            SELECT RoomID, RoomNumber, RoomTypeID, Status, Note
-            FROM Rooms WHERE RoomID = @RoomID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "SELECT RoomID, RoomNumber, RoomTypeID, Status, Note FROM Rooms WHERE RoomID=@RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@RoomID", roomId);
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    using (var rd = cmd.ExecuteReader())
                     {
                         if (rd.Read())
-                        {
-                            return new Room
-                            {
-                                RoomID = rd.GetInt32(0),
-                                RoomNumber = rd.GetString(1),
-                                RoomTypeID = rd.GetInt32(2),
-                                RoomStatus = rd.GetString(3),
-                                Note = rd.IsDBNull(4) ? null : rd.GetString(4),
-                            };
-                        }
+                            return new Room { RoomID = rd.GetInt32(0), RoomNumber = rd.GetString(1), RoomTypeID = rd.GetInt32(2), RoomStatus = rd.GetString(3), Note = rd.IsDBNull(4) ? null : rd.GetString(4) };
                     }
                 }
             }
@@ -526,18 +330,17 @@ WHERE 1=1
 
         public string getRoomNumberById(int roomId)
         {
-            using (SqlConnection conn = new SqlConnection(_stringConnection))
+            using (var conn = new SqlConnection(_stringConnection))
             {
                 conn.Open();
-                const string sql = "SELECT RoomNumber FROM Rooms WHERE RoomID = @RoomID";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                const string sql = "SELECT RoomNumber FROM Rooms WHERE RoomID=@RoomID";
+                using (var cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@RoomID", roomId);
-                    object val = cmd.ExecuteScalar();
+                    var val = cmd.ExecuteScalar();
                     return val == null ? string.Empty : val.ToString();
                 }
             }
         }
-
     }
 }

@@ -13,7 +13,7 @@ namespace HOTEL_MINI.Forms.Controls
     {
         private readonly BookingService _svc = new BookingService();
 
-        private BindingList<BookingFlatDisplay> _binding;
+        private BindingList<BookingFlatDisplay> _binding = new BindingList<BookingFlatDisplay>();
         private List<BookingFlatDisplay> _all = new List<BookingFlatDisplay>();
 
         private CheckBox _chkHeader;
@@ -21,10 +21,10 @@ namespace HOTEL_MINI.Forms.Controls
         private bool _suppressHeaderEvent;
 
         private static readonly string ST_ALL = "Tất cả";
-        private static readonly string ST_BOOKED = "Booked";
-        private static readonly string ST_OCCUPIED = "Check-in";
-        private static readonly string ST_CANCELLED = "Đã hủy";
-        private static readonly string ST_COMPLETED = "Hoàn tất";
+        private static readonly string ST_BOOKED_VN = "Chưa nhận";
+        private static readonly string ST_OCCUPIED_VN = "Nhận rồi";
+        private static readonly string ST_CANCELLED_VN = "Đã hủy";
+        private static readonly string ST_COMPLETED_VN = "Đã trả phòng";
 
         public int CurrentUserId { get; set; }
         public event Action<int> RequestCheckout;
@@ -42,10 +42,10 @@ namespace HOTEL_MINI.Forms.Controls
 
         private void InitUi()
         {
-            cboStatusBooking.Items.AddRange(new object[] { ST_ALL, ST_BOOKED, ST_OCCUPIED, ST_CANCELLED, ST_COMPLETED });
+            cboStatusBooking.Items.AddRange(new object[] { ST_ALL, ST_BOOKED_VN, ST_OCCUPIED_VN, ST_CANCELLED_VN, ST_COMPLETED_VN });
             cboStatusBooking.SelectedIndex = 0;
             cboStatusBooking.SelectedIndexChanged += (s, e) => ApplyFilter();
-
+            txtSearch.TextChanged += (s, e) => ApplyFilter();
         }
 
         private void InitGrid()
@@ -61,7 +61,7 @@ namespace HOTEL_MINI.Forms.Controls
 
             var chkCol = new DataGridViewCheckBoxColumn { Name = COL_SEL, HeaderText = "", Width = 35 };
             gv.Columns.Add(chkCol);
-
+            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Status", HeaderText = "Trạng thái", Width = 120, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "HeaderBookingID", HeaderText = "BookingID", Width = 90, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "CustomerIDNumber", HeaderText = "CCCD", Width = 140, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "RoomNumber", HeaderText = "Phòng", Width = 80, ReadOnly = true });
@@ -69,30 +69,73 @@ namespace HOTEL_MINI.Forms.Controls
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "BookingDate", HeaderText = "Ngày đặt", Width = 130, DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" }, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "CheckInDate", HeaderText = "Check-in", Width = 130, DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" }, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "CheckOutDate", HeaderText = "Check-out", Width = 130, DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy HH:mm" }, ReadOnly = true });
-            gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Status", HeaderText = "Trạng thái", Width = 100, ReadOnly = true });
             gv.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Notes", HeaderText = "Ghi chú", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
 
             _chkHeader = new CheckBox { Size = new Size(15, 15) };
             _chkHeader.CheckedChanged += HeaderCheckedChangedProxy;
             gv.Controls.Add(_chkHeader);
+
             gv.Scroll += (s, e) => PlaceHeaderChk();
             gv.ColumnWidthChanged += (s, e) => PlaceHeaderChk();
             gv.SizeChanged += (s, e) => PlaceHeaderChk();
             gv.CurrentCellDirtyStateChanged += (s, e) => { if (gv.IsCurrentCellDirty) gv.CommitEdit(DataGridViewDataErrorContexts.Commit); };
             gv.CellValueChanged += (s, e) => { if (e.RowIndex >= 0 && gv.Columns[e.ColumnIndex].Name == COL_SEL) UpdateButtons(); };
+            gv.CellFormatting += GridView_CellFormatting;
 
             gv.CellDoubleClick += (s, e) =>
             {
                 if (e.RowIndex < 0) return;
-                var item = gv.Rows[e.RowIndex].DataBoundItem as BookingFlatDisplay;
-                if (item == null) return;
-
-                using (var dlg = new frmCheckout(item.HeaderBookingID, new List<int> { item.BookingRoomID }, CurrentUserId))
-                {
-                    dlg.StartPosition = FormStartPosition.CenterParent;
-                    if (dlg.ShowDialog(FindForm()) == DialogResult.OK) LoadData();
-                }
+                var rowData = gv.Rows[e.RowIndex].DataBoundItem;
+                if (!(rowData is BookingFlatDisplay item)) return;
+                var lineIds = new List<int> { item.BookingRoomID };
+                var app = TopLevelControl as frmApplication;
+                if (app != null) app.OpenChildForm(new frmBookingDetail(lineIds, CurrentUserId), null);
             };
+        }
+
+        private void GridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            var gv = sender as DataGridView;
+            if (gv == null) return;
+
+            if (gv.Columns[e.ColumnIndex].DataPropertyName == "Status" && gv.Rows[e.RowIndex].DataBoundItem is BookingFlatDisplay booking)
+            {
+                var raw = (booking.Status ?? "").Trim().ToLowerInvariant();
+                var font = new Font(gv.Font, FontStyle.Bold);
+
+                if (raw == "booked")
+                {
+                    e.Value = ST_BOOKED_VN;
+                    e.CellStyle.ForeColor = Color.Black;
+                    e.CellStyle.BackColor = Color.FromArgb(255, 193, 7);
+                    e.CellStyle.Font = font;
+                    e.FormattingApplied = true;
+                }
+                else if (raw == "checkedin" || raw == "occupied")
+                {
+                    e.Value = ST_OCCUPIED_VN;
+                    e.CellStyle.ForeColor = Color.White;
+                    e.CellStyle.BackColor = Color.FromArgb(40, 167, 69);
+                    e.CellStyle.Font = font;
+                    e.FormattingApplied = true;
+                }
+                else if (raw == "checkedout")
+                {
+                    e.Value = ST_COMPLETED_VN;
+                    e.CellStyle.ForeColor = Color.White;
+                    e.CellStyle.BackColor = Color.FromArgb(52, 58, 64);
+                    e.CellStyle.Font = font;
+                    e.FormattingApplied = true;
+                }
+                else if (raw == "cancelled")
+                {
+                    e.Value = ST_CANCELLED_VN;
+                    e.CellStyle.ForeColor = Color.White;
+                    e.CellStyle.BackColor = Color.FromArgb(220, 53, 69);
+                    e.CellStyle.Font = font;
+                    e.FormattingApplied = true;
+                }
+            }
         }
 
         private void PlaceHeaderChk()
@@ -131,7 +174,7 @@ namespace HOTEL_MINI.Forms.Controls
             string q = (txtSearch.Text ?? "").Trim().ToLower();
             string st = cboStatusBooking.SelectedItem?.ToString();
 
-            var list = _all.AsEnumerable();
+            IEnumerable<BookingFlatDisplay> list = _all;
 
             if (!string.IsNullOrEmpty(q))
             {
@@ -144,10 +187,10 @@ namespace HOTEL_MINI.Forms.Controls
                     x.BookingRoomID.ToString().Contains(q));
             }
 
-            if (st == ST_BOOKED) list = list.Where(x => IsBooked(x.Status));
-            else if (st == ST_OCCUPIED) list = list.Where(x => IsOccupied(x.Status));
-            else if (st == ST_CANCELLED) list = list.Where(x => x.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase));
-            else if (st == ST_COMPLETED) list = list.Where(x => x.Status.Equals("CheckedOut", StringComparison.OrdinalIgnoreCase));
+            if (st == ST_BOOKED_VN) list = list.Where(x => IsBooked(x.Status));
+            else if (st == ST_OCCUPIED_VN) list = list.Where(x => IsOccupied(x.Status));
+            else if (st == ST_CANCELLED_VN) list = list.Where(x => (x.Status ?? "").Equals("Cancelled", StringComparison.OrdinalIgnoreCase));
+            else if (st == ST_COMPLETED_VN) list = list.Where(x => (x.Status ?? "").Equals("CheckedOut", StringComparison.OrdinalIgnoreCase));
 
             var sorted = list.OrderByDescending(x => x.BookingDate).ToList();
             _binding = new BindingList<BookingFlatDisplay>(sorted);
@@ -204,11 +247,6 @@ namespace HOTEL_MINI.Forms.Controls
         {
             if (dataGridView1.IsCurrentCellDirty) dataGridView1.EndEdit();
             dataGridView1.EndEdit();
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            ApplyFilter();
         }
 
         private void btnHuydat_Click(object sender, EventArgs e)
@@ -292,27 +330,26 @@ namespace HOTEL_MINI.Forms.Controls
                 return;
             }
 
-            bool needReload = false;
-
-            var groups = sel.GroupBy(x => x.HeaderBookingID);
-            foreach (var g in groups)
+            int firstBookingId = sel.First().HeaderBookingID;
+            bool allSameBooking = sel.All(x => x.HeaderBookingID == firstBookingId);
+            if (!allSameBooking)
             {
-                var lineIds = g.Select(x => x.BookingRoomID).Distinct().ToList();
-                if (lineIds.Count == 0) continue;
-                var app = this.TopLevelControl as frmApplication;
-                if (app != null)
-                {
-                    app.OpenChildForm(new frmBookingDetail(lineIds, CurrentUserId), null);
-                }
-                else
-                {
-                    MessageBox.Show("Không tìm thấy frmApplication để mở màn hình con.", "Lỗi",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                
+                MessageBox.Show("Các phòng bạn chọn không cùng đơn đặt phòng. Vui lòng chọn lại.", "Không hợp lệ",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            if (needReload) LoadData();
+            var lineIds = sel.Select(x => x.BookingRoomID).Distinct().ToList();
+            var app = TopLevelControl as frmApplication;
+            if (app != null)
+            {
+                app.OpenChildForm(new frmBookingDetail(lineIds, CurrentUserId), null);
+            }
+            else
+            {
+                MessageBox.Show("Không tìm thấy frmApplication để mở màn hình con.", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

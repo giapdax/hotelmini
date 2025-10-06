@@ -20,8 +20,8 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
             this.cboStatusBooking = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -37,6 +37,14 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
+            // UcBookingRoom
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Name = "UcBookingRoom";
+            this.Size = new System.Drawing.Size(1040, 513);
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
@@ -48,7 +56,7 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 72F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1040, 513);
@@ -66,16 +74,16 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1034, 58);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1034, 66);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(428, 6);
+            this.label1.Location = new System.Drawing.Point(431, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(178, 20);
+            this.label1.Size = new System.Drawing.Size(172, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Tìm kiếm đơn đặt phòng";
             // 
@@ -84,47 +92,46 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel5.ColumnCount = 3;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 243F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel5.Controls.Add(this.label3, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.cboStatusBooking, 2, 0);
-            this.tableLayoutPanel5.Controls.Add(this.txtSearch, 1, 0);
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 565F));
+            this.tableLayoutPanel5.Controls.Add(this.cboStatusBooking, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.label3, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.txtSearch, 2, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 29);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 32);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(1028, 26);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(1028, 31);
             this.tableLayoutPanel5.TabIndex = 0;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(57, 3);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(183, 20);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Nhập thông tin tìm kiếm: ";
             // 
             // cboStatusBooking
             // 
             this.cboStatusBooking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboStatusBooking.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboStatusBooking.Location = new System.Drawing.Point(835, 0);
+            this.cboStatusBooking.Location = new System.Drawing.Point(3, 1);
             this.cboStatusBooking.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cboStatusBooking.Name = "cboStatusBooking";
-            this.cboStatusBooking.Size = new System.Drawing.Size(190, 28);
+            this.cboStatusBooking.Size = new System.Drawing.Size(237, 28);
             this.cboStatusBooking.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(277, 5);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(183, 20);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Nhập thông tin tìm kiếm: ";
             // 
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(246, 0);
+            this.txtSearch.Location = new System.Drawing.Point(466, 2);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(583, 26);
+            this.txtSearch.Size = new System.Drawing.Size(559, 26);
             this.txtSearch.TabIndex = 1;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // tableLayoutPanel3
             // 
@@ -132,11 +139,11 @@ namespace HOTEL_MINI.Forms.Controls
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Controls.Add(this.dataGridView1, 0, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 67);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 75);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(1034, 397);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(1034, 389);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // dataGridView1
@@ -147,7 +154,7 @@ namespace HOTEL_MINI.Forms.Controls
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 28;
-            this.dataGridView1.Size = new System.Drawing.Size(1028, 391);
+            this.dataGridView1.Size = new System.Drawing.Size(1028, 383);
             this.dataGridView1.TabIndex = 0;
             // 
             // tableLayoutPanel4
@@ -199,13 +206,8 @@ namespace HOTEL_MINI.Forms.Controls
             this.btnHuydat.Text = "Hủy đặt phòng";
             this.btnHuydat.Click += new System.EventHandler(this.btnHuydat_Click);
             // 
-            // UcBookingRoom
+            // finalize
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "UcBookingRoom";
-            this.Size = new System.Drawing.Size(1040, 513);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
@@ -215,7 +217,6 @@ namespace HOTEL_MINI.Forms.Controls
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
 
         #endregion

@@ -65,7 +65,6 @@ namespace HOTEL_MINI.Forms
             txtEmail.ReadOnly = true;
             txtDiachi.ReadOnly = true;
             txtPricingType.ReadOnly = true;
-            btnCheck.Enabled = false;
         }
 
         public frmBookingDetail() : this(new List<int>(), 0) { }
@@ -215,59 +214,60 @@ namespace HOTEL_MINI.Forms
         // ====== Load data ======
         private void LoadInitialData(List<int> bookingRoomIds)
         {
-            // Lấy line/phòng đầu tiên để suy ra header rồi lấy khách
-            var firstLine = _bookingSvc.GetBookingById(bookingRoomIds[0]); // NOTE: trả về đối tượng line; line-id hiện tại là BookingID
-            if (firstLine != null)
+            // 1) Resolve header từ BookingRoomID đầu tiên
+            if (bookingRoomIds == null || bookingRoomIds.Count == 0)
+                throw new InvalidOperationException("Không có BookingRoomID nào.");
+
+            int firstLineId = bookingRoomIds[0];
+            int? headerIdOpt = _bookingSvc.GetHeaderIdByBookingRoomId(firstLineId);
+            if (!headerIdOpt.HasValue)
+                throw new InvalidOperationException("Không xác định được Booking (header).");
+            int headerId = headerIdOpt.Value;
+
+            // 2) Thông tin khách (giống frmCheckout)
+            var custFull = _bookingSvc.GetCustomerByHeaderId(headerId);
+            if (custFull != null)
             {
-                // Lấy header từ line-id (ở entity hiện tại: BookingID)
-                var headerIdOpt = _bookingSvc.GetHeaderIdByBookingRoomId(firstLine.BookingID);
-                if (headerIdOpt.HasValue)
-                {
-                    var custFull = _bookingSvc.GetCustomerByHeaderId(headerIdOpt.Value);
-                    if (custFull != null)
-                    {
-                        txtCCCD.Text = custFull.IDNumber ?? "";
-                        txtTen.Text = custFull.FullName ?? "";
-                        txtDiachi.Text = custFull.Address ?? "";
-                        txtGender.Text = custFull.Gender ?? "";
-                        txtEmail.Text = custFull.Email ?? "";
-                        txtSDT.Text = custFull.Phone ?? "";
-                    }
-                }
+                txtCCCD.Text = custFull.IDNumber ?? "";
+                txtTen.Text = custFull.FullName ?? "";
+                txtDiachi.Text = custFull.Address ?? "";
+                txtGender.Text = custFull.Gender ?? "";
+                txtEmail.Text = custFull.Email ?? "";
+                txtSDT.Text = custFull.Phone ?? "";
             }
+
+            // 3) Nạp các line được chọn
+            _checkoutRows.Clear();
+            _usedServicesTable.Rows.Clear();
 
             foreach (var lineId in bookingRoomIds.Distinct())
             {
-                var b = _bookingSvc.GetBookingById(lineId); // đọc theo line-id
+                var b = _bookingSvc.GetBookingRoomById(lineId); // LẤY THEO BookingRoomID
                 if (b == null) continue;
 
-                // Bổ sung CheckOut mặc định nếu thiếu/không hợp lệ
                 if (!b.CheckOutDate.HasValue || (b.CheckInDate.HasValue && b.CheckOutDate <= b.CheckInDate))
                     b.CheckOutDate = DateTime.Now;
 
-                // Cache roomNo & map line-id -> RoomID
+                // cache roomNo & map: BookingRoomID -> RoomID
                 var roomNo = _roomSvc.GetRoomNumberById(b.RoomID);
                 _roomNumberByRoomId[b.RoomID] = roomNo;
-                _roomIdByLineId[b.BookingID] = b.RoomID;
+                _roomIdByLineId[b.BookingRoomID] = b.RoomID;     // <- KEY LÀ BookingRoomID
 
-                // Pricing
                 var pricing = _pricingRepo.GetPricingTypeById(b.PricingID);
                 var unit = pricing != null ? pricing.Price : 0m;
-                var ptype = pricing != null ? pricing.PricingType : string.Empty;
+                var ptype = pricing != null ? pricing.PricingType : "";
 
-                // Tiền phòng (tính theo line b)
                 decimal roomCharge = 0m;
                 try { roomCharge = _bookingSvc.GetRoomCharge(b); } catch { }
 
-                // Dịch vụ đã dùng theo line/phòng (note: line-id = BookingID hiện tại)
-                var svcs = _brsSvc.GetUsedServicesByBookingRoomId(b.BookingID);
+                // DV đã dùng theo BookingRoomID
+                var svcs = _brsSvc.GetUsedServicesByBookingRoomId(b.BookingRoomID) ?? new List<UsedServiceDto>();
                 decimal svcTotal = svcs.Sum(x => x.Price * x.Quantity);
 
-                // Add row grid phòng
                 _checkoutRows.Add(new CheckoutRow
                 {
                     Pick = true,
-                    BookingRoomID = b.BookingID, // line-id
+                    BookingRoomID = b.BookingRoomID, // <-- ĐÚNG: line id
                     RoomID = b.RoomID,
                     RoomNumber = roomNo,
                     CheckIn = b.CheckInDate,
@@ -278,11 +278,10 @@ namespace HOTEL_MINI.Forms
                     ServiceTotal = svcTotal
                 });
 
-                // Add rows grid dịch vụ đã dùng
                 foreach (var s in svcs)
                 {
                     var row = _usedServicesTable.NewRow();
-                    row["BookingRoomID"] = b.BookingID; // line-id
+                    row["BookingRoomID"] = b.BookingRoomID;      // <-- ĐÚNG: line id
                     row["RoomID"] = b.RoomID;
                     row["RoomNumber"] = roomNo;
                     row["ServiceID"] = s.ServiceID;
@@ -295,9 +294,13 @@ namespace HOTEL_MINI.Forms
 
             dataGridView1.Refresh();
             RecalcServiceTotalsForRows();
+
+            // Hiển thị pricing type gộp
+            txtPricingType.Text = string.Join(", ",
+                _checkoutRows.Select(r => r.PricingType).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)));
+            lblBookingID.Text = "Phòng " + _checkoutRows.Count + " phòng";
         }
 
-        // ====== Helpers ======
         private List<int> GetPickedBookingRoomIds()
         {
             return (_checkoutRows ?? new BindingList<CheckoutRow>())

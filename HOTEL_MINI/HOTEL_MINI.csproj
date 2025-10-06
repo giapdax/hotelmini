@@ -127,7 +127,6 @@
     <Compile Include="BLL\BookingService.cs" />
     <Compile Include="BLL\CheckoutService.cs" />
     <Compile Include="BLL\CustomerService.cs" />
-    <Compile Include="BLL\InvoiceRoomService.cs" />
     <Compile Include="BLL\InvoiceService.cs" />
     <Compile Include="BLL\PaymentService.cs" />
     <Compile Include="BLL\PdfExportService.cs" />
@@ -241,12 +240,6 @@
     <Compile Include="Forms\frmCustomer.Designer.cs">
       <DependentUpon>frmCustomer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmInvoice.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmInvoice.Designer.cs">
-      <DependentUpon>frmInvoice.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\frmInvoiceManage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -312,7 +305,6 @@
     <Compile Include="Model\Entity\User.cs" />
     <Compile Include="Model\Response\BookingDisplay.cs" />
     <Compile Include="Model\Response\BookingFlatDisplay.cs" />
-    <Compile Include="Model\Response\public class InvoiceDisplay.cs" />
     <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Model\Response\RevenuRoomDTO.cs" />
@@ -320,7 +312,6 @@
     <Compile Include="Model\Response\RoomBrowsePriceItem.cs" />
     <Compile Include="Model\Response\RoomStatistics.cs" />
     <Compile Include="Model\Response\SelectedRoomWithTime.cs" />
-    <Compile Include="Model\Response\ServiceMenuItem.cs" />
     <Compile Include="Model\Response\UsedServiceDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -365,9 +356,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmCustomer.resx">
       <DependentUpon>frmCustomer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmInvoice.resx">
-      <DependentUpon>frmInvoice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmInvoiceManage.resx">
       <DependentUpon>frmInvoiceManage.cs</DependentUpon>

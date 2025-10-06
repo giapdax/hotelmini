@@ -7,17 +7,12 @@ using System.Data.SqlClient;
 
 namespace HOTEL_MINI.DAL
 {
-    /// <summary>
-    /// Quản lý bảng Services: CRUD + thao tác tồn kho.
-    /// KHÔNG chứa nghiệp vụ "thêm dịch vụ cho phòng".
-    /// </summary>
     public class ServicesRepository
     {
         private readonly string _cs;
         public ServicesRepository() { _cs = ConfigHelper.GetConnectionString(); }
         private SqlConnection Conn() => new SqlConnection(_cs);
 
-        // ===== CRUD nhẹ nhàng =====
         public List<Service> GetAllServices()
         {
             var list = new List<Service>();
@@ -46,9 +41,7 @@ namespace HOTEL_MINI.DAL
 
         public bool AddService(Service s)
         {
-            const string sql = @"
-INSERT INTO Services(ServiceName, Price, IsActive, Quantity)
-VALUES (@Name,@Price,@Active,@Qty);";
+            const string sql = "INSERT INTO Services(ServiceName, Price, IsActive, Quantity) VALUES (@Name,@Price,@Active,@Qty)";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -63,10 +56,7 @@ VALUES (@Name,@Price,@Active,@Qty);";
 
         public bool UpdateService(Service s)
         {
-            const string sql = @"
-UPDATE Services
-SET ServiceName=@Name, Price=@Price, IsActive=@Active, Quantity=@Qty
-WHERE ServiceID=@Id;";
+            const string sql = "UPDATE Services SET ServiceName=@Name, Price=@Price, IsActive=@Active, Quantity=@Qty WHERE ServiceID=@Id";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -82,7 +72,7 @@ WHERE ServiceID=@Id;";
 
         public bool DeleteService(int serviceId)
         {
-            const string sql = "DELETE FROM Services WHERE ServiceID=@Id;";
+            const string sql = "DELETE FROM Services WHERE ServiceID=@Id";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -94,7 +84,7 @@ WHERE ServiceID=@Id;";
 
         public int GetQuantity(int serviceId)
         {
-            const string sql = "SELECT Quantity FROM Services WHERE ServiceID=@Id;";
+            const string sql = "SELECT Quantity FROM Services WHERE ServiceID=@Id";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -105,43 +95,22 @@ WHERE ServiceID=@Id;";
             }
         }
 
-        // ===== Tồn khả dụng (chỉ để tham khảo UI) =====
-        public int GetAvailableQuantity(int serviceId)
-        {
-            const string sql = @"
-SELECT s.Quantity - ISNULL((SELECT SUM(Quantity) FROM BookingRoomServices WHERE ServiceID=@S),0)
-FROM Services s WHERE s.ServiceID=@S;";
-            using (var conn = Conn())
-            using (var cmd = new SqlCommand(sql, conn))
-            {
-                cmd.Parameters.Add("@S", SqlDbType.Int).Value = serviceId;
-                conn.Open();
-                var o = cmd.ExecuteScalar();
-                return (o == null || o == DBNull.Value) ? 0 : Math.Max(0, Convert.ToInt32(o));
-            }
-        }
-
-        // ======== Stock helpers dùng trong TRANSACTION CHA ========
-
-        /// <summary> Cố gắng trừ kho (atomic). Thành công trả true. </summary>
         public bool TryReserveStock(SqlConnection extConn, SqlTransaction extTran, int serviceId, int amount)
         {
-            const string sql = @"
-UPDATE Services
-SET Quantity = Quantity - @Amt
-WHERE ServiceID=@Id AND Quantity >= @Amt;";
+            if (amount <= 0) throw new ArgumentException("amount phải > 0", nameof(amount));
+            const string sql = "UPDATE Services SET Quantity = Quantity - @Amt WHERE ServiceID = @Id AND Quantity >= @Amt";
             using (var cmd = new SqlCommand(sql, extConn, extTran))
             {
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;
                 cmd.Parameters.Add("@Amt", SqlDbType.Int).Value = amount;
-                return cmd.ExecuteNonQuery() == 1;
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
 
-        /// <summary> Hoàn kho (khi bớt dịch vụ/rollback). </summary>
         public void ReleaseStock(SqlConnection extConn, SqlTransaction extTran, int serviceId, int amount)
         {
-            const string sql = @"UPDATE Services SET Quantity = Quantity + @Amt WHERE ServiceID=@Id;";
+            if (amount <= 0) throw new ArgumentException("amount phải > 0", nameof(amount));
+            const string sql = "UPDATE Services SET Quantity = Quantity + @Amt WHERE ServiceID = @Id";
             using (var cmd = new SqlCommand(sql, extConn, extTran))
             {
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = serviceId;

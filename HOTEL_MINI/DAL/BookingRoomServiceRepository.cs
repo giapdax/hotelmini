@@ -1,15 +1,12 @@
-﻿using HOTEL_MINI.Common;
-using HOTEL_MINI.Model.Response;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using HOTEL_MINI.Common;
+using HOTEL_MINI.Model.Response;
 
 namespace HOTEL_MINI.DAL
 {
-    /// <summary>
-    /// Chỉ làm việc với bảng BookingRoomServices (line). Không đụng Services.
-    /// </summary>
     public class BookingRoomServiceRepository
     {
         private readonly string _cs;
@@ -18,7 +15,7 @@ namespace HOTEL_MINI.DAL
 
         public bool BookingRoomExists(int bookingRoomId)
         {
-            const string sql = "SELECT 1 FROM BookingRooms WHERE BookingRoomID=@Id;";
+            const string sql = "SELECT 1 FROM BookingRooms WHERE BookingRoomID=@Id";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -32,17 +29,9 @@ namespace HOTEL_MINI.DAL
         public List<UsedServiceDto> GetUsedServicesByBookingRoomId(int bookingRoomId)
         {
             var list = new List<UsedServiceDto>();
-            const string sql = @"
-SELECT  brs.BookingRoomServiceID,
-        brs.BookingRoomID   AS BookingID,
-        s.ServiceID,
-        s.ServiceName,
-        s.Price,
-        brs.Quantity
-FROM    BookingRoomServices brs
-JOIN    Services s ON s.ServiceID = brs.ServiceID
-WHERE   brs.BookingRoomID = @Id
-ORDER BY s.ServiceName;";
+            const string sql =
+                "SELECT brs.BookingRoomServiceID, brs.BookingRoomID AS BookingID, s.ServiceID, s.ServiceName, s.Price, brs.Quantity " +
+                "FROM BookingRoomServices brs JOIN Services s ON s.ServiceID=brs.ServiceID WHERE brs.BookingRoomID=@Id ORDER BY s.ServiceName";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -69,11 +58,7 @@ ORDER BY s.ServiceName;";
 
         public int GetCurrentQuantity(int bookingRoomId, int serviceId)
         {
-            const string sql = @"
-SELECT ISNULL((
-    SELECT Quantity FROM BookingRoomServices
-    WHERE BookingRoomID=@B AND ServiceID=@S
-), 0);";
+            const string sql = "SELECT ISNULL((SELECT Quantity FROM BookingRoomServices WHERE BookingRoomID=@B AND ServiceID=@S),0)";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -84,19 +69,12 @@ SELECT ISNULL((
             }
         }
 
-        // ======= Available cho UI (tham khảo) =======
         public int GetAvailableServiceQuantity(int bookingRoomId, int serviceId)
         {
-            const string sql = @"
-DECLARE @stock INT = (SELECT Quantity FROM Services WHERE ServiceID=@S);
-IF @stock IS NULL THROW 50001, 'Service not found', 1;
-
-DECLARE @usedOther INT = ISNULL((
-    SELECT SUM(Quantity) FROM BookingRoomServices
-    WHERE ServiceID=@S AND BookingRoomID <> @B
-), 0);
-
-SELECT CASE WHEN @stock - @usedOther < 0 THEN 0 ELSE @stock - @usedOther END;";
+            const string sql =
+                "DECLARE @stock INT=(SELECT Quantity FROM Services WHERE ServiceID=@S); IF @stock IS NULL THROW 50001,'Service not found',1; " +
+                "DECLARE @usedOther INT=ISNULL((SELECT SUM(Quantity) FROM BookingRoomServices WHERE ServiceID=@S AND BookingRoomID<>@B),0); " +
+                "SELECT CASE WHEN @stock-@usedOther<0 THEN 0 ELSE @stock-@usedOther END";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -107,18 +85,12 @@ SELECT CASE WHEN @stock - @usedOther < 0 THEN 0 ELSE @stock - @usedOther END;";
             }
         }
 
-        // ======= Overload theo transaction cha =======
         public void AddOrIncrease(SqlConnection conn, SqlTransaction tran, int bookingRoomId, int serviceId, int addQty)
         {
-            const string sql = @"
-IF EXISTS (SELECT 1 FROM BookingRoomServices WITH (UPDLOCK, ROWLOCK)
-           WHERE BookingRoomID=@B AND ServiceID=@S)
-    UPDATE BookingRoomServices
-    SET Quantity = Quantity + @Q
-    WHERE BookingRoomID=@B AND ServiceID=@S;
-ELSE
-    INSERT INTO BookingRoomServices(BookingRoomID, ServiceID, Quantity)
-    VALUES (@B, @S, @Q);";
+            const string sql =
+                "IF EXISTS(SELECT 1 FROM BookingRoomServices WITH(UPDLOCK,ROWLOCK) WHERE BookingRoomID=@B AND ServiceID=@S) " +
+                "UPDATE BookingRoomServices SET Quantity=Quantity+@Q WHERE BookingRoomID=@B AND ServiceID=@S " +
+                "ELSE INSERT INTO BookingRoomServices(BookingRoomID,ServiceID,Quantity) VALUES(@B,@S,@Q)";
             using (var cmd = new SqlCommand(sql, conn, tran))
             {
                 cmd.Parameters.AddWithValue("@B", bookingRoomId);
@@ -130,9 +102,7 @@ ELSE
 
         public int ReduceQuantity(SqlConnection conn, SqlTransaction tran, int bookingRoomId, int serviceId, int reduceBy)
         {
-            const string get = @"
-SELECT Quantity FROM BookingRoomServices WITH (UPDLOCK, ROWLOCK)
-WHERE BookingRoomID=@B AND ServiceID=@S;";
+            const string get = "SELECT Quantity FROM BookingRoomServices WITH(UPDLOCK,ROWLOCK) WHERE BookingRoomID=@B AND ServiceID=@S";
             int current = 0;
             using (var g = new SqlCommand(get, conn, tran))
             {
@@ -149,7 +119,7 @@ WHERE BookingRoomID=@B AND ServiceID=@S;";
 
             if (left <= 0)
             {
-                const string del = @"DELETE FROM BookingRoomServices WHERE BookingRoomID=@B AND ServiceID=@S;";
+                const string del = "DELETE FROM BookingRoomServices WHERE BookingRoomID=@B AND ServiceID=@S";
                 using (var d = new SqlCommand(del, conn, tran))
                 {
                     d.Parameters.AddWithValue("@B", bookingRoomId);
@@ -159,7 +129,7 @@ WHERE BookingRoomID=@B AND ServiceID=@S;";
             }
             else
             {
-                const string upd = @"UPDATE BookingRoomServices SET Quantity=@Q WHERE BookingRoomID=@B AND ServiceID=@S;";
+                const string upd = "UPDATE BookingRoomServices SET Quantity=@Q WHERE BookingRoomID=@B AND ServiceID=@S";
                 using (var u = new SqlCommand(upd, conn, tran))
                 {
                     u.Parameters.AddWithValue("@Q", left);
@@ -171,7 +141,6 @@ WHERE BookingRoomID=@B AND ServiceID=@S;";
             return removed;
         }
 
-        // ======= Các API cũ không cần đụng nếu bạn vẫn dùng (optional) =======
         public bool AddOrUpdateServiceForBooking(int bookingID, int serviceID, int quantity)
         {
             if (quantity < 0) quantity = 0;
@@ -180,9 +149,8 @@ WHERE BookingRoomID=@B AND ServiceID=@S;";
                 conn.Open();
                 using (var tran = conn.BeginTransaction())
                 {
-                    // kiểm tra available như cũ
                     int stock;
-                    using (var cmd = new SqlCommand("SELECT Quantity FROM Services WHERE ServiceID=@S;", conn, tran))
+                    using (var cmd = new SqlCommand("SELECT Quantity FROM Services WHERE ServiceID=@S", conn, tran))
                     {
                         cmd.Parameters.AddWithValue("@S", serviceID);
                         var o = cmd.ExecuteScalar();
@@ -190,8 +158,7 @@ WHERE BookingRoomID=@B AND ServiceID=@S;";
                         stock = Convert.ToInt32(o);
                     }
                     int usedOther;
-                    using (var cmd = new SqlCommand(@"
-SELECT ISNULL(SUM(Quantity),0) FROM BookingRoomServices WHERE ServiceID=@S AND BookingRoomID<>@B;", conn, tran))
+                    using (var cmd = new SqlCommand("SELECT ISNULL(SUM(Quantity),0) FROM BookingRoomServices WHERE ServiceID=@S AND BookingRoomID<>@B", conn, tran))
                     {
                         cmd.Parameters.AddWithValue("@S", serviceID);
                         cmd.Parameters.AddWithValue("@B", bookingID);
@@ -204,19 +171,17 @@ SELECT ISNULL(SUM(Quantity),0) FROM BookingRoomServices WHERE ServiceID=@S AND B
                         throw new InvalidOperationException("Vượt tồn kho. Tối đa còn: " + available);
                     }
 
-                    // upsert
                     int existed;
-                    using (var cmd = new SqlCommand(@"
-SELECT COUNT(1) FROM BookingRoomServices WHERE BookingRoomID=@B AND ServiceID=@S;", conn, tran))
+                    using (var cmd = new SqlCommand("SELECT COUNT(1) FROM BookingRoomServices WHERE BookingRoomID=@B AND ServiceID=@S", conn, tran))
                     {
                         cmd.Parameters.AddWithValue("@B", bookingID);
                         cmd.Parameters.AddWithValue("@S", serviceID);
                         existed = Convert.ToInt32(cmd.ExecuteScalar() ?? 0);
                     }
+
                     if (existed > 0)
                     {
-                        using (var up = new SqlCommand(@"
-UPDATE BookingRoomServices SET Quantity=@Q WHERE BookingRoomID=@B AND ServiceID=@S;", conn, tran))
+                        using (var up = new SqlCommand("UPDATE BookingRoomServices SET Quantity=@Q WHERE BookingRoomID=@B AND ServiceID=@S", conn, tran))
                         {
                             up.Parameters.AddWithValue("@Q", quantity);
                             up.Parameters.AddWithValue("@B", bookingID);
@@ -226,8 +191,7 @@ UPDATE BookingRoomServices SET Quantity=@Q WHERE BookingRoomID=@B AND ServiceID=
                     }
                     else
                     {
-                        using (var ins = new SqlCommand(@"
-INSERT INTO BookingRoomServices(BookingRoomID, ServiceID, Quantity) VALUES(@B,@S,@Q);", conn, tran))
+                        using (var ins = new SqlCommand("INSERT INTO BookingRoomServices(BookingRoomID,ServiceID,Quantity) VALUES(@B,@S,@Q)", conn, tran))
                         {
                             ins.Parameters.AddWithValue("@B", bookingID);
                             ins.Parameters.AddWithValue("@S", serviceID);
@@ -235,30 +199,17 @@ INSERT INTO BookingRoomServices(BookingRoomID, ServiceID, Quantity) VALUES(@B,@S
                             ins.ExecuteNonQuery();
                         }
                     }
+
                     tran.Commit();
                     return true;
                 }
             }
         }
 
-        public void RemoveRowById(int bookingRoomServiceId)
-        {
-            using (var conn = Conn())
-            using (var cmd = new SqlCommand("DELETE FROM BookingRoomServices WHERE BookingRoomServiceID=@Id;", conn))
-            {
-                cmd.Parameters.AddWithValue("@Id", bookingRoomServiceId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
-
         public DataTable GetServiceMenuWithStock()
         {
             var dt = new DataTable();
-            const string sql = @"
-SELECT s.ServiceID AS ID, s.ServiceName AS [Dịch vụ], s.Price AS [Đơn giá], s.Quantity AS [Tồn kho]
-FROM Services s
-ORDER BY s.ServiceName;";
+            const string sql = "SELECT s.ServiceID AS ID, s.ServiceName AS [Dịch vụ], s.Price AS [Đơn giá], s.Quantity AS [Tồn kho] FROM Services s ORDER BY s.ServiceName";
             using (var conn = Conn())
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -266,42 +217,6 @@ ORDER BY s.ServiceName;";
                 new SqlDataAdapter(cmd).Fill(dt);
             }
             return dt;
-        }
-
-        public void BulkUpsertServices(DataTable usedServices, Dictionary<int, int> mapRoomIdToLineId)
-        {
-            if (usedServices == null || usedServices.Rows.Count == 0) return;
-            using (var conn = Conn())
-            {
-                conn.Open();
-                using (var tran = conn.BeginTransaction())
-                {
-                    foreach (DataRow r in usedServices.Rows)
-                    {
-                        int roomId = r.Field<int>("RoomID");
-                        int serviceId = r.Field<int>("ServiceID");
-                        int qty = r.Field<int>("Quantity");
-                        int lineId;
-                        if (!mapRoomIdToLineId.TryGetValue(roomId, out lineId)) continue;
-
-                        const string sql = @"
-MERGE BookingRoomServices AS T
-USING (SELECT @B AS BookingRoomID, @S AS ServiceID) AS X
-ON (T.BookingRoomID = X.BookingRoomID AND T.ServiceID = X.ServiceID)
-WHEN MATCHED THEN UPDATE SET Quantity=@Q
-WHEN NOT MATCHED THEN INSERT(BookingRoomID, ServiceID, Quantity) VALUES (@B,@S,@Q);";
-
-                        using (var cmd = new SqlCommand(sql, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@B", lineId);
-                            cmd.Parameters.AddWithValue("@S", serviceId);
-                            cmd.Parameters.AddWithValue("@Q", qty);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                    tran.Commit();
-                }
-            }
         }
     }
 }

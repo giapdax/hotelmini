@@ -47,7 +47,6 @@ namespace HOTEL_MINI.Forms
             textBox2.TextChanged += textBox2_TextChanged; // ô search 
         }
 
-        #region Load + Binding
 
         private void FrmCustomer_Load(object sender, EventArgs e)
         {
@@ -150,9 +149,8 @@ namespace HOTEL_MINI.Forms
             };
         }
 
-        #endregion
 
-        #region Mode + Form state
+        
 
         private void SetMode(FormMode mode)
         {
@@ -179,9 +177,6 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        #endregion
-
-        #region Helpers
 
         private void ClearFields()
         {
@@ -314,7 +309,6 @@ namespace HOTEL_MINI.Forms
             };
         }
 
-        #endregion
 
         #region Events
 

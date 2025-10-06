@@ -20,7 +20,8 @@ namespace HOTEL_MINI.BLL
         // Thêm tiện ích cho UI gọi khi thanh toán
         public void AddPayment(Payment payment) => _repo.AddPayment(payment);
 
-        public int AddPaymentSafe(int invoiceId, decimal amount, string method, string status, int issuedByIfPaid)
-            => _repo.AddPaymentSafe(invoiceId, amount, method, status, issuedByIfPaid);
+        public int AddPaymentSafe(int invoiceId, decimal amount, string method, string status, int issuedByIfPaid, List<int> bookingRoomIdsToCheckout)
+    => _repo.AddPaymentSafe(invoiceId, amount, method, status, issuedByIfPaid, bookingRoomIdsToCheckout);
+
     }
 }

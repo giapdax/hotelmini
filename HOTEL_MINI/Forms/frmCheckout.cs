@@ -1,5 +1,4 @@
-﻿// frmCheckout.cs (rút gọn, 1 lần thanh toán)
-using HOTEL_MINI.BLL;
+﻿using HOTEL_MINI.BLL;
 using HOTEL_MINI.DAL;
 using HOTEL_MINI.Model.Entity;
 using HOTEL_MINI.Model.Response;
@@ -18,8 +17,10 @@ namespace HOTEL_MINI.Forms
         public event Action<int> RequestPrintInvoice;
 
         private readonly BookingService _bookingSvc = new BookingService();
-        private readonly InvoiceRepository _invRepo = new InvoiceRepository();
-        private readonly PaymentRepository _payRepo = new PaymentRepository();
+        private readonly BLL.BookingRoomService _brSvc = new BLL.BookingRoomService();
+        private readonly RoomPricingService _pricingSvc = new RoomPricingService();
+        private readonly InvoiceService _invSvc = new InvoiceService();
+        private readonly PaymentService _payService = new PaymentService();
 
         private readonly int _headerBookingId;
         private readonly List<int> _selectedBookingRoomIds;
@@ -38,7 +39,6 @@ namespace HOTEL_MINI.Forms
             _headerBookingId = headerBookingId;
             _selectedBookingRoomIds = selectedBookingRoomIds ?? new List<int>();
             _currentUserId = currentUserId;
-
             BuildUiBehavior();
             LoadDataAndBind();
         }
@@ -100,20 +100,16 @@ namespace HOTEL_MINI.Forms
             txt.Font = new Font(txt.Font, bold ? FontStyle.Bold : FontStyle.Regular);
         }
 
-        // frmCheckout.cs — chỉ lấy dữ liệu các phòng đã chọn
         private void LoadDataAndBind()
         {
-            // 1) Build danh sách line/phòng từ list _selectedBookingRoomIds
-            _allRooms = _selectedBookingRoomIds
-                ?.Distinct()
-                .Select(id => _bookingSvc.GetBookingById(id)) // <- đọc line theo BookingRoomID
+            _allRooms = _selectedBookingRoomIds?.Distinct()
+                .Select(id => _bookingSvc.GetBookingById(id))
                 .Where(x => x != null)
                 .ToList() ?? new List<BookingRoom>();
 
             if (_allRooms.Count == 0)
                 throw new InvalidOperationException("Không có phòng nào được chọn.");
 
-            // (tuỳ chọn) đảm bảo tất cả line thuộc đúng header được truyền
             foreach (var line in _allRooms)
             {
                 var h = _bookingSvc.GetHeaderIdByBookingRoomId(line.BookingRoomID);
@@ -121,7 +117,6 @@ namespace HOTEL_MINI.Forms
                     throw new InvalidOperationException("Phòng được chọn không thuộc cùng một Booking.");
             }
 
-            // 2) Thông tin khách theo header
             try
             {
                 var cust = _bookingSvc.GetCustomerByHeaderId(_headerBookingId);
@@ -130,27 +125,19 @@ namespace HOTEL_MINI.Forms
             }
             catch { }
 
-            // 3) Khoảng thời gian chung của các phòng đã chọn
-            var minIn = _allRooms.Where(x => x.CheckInDate.HasValue).Select(x => x.CheckInDate.Value)
-                                  .DefaultIfEmpty(DateTime.Now).Min();
-            var maxOut = _allRooms.Where(x => x.CheckOutDate.HasValue).Select(x => x.CheckOutDate.Value)
-                                  .DefaultIfEmpty(DateTime.Now).Max();
+            var minIn = _allRooms.Where(x => x.CheckInDate.HasValue).Select(x => x.CheckInDate.Value).DefaultIfEmpty(DateTime.Now).Min();
+            var maxOut = _allRooms.Where(x => x.CheckOutDate.HasValue).Select(x => x.CheckOutDate.Value).DefaultIfEmpty(DateTime.Now).Max();
 
-            var tbIn = this.Controls.Find("txtCheckin", true).FirstOrDefault() as TextBox;
-            var tbOut = this.Controls.Find("txtCheckout", true).FirstOrDefault() as TextBox;
+            var tbIn = Controls.Find("txtCheckin", true).FirstOrDefault() as TextBox;
+            var tbOut = Controls.Find("txtCheckout", true).FirstOrDefault() as TextBox;
             if (tbIn != null) tbIn.Text = minIn.ToString("dd/MM/yyyy HH:mm");
             if (tbOut != null) tbOut.Text = maxOut.ToString("dd/MM/yyyy HH:mm");
 
-            // 4) Tính tiền và bind grid — CHỈ cho các phòng đã chọn
             var rows = new List<dynamic>();
             _roomTotal = 0m; _serviceTotal = 0m;
 
-            var roomRepo = new BookingRoomRepository();
-            var pricingRepo = new RoomPricingRepository();
-
             foreach (var line in _allRooms)
             {
-                // Nếu chưa có checkout mà đã quá hiện tại → gắn tạm Now để tính
                 if (!line.CheckOutDate.HasValue && line.CheckInDate.HasValue && DateTime.Now > line.CheckInDate.Value)
                     line.CheckOutDate = DateTime.Now;
 
@@ -158,11 +145,13 @@ namespace HOTEL_MINI.Forms
                 var used = _bookingSvc.GetUsedServicesByBookingID(line.BookingRoomID) ?? new List<UsedServiceDto>();
                 var svcTotal = used.Sum(x => x.Price * x.Quantity);
 
-                string roomNumber = ""; string pricingType = ""; decimal unitPrice = 0m;
-                try { roomNumber = roomRepo.GetRoomNumberById(line.RoomID); } catch { }
+                string roomNumber = "";
+                try { roomNumber = _brSvc.GetRoomNumberById(line.RoomID); } catch { }
+
+                string pricingType = ""; decimal unitPrice = 0m;
                 try
                 {
-                    var pr = pricingRepo.GetPricingTypeById(line.PricingID);
+                    var pr = _pricingSvc.GetById(line.PricingID);
                     if (pr != null) { pricingType = pr.PricingType; unitPrice = pr.Price; }
                 }
                 catch { }
@@ -186,7 +175,6 @@ namespace HOTEL_MINI.Forms
             dgvRoom.AutoGenerateColumns = true;
             dgvRoom.DataSource = rows;
 
-            // Gộp dịch vụ của các phòng đã chọn
             var allSvc = _allRooms
                 .SelectMany(b => _bookingSvc.GetUsedServicesByBookingID(b.BookingRoomID) ?? new List<UsedServiceDto>())
                 .GroupBy(x => x.ServiceName)
@@ -202,16 +190,13 @@ namespace HOTEL_MINI.Forms
             dgvUsedService.AutoGenerateColumns = true;
             dgvUsedService.DataSource = allSvc;
 
-            // Cập nhật tổng
             SetMoney(txtServiceCharge, _serviceTotal);
             SetMoney(txtTongtien, _roomTotal);
             SetMoney(txtRoomTotal2, _roomTotal);
             SetMoney(txtServiceTotal2, _serviceTotal);
 
-            // Tính lại hóa đơn / trạng thái nút
             RecalcTotals();
 
-            // tên NV
             try
             {
                 var userName = new BookingRepository().GetUserFullNameById(_currentUserId);
@@ -219,7 +204,6 @@ namespace HOTEL_MINI.Forms
             }
             catch { txtEmployeeName.Text = $"User#{_currentUserId}"; }
         }
-
 
         private void RecalcTotals()
         {
@@ -229,8 +213,7 @@ namespace HOTEL_MINI.Forms
             _subtotal = _roomTotal + _serviceTotal + surcharge - discount;
             if (_subtotal < 0) _subtotal = 0;
 
-            // tạo/hoặc lấy hóa đơn đang mở (gắn HEADER BookingID)
-            _invoiceId = _invRepo.CreateOrGetOpenInvoice(
+            _invoiceId = _invSvc.CreateOrGetOpenInvoice(
                 bookingId: _headerBookingId,
                 roomCharge: _roomTotal,
                 serviceCharge: _serviceTotal,
@@ -239,14 +222,13 @@ namespace HOTEL_MINI.Forms
                 issuedByUserIfPaid: 0
             );
 
-            var t = _invRepo.GetInvoiceTotals(_invoiceId);
+            var t = _invSvc.GetInvoiceTotals(_invoiceId);
             _daTra = t.Paid;
             _conLai = Math.Max(0m, t.Total - t.Paid);
 
             SetMoney(txtSubtotal, _subtotal);
             SetMoney(txtTotalAmount, _subtotal);
 
-            // Nếu đã có thanh toán trước → khóa nút (vì chỉ cho 1 lần)
             btnConfirm.Enabled = (_daTra <= 0m);
         }
 
@@ -254,15 +236,13 @@ namespace HOTEL_MINI.Forms
         {
             if (_daTra > 0m)
             {
-                MessageBox.Show("Hóa đơn đã có thanh toán trước. Hệ thống chỉ cho phép thanh toán 1 lần.", "Không thể thanh toán",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Hóa đơn đã có thanh toán trước. Hệ thống chỉ cho phép thanh toán 1 lần.", "Không thể thanh toán", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (_conLai <= 0m)
             {
-                MessageBox.Show("Không còn số tiền cần thanh toán.", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Không còn số tiền cần thanh toán.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -273,16 +253,58 @@ namespace HOTEL_MINI.Forms
 
             try
             {
-                // 1 lần thanh toán, phải đúng tổng còn lại
-                _payRepo.AddPaymentSafe(_invoiceId, _conLai, method, "Paid", _currentUserId);
+                _payService.AddPaymentSafe(
+                    invoiceId: _invoiceId,
+                    amount: _conLai,
+                    method: method,
+                    status: "Paid",
+                    issuedByIfPaid: _currentUserId,
+                    bookingRoomIdsToCheckout: _selectedBookingRoomIds
+                );
 
-                MessageBox.Show($"Thanh toán thành công.\nTổng: {_subtotal.ToString("#,0", vi)}",
-                    "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Thanh toán thành công.\nTổng: {_subtotal.ToString("#,0", vi)}", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 PaidCompleted?.Invoke(true, _invoiceId);
                 RequestPrintInvoice?.Invoke(_invoiceId);
 
-                try { OpenInvoiceForCurrentHeader(); } catch { }
+                if (MessageBox.Show("Bạn có muốn xuất hóa đơn ra file PDF không?", "Xuất hóa đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    using (var sfd = new SaveFileDialog
+                    {
+                        Filter = "PDF Files (*.pdf)|*.pdf",
+                        FileName = $"Invoice_{_invoiceId}_{DateTime.Now:yyyyMMdd_HHmm}.pdf"
+                    })
+                    {
+                        if (sfd.ShowDialog(this) == DialogResult.OK)
+                        {
+                            try
+                            {
+                                var invoice = _invSvc.GetInvoice(_invoiceId);
+                                if (invoice != null)
+                                {
+                                    var room = _allRooms.FirstOrDefault();
+                                    if (room != null)
+                                    {
+                                        var used = _bookingSvc.GetUsedServicesByBookingID(room.BookingRoomID) ?? new List<UsedServiceDto>();
+                                        string roomNumber = _brSvc.GetRoomNumberById(room.RoomID);
+                                        var pdf = new PdfExportService(txtCusName.Text, txtCusId.Text);
+                                        pdf.ExportInvoiceToPdf(invoice, room, roomNumber, used, sfd.FileName);
+                                        MessageBox.Show("Xuất hóa đơn PDF thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                       
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Không tìm thấy thông tin hóa đơn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Lỗi khi xuất hóa đơn PDF:\n" + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
 
                 DialogResult = DialogResult.OK;
                 Close();
@@ -291,76 +313,6 @@ namespace HOTEL_MINI.Forms
             {
                 MessageBox.Show("Lỗi thanh toán: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void OpenInvoiceForCurrentHeader()
-        {
-            var invoice = _invRepo.GetInvoiceByBookingID(_headerBookingId);
-            if (invoice == null) throw new Exception("Không tìm thấy hóa đơn.");
-
-            var roomRows = new List<frmInvoice.RoomRow>();
-            var roomRepo = new BookingRoomRepository();
-            var pricingRepo = new RoomPricingRepository();
-
-            foreach (var b in _allRooms)
-            {
-                string roomNumber = "";
-                try { roomNumber = roomRepo.GetRoomNumberById(b.RoomID); } catch { }
-                string pricingType = "";
-                try { pricingType = pricingRepo.GetPricingTypeById(b.PricingID)?.PricingType ?? ""; } catch { }
-
-                roomRows.Add(new frmInvoice.RoomRow
-                {
-                    RoomNumber = roomNumber,
-                    PricingType = pricingType,
-                    CheckIn = b.CheckInDate?.ToString("dd/MM/yyyy HH:mm") ?? "",
-                    CheckOut = b.CheckOutDate?.ToString("dd/MM/yyyy HH:mm") ?? ""
-                });
-            }
-
-            var usedAll = _allRooms
-                .SelectMany(b => _bookingSvc.GetUsedServicesByBookingID(b.BookingRoomID) ?? new List<UsedServiceDto>())
-                .GroupBy(x => new { x.ServiceName, x.Price })
-                .Select(g => new frmInvoice.InvoiceServiceRow
-                {
-                    ServiceName = g.Key.ServiceName,
-                    Price = g.Key.Price,
-                    Quantity = g.Sum(x => x.Quantity)
-                })
-                .OrderBy(x => x.ServiceName)
-                .ToList();
-
-            var payments = _invRepo.GetPaymentsByInvoiceId(invoice.InvoiceID) ?? new List<Payment>();
-
-            string employeeName = "—";
-            try { employeeName = new InvoiceRepository().getFullNameByInvoiceID(invoice.InvoiceID) ?? "—"; } catch { }
-
-            var minIn = _allRooms.Where(x => x.CheckInDate.HasValue).Select(x => x.CheckInDate.Value).DefaultIfEmpty(DateTime.Now).Min();
-            var maxOut = _allRooms.Where(x => x.CheckOutDate.HasValue).Select(x => x.CheckOutDate.Value).DefaultIfEmpty(DateTime.Now).Max();
-
-            var vm = new frmInvoice.InvoiceVm
-            {
-                CustomerName = txtCusName.Text,
-                CustomerIdNumber = txtCusId.Text,
-                CheckIn = minIn,
-                CheckOut = maxOut,
-                RoomCharge = _roomTotal,
-                ServiceCharge = _serviceTotal,
-                Discount = ParseMoney(txtDiscount.Text),
-                Surcharge = ParseMoney(txtSurcharge.Text),
-                Total = invoice.TotalAmount > 0 ? invoice.TotalAmount : _subtotal,
-                EmployeeName = employeeName,
-                PaymentMethod = payments.LastOrDefault()?.Method ?? "—",
-                Note = ""
-            };
-
-            var f = new frmInvoice
-            {
-                StartPosition = FormStartPosition.CenterParent,
-                Text = "Hóa đơn thanh toán"
-            };
-            f.BindFrom(vm, usedAll, roomRows, payments);
-            f.ShowDialog(this);
         }
     }
 }

@@ -8,10 +8,6 @@ using System.Data.SqlClient;
 
 namespace HOTEL_MINI.DAL
 {
-    /// <summary>
-    /// Repository thuần cho HÓA ĐƠN + BÁO CÁO + PAYMENT (1–1 với invoice).
-    /// KHÔNG xử lý gắn phòng – dùng InvoiceRoomRepository.
-    /// </summary>
     public class InvoiceRepository
     {
         private readonly string _cs;
@@ -23,11 +19,11 @@ namespace HOTEL_MINI.DAL
             _cs = ConfigHelper.GetConnectionString();
         }
 
-        // ========= Helpers =========
         private static void AddDec(SqlCommand cmd, string name, decimal value)
         {
             var p = cmd.Parameters.Add(name, SqlDbType.Decimal);
-            p.Precision = PREC; p.Scale = SCALE;
+            p.Precision = PREC;
+            p.Scale = SCALE;
             p.Value = decimal.Round(value, SCALE, MidpointRounding.AwayFromZero);
         }
 
@@ -43,14 +39,15 @@ namespace HOTEL_MINI.DAL
                 return (o != null && o != DBNull.Value && Convert.ToInt32(o) > 0);
             }
         }
-        // Get invoice totals + paid + remain + computed status
+
         public (decimal Total, decimal Paid, decimal Remain, string Status) GetInvoiceTotals(int invoiceId)
         {
             using (var conn = new SqlConnection(_cs))
             {
                 conn.Open();
 
-                decimal total = 0m; string statusFromDb = "Unpaid";
+                decimal total = 0m;
+                string statusFromDb = "Unpaid";
                 using (var cmd = new SqlCommand("SELECT TotalAmount, Status FROM Invoices WHERE InvoiceID=@I", conn))
                 {
                     cmd.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
@@ -62,7 +59,7 @@ namespace HOTEL_MINI.DAL
                     }
                 }
 
-                decimal paid = 0m;
+                decimal paid;
                 using (var cmd = new SqlCommand(@"
 SELECT ISNULL(SUM(Amount),0)
 FROM Payments
@@ -78,8 +75,6 @@ WHERE InvoiceID=@I AND Status IN ('Completed','Paid','Success','Succeeded');", c
             }
         }
 
-
-        // List payments of an invoice (most recent first)
         public List<Payment> GetPaymentsByInvoiceId(int invoiceId)
         {
             var list = new List<Payment>();
@@ -111,7 +106,6 @@ ORDER BY PaymentDate DESC, PaymentID DESC", conn))
             return list;
         }
 
-        // Get the latest invoice by BookingID (header ID)
         public Invoice GetInvoiceByBookingID(int bookingID)
         {
             using (var conn = new SqlConnection(_cs))
@@ -144,7 +138,6 @@ ORDER BY InvoiceID DESC", conn))
             }
         }
 
-        // Get Issuer's full name for a given invoice
         public string getFullNameByInvoiceID(int invoiceID)
         {
             using (var conn = new SqlConnection(_cs))
@@ -173,18 +166,14 @@ WHERE i.InvoiceID = @InvoiceID", conn))
                 throw new InvalidOperationException($"UserID {userId} không tồn tại.");
         }
 
-        // ========= Invoices =========
         public int AddInvoice(Invoice inv)
         {
             if (inv == null) throw new ArgumentNullException(nameof(inv));
 
-            // Chuẩn hoá số tiền
             var rc = decimal.Round(inv.RoomCharge, SCALE, MidpointRounding.AwayFromZero);
             var sc = decimal.Round(inv.ServiceCharge, SCALE, MidpointRounding.AwayFromZero);
             var ds = decimal.Round(inv.Discount, SCALE, MidpointRounding.AwayFromZero);
             var su = decimal.Round(inv.Surcharge, SCALE, MidpointRounding.AwayFromZero);
-
-            // Tính total ở app (nếu DB để computed thì ta không gán vào câu lệnh INSERT)
             var total = rc + sc + su - ds;
             if (total < 0) total = 0;
 
@@ -217,25 +206,14 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
                     AddDec(cmd, "@D", ds);
                     AddDec(cmd, "@S", su);
                     if (!totalIsComputed) AddDec(cmd, "@T", total);
-
-                    cmd.Parameters.Add("@At", SqlDbType.DateTime).Value =
-                        inv.IssuedAt == default ? DateTime.Now : inv.IssuedAt;
-
-                    cmd.Parameters.Add("@By", SqlDbType.Int).Value =
-                        (inv.IssuedBy.HasValue && inv.IssuedBy.Value > 0) ? (object)inv.IssuedBy.Value : DBNull.Value;
-
-                    cmd.Parameters.Add("@St", SqlDbType.VarChar, 20).Value =
-                        string.IsNullOrWhiteSpace(inv.Status) ? "Unpaid" : inv.Status.Trim();
-
-                    cmd.Parameters.Add("@Note", SqlDbType.NVarChar, -1).Value =
-                        (object)inv.Note ?? DBNull.Value;
-
+                    cmd.Parameters.Add("@At", SqlDbType.DateTime).Value = inv.IssuedAt == default ? DateTime.Now : inv.IssuedAt;
+                    cmd.Parameters.Add("@By", SqlDbType.Int).Value = (inv.IssuedBy.HasValue && inv.IssuedBy.Value > 0) ? (object)inv.IssuedBy.Value : DBNull.Value;
+                    cmd.Parameters.Add("@St", SqlDbType.VarChar, 20).Value = string.IsNullOrWhiteSpace(inv.Status) ? "Unpaid" : inv.Status.Trim();
+                    cmd.Parameters.Add("@Note", SqlDbType.NVarChar, -1).Value = (object)inv.Note ?? DBNull.Value;
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
         }
-
-
 
         public bool UpdateInvoiceTotals(Invoice inv)
         {
@@ -253,12 +231,10 @@ WHERE InvoiceID = @I;", conn))
                 AddDec(cmd, "@SC", inv.ServiceCharge);
                 AddDec(cmd, "@D", inv.Discount);
                 AddDec(cmd, "@S", inv.Surcharge);
-
                 conn.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
-
 
         public void UpdateInvoiceStatus(int invoiceId, string status, int? issuedByIfPaid = null)
         {
@@ -376,8 +352,6 @@ FROM Invoices ORDER BY InvoiceID DESC", conn))
             return list;
         }
 
-        // ========= Payment (1–1: 1 invoice có tối đa 1 payment) =========
-
         public Payment GetPaymentForInvoice(int invoiceId)
         {
             using (var conn = new SqlConnection(_cs))
@@ -403,10 +377,6 @@ FROM Payments WHERE InvoiceID=@I ORDER BY PaymentID DESC", conn))
             }
         }
 
-        /// <summary>
-        /// Upsert 1 payment cho 1 invoice. Mặc định enforce thanh toán 1 lần đủ tiền:
-        /// - Nếu amount != TotalAmount => lỗi (có thể bỏ enforce bằng allowPartial=true).
-        /// </summary>
         public int UpsertPaymentForInvoice(int invoiceId, decimal amount, DateTime paidAt, string method, string status, bool allowPartial = false)
         {
             using (var conn = new SqlConnection(_cs))
@@ -425,7 +395,6 @@ FROM Payments WHERE InvoiceID=@I ORDER BY PaymentID DESC", conn))
                 if (!allowPartial && amount != total)
                     throw new InvalidOperationException("Số tiền thanh toán phải bằng tổng hóa đơn (thanh toán 1 lần).");
 
-                // nếu đã có payment -> update, chưa có -> insert
                 var old = GetPaymentForInvoice(invoiceId);
                 if (old == null)
                 {
@@ -506,8 +475,6 @@ WHERE PaymentID=@P", conn))
                 }
             }
         }
-
-        // ========= Reports =========
 
         public List<RevenueRoomDTO> GetRevenueByRoom(int month, int year)
         {
@@ -676,7 +643,6 @@ WHERE Status IN ('Paid','PartiallyPaid')
             }
         }
 
-        // ========= Joins for list =========
         public class InvoiceListItem
         {
             public int InvoiceID { get; set; }
@@ -818,6 +784,7 @@ WHERE i.InvoiceID = @I;";
                 }
             }
         }
+
         private static bool IsTotalAmountComputed(SqlConnection conn, SqlTransaction tran = null)
         {
             using (var cmd = new SqlCommand(@"
@@ -830,23 +797,14 @@ WHERE c.object_id = OBJECT_ID(N'[dbo].[Invoices]')
                 return (o != null && o != DBNull.Value && Convert.ToInt32(o) == 1);
             }
         }
-        // Thêm vào class InvoiceRepository
-        public int CreateOrGetOpenInvoice(
-    int bookingId,
-    decimal roomCharge,
-    decimal serviceCharge,
-    decimal discount,
-    decimal surcharge,
-    int issuedByUserIfPaid = 0)
+
+        public int CreateOrGetOpenInvoice(int bookingId, decimal roomCharge, decimal serviceCharge, decimal discount, decimal surcharge, int issuedByUserIfPaid = 0)
         {
             using (var conn = new SqlConnection(_cs))
             {
                 conn.Open();
-
-                // 1) Booking phải tồn tại
                 EnsureBookingExists(conn, bookingId);
 
-                // 2) Nếu đã có hoá đơn mở → trả về luôn (khóa để tránh race)
                 using (var find = new SqlCommand(@"
 SELECT TOP(1) InvoiceID
 FROM Invoices WITH (UPDLOCK, ROWLOCK)
@@ -858,7 +816,6 @@ ORDER BY InvoiceID DESC;", conn))
                     if (o != null && o != DBNull.Value) return Convert.ToInt32(o);
                 }
 
-                // 3) Xác định IssuedBy: ưu tiên tham số; nếu không hợp lệ → NULL
                 int? issuer = null;
                 if (issuedByUserIfPaid > 0)
                 {
@@ -867,7 +824,6 @@ ORDER BY InvoiceID DESC;", conn))
                 }
                 if (!issuer.HasValue)
                 {
-                    // fallback: dùng CreatedBy của Booking nếu hợp lệ
                     using (var cmdU = new SqlCommand("SELECT CreatedBy FROM Bookings WHERE BookingID=@B", conn))
                     {
                         cmdU.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
@@ -880,12 +836,10 @@ ORDER BY InvoiceID DESC;", conn))
                     }
                 }
 
-                // 4) Chuẩn hoá số tiền & tính Total
                 var rc = decimal.Round(roomCharge, SCALE, MidpointRounding.AwayFromZero);
                 var sc = decimal.Round(serviceCharge, SCALE, MidpointRounding.AwayFromZero);
                 var ds = decimal.Round(discount, SCALE, MidpointRounding.AwayFromZero);
                 var su = decimal.Round(surcharge, SCALE, MidpointRounding.AwayFromZero);
-
                 var total = rc + sc + su - ds;
                 if (total < 0) total = 0;
 
@@ -912,14 +866,11 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
                     AddDec(ins, "@S", su);
                     if (!totalIsComputed) AddDec(ins, "@TT", total);
                     ins.Parameters.Add("@U", SqlDbType.Int).Value = (object)issuer ?? DBNull.Value;
-
                     return Convert.ToInt32(ins.ExecuteScalar());
                 }
             }
         }
 
-
-        // ========= util =========
         private DataTable Fill(string sql, Action<SqlCommand> onParam)
         {
             var dt = new DataTable();

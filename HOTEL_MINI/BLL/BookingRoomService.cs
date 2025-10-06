@@ -6,15 +6,10 @@ using System.Collections.Generic;
 
 namespace HOTEL_MINI.BLL
 {
-    /// <summary>
-    /// Nghiệp vụ theo PHÒNG (BookingRooms / line).
-    /// - Chỉ làm việc với BookingRoomRepository.
-    /// - KHÔNG xử lý invoice/payment.
-    /// </summary>
     public class BookingRoomService
     {
         private readonly BookingRoomRepository _repo;
-        private readonly BookingRoomServiceRepository _svcRepo; // nếu có: lấy dịch vụ đã dùng để show UI
+        private readonly BookingRoomServiceRepository _svcRepo;
 
         public BookingRoomService()
         {
@@ -22,12 +17,12 @@ namespace HOTEL_MINI.BLL
             _svcRepo = new BookingRoomServiceRepository();
         }
 
-        private static void Ensure(bool cond, string msg)
+        private static void Ensure(bool condition, string message)
         {
-            if (!cond) throw new ArgumentException(msg);
+            if (!condition) throw new ArgumentException(message);
         }
 
-        private static void ValidateLineCore(BookingRoom line, bool requireDates = false)
+        private static void ValidateLineCore(BookingRoom line, bool requireDates)
         {
             Ensure(line != null, "Line rỗng.");
             Ensure(line.RoomID > 0, "RoomID không hợp lệ.");
@@ -37,28 +32,27 @@ namespace HOTEL_MINI.BLL
             {
                 Ensure(line.CheckInDate.HasValue, "Thiếu Check-in.");
                 Ensure(line.CheckOutDate.HasValue, "Thiếu Check-out.");
-                Ensure(line.CheckOutDate.Value > line.CheckInDate.Value, "Check-out phải sau Check-in.");
+                Ensure(line.CheckOutDate > line.CheckInDate, "Check-out phải sau Check-in.");
             }
             else if (line.CheckInDate.HasValue && line.CheckOutDate.HasValue)
             {
-                Ensure(line.CheckOutDate.Value > line.CheckInDate.Value, "Check-out phải sau Check-in.");
+                Ensure(line.CheckOutDate > line.CheckInDate, "Check-out phải sau Check-in.");
             }
         }
 
-        // --------- DISPLAY ----------
         public List<BookingDisplay> GetActiveBookingDisplays() => _repo.GetActiveBookingDisplays();
         public List<BookingDisplay> GetTop20LatestBookingDisplays() => _repo.GetTop20LatestBookingDisplays();
+
         public List<BookingDisplay> GetBookingDisplaysByCustomerNumber(string idNumber)
         {
             Ensure(!string.IsNullOrWhiteSpace(idNumber), "Thiếu CCCD/ID.");
             return _repo.GetBookingDisplaysByCustomerNumber(idNumber.Trim());
         }
 
-        // --------- QUERIES ----------
-        public List<BookingRoom> GetBookingsByCustomerNumber(string numberID)
+        public List<BookingRoom> GetBookingsByCustomerNumber(string idNumber)
         {
-            Ensure(!string.IsNullOrWhiteSpace(numberID), "Thiếu CCCD/ID.");
-            return _repo.GetBookingsByCustomerNumber(numberID.Trim());
+            Ensure(!string.IsNullOrWhiteSpace(idNumber), "Thiếu CCCD/ID.");
+            return _repo.GetBookingsByCustomerNumber(idNumber.Trim());
         }
 
         public BookingRoom GetBookingById(int bookingRoomId)
@@ -110,19 +104,20 @@ namespace HOTEL_MINI.BLL
             return _repo.IsRoomOverlapped(roomId, checkIn, checkOut);
         }
 
-        // --------- COMMANDS ----------
         public int AddLineForHeader(int headerBookingId, BookingRoom line)
         {
             Ensure(headerBookingId > 0, "Header BookingID không hợp lệ.");
-            ValidateLineCore(line, requireDates: false);
+            ValidateLineCore(line, true);
 
             if (line.CheckInDate.HasValue && line.CheckOutDate.HasValue)
             {
-                bool overlapped = _repo.IsRoomOverlapped(line.RoomID, line.CheckInDate.Value, line.CheckOutDate.Value);
-                Ensure(!overlapped, "Khoảng thời gian đã có booking khác.");
+                if (_repo.IsRoomOverlapped(line.RoomID, line.CheckInDate.Value, line.CheckOutDate.Value))
+                    throw new InvalidOperationException("Khoảng thời gian đã có booking khác.");
             }
 
-            if (string.IsNullOrWhiteSpace(line.Status)) line.Status = "Booked";
+            if (string.IsNullOrWhiteSpace(line.Status))
+                line.Status = "Booked";
+
             return _repo.AddLineForHeader(headerBookingId, line);
         }
 
@@ -133,14 +128,12 @@ namespace HOTEL_MINI.BLL
 
             foreach (var b in roomBookings)
             {
-                ValidateLineCore(b, requireDates: false);
+                ValidateLineCore(b, true);
                 if (string.IsNullOrWhiteSpace(b.Status)) b.Status = "Booked";
-
-                if (b.CheckInDate.HasValue && b.CheckOutDate.HasValue)
+                if (b.CheckInDate.HasValue && b.CheckOutDate.HasValue &&
+                    _repo.IsRoomOverlapped(b.RoomID, b.CheckInDate.Value, b.CheckOutDate.Value))
                 {
-                    bool overlapped = _repo.IsRoomOverlapped(b.RoomID, b.CheckInDate.Value, b.CheckOutDate.Value);
-                    if (overlapped)
-                        throw new InvalidOperationException($"Phòng {b.RoomID} bị trùng lịch.");
+                    throw new InvalidOperationException($"Phòng {b.RoomID} bị trùng lịch.");
                 }
             }
 
@@ -151,8 +144,11 @@ namespace HOTEL_MINI.BLL
         {
             Ensure(bookingRoom != null && bookingRoom.BookingRoomID > 0, "Line không hợp lệ.");
             if (bookingRoom.CheckInDate.HasValue && bookingRoom.CheckOutDate.HasValue)
-                Ensure(bookingRoom.CheckOutDate.Value > bookingRoom.CheckInDate.Value, "Check-out phải sau Check-in.");
-            if (string.IsNullOrWhiteSpace(bookingRoom.Status)) bookingRoom.Status = "Booked";
+                Ensure(bookingRoom.CheckOutDate > bookingRoom.CheckInDate, "Check-out phải sau Check-in.");
+
+            if (string.IsNullOrWhiteSpace(bookingRoom.Status))
+                bookingRoom.Status = "Booked";
+
             return _repo.Update(bookingRoom);
         }
 

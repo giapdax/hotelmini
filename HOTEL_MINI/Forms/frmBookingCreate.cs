@@ -14,27 +14,22 @@ namespace HOTEL_MINI.Forms
 {
     public partial class frmBookingCreate : Form
     {
-        // ===== BLL/DAL =====
-        private readonly ServicesService _svc = new ServicesService();                 // đọc kho thật
+        private readonly ServicesService _svc = new ServicesService();
         private readonly RoomPricingRepository _pricingRepo = new RoomPricingRepository();
         private readonly BookingService _bookingSvc = new BookingService();
         private readonly CustomerService _customerSvc = new CustomerService();
 
-        // ===== State phòng/giá =====
         private readonly List<SelectedRoomWithTime> _rooms;
         private readonly Dictionary<int, RoomPlan> _plans;
         private readonly Dictionary<int, List<RoomPricing>> _pricingCache = new Dictionary<int, List<RoomPricing>>();
 
-        // ===== Khách hàng & user =====
         private int _customerId;
         private string _customerIdNumber;
         private readonly int _currentUserId;
 
-        // ===== Dịch vụ & bảng tạm dùng dịch vụ =====
         private BindingList<ServiceVM> _serviceVMs;
         private DataTable _usedServicesTable;
 
-        // ===== Grid cols =====
         private const string COL_ROOM_PICK = "colRoomPick";
         private const string COL_ROOM_TYPE = "colPlanType";
         private const string COL_ROOM_UNIT = "colUnit";
@@ -59,12 +54,6 @@ namespace HOTEL_MINI.Forms
             Load += FrmBookingCreate_Load;
             btnClose.Click += (s, e) => { DialogResult = DialogResult.Cancel; Close(); };
 
-            btnDatphong.Text = "Đặt phòng";
-            btnDatphong.Click += BtnDatphong_Click;
-
-            btnIncrease.Click += BtnIncrease_Click;
-            btnReduce.Click += BtnReduce_Click;
-            btnCheck.Click += BtnCheck_Click;
 
             nbrIncrease.Minimum = 1; nbrIncrease.Maximum = 999; nbrIncrease.Value = 1;
             nbrReduce.Minimum = 1; nbrReduce.Maximum = 999; nbrReduce.Value = 1;
@@ -80,7 +69,6 @@ namespace HOTEL_MINI.Forms
         public frmBookingCreate()
             : this(new List<SelectedRoomWithTime>(), new Dictionary<int, RoomPlan>(), 0, string.Empty, 0) { }
 
-        // ========= Service ViewModel (UI trừ kho ảo) =========
         private class ServiceVM : INotifyPropertyChanged
         {
             public int ServiceID { get; set; }
@@ -117,7 +105,6 @@ namespace HOTEL_MINI.Forms
             UpdateGrandTotals();
         }
 
-        // ======================= GRID PHÒNG =======================
         private void SetupRoomsGrid()
         {
             var gv = dataGridView1;
@@ -195,7 +182,6 @@ namespace HOTEL_MINI.Forms
             row.Cells[colName].Value = value;
         }
 
-        // ======================= GIÁ/CHI PHÍ =======================
         private List<RoomPricing> GetActivePricingByTypeId(int roomTypeId)
         {
             if (!_pricingCache.TryGetValue(roomTypeId, out var list))
@@ -356,7 +342,6 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // ======================= DỊCH VỤ/KHO (UI) =======================
         private void SetupServicesMenu()
         {
             var services = _svc.GetAllServices().Where(s => s.IsActive).ToList();
@@ -416,7 +401,6 @@ namespace HOTEL_MINI.Forms
             dgvUsedServices.DataSource = _usedServicesTable;
         }
 
-        // ======= chỉ thao tác UI, KHÔNG chạm DB =======
         private void BtnIncrease_Click(object sender, EventArgs e)
         {
             var vm = dgvHotelServices.CurrentRow?.DataBoundItem as ServiceVM;
@@ -436,7 +420,6 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            // Số tồn hiển thị còn lại = tồn thật lúc load - nhu cầu tạm hiện tại
             int available = Math.Max(0, vm.DbQuantity - vm.PlannedDelta);
             if (available <= 0)
             {
@@ -446,10 +429,9 @@ namespace HOTEL_MINI.Forms
 
             int totalNeed = qty * rooms.Count;
 
-            // Nếu vượt tồn, cắt xuống tối đa cho phép theo số phòng đã chọn
             if (totalNeed > available)
             {
-                int maxPerRoom = available / rooms.Count; // phân đều theo số phòng tick
+                int maxPerRoom = available / rooms.Count;
                 if (maxPerRoom <= 0)
                 {
                     MessageBox.Show($"Dịch vụ '{vm.ServiceName}' chỉ còn {available} – không đủ cho {rooms.Count} phòng.", "Không đủ tồn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -461,7 +443,6 @@ namespace HOTEL_MINI.Forms
                 totalNeed = qty * rooms.Count;
             }
 
-            // (1) Cập nhật bảng tạm UsedServices theo (RoomID, ServiceID)
             foreach (var room in rooms)
             {
                 var existing = _usedServicesTable.AsEnumerable()
@@ -484,7 +465,6 @@ namespace HOTEL_MINI.Forms
                 }
             }
 
-            // (2) Chỉ chỉnh nhu cầu tạm (UI trừ ảo), KHÔNG gọi DB
             vm.PlannedDelta += totalNeed;
 
             RecalcRoomServiceTotals();
@@ -509,12 +489,10 @@ namespace HOTEL_MINI.Forms
             int currentQty = Convert.ToInt32(drv.Row["Quantity"]);
             int actually = Math.Min(reduceBy, currentQty);
 
-            // (1) Cập nhật bảng tạm
             int left = currentQty - actually;
             if (left <= 0) _usedServicesTable.Rows.Remove(drv.Row);
             else drv.Row["Quantity"] = left;
 
-            // (2) Giảm nhu cầu tạm (trả lại tồn hiển thị), không âm
             var vm = _serviceVMs.FirstOrDefault(x => x.ServiceID == serviceId);
             if (vm != null)
                 vm.PlannedDelta = Math.Max(0, vm.PlannedDelta - actually);
@@ -523,7 +501,6 @@ namespace HOTEL_MINI.Forms
             UpdateGrandTotals();
         }
 
-        // ======================= KHÁCH HÀNG =======================
         private void BtnCheck_Click(object sender, EventArgs e)
         {
             var idNumber = (txtCCCD.Text ?? "").Trim();
@@ -567,10 +544,8 @@ namespace HOTEL_MINI.Forms
                 return false;
             }
 
-            // Nếu đã có _customerId, coi như đã đảm bảo
             if (_customerId > 0) return true;
 
-            // Thử tìm khách có sẵn
             var existed = _customerSvc.getCustomerByIDNumber(idNumber);
             if (existed != null)
             {
@@ -579,7 +554,6 @@ namespace HOTEL_MINI.Forms
                 return true;
             }
 
-            // Khách mới: bắt buộc Tên + SĐT
             var fullName = (txtTen.Text ?? "").Trim();
             var phone = (txtSDT.Text ?? "").Trim();
 
@@ -618,7 +592,6 @@ namespace HOTEL_MINI.Forms
             return true;
         }
 
-        // ======================= LƯU BOOKING =======================
         private RoomPlan GetPlanOrDefault(SelectedRoomWithTime r)
         {
             if (_plans.TryGetValue(r.RoomID, out var p) && !string.IsNullOrWhiteSpace(p.PricingType))
@@ -706,7 +679,6 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            // Chuẩn bị lines: BookingRoom (KHÔNG dùng Booking nữa)
             var requests = new List<BookingRoom>();
             foreach (var r in _rooms)
             {
@@ -739,10 +711,7 @@ namespace HOTEL_MINI.Forms
 
             try
             {
-                // Chỉ tại đây mới ghi DB: tạo header + lines + upsert dịch vụ + TRỪ KHO thật (trong transaction)
                 var map = _bookingSvc.AddBookingGroup(_customerId, _currentUserId, requests, _usedServicesTable);
-
-                // Sau khi commit thành công: reload kho để DbQuantity khớp với DB vừa trừ
                 SetupServicesMenu();
                 foreach (var vm in _serviceVMs) vm.PlannedDelta = 0;
 
@@ -756,7 +725,6 @@ namespace HOTEL_MINI.Forms
             }
         }
 
-        // ======================= MODEL PHỤ =======================
         public class RoomPlan
         {
             public int RoomID { get; set; }
@@ -765,7 +733,7 @@ namespace HOTEL_MINI.Forms
             public string PricingType { get; set; }
             public decimal? UnitPrice { get; set; }
             public decimal CalculatedCost { get; set; }
-            public bool IsReceiveNow { get; set; } = true; // mặc định nhận phòng ngay
+            public bool IsReceiveNow { get; set; } = true;
         }
     }
 }

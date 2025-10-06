@@ -54,7 +54,7 @@ namespace HOTEL_MINI.DAL
                 }
             }
 
-            return null; // nếu insert thất bại
+            return null; 
         }
 
         public Customer GetCustomerByIDNumber(string idNumber)
@@ -113,18 +113,7 @@ namespace HOTEL_MINI.DAL
                 return null;
             }
         }
-        
-        public bool checkExistNumberID(string idNumber)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Customers WHERE IDNumber = @IDNumber", conn);
-                cmd.Parameters.AddWithValue("@IDNumber", idNumber);
-                int count = (int)cmd.ExecuteScalar();
-                return count > 0;
-            }
-        }
+
         public List<Customer> GetAllCustomers()
         {
             var list = new List<Customer>();

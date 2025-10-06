@@ -8,12 +8,18 @@ namespace HOTEL_MINI.BLL
     public class RoomPricingService
     {
         private readonly RoomPricingRepository _repo = new RoomPricingRepository();
+
         public List<string> GetPricingTypes() => _repo.GetPricingTypes();
+        public RoomPricing GetPricingTypeById(int pricingId) => _repo.GetPricingTypeById(pricingId);
         public RoomPricing GetByRoomTypeAndType(int roomTypeId, string pricingType) => _repo.GetByRoomTypeAndType(roomTypeId, pricingType);
+        public List<RoomPricing> GetByRoomType(int roomTypeId) => _repo.GetByRoomType(roomTypeId);
 
         public bool Add(RoomPricing p) { Validate(p, requireId: false); return _repo.Add(p); }
         public bool Update(RoomPricing p) { Validate(p, requireId: true); return _repo.Update(p); }
-        public List<RoomPricing> GetByRoomType(int roomTypeId) => _repo.GetByRoomType(roomTypeId);
+        public RoomPricing GetById(int pricingId)
+        {
+            return _repo.GetPricingTypeById(pricingId);
+        }
         private void Validate(RoomPricing p, bool requireId)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -24,7 +30,7 @@ namespace HOTEL_MINI.BLL
 
             var existed = _repo.GetByRoomTypeAndType(p.RoomTypeID, p.PricingType);
             if (existed != null && (!requireId || existed.PricingID != p.PricingID))
-                throw new ArgumentException("Tổ hợp Loại phòng và Loại giá này đã được thiết lập giá.");
+                throw new ArgumentException("Tổ hợp Loại phòng và Loại giá đã tồn tại.");
         }
     }
 }

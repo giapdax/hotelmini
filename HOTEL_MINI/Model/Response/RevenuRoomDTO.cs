@@ -8,11 +8,11 @@ namespace HOTEL_MINI.Model.Response
 {
     public class RevenueRoomDTO
     {
-        public string RoomNumber { get; set; }   // Số phòng
-        public int Month { get; set; }           // Tháng
-        public int Year { get; set; }            // Năm
-        public decimal RoomRevenue { get; set; } // Tiền phòng
-        public decimal ServiceRevenue { get; set; } // Tiền dịch vụ
-        public decimal TotalRevenue { get; set; }   // Tổng doanh thu
+        public string RoomNumber { get; set; } 
+        public int Month { get; set; }
+        public int Year { get; set; }   
+        public decimal RoomRevenue { get; set; } 
+        public decimal ServiceRevenue { get; set; } 
+        public decimal TotalRevenue { get; set; }  
     }
 }
