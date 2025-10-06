@@ -20,7 +20,7 @@ namespace HOTEL_MINI.Forms
             InitializeComponent();
             DoubleBuffered = true;
 
-            Load += (s, e) => EnsureTabContent();
+            Load += FrmBooking_Load;
             if (tabBooking != null)
                 tabBooking.SelectedIndexChanged += (s, e) => EnsureTabContent();
         }
@@ -28,7 +28,12 @@ namespace HOTEL_MINI.Forms
         public frmBooking(User user) : this()
         {
             _currentUser = user;
-            _currentUserId = user != null ? user.UserID : 0;
+            _currentUserId = user?.UserID ?? 0;
+        }
+
+        private void FrmBooking_Load(object sender, EventArgs e)
+        {
+            EnsureTabContent();
         }
 
         private void EnsureTabContent()
@@ -38,7 +43,6 @@ namespace HOTEL_MINI.Forms
             if (tabBooking.SelectedTab == btnBookRoom)
             {
                 EnsureBookRoomTab();
-                // luôn reload “tươi” khi quay lại tab đặt phòng
                 _ucBookRoom?.ReloadRoomsNow();
             }
             else if (tabBooking.SelectedTab == btnBookingRoom)
@@ -83,16 +87,45 @@ namespace HOTEL_MINI.Forms
             else
             {
                 _ucBookingRoom.CurrentUserId = _currentUserId;
-                _ucBookingRoom.ReloadData(); // đảm bảo luôn “tươi”
+                _ucBookingRoom.ReloadData();
             }
         }
 
-        private void OnRequestCheckout(int bookingRoomId) => OpenCheckout(new List<int> { bookingRoomId });
+        private void OnRequestCheckout(int bookingRoomId)
+        {
+            OpenCheckout(new List<int> { bookingRoomId });
+        }
 
         private void OnRequestCheckoutMany(List<int> bookingRoomIds)
         {
             if (bookingRoomIds == null || bookingRoomIds.Count == 0) return;
             OpenCheckout(bookingRoomIds.Distinct().ToList());
+        }
+
+      
+        public void ShowUcBookRoom(int? customerId = null, string idNumber = null)
+        {
+            if (tabBooking != null && btnBookRoom != null)
+                tabBooking.SelectedTab = btnBookRoom;
+
+            EnsureBookRoomTab();
+
+            _ucBookRoom.CurrentUserId = _currentUserId;
+            if (customerId.HasValue)
+                _ucBookRoom.SetCustomer(customerId.Value, idNumber ?? "");
+
+            _ucBookRoom.BringToFront();
+            _ucBookRoom.ReloadRoomsNow();
+        }
+        public void ShowUcBookingRoom()
+        {
+            if (tabBooking != null && btnBookingRoom != null)
+                tabBooking.SelectedTab = btnBookingRoom;
+
+            EnsureBookingRoomTab();                
+            _ucBookingRoom.CurrentUserId = _currentUserId;
+            _ucBookingRoom.BringToFront();
+            _ucBookingRoom.ReloadData();        
         }
 
         private void OpenCheckout(List<int> bookingRoomIds)
@@ -105,7 +138,6 @@ namespace HOTEL_MINI.Forms
                     var rs = f.ShowDialog(this);
                     if (rs == DialogResult.OK)
                     {
-                        // sau khi trả phòng, refresh cả hai tab
                         _ucBookingRoom?.ReloadData();
                         _ucBookRoom?.ReloadRoomsNow();
                     }

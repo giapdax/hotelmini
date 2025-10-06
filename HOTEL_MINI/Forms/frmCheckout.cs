@@ -78,7 +78,7 @@ namespace HOTEL_MINI.Forms
             btnConfirm.Text = "Thanh toán";
             btnCancel.Text = "Đóng";
             btnConfirm.Click += BtnConfirm_Click;
-            btnCancel.Click += (s, e) => Close();
+            btnCancel.Click += BtnCancel_Click;
         }
 
         private void NumericOnly_KeyPress(object sender, KeyPressEventArgs e)
@@ -345,14 +345,26 @@ namespace HOTEL_MINI.Forms
                         }
                     }
                 }
+                var app = Application.OpenForms.OfType<frmApplication>().FirstOrDefault();
+                app?.ActivateBooking(goToUcBookRoom: false);
 
                 DialogResult = DialogResult.OK;
                 Close();
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi thanh toán: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void BtnCancel_Click(object sender, EventArgs e)
+        {
+            var app = Application.OpenForms.OfType<frmApplication>().FirstOrDefault();
+            app?.ActivateBooking(goToUcBookRoom: true);
+
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
     }
 }
