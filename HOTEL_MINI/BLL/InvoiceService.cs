@@ -51,6 +51,15 @@ namespace HOTEL_MINI.BLL
         public RevenueSummary GetRevenueSummary() => _repo.GetRevenueSummary();
         public List<RevenueRoomDTO> GetRevenueByRoom(int month, int year)
             => _repo.GetRevenueByRoom(month, year) ?? new List<RevenueRoomDTO>();
+        public List<InvoiceRepository.InvoiceListItem> GetAllInvoicesWithCustomer()
+    => _repo.GetAllInvoicesWithCustomer();
 
+        public List<InvoiceRepository.InvoiceListItem> GetInvoicesByCustomerNumber(string idNumber)
+            => _repo.GetInvoicesByCustomerNumber(idNumber);
+
+        public InvoiceRepository.InvoiceListItem GetInvoiceWithCustomerByInvoiceId(int invoiceId)
+            => _repo.GetInvoiceWithCustomerByInvoiceId(invoiceId);
+        public List<int> GetBookingRoomIdsByInvoiceId(int invoiceId)
+    => _repo.GetBookingRoomIdsByInvoiceId(invoiceId);
     }
 }

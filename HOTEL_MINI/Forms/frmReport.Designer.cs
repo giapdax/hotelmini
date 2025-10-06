@@ -30,89 +30,15 @@ namespace HOTEL_MINI.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabCustomerReport = new System.Windows.Forms.TabControl();
-            this.tabCustomer = new System.Windows.Forms.TabPage();
-            this.rpvCustomer = new Microsoft.Reporting.WinForms.ReportViewer();
-            this.tabRevenuRoom = new System.Windows.Forms.TabPage();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.rpvRevenuRoom = new Microsoft.Reporting.WinForms.ReportViewer();
             this.tabInvoice = new System.Windows.Forms.TabPage();
             this.rpvInvoice = new Microsoft.Reporting.WinForms.ReportViewer();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tabCustomerReport.SuspendLayout();
-            this.tabCustomer.SuspendLayout();
-            this.tabRevenuRoom.SuspendLayout();
+            this.tabCustomer = new System.Windows.Forms.TabPage();
+            this.rpvCustomer = new Microsoft.Reporting.WinForms.ReportViewer();
+            this.tabCustomerReport = new System.Windows.Forms.TabControl();
             this.tabInvoice.SuspendLayout();
+            this.tabCustomer.SuspendLayout();
+            this.tabCustomerReport.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // tabCustomerReport
-            // 
-            this.tabCustomerReport.Controls.Add(this.tabCustomer);
-            this.tabCustomerReport.Controls.Add(this.tabRevenuRoom);
-            this.tabCustomerReport.Controls.Add(this.tabInvoice);
-            this.tabCustomerReport.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabCustomerReport.Location = new System.Drawing.Point(0, 0);
-            this.tabCustomerReport.Name = "tabCustomerReport";
-            this.tabCustomerReport.SelectedIndex = 0;
-            this.tabCustomerReport.Size = new System.Drawing.Size(1263, 760);
-            this.tabCustomerReport.TabIndex = 0;
-            // 
-            // tabCustomer
-            // 
-            this.tabCustomer.Controls.Add(this.rpvCustomer);
-            this.tabCustomer.Location = new System.Drawing.Point(4, 29);
-            this.tabCustomer.Name = "tabCustomer";
-            this.tabCustomer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCustomer.Size = new System.Drawing.Size(1255, 727);
-            this.tabCustomer.TabIndex = 0;
-            this.tabCustomer.Text = "Customer Report";
-            this.tabCustomer.UseVisualStyleBackColor = true;
-            // 
-            // rpvCustomer
-            // 
-            this.rpvCustomer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rpvCustomer.LocalReport.ReportEmbeddedResource = "HOTEL_MINI.Report.ReportCustomer.rdlc";
-            this.rpvCustomer.Location = new System.Drawing.Point(3, 3);
-            this.rpvCustomer.Name = "rpvCustomer";
-            this.rpvCustomer.ServerReport.BearerToken = null;
-            this.rpvCustomer.Size = new System.Drawing.Size(1249, 721);
-            this.rpvCustomer.TabIndex = 0;
-            // 
-            // tabRevenuRoom
-            // 
-            this.tabRevenuRoom.Controls.Add(this.label1);
-            this.tabRevenuRoom.Controls.Add(this.dateTimePicker1);
-            this.tabRevenuRoom.Controls.Add(this.rpvRevenuRoom);
-            this.tabRevenuRoom.Location = new System.Drawing.Point(4, 29);
-            this.tabRevenuRoom.Name = "tabRevenuRoom";
-            this.tabRevenuRoom.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRevenuRoom.Size = new System.Drawing.Size(1255, 727);
-            this.tabRevenuRoom.TabIndex = 2;
-            this.tabRevenuRoom.Text = "Revenu Room";
-            this.tabRevenuRoom.UseVisualStyleBackColor = true;
-            // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTimePicker1.CustomFormat = "MM/yyyy";
-            this.dateTimePicker1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker1.Location = new System.Drawing.Point(158, 51);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.ShowUpDown = true;
-            this.dateTimePicker1.Size = new System.Drawing.Size(298, 39);
-            this.dateTimePicker1.TabIndex = 0;
-            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
-            // 
-            // rpvRevenuRoom
-            // 
-            this.rpvRevenuRoom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rpvRevenuRoom.LocalReport.ReportEmbeddedResource = "HOTEL_MINI.Report.ReportRevenuRoom.rdlc";
-            this.rpvRevenuRoom.Location = new System.Drawing.Point(3, 3);
-            this.rpvRevenuRoom.Name = "rpvRevenuRoom";
-            this.rpvRevenuRoom.ServerReport.BearerToken = null;
-            this.rpvRevenuRoom.Size = new System.Drawing.Size(1249, 721);
-            this.rpvRevenuRoom.TabIndex = 0;
             // 
             // tabInvoice
             // 
@@ -135,15 +61,37 @@ namespace HOTEL_MINI.Forms
             this.rpvInvoice.Size = new System.Drawing.Size(1249, 721);
             this.rpvInvoice.TabIndex = 0;
             // 
-            // label1
+            // tabCustomer
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(8, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(144, 25);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Chọn thời gian:";
+            this.tabCustomer.Controls.Add(this.rpvCustomer);
+            this.tabCustomer.Location = new System.Drawing.Point(4, 29);
+            this.tabCustomer.Name = "tabCustomer";
+            this.tabCustomer.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCustomer.Size = new System.Drawing.Size(1255, 727);
+            this.tabCustomer.TabIndex = 0;
+            this.tabCustomer.Text = "Customer Report";
+            this.tabCustomer.UseVisualStyleBackColor = true;
+            // 
+            // rpvCustomer
+            // 
+            this.rpvCustomer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rpvCustomer.LocalReport.ReportEmbeddedResource = "HOTEL_MINI.Report.ReportCustomer.rdlc";
+            this.rpvCustomer.Location = new System.Drawing.Point(3, 3);
+            this.rpvCustomer.Name = "rpvCustomer";
+            this.rpvCustomer.ServerReport.BearerToken = null;
+            this.rpvCustomer.Size = new System.Drawing.Size(1249, 721);
+            this.rpvCustomer.TabIndex = 0;
+            // 
+            // tabCustomerReport
+            // 
+            this.tabCustomerReport.Controls.Add(this.tabCustomer);
+            this.tabCustomerReport.Controls.Add(this.tabInvoice);
+            this.tabCustomerReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabCustomerReport.Location = new System.Drawing.Point(0, 0);
+            this.tabCustomerReport.Name = "tabCustomerReport";
+            this.tabCustomerReport.SelectedIndex = 0;
+            this.tabCustomerReport.Size = new System.Drawing.Size(1263, 760);
+            this.tabCustomerReport.TabIndex = 0;
             // 
             // frmReport
             // 
@@ -154,25 +102,19 @@ namespace HOTEL_MINI.Forms
             this.Name = "frmReport";
             this.Text = "Báo Cáo";
             this.Load += new System.EventHandler(this.frmReport_Load);
-            this.tabCustomerReport.ResumeLayout(false);
-            this.tabCustomer.ResumeLayout(false);
-            this.tabRevenuRoom.ResumeLayout(false);
-            this.tabRevenuRoom.PerformLayout();
             this.tabInvoice.ResumeLayout(false);
+            this.tabCustomer.ResumeLayout(false);
+            this.tabCustomerReport.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabCustomerReport;
-        private System.Windows.Forms.TabPage tabCustomer;
-        private System.Windows.Forms.TabPage tabInvoice;
-        private Microsoft.Reporting.WinForms.ReportViewer rpvCustomer;
+        private TabPage tabInvoice;
         private Microsoft.Reporting.WinForms.ReportViewer rpvInvoice;
-        private System.Windows.Forms.TabPage tabRevenuRoom;
-        private Microsoft.Reporting.WinForms.ReportViewer rpvRevenuRoom;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private Label label1;
+        private TabPage tabCustomer;
+        private Microsoft.Reporting.WinForms.ReportViewer rpvCustomer;
+        private TabControl tabCustomerReport;
     }
 }

@@ -48,7 +48,6 @@ namespace HOTEL_MINI.Forms
             this.btnXuatHoaDon = new System.Windows.Forms.Button();
             this.lblCountBookingByNumberID = new System.Windows.Forms.Label();
             this.txtCountBookingByNumberID = new System.Windows.Forms.TextBox();
-            this.btnt = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panelSearchCard.SuspendLayout();
@@ -388,7 +387,6 @@ namespace HOTEL_MINI.Forms
             this.panel2.Controls.Add(this.btnXuatHoaDon);
             this.panel2.Controls.Add(this.lblCountBookingByNumberID);
             this.panel2.Controls.Add(this.txtCountBookingByNumberID);
-            this.panel2.Controls.Add(this.btnt);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(3, 571);
             this.panel2.Name = "panel2";
@@ -427,23 +425,6 @@ namespace HOTEL_MINI.Forms
             this.txtCountBookingByNumberID.Size = new System.Drawing.Size(120, 39);
             this.txtCountBookingByNumberID.TabIndex = 1;
             this.txtCountBookingByNumberID.Visible = false;
-            // 
-            // btnt
-            // 
-            this.btnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(76)))), ((int)(((byte)(95)))));
-            this.btnt.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnt.FlatAppearance.BorderSize = 0;
-            this.btnt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnt.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold);
-            this.btnt.ForeColor = System.Drawing.Color.White;
-            this.btnt.Location = new System.Drawing.Point(1794, 14);
-            this.btnt.Name = "btnt";
-            this.btnt.Size = new System.Drawing.Size(170, 40);
-            this.btnt.TabIndex = 2;
-            this.btnt.Text = "Xuất hóa đơn";
-            this.btnt.UseVisualStyleBackColor = false;
-            this.btnt.Click += new System.EventHandler(this.btnXuatHoaDon_Click);
             // 
             // frmInvoiceManage
             // 
@@ -510,7 +491,6 @@ namespace HOTEL_MINI.Forms
         private TextBox txtDiachi;
         private DataGridView dgvBookings;
         private Panel panel2;
-        private Button btnt;
         private TextBox txtCountBookingByNumberID;
         private Label lblCountBookingByNumberID;
         private Button btnXuatHoaDon;

@@ -544,7 +544,7 @@ namespace HOTEL_MINI.Forms
             // 
             this.cbxPaymentMethod.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cbxPaymentMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxPaymentMethod.Location = new System.Drawing.Point(270, 83);
+            this.cbxPaymentMethod.Location = new System.Drawing.Point(270, 85);
             this.cbxPaymentMethod.Name = "cbxPaymentMethod";
             this.cbxPaymentMethod.Size = new System.Drawing.Size(200, 33);
             this.cbxPaymentMethod.TabIndex = 9;

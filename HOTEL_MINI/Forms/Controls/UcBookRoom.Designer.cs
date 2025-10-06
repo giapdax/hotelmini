@@ -68,13 +68,14 @@
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.tableLayoutPanel2.ColumnCount = 4;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tableLayoutPanel2.Controls.Add(this.btnBooking, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.btnDetail, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnBooking, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 438);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -86,25 +87,32 @@
             // btnBooking
             // 
             this.btnBooking.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnBooking.Location = new System.Drawing.Point(379, 3);
+            this.btnBooking.BackColor = System.Drawing.Color.White;
+            this.btnBooking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBooking.ForeColor = System.Drawing.Color.Red;
+            this.btnBooking.Location = new System.Drawing.Point(372, 3);
             this.btnBooking.Name = "btnBooking";
-            this.btnBooking.Size = new System.Drawing.Size(119, 42);
+            this.btnBooking.Size = new System.Drawing.Size(133, 42);
             this.btnBooking.TabIndex = 0;
             this.btnBooking.Text = "Đặt phòng";
-            this.btnBooking.UseVisualStyleBackColor = true;
+            this.btnBooking.UseVisualStyleBackColor = false;
             // 
             // btnDetail
             // 
             this.btnDetail.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnDetail.Location = new System.Drawing.Point(537, 3);
+            this.btnDetail.BackColor = System.Drawing.Color.White;
+            this.btnDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDetail.ForeColor = System.Drawing.Color.Red;
+            this.btnDetail.Location = new System.Drawing.Point(519, 3);
             this.btnDetail.Name = "btnDetail";
-            this.btnDetail.Size = new System.Drawing.Size(113, 42);
+            this.btnDetail.Size = new System.Drawing.Size(149, 42);
             this.btnDetail.TabIndex = 1;
             this.btnDetail.Text = "Xem chi tiết";
-            this.btnDetail.UseVisualStyleBackColor = true;
+            this.btnDetail.UseVisualStyleBackColor = false;
             // 
             // tableLayoutPanel3
             // 
+            this.tableLayoutPanel3.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.tableLayoutPanel3.ColumnCount = 8;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 8F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12F));
@@ -134,9 +142,10 @@
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(29, 1);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(24, 1);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 40);
+            this.label1.Size = new System.Drawing.Size(55, 40);
             this.label1.TabIndex = 0;
             this.label1.Text = "Trạng thái:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -163,9 +172,10 @@
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(219, 11);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(215, 11);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 20);
+            this.label2.Size = new System.Drawing.Size(39, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "Từ :";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -174,9 +184,10 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(520, 11);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(521, 1);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(43, 20);
+            this.label3.Size = new System.Drawing.Size(42, 40);
             this.label3.TabIndex = 4;
             this.label3.Text = "Đến:";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -185,9 +196,10 @@
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(845, 1);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(839, 1);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(58, 40);
+            this.label4.Size = new System.Drawing.Size(64, 40);
             this.label4.TabIndex = 5;
             this.label4.Text = "Loại phòng:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;

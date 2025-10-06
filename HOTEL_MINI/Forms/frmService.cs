@@ -326,16 +326,12 @@ namespace HOTEL_MINI.Forms
                 return;
             }
 
-            var current = _servicesService.GetAllServices()
-                                          .FirstOrDefault(x => x.ServiceID == selected.ServiceID);
-            var curQty = current?.Quantity ?? selected.Quantity;
-            var newQty = curQty + add;
-
             try
             {
-                if (_servicesService.UpdateServiceQuantity(selected.ServiceID, newQty))
+                // Tăng tồn kho theo delta, KHÔNG chèn dịch vụ mới
+                if (_servicesService.IncreaseServiceQuantity(selected.ServiceID, add))
                 {
-                    MessageBox.Show($"Đã cập nhật số lượng cho '{selected.ServiceName}'.",
+                    MessageBox.Show($"Đã nhập {add} cho '{selected.ServiceName}'.",
                         "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ReloadAll();
                     txtQuantityAdd.Clear();
@@ -358,6 +354,7 @@ namespace HOTEL_MINI.Forms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void cboServiceName_SelectedIndexChanged(object sender, EventArgs e)
         {

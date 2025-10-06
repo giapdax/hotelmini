@@ -870,6 +870,22 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 }
             }
         }
+        public List<int> GetBookingRoomIdsByInvoiceId(int invoiceId)
+        {
+            var rs = new List<int>();
+            using (var conn = new SqlConnection(_cs))
+            using (var cmd = new SqlCommand(
+                "SELECT BookingRoomID FROM InvoiceRooms WHERE InvoiceID=@I ORDER BY BookingRoomID", conn))
+            {
+                cmd.Parameters.Add("@I", SqlDbType.Int).Value = invoiceId;
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read()) rs.Add(rd.GetInt32(0));
+                }
+            }
+            return rs;
+        }
 
         private DataTable Fill(string sql, Action<SqlCommand> onParam)
         {

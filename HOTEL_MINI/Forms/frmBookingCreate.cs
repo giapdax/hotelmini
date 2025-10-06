@@ -680,12 +680,14 @@ namespace HOTEL_MINI.Forms
             }
 
             var requests = new List<BookingRoom>();
+            var lines = new List<string>();
+
             foreach (var r in _rooms)
             {
                 var plan = GetPlanOrDefault(r);
                 if (plan.CheckOut <= plan.CheckIn)
                 {
-                    MessageBox.Show("Phòng " + r.RoomNumber + ": Check-out phải > Check-in.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Phòng {r.RoomNumber}: Check-out phải > Check-in.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -694,7 +696,7 @@ namespace HOTEL_MINI.Forms
                                                           string.Equals(x.PricingType, plan.PricingType, StringComparison.OrdinalIgnoreCase));
                 if (pr == null)
                 {
-                    MessageBox.Show("Phòng " + r.RoomNumber + ": Không tìm thấy đơn giá '" + plan.PricingType + "'.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Phòng {r.RoomNumber}: Không tìm thấy đơn giá '{plan.PricingType}'.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -707,7 +709,13 @@ namespace HOTEL_MINI.Forms
                     Status = plan.IsReceiveNow ? "CheckedIn" : "Booked",
                     Note = (txtNote.Text ?? "").Trim()
                 });
+
+                lines.Add($"- Phòng {r.RoomNumber} ({plan.PricingType}): {plan.CheckIn:dd/MM/yyyy HH:mm} → {plan.CheckOut:dd/MM/yyyy HH:mm} {(plan.IsReceiveNow ? "[Nhận ngay]" : "[Giữ chỗ]")}");
             }
+
+            var confirmText = "Bạn có muốn đặt các phòng sau không?\n\n" + string.Join("\n", lines);
+            var confirm = MessageBox.Show(confirmText, "Xác nhận đặt phòng", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+            if (confirm != DialogResult.Yes) return;
 
             try
             {
@@ -715,7 +723,7 @@ namespace HOTEL_MINI.Forms
                 SetupServicesMenu();
                 foreach (var vm in _serviceVMs) vm.PlannedDelta = 0;
 
-                MessageBox.Show("Đặt thành công " + map.Count + "/" + requests.Count + " phòng.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đặt thành công {map.Count}/{requests.Count} phòng.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -724,6 +732,7 @@ namespace HOTEL_MINI.Forms
                 MessageBox.Show("Đặt phòng thất bại: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         public class RoomPlan
         {

@@ -27,8 +27,6 @@ namespace HOTEL_MINI.Forms
         {
             customerLoad();
             InvoiceLoad();
-            RevenuRoomLoad();
-            dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
         }
         private void customerLoad()
         {
@@ -45,20 +43,5 @@ namespace HOTEL_MINI.Forms
             rpvInvoice.RefreshReport();
         }
 
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-        {
-            RevenuRoomLoad();
-        }
-        private void RevenuRoomLoad()
-        {
-            int month = dateTimePicker1.Value.Month;
-            int year = dateTimePicker1.Value.Year;
-
-            var revenu = _invoiceService.GetRevenueByRoom(month, year);
-
-            rpvRevenuRoom.LocalReport.DataSources.Clear();
-            rpvRevenuRoom.LocalReport.DataSources.Add(new ReportDataSource("RevenuDataSet", revenu));
-            rpvRevenuRoom.RefreshReport();
-        }
     }
 }

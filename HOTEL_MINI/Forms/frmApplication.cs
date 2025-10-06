@@ -3,6 +3,7 @@ using HOTEL_MINI.Model.Entity;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HOTEL_MINI
@@ -17,15 +18,14 @@ namespace HOTEL_MINI
         private const int ROLE_ADMIN = 1;
         private const int ROLE_RECEPTIONIST = 2;
 
-        // Whitelist cho lễ tân
         private readonly HashSet<string> _recAllowedForms = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "frmBooking",
-            "frmRoom",           // nếu còn dùng đâu đó
+            "frmRoom",
             "frmService",
             "frmRoomManager",
             "frmCustomer",
-            "frmBookingDetail",  // dialog để cũng không sao
+            "frmBookingDetail",
             "frmInvoiceManage",
             "frmReport"
         };
@@ -53,8 +53,6 @@ namespace HOTEL_MINI
             }
             else
             {
-                // Quan trọng: KHÔNG dùng 'sender' ở đây vì không có trong constructor
-                // Mặc định mở màn booking và truyền User hiện tại
                 OpenChildForm(new frmBooking(_currentUser), btnRoom);
             }
         }
@@ -76,15 +74,13 @@ namespace HOTEL_MINI
                 foreach (Control c in panelMenu.Controls)
                     if (c is Button b) b.Visible = false;
 
-                // Cho phép các nút cần cho lễ tân
-                SafeShow(btnRoom, true);              // sẽ mở frmBooking
+                SafeShow(btnRoom, true);
                 SafeShow(btnService, true);
                 SafeShow(btnRoomManager, true);
                 SafeShow(btnCustomerManage, true);
                 SafeShow(btnInvoicesManage, true);
                 SafeShow(btnReport, true);
 
-                // Ẩn những mục chỉ dành cho Admin
                 SafeShow(btnDashboardManage, false);
                 SafeShow(btnUserManage, false);
 
@@ -143,12 +139,10 @@ namespace HOTEL_MINI
 
         public void OpenChildForm(Form childForm, object btnSender)
         {
-            // Nếu không phải admin thì chỉ cho mở các form trong whitelist
             if (!IsAdmin())
             {
                 var formName = childForm.GetType().Name;
-                if (!_recAllowedForms.Contains(formName))
-                    return;
+                if (!_recAllowedForms.Contains(formName)) return;
             }
 
             if (activeForm != null) activeForm.Close();
@@ -170,12 +164,10 @@ namespace HOTEL_MINI
             lblTitle.Text = childForm.Text;
         }
 
+        // === Nút menu ===
         private void btnRoom_Click(object sender, EventArgs e)
         {
-            // Mở frmBooking và truyền user đang đăng nhập
             OpenChildForm(new frmBooking(_currentUser), sender);
-            // Hoặc chỉ truyền ID:
-            // OpenChildForm(new frmBooking(_currentUser?.UserID ?? 0), sender);
         }
 
         private void btnService_Click(object sender, EventArgs e)
@@ -261,5 +253,40 @@ namespace HOTEL_MINI
         {
             OpenChildForm(new frmReport(), sender);
         }
+        public void ActivateBooking(bool goToUcBookRoom = true)
+        {
+            // mở frmBooking nếu chưa mở
+            var booking = panelDesktop.Controls.OfType<frmBooking>().FirstOrDefault();
+            if (booking == null || booking.IsDisposed)
+            {
+                OpenChildForm(new frmBooking(_currentUser), btnRoom);
+                booking = panelDesktop.Controls.OfType<frmBooking>().FirstOrDefault();
+            }
+
+            if (booking != null)
+            {
+                if (goToUcBookRoom) booking.ShowUcBookRoom();
+                else booking.ShowUcBookingRoom(); // <- vào thẳng UcBookingRoom
+            }
+        }
+
+        public void NavigateToBookingUc(int? customerId = null, string idNumber = null)
+        {
+            // Nếu frmBooking đang mở → chỉ cần yêu cầu nó show UcBookRoom
+            if (activeForm is frmBooking fbExisting)
+            {
+                try { fbExisting.ShowUcBookRoom(customerId, idNumber); } catch { }
+                HighlightButton(btnRoom);
+                lblTitle.Text = "Chọn phòng để đặt";
+                return;
+            }
+
+            // Chưa có → mở mới rồi show UC
+            var fb = new frmBooking(_currentUser);
+            OpenChildForm(fb, btnRoom);
+            try { fb.ShowUcBookRoom(customerId, idNumber); } catch { }
+            lblTitle.Text = "Chọn phòng để đặt";
+        }
+
     }
 }

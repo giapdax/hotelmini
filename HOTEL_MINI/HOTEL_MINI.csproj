@@ -305,6 +305,7 @@
     <Compile Include="Model\Entity\User.cs" />
     <Compile Include="Model\Response\BookingDisplay.cs" />
     <Compile Include="Model\Response\BookingFlatDisplay.cs" />
+    <Compile Include="Model\Response\InvoiceDisplay.cs" />
     <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Model\Response\RevenuRoomDTO.cs" />
@@ -391,7 +392,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Report\ReportRevenuRoom.rdlc" />
     <EmbeddedResource Include="Report\ReportCustomer.rdlc" />
     <EmbeddedResource Include="Report\ReportInvoice.rdlc" />
     <None Include="DataSet1.xsc">
