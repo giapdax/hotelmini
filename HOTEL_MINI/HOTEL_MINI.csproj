@@ -305,6 +305,7 @@
     <Compile Include="Model\Entity\User.cs" />
     <Compile Include="Model\Response\BookingDisplay.cs" />
     <Compile Include="Model\Response\BookingFlatDisplay.cs" />
+    <Compile Include="Model\Response\InvoiceDisplay.cs" />
     <Compile Include="Model\Response\RevenueSummary.cs" />
     <Compile Include="Model\Response\LoginResult.cs" />
     <Compile Include="Model\Response\RevenuRoomDTO.cs" />

@@ -558,7 +558,24 @@ namespace HOTEL_MINI.DAL
                 }
             }
         }
-
+        public List<int> GetBookingRoomIdsByBookingId(int bookingId)
+        {
+            var list = new List<int>();
+            using (var conn = new SqlConnection(ConfigHelper.GetConnectionString()))
+            using (var cmd = new SqlCommand(@"SELECT BookingRoomID 
+                                      FROM BookingRooms 
+                                      WHERE BookingID = @B 
+                                      ORDER BY BookingRoomID", conn))
+            {
+                cmd.Parameters.Add("@B", SqlDbType.Int).Value = bookingId;
+                conn.Open();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read()) list.Add(rd.GetInt32(0));
+                }
+            }
+            return list;
+        }
         public int? GetHeaderIdByBookingRoomId(int bookingRoomId)
         {
             using (var conn = new SqlConnection(_cs))

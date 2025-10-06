@@ -280,23 +280,63 @@ namespace HOTEL_MINI.Forms
                             try
                             {
                                 var invoice = _invSvc.GetInvoice(_invoiceId);
-                                if (invoice != null)
-                                {
-                                    var room = _allRooms.FirstOrDefault();
-                                    if (room != null)
-                                    {
-                                        var used = _bookingSvc.GetUsedServicesByBookingID(room.BookingRoomID) ?? new List<UsedServiceDto>();
-                                        string roomNumber = _brSvc.GetRoomNumberById(room.RoomID);
-                                        var pdf = new PdfExportService(txtCusName.Text, txtCusId.Text);
-                                        pdf.ExportInvoiceToPdf(invoice, room, roomNumber, used, sfd.FileName);
-                                        MessageBox.Show("Xuất hóa đơn PDF thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                       
-                                    }
-                                }
-                                else
+                                if (invoice == null)
                                 {
                                     MessageBox.Show("Không tìm thấy thông tin hóa đơn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
                                 }
+
+                                var roomLines = new List<(BookingRoom Room, string RoomNumber, string PricingType, decimal UnitPrice, int Quantity)>();
+
+                                foreach (var line in _allRooms)
+                                {
+                                    string roomNumber = "";
+                                    try { roomNumber = _brSvc.GetRoomNumberById(line.RoomID); } catch { }
+
+                                    string pricingType = ""; decimal unitPrice = 0m;
+                                    try
+                                    {
+                                        var pr = new RoomPricingRepository().GetPricingTypeById(line.PricingID);
+                                        if (pr != null) { pricingType = pr.PricingType ?? ""; unitPrice = pr.Price; }
+                                    }
+                                    catch { }
+
+                                    decimal roomCharge = 0m;
+                                    try { roomCharge = _bookingSvc.GetRoomCharge(line); } catch { }
+
+                                    int qty = 1;
+                                    if (unitPrice > 0m)
+                                    {
+                                        var q = Math.Round(roomCharge / unitPrice, MidpointRounding.AwayFromZero);
+                                        if (q >= 1 && q <= int.MaxValue) qty = (int)q;
+                                        else { unitPrice = roomCharge; qty = 1; }
+                                    }
+                                    else
+                                    {
+                                        unitPrice = roomCharge; // fallback: 1 dòng = tổng tiền phòng
+                                        qty = 1;
+                                    }
+
+                                    roomLines.Add((line, roomNumber, pricingType, unitPrice, qty));
+                                }
+
+                                // gộp toàn bộ dịch vụ của các phòng đã chọn
+                                var usedServices = _allRooms
+                                    .SelectMany(b => _bookingSvc.GetUsedServicesByBookingID(b.BookingRoomID) ?? new List<UsedServiceDto>())
+                                    .GroupBy(x => new { x.ServiceName, x.Price })
+                                    .Select(g => new UsedServiceDto
+                                    {
+                                        ServiceName = g.Key.ServiceName,
+                                        Price = g.Key.Price,
+                                        Quantity = g.Sum(x => x.Quantity)
+                                    })
+                                    .ToList();
+
+                                var pdf = new PdfExportService(txtCusName.Text, txtCusId.Text);
+                                pdf.ExportInvoiceToPdf(invoice, roomLines, usedServices, sfd.FileName);
+
+                                MessageBox.Show("Xuất hóa đơn PDF thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                             }
                             catch (Exception ex)
                             {

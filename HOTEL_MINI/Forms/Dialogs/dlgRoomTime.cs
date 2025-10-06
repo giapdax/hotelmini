@@ -73,34 +73,10 @@ namespace HOTEL_MINI.Forms.Dialogs
             }
         }
 
-        //private void ApplyTypePresetAndRecalc()
-        //{
-        //    var type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString() : null;
-
-        //    if (string.Equals(type, "Nightly", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        // Preset 1 đêm: 21:00 -> 07:00 hôm sau
-        //        var dIn = dtpIn.Value.Date;
-        //        var inTime = new DateTime(dIn.Year, dIn.Month, dIn.Day, 21, 0, 0);
-        //        var outTime = inTime.AddDays(1).Date.AddHours(7);
-
-        //        dtpIn.Value = inTime;
-        //        dtpOut.Value = outTime;
-
-        //        dtpIn.ShowUpDown = true;
-        //        dtpOut.ShowUpDown = true;
-        //    }
-        //    else
-        //    {
-        //        dtpIn.ShowUpDown = false;
-        //        dtpOut.ShowUpDown = false;
-        //    }
-
-        //    Recalc();
-        //}
         private void ApplyTypePresetAndRecalc()
         {
             dtpIn.ValueChanged -= DtpIn_Weekly_ValueChanged;
+
             var type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString() : null;
 
             dtpIn.ShowUpDown = false;
@@ -108,85 +84,94 @@ namespace HOTEL_MINI.Forms.Dialogs
             dtpIn.Enabled = true;
             dtpOut.Enabled = true;
 
+            var now = DateTime.Now;
+
             if (string.Equals(type, "Daily", StringComparison.OrdinalIgnoreCase))
             {
-                // Cố định 14:00 -> 12:00 hôm sau
-                var date = DateTime.Now.Date;
-                var inTime = new DateTime(date.Year, date.Month, date.Day, 14, 0, 0);
+                // DAILY: mặc định từ hôm nay 14:00 -> ngày mai 12:00
+                var inTime = new DateTime(now.Year, now.Month, now.Day, 14, 0, 0);
                 var outTime = inTime.AddDays(1).Date.AddHours(12);
 
                 dtpIn.Value = inTime;
                 dtpOut.Value = outTime;
 
-                // Chỉ cho chỉnh ngày, không cho chỉnh giờ
-                dtpIn.ShowUpDown = false;
-                dtpOut.ShowUpDown = false;
+                // Hiển thị ngày (ẩn giờ), vẫn cho chỉnh ngày
                 dtpIn.CustomFormat = "dd/MM/yyyy";
                 dtpOut.CustomFormat = "dd/MM/yyyy";
+                dtpIn.ShowUpDown = false;
+                dtpOut.ShowUpDown = false;
+                dtpIn.Enabled = true;
+                dtpOut.Enabled = true;
             }
             else if (string.Equals(type, "Nightly", StringComparison.OrdinalIgnoreCase))
             {
-                // Cố định 21:00 -> 07:00 hôm sau
-                var dIn = DateTime.Now.Date;
-                var inTime = new DateTime(dIn.Year, dIn.Month, dIn.Day, 21, 0, 0);
+                // NIGHTLY: mặc định 21:00 hôm nay -> 07:00 hôm sau (đúng 1 đêm)
+                var inTime = new DateTime(now.Year, now.Month, now.Day, 21, 0, 0);
                 var outTime = inTime.AddDays(1).Date.AddHours(7);
 
                 dtpIn.Value = inTime;
                 dtpOut.Value = outTime;
 
-                // ❌ Không cho chỉnh giờ phút, chỉ hiển thị ngày
-                dtpIn.ShowUpDown = false;
-                dtpOut.ShowUpDown = false;
+                // Hiển thị ngày (ẩn giờ), vẫn cho chỉnh ngày
                 dtpIn.CustomFormat = "dd/MM/yyyy";
                 dtpOut.CustomFormat = "dd/MM/yyyy";
-
-                // Có thể cho chỉnh ngày nếu muốn đặt cho hôm khác
+                dtpIn.ShowUpDown = false;
+                dtpOut.ShowUpDown = false;
                 dtpIn.Enabled = true;
                 dtpOut.Enabled = true;
             }
-
             else if (string.Equals(type, "Weekly", StringComparison.OrdinalIgnoreCase))
             {
-                // Check-in chỉnh được ngày + giờ
+                // WEEKLY: mặc định bây giờ -> +7 ngày; checkout luôn = checkin + 7d
                 dtpIn.Enabled = true;
-                dtpIn.ShowUpDown = false;
-                dtpIn.CustomFormat = "dd/MM/yyyy HH:mm";
-
-                // Check-out luôn = Check-in + 7 ngày, không chỉnh được
                 dtpOut.Enabled = false;
+
+                dtpIn.ShowUpDown = false;
                 dtpOut.ShowUpDown = false;
+
+                dtpIn.CustomFormat = "dd/MM/yyyy HH:mm";
                 dtpOut.CustomFormat = "dd/MM/yyyy HH:mm";
 
-                var ci = DateTime.Now;
-                dtpIn.Value = ci;
-                dtpOut.Value = ci.AddDays(7);
+                dtpIn.Value = now;
+                dtpOut.Value = now.AddDays(7);
 
-                // khi người dùng đổi check-in => cập nhật check-out
                 dtpIn.ValueChanged -= DtpIn_Weekly_ValueChanged;
                 dtpIn.ValueChanged += DtpIn_Weekly_ValueChanged;
             }
-
-
             else if (string.Equals(type, "Hourly", StringComparison.OrdinalIgnoreCase))
             {
-                var now = DateTime.Now;
+                // HOURLY: mặc định bây giờ -> +1 giờ
                 dtpIn.Value = now;
                 dtpOut.Value = now.AddHours(1);
 
-                // Cho chỉnh cả ngày + giờ
-                dtpIn.ShowUpDown = false;    // show lịch chọn ngày
+                dtpIn.CustomFormat = "dd/MM/yyyy HH:mm";
+                dtpOut.CustomFormat = "dd/MM/yyyy HH:mm";
+
+                dtpIn.ShowUpDown = false;
                 dtpOut.ShowUpDown = false;
+
+                dtpIn.Enabled = true;
+                dtpOut.Enabled = true;
+            }
+            else
+            {
+                // Loại khác (nếu có): mặc định “giờ hiện tại -> +1 ngày”
+                dtpIn.Value = now;
+                dtpOut.Value = now.AddDays(1);
 
                 dtpIn.CustomFormat = "dd/MM/yyyy HH:mm";
                 dtpOut.CustomFormat = "dd/MM/yyyy HH:mm";
+
+                dtpIn.ShowUpDown = false;
+                dtpOut.ShowUpDown = false;
 
                 dtpIn.Enabled = true;
                 dtpOut.Enabled = true;
             }
 
-
             Recalc();
         }
+
         private void DtpIn_Weekly_ValueChanged(object sender, EventArgs e)
         {
             // cập nhật checkout = checkin + 7 ngày
